@@ -1,0 +1,13 @@
+desc = """
+Mate desktop environment.
+"""
+
+packages = """
+mate
+metacity
+gdm
+"""
+
+settings="""
+mate
+"""

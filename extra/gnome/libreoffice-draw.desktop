@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.0
+Terminal=false
+Icon=libreoffice-draw
+Type=Application
+Categories=Graphics;X-Red-Hat-Base;X-SuSE-Core-Graphics;X-MandrivaLinux-Graphics-Drawing;
+Exec=libreoffice --draw %U
+MimeType=application/vnd.oasis.opendocument.graphics;application/vnd.oasis.opendocument.graphics-flat-xml;application/vnd.oasis.opendocument.graphics-template;application/vnd.sun.xml.draw;application/vnd.sun.xml.draw.template;application/vnd.stardivision.draw;
+Name=LibreOffice 3.4 Draw
+Name[pt_BR]=LibreOffice 3.4 Draw
+GenericName=Drawing Program
+GenericName[en]=Drawing Program
+Comment=Create and edit drawings, flow charts, and logos by using Draw.
+Comment[en]=Create and edit drawings, flow charts, and logos by using Draw.
+InitialPreference=5

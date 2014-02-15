@@ -1,0 +1,14 @@
+Dead acute: deadacute
+Dead grave acute: deadgraveacute
+Eliminate dead keys: nodeadkeys
+Romanian keyboard with German letters: ro
+Romanian keyboard with German letters, eliminate dead keys: ro_nodeadkeys
+Dvorak: dvorak
+Sun dead keys: sundeadkeys
+Neo 2: neo
+Macintosh: mac
+Macintosh, eliminate dead keys: mac_nodeadkeys
+Lower Sorbian: dsb
+Lower Sorbian (qwertz): dsb_qwertz
+Qwerty: qwerty
+Russian phonetic: ru

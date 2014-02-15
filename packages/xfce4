@@ -1,0 +1,21 @@
+desc = """
+XFCE desktop environment.
+"""
+deps = """
+xserver
+xfce4
+drivers
+print
+internet
+sound-video
+office
+font
+utils
+utils-x
+graphic
+"""
+packages="""
+"""
+settings="""
+xfce4
+"""

@@ -1,0 +1,25 @@
+desc = """
+Mate desktop environment.
+"""
+
+deps = """
+xserver
+mate
+drivers
+print
+internet
+sound-video
+office
+font
+utils
+utils-x
+graphic
+"""
+
+packages = """
+"""
+
+settings="""
+mate
+"""
+

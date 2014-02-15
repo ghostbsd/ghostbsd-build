@@ -1,0 +1,10 @@
+desc = """
+	Sound and Video.
+"""
+packages="""
+#vlc
+#banshee
+rhythmbox
+brasero
+cheese
+"""

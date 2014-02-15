@@ -1,0 +1,33 @@
+#!/bin/sh
+#
+# $FreeBSD$
+# $Id: unionfs,v 1.6 2007/07/04 09:19:11 rionda Exp $
+#
+
+# PROVIDE: unionfs
+# REQUIRE: disks
+# BEFORE:  hostid
+# KEYWORD: nojail
+
+. /etc/rc.subr
+
+name="unionfs"
+start_cmd="unionfs_start"
+stop_cmd=""
+
+unionfs_start() {
+    unionsize="$(($(sysctl -n hw.usermem) / 2))b"
+    device=$(mdconfig -a -t malloc -s ${unionsize})
+    newfs /dev/${device} > /dev/null 2>&1
+    mount /dev/${device} /dist/union
+
+    tar -zxf /dist/mfs.tgz -C /dist/union
+    tar -zxf /dist/etc.tgz -C /dist/union
+    while read uniondir; do
+        mount_nullfs /dist/union/${uniondir} /${uniondir}
+    done < /dist/uniondirs
+    mount_nullfs /dist/union/etc /etc
+}
+
+load_rc_config $name
+run_rc_command "$1"

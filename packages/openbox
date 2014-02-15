@@ -1,0 +1,18 @@
+desc = """
+        openbox window manager 
+"""
+deps = """
+openbox
+xserver
+drivers
+#print
+#sound-video
+utils
+utils-x
+font
+"""
+packages="""
+"""
+settings="""
+openbox
+"""

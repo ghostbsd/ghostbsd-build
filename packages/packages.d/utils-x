@@ -1,0 +1,10 @@
+description="""
+Xorg basic utilities
+"""
+deps="""
+"""
+packages="""
+gksu
+zenity
+spideroak
+"""

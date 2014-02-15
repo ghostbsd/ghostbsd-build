@@ -1,0 +1,28 @@
+desc = """
+all desktop pkg listenvironment.
+"""
+
+deps = """
+drivers
+lxde
+openbox
+utils
+xserver
+graphic
+mate
+print
+utils-x
+font
+internet
+office
+sound-video
+xfce4
+"""
+
+packages = """
+"""
+
+settings="""
+all
+"""
+

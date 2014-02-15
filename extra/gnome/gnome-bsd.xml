@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
+	
+<wallpapers>
+	<wallpaper deleted="false">
+		<name>Autumnt</name>
+		<filename>/usr/local/share/pixmaps/backgrounds/gnome/Autumn.png</filename>
+		<options>stretched</options>
+	</wallpaper>
+	<wallpaper deleted="false">
+	<name>Copenhagen Nyhavn</name>
+        <filename>/usr/local/share/pixmaps/backgrounds/gnome/CopenhagenNyhavn.jpeg</filename>
+		<options>stretched</options>
+	</wallpaper>
+	<wallpaper deleted="false">
+		<name>Fakarava Coconut Tree</name>
+                <filename>/usr/local/share/pixmaps/backgrounds/gnome/FakaravaCoconutTree.jpeg</filename>
+		<options>stretched</options>
+	</wallpaper>
+	<wallpaper deleted="false">
+		<name>SantaFe Sunset</name>
+		<filename>/usr/local/share/pixmaps/backgrounds/gnome/SantaFeSunset.png</filename>
+		<options>stretched</options>
+    </wallpaper>
+    <wallpaper deleted="false">
+		<name>Sunset</name>
+		<filename>/usr/local/share/pixmaps/backgrounds/gnome/SunsetISS.jpeg</filename>
+		<options>stretched</options>
+    </wallpaper>
+    <wallpaper deleted="false">
+		<name>Sky Stone</name>
+		<filename>/usr/local/share/pixmaps/backgrounds/gnome/SkyStone.jpeg</filename>
+		<options>stretched</options>
+    </wallpaper>
+    <wallpaper deleted="false">
+		<name>Wheat Fields</name>
+		<filename>/usr/local/share/pixmaps/backgrounds/gnome/WheatFields.jpeg</filename>
+		<options>stretched</options>
+    </wallpaper>
+    <wallpaper deleted="false">
+		<name>Lauttasaari</name>
+		<filename>/usr/local/share/pixmaps/backgrounds/gnome/Lauttasaari.jpg</filename>
+		<options>stretched</options>
+    </wallpaper>
+</wallpapers>

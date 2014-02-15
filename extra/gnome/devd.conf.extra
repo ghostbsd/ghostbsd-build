@@ -1,0 +1,6 @@
+
+attach 100 {
+        device-name "ugen[0-9]+";
+        action "chmod 666 /dev/ugen*";  
+};
+

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=GhostBSD IRC
+Comment=Chat with other user using Internet Relay Chat.
+Exec=xchat --url=IRC://irc.freenode.net/ghostbsd
+Icon=xchat
+Terminal=false
+Type=Application
+Categories=Network;
+StartupNotify=true

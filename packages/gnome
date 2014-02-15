@@ -1,0 +1,25 @@
+desc = """
+Gnome2 desktop environment.
+"""
+
+deps = """
+xserver
+gnome3
+drivers
+print
+internet
+sound-video
+office
+font
+utils
+utils-x
+graphic
+"""
+
+packages = """
+"""
+
+settings="""
+gnome
+"""
+

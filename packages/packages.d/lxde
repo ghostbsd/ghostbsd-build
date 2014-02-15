@@ -1,0 +1,20 @@
+desc = """
+        lxde packages.
+"""
+
+packages="""
+gdm
+lxde-meta
+lxappearance
+xarchiver
+galculator
+leafpad
+mate-screensaver
+mate-themes
+epdfview
+mate-utils
+lxrandr
+gtk-murrine-engine
+mixmos
+metacity
+"""

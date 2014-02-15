@@ -1,0 +1,12 @@
+description="""
+Print utilities/packages
+"""
+deps="""
+"""
+packages="""
+cups
+system-config-printer
+foomatic-db
+foomatic-db-engine
+foomatic-db-hpijs
+"""

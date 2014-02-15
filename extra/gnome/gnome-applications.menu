@@ -1,0 +1,365 @@
+<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
+ "http://www.freedesktop.org/standards/menu-spec/1.0/menu.dtd">
+
+<Menu>
+
+  <Name>Applications</Name>
+  <Directory>X-GNOME-Menu-Applications.directory</Directory>
+
+  <!-- Scan legacy dirs first, as later items take priority
+  <LegacyDir>/etc/X11/applnk</LegacyDir> -->
+  <LegacyDir>/usr/local/share/gnome/apps</LegacyDir>
+
+  <!-- Read standard .directory and .desktop file locations -->
+  <DefaultAppDirs/>
+  <DefaultDirectoryDirs/>
+
+  <!-- Read in overrides and child menus from applications-merged/ -->
+  <DefaultMergeDirs/>
+
+  <!-- Accessories submenu -->
+  <Menu>
+    <Name>Accessories</Name>
+    <Directory>Utility.directory</Directory>
+    <Include>
+      <And>
+        <Category>Utility</Category>
+	<!-- Accessibility spec must have either the Utility or Settings
+	     category, and we display an accessibility submenu already for
+	     the ones that do not have Settings, so don't display accessibility
+	     applications here -->
+        <Not><Category>Accessibility</Category></Not>
+        <Not><Category>System</Category></Not>
+	<Not><Category>Qt</Category></Not>
+	<Not><Category>KDE</Category></Not>
+      </And>
+    </Include>
+  </Menu> <!-- End Accessories -->
+
+  <!-- Accessibility submenu -->
+  <Menu>
+    <Name>Universal Access</Name>
+    <Directory>Utility-Accessibility.directory</Directory>
+    <Include>
+      <And>
+        <Category>Accessibility</Category>
+        <Not><Category>Settings</Category></Not>
+	<Not><Category>Qt</Category></Not>
+	<Not><Category>KDE</Category></Not>
+      </And>
+    </Include>
+  </Menu> <!-- End Accessibility -->
+
+  <!-- Development Tools -->
+  <Menu>
+    <Name>Development</Name>
+    <Directory>Development.directory</Directory>
+    <Include>
+      <And>
+        <Category>Development</Category>
+        <Not><Category>Qt</Category></Not>
+        <Not><Category>KDE</Category></Not>
+      </And>
+      <Filename>emacs.desktop</Filename>
+    </Include>
+  </Menu> <!-- End Development Tools -->
+
+  <!-- Education -->
+  <Menu>
+    <Name>Education</Name>
+    <Directory>Education.directory</Directory>
+    <Include>
+      <And>
+        <Category>Education</Category>
+	<Not><Category>Qt</Category></Not>
+	<Not><Category>KDE</Category></Not>
+      </And>
+    </Include>
+  </Menu> <!-- End Education -->
+
+  <!-- Games -->
+  <Menu>
+    <Name>Games</Name>
+    <Directory>Game.directory</Directory>
+    <Include>
+      <And>
+        <Category>Game</Category>
+	<Not><Category>Qt</Category></Not>
+	<Not><Category>KDE</Category></Not>
+      </And>
+    </Include>
+  </Menu> <!-- End Games -->
+
+  <!-- Graphics -->
+  <Menu>
+    <Name>Graphics</Name>
+    <Directory>Graphics.directory</Directory>
+    <Include>
+      <And>
+        <Category>Graphics</Category>
+	<Not><Category>Qt</Category></Not>
+	<Not><Category>KDE</Category></Not>
+      </And>
+    </Include>
+  </Menu> <!-- End Graphics -->
+
+  <!-- Internet -->
+  <Menu>
+    <Name>Internet</Name>
+    <Directory>Network.directory</Directory>
+    <Include>
+      <And>
+        <Category>Network</Category>
+	<Not><Category>Qt</Category></Not>
+	<Not><Category>KDE</Category></Not>
+      </And>
+    </Include>
+  </Menu>   <!-- End Internet -->
+
+  <!-- Multimedia -->
+  <Menu>
+    <Name>Multimedia</Name>
+    <Directory>AudioVideo.directory</Directory>
+    <Include>
+      <And>
+        <Category>AudioVideo</Category>
+	<Not><Category>Qt</Category></Not>
+	<Not><Category>KDE</Category></Not>
+      </And>
+    </Include>
+  </Menu>   <!-- End Multimedia -->
+
+  <!-- Office -->
+  <Menu>
+    <Name>Office</Name>
+    <Directory>Office.directory</Directory>
+    <Include>
+      <And>
+        <Category>Office</Category>
+	<Not><Category>Qt</Category></Not>
+	<Not><Category>KDE</Category></Not>
+      </And>
+    </Include>
+  </Menu> <!-- End Office -->
+
+  <!-- System Tools-->
+  <Menu>
+    <Name>System</Name>
+    <Directory>System-Tools.directory</Directory>
+    <Include>
+      <And>
+        <Category>System</Category>
+        <Not><Category>Settings</Category></Not>
+	<Not><Category>Qt</Category></Not>
+	<Not><Category>KDE</Category></Not>
+      </And>
+    </Include>
+  </Menu>   <!-- End System Tools -->
+
+  <!-- Other -->
+  <Menu>
+    <Name>Other</Name>
+    <Directory>X-GNOME-Other.directory</Directory>
+    <OnlyUnallocated/>
+    <Include>
+      <And>
+        <Not><Category>Core</Category></Not>
+        <Not><Category>Settings</Category></Not>
+        <Not><Category>Screensaver</Category></Not>
+	<Not><Category>Qt</Category></Not>
+	<Not><Category>KDE</Category></Not>
+      </And>
+    </Include>
+  </Menu> <!-- End Other -->
+
+  <!-- Read in overrides and child menus from applications-merged/ -->
+  <DefaultMergeDirs/>
+
+  <!-- KDE -->
+  <Menu>
+    <KDELegacyDirs/>
+    <Name>KDE</Name>
+    <Directory>KDE.directory</Directory>
+
+    <!-- KAccessories submenu -->
+    <Menu>
+      <Name>Accessories</Name>
+      <Directory>Accessories.directory</Directory>
+      <Include>
+        <And>
+          <Or>
+            <Category>Qt</Category>
+            <Category>KDE</Category>
+          </Or>
+          <Category>Utility</Category>
+          <Not>
+            <Category>System</Category>
+          </Not>
+        </And>
+      </Include>
+    </Menu> <!-- End KAccessories -->
+
+    <!-- KAccessibility submenu -->
+    <Menu>
+      <Name>Accessibility</Name>
+      <Directory>Accessibility.directory</Directory>
+      <Include>
+        <And>
+          <Or>
+            <Category>Qt</Category>
+            <Category>KDE</Category>
+          </Or>
+          <Category>Accessibility</Category>
+          <Not>
+            <Category>Settings</Category>
+          </Not>
+        </And>
+      </Include>
+    </Menu> <!-- End KAccessibility -->
+
+    <!-- KDevelopment Tools -->
+    <Menu>
+      <Name>Development</Name>
+      <Directory>Development.directory</Directory>
+      <Include>
+        <And>
+          <Or>
+            <Category>Qt</Category>
+            <Category>KDE</Category>
+          </Or>
+          <Category>Development</Category>
+        </And>
+      </Include>
+    </Menu> <!-- End KDevelopment Tools -->
+
+    <!-- KEducation -->
+    <Menu>
+      <Name>Education</Name>
+      <Directory>Education.directory</Directory>
+      <Include>
+        <And>
+          <Or>
+            <Category>Qt</Category>
+            <Category>KDE</Category>
+          </Or>
+          <Category>Education</Category>
+        </And>
+      </Include>
+    </Menu> <!-- End KEducation -->
+
+    <!-- KGames -->
+    <Menu>
+      <Name>Games</Name>
+      <Directory>Games.directory</Directory>
+      <Include>
+        <And>
+          <Or>
+            <Category>Qt</Category>
+            <Category>KDE</Category>
+          </Or>
+          <Category>Game</Category>
+        </And>
+      </Include>
+    </Menu> <!-- End KGames -->
+
+    <!-- KGraphics -->
+    <Menu>
+      <Name>Graphics</Name>
+      <Directory>Graphics.directory</Directory>
+      <Include>
+        <And>
+          <Or>
+            <Category>Qt</Category>
+            <Category>KDE</Category>
+          </Or>
+          <Category>Graphics</Category>
+        </And>
+      </Include>
+    </Menu> <!-- End KGraphics -->
+
+    <!-- KInternet -->
+    <Menu>
+      <Name>Internet</Name>
+      <Directory>Internet.directory</Directory>
+      <Include>
+        <And>
+          <Or>
+            <Category>Qt</Category>
+            <Category>KDE</Category>
+          </Or>
+          <Category>Network</Category>
+        </And>
+      </Include>
+    </Menu> <!-- End KInternet -->
+
+    <!-- KMultimedia -->
+    <Menu>
+      <Name>Multimedia</Name>
+      <Directory>Multimedia.directory</Directory>
+      <Include>
+        <And>
+          <Or>
+            <Category>Qt</Category>
+            <Category>KDE</Category>
+          </Or>
+          <Category>AudioVideo</Category>
+        </And>
+      </Include>
+    </Menu> <!-- End KMultimedia -->
+
+    <!-- KOffice -->
+    <Menu>
+      <Name>Office</Name>
+      <Directory>Office.directory</Directory>
+      <Include>
+        <And>
+          <Or>
+            <Category>Qt</Category>
+            <Category>KDE</Category>
+          </Or>
+          <Or>
+            <Category>Office</Category>
+          </Or>
+        </And>
+      </Include>
+    </Menu><!-- End KOffice -->
+
+    <!-- KSystem Tools-->
+    <Menu>
+      <Name>System</Name>
+      <Directory>System-Tools.directory</Directory>
+      <Include>
+        <And>
+          <Or>
+            <Category>Qt</Category>
+            <Category>KDE</Category>
+          </Or>
+          <Category>System</Category>
+          <Not><Category>Settings</Category></Not>
+        </And>
+      </Include>
+    </Menu>   <!-- End KSystem Tools -->
+
+    <!-- KOther -->
+    <Menu>
+      <Name>Other</Name>
+      <Directory>Other.directory</Directory>
+      <OnlyUnallocated/>
+      <Include>
+        <And>
+          <Or>
+            <Category>Qt</Category>
+            <Category>KDE</Category>
+          </Or>
+          <Category>Application</Category>
+          <Not><Category>Core</Category></Not>
+          <Not><Category>Settings</Category></Not>
+        </And>
+      </Include>
+    </Menu> <!-- End KOther -->
+  </Menu> <!-- KDE -->
+  <AppDir>/usr/local/share/applications</AppDir>
+		<Include>
+			<Filename>bxpkg.desktop</Filename>
+		</Include>
+</Menu> <!-- End Applications -->

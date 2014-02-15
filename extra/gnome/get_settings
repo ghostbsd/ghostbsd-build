@@ -1,0 +1,235 @@
+#!/bin/sh
+
+####################
+# SETTINGS SECTION #
+####################
+
+
+. /usr/local/etc/default/gnome-desktop-settings
+
+
+if [ -f "/usr/local/etc/gconf/gconf.xml.defaults/%gconf-tree.xml" ]; then
+
+###
+# gksu -> sudo
+###
+#	gconftool-2 --direct \
+#	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+#	--type boolean \
+#	--set /apps/gksu/sudo-mode true
+#	gconftool-2 --direct \
+#	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+#	--type boolean \ 
+#	--set /apps/gksu/display-no-pass-info false
+
+
+###
+# set theme
+###
+#if [ -d "/usr/local/share/themes/GhostBSD" ] ; then
+
+#    gconftool-2 --direct \
+#	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+#	--type string \
+#	--set /desktop/gnome/interface/gtk_theme  ${GNOME_GTK_THEME}
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type string \
+	--set /desktop/gnome/interface/icon_theme  ${GNOME_ICON_THEME}
+#	gconftool-2 --direct \
+#	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+#	--type string \
+#	--set /apps/metacity/general/theme  ${GNOME_METACITY_THEME}
+
+
+###
+# set font rendering
+###
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type string \
+	--set /desktop/gnome/font_rendering/hinting ${GNOME_FONT_RENDERING}
+
+###
+# disable F10 shortcut key in gnome terminal for ${FLL_LIVE_USER}
+###
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type boolean \
+	--set /apps/gnome-terminal/global/use_menu_accelerators ${GNOME_F10_KEY}
+
+###
+# set remove autolock screensaver
+###
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type boolean \
+	--set /apps/gnome-screensaver/lock_enabled ${GNOME_SCREENSAVER_AUTOLOCK}
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type boolean \
+	--set /apps/gnome-screensaver/idle_activation_enabled ${GNOME_SCREENSAVER_IDLE}
+
+###
+# set icons for menus 
+###
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type boolean \
+	--set /desktop/gnome/interface/menus_have_icons ${GNOME_MENUS_HAVE_ICONS}
+
+###
+#  set keyboard layout
+###
+if [ "${XKBLAYOUT}" ] ; then
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type string \
+	--set /desktop/gnome/peripherals/keyboard/kbd/layouts "${XKBLAYOUT}"
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type string \
+	--set /desktop/gnome/peripherals/keyboard/kbd/model "pc104"
+#	gconftool-2 --direct \
+#	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+#	--type string \
+#	 --set /desktop/gnome/peripherals/keyboard/kbd/options  "wellsee"
+fi
+
+###
+# osd if it's installed
+###
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type boolean \
+	--set /apps/gnome-osd/avoid_panels ${GNOME_OSD_AVOID_PANELS}
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type boolean \
+	--set /apps/gnome-osd/animations ${GNOME_OSD_ANIMATIONS}
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type boolean \
+	--set /apps/gnome-osd/drop_shadow ${GNOME_OSD_DROP_SHADOWS}
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type string \
+	--set /apps/gnome-osd/osd_halignment ${GNOME_OSD_HALIGNMENT}
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type string \
+	--set /apps/gnome-osd/osd_vposition ${GNOME_OSD_VPOSITION}
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type boolean \
+	--set /apps/gnome-osd/plugins/pidgin/enabled ${GNOME_OSD_PIDGIN_ENABLED}
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type boolean \
+	--set /apps/gnome-osd/plugins/xchat/enabled ${GNOME_OSD_XCHAT_ENABLED}
+
+###
+# sound if it's installed
+###
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type boolean \
+	--set /desktop/gnome/sound/enable_esd ${GNOME_ESOUND_ENABLE}
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type boolean \
+	--set /desktop/gnome/sound/event_sounds ${GNOME_SOUND_EVENTS_ENABLE}
+
+###
+# nautilus settings
+###
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type boolean \
+	--set /apps/nautilus/preferences/always_use_browser ${NAUTILUS_ALWAYS_USE_BROWSER}
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type string \
+	--set /apps/nautilus/icon_view/default_zoom_level ${NAUTILUS_ICONS_ZOOM_LEVEL}
+
+###
+# totem settings
+###
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type boolean \
+	--set /apps/totem/autoload_subtitles ${AUTOLOAD_SUBTITLES}
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type boolean \
+	--set /apps/totem/autoload_chapters ${AUTOLOAD_CHAPTERS}
+
+###
+# Browser settings
+###
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type string \
+	--set /apps/panel/objects/browser_launcher/launcher_location ${INST_BROWSER}.desktop
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type string \
+	--set /apps/panel/objects/browser_launcher/launcher_location ${INST_BROWSER}.desktop
+
+###
+# Mailer settings
+###
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type string \
+	--set /apps/panel/objects/email_launcher/launcher_location ${INST_MAILER}.desktop
+	gconftool-2 --direct \
+	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+	--type string \
+	--set /apps/panel/objects/email_launcher/launcher_location ${INST_MAILER}.desktop
+
+####
+# GDM message for ghostbsd password and ghostbsd logo.
+####
+#        gconftool-2 --direct \
+#        --config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+#        --type boolean \
+#        --set /apps/gdm/simple-greeter/banner_message_enable true
+#        gconftool-2 --direct \
+#        --config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+#        --type string \
+#        --set /apps/gdm/simple-greeter/banner_message_text "GhostBSD User Password is ghostbsd."
+        gconftool-2 --direct \
+        --config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+        --type string \
+        --set /apps/gdm/simple-greeter/logo_icon_name start-here
+        
+###########################
+# PANEL LAUNCHERS SECTION #
+###########################
+
+###
+# save launchers from panel 
+###
+
+#BUS_SESSION_BUS_ADDRESS=`sockstat -cu | grep $USER |grep gnome-sess \
+#| awk '{print $3}' | head -n 1 | xargs ps eww -p | tail -n1 \
+#|awk '{print $5}' | head -n 2 | sed -e 's/DBUS_SESSION_BUS_ADDRESS=//'`
+#export DBUS_SESSION_BUS_ADDRESS=$BUS_SESSION_BUS_ADDRESS
+
+#	sudo -u $USER gconftool-2 --dump /apps/panel  > \
+#	/usr/local/etc/gconf/default-panel-setup.entries
+
+#	gconftool-2 --direct \
+#	--config-source xml:readwrite:/usr/local/etc/gconf/gconf.xml.defaults \
+#	--load /usr/local/etc/gconf/default-panel-setup.entries
+
+#	# remove "${TARGET_MNT_POINT}"/etc/gconf/default-panel-setup.entries
+#	rm /usr/local/etc/gconf/default-panel-setup.entries
+
+##########################
+# MENU LAUNCHERS SECTION #
+##########################
+
+fi
+return 0

@@ -1,0 +1,12 @@
+desc = """
+        Font packages.
+"""
+
+packages="""
+gnome-audio
+dejavu
+cyberbit-ttfonts
+font-kochi
+en-aspell
+en-hunspell
+"""

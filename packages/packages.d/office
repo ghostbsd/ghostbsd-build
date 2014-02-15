@@ -1,0 +1,8 @@
+description="""
+Office suite
+"""
+deps="""
+"""
+packages="""
+apache-openoffice
+"""

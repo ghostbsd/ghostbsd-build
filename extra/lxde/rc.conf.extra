@@ -1,0 +1,23 @@
+# rc.conf for GhostBSD.
+
+# Network interface.
+hostname="livecd"
+ifconfig_DEFAULT="inet dhcp"
+#firewall_enable="YES"
+#firewall_type="workstation"            
+
+
+# Power saver.
+powerd_enable="YES"
+powerd_flags="-a adp -b adp"
+
+# DEVFS rules
+devfs_system_ruleset="system"
+
+# All Gnome need. 
+cupsd_enable="YES"
+gnome_enable="YES"
+ghostbsd_enable="YES"
+hald_enable="YES"
+dbus_enable="YES"
+linux_enable="YES"

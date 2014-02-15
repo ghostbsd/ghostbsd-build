@@ -1,0 +1,2 @@
+#!/bin/sh
+/usr/local/bin/python /usr/local/etc/wncc/wncc.py

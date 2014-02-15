@@ -1,0 +1,25 @@
+#
+# See /etc/defaults/rc.conf to add more option.
+# Do not configure /etc/defaults/rc.conf.
+# Configure only this file.
+#
+
+# Network interface.
+hostname="livecd"
+
+# Power saver.
+powerd_enable="YES"
+powerd_flags="-a adp -b adp"
+
+# DEVFS rules
+devfs_system_ruleset="system"
+
+# All LXDE need. 
+cupsd_enable="YES"
+#gdm_enable="YES"
+hald_enable="YES"
+dbus_enable="YES"
+linux_enable="YES"
+
+vboxguest_enable="YES"
+vboxservice_enable="YES"

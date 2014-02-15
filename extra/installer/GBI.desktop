@@ -1,0 +1,15 @@
+#!/usr/bin/env xdg-open
+
+[Desktop Entry]
+Version=1.0
+Terminal=false
+Type=Application
+Icon[C]=/usr/local/etc/gbi/install.png
+Name[C]=GhostBSD Installer
+Categories=GNOME;GTK;System;
+NoDisplay=true
+Exec=gbi
+Comment[C]=GhostBSD Installer
+Name=GhostBSD Installer
+Comment=GhostBSD Installer
+Icon=/usr/local/etc/gbi/install.png

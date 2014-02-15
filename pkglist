@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# Search main file package for include dependecies
+# and build an depends file ( depends )
+awk '/^deps/,/^"""/' packages/mate | grep -v '"""' | grep -v '#' > packages/depends
+
+# Add to EXTRA plugins the needed plugin readed from settings section
+# Readed plugin is added only if it isn't already in conf file
+add_extra=$(cat packages/all | grep -iF1 settings= | grep -v '"""')
+#isallready=$(cat conf/ghostbsd.defaults.conf| grep EXTRA= | grep $add_extra)
+#echo $add_extra 
+#if [ ! ${isallready} ] ; then
+
+#	echo 'EXTRA=${EXTRA}'"\" ${add_extra}\"" >> conf/ghostbsd.defaults.conf
+#fi
+
+# If exist an old .packages file removes it
+if [ -f tool/packages ] ; then
+        rm -f tool/packages
+fi
+
+# Reads packages from packages profile
+awk '/^packages/,/^"""/' packages/all > tool/package
+
+# Reads depends file and search for packages entries in each file from depends
+# list, then append all packages found in packages file
+while read pkgs ; do
+awk '/^packages/,/^"""/' packages/packages.d/$pkgs  >> tool/package
+done < packages/depends 
+
+# Removes """ and # from temporary package file
+cat tool/package | grep -v '"""' | grep -v '#' > tool/packages
+
+# Removes temporary files
+if [ -f tool/package ] ; then
+        rm -f tool/package
+        rm -f packages/depends
+fi
+
+echo "#!/bin/sh" > tool/ports
+echo "portinstall -c" | tr "\n" " " >> tool/ports
+cat tool/packages | tr "\n" " " >> tool/ports

@@ -1,0 +1,16 @@
+Eliminate dead keys: nodeadkeys
+Sun dead keys: sundeadkeys
+Alternative: oss
+Alternative, latin-9 only: oss_latin9
+Alternative, eliminate dead keys: oss_nodeadkeys
+Alternative, Sun dead keys: oss_sundeadkeys
+(Legacy) Alternative: latin9
+(Legacy) Alternative, eliminate dead keys: latin9_nodeadkeys
+(Legacy) Alternative, Sun dead keys: latin9_sundeadkeys
+Bepo, ergonomic, Dvorak way: bepo
+Bepo, ergonomic, Dvorak way, latin-9 only: bepo_latin9
+Dvorak: dvorak
+Macintosh: mac
+Breton: bre
+Occitan: oci
+Georgian AZERTY Tskapo: geo

@@ -1,0 +1,7 @@
+desc= """ Linux Flash Player
+"""
+
+packages="""
+linux-f10-flashplugin
+nspluginwrapper
+"""

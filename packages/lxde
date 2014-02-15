@@ -1,0 +1,21 @@
+desc = """
+        Lxde desktop
+"""
+deps = """
+xserver
+lxde
+drivers
+print
+internet
+sound-video
+office
+font
+utils
+utils-x
+graphic
+"""
+packages="""
+"""
+settings="""
+lxde
+"""
