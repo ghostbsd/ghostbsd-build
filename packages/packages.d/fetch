@@ -1,3 +1,0 @@
-#!/bin/sh
-
-freebsd-update fetch
