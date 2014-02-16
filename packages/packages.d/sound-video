@@ -2,7 +2,7 @@ desc = """
 	Sound and Video.
 """
 packages="""
-#vlc
+vlc
 #banshee
 rhythmbox
 brasero

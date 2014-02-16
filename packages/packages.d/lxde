@@ -3,7 +3,6 @@ desc = """
 """
 
 packages="""
-gdm
 lxde-meta
 lxappearance
 xarchiver
@@ -16,5 +15,4 @@ mate-utils
 lxrandr
 gtk-murrine-engine
 mixmos
-metacity
 """

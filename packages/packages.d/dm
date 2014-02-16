@@ -1,11 +1,13 @@
 desc = """
-Mate desktop environment.
+Display Manager.
 """
 
 packages = """
-mate
+gdm
+metacity
+gnome-audio
 """
 
 settings="""
-mate
+DM
 """

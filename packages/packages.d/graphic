@@ -4,7 +4,6 @@ graphic suite
 deps="""
 """
 packages="""
-#gimp
-#gthumb
+gimp
 shotwell
 """

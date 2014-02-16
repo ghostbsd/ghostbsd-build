@@ -3,7 +3,6 @@ desc = """
 """
 
 packages="""
-gnome-audio
 dejavu
 cyberbit-ttfonts
 font-kochi
