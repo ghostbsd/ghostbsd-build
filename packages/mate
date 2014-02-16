@@ -4,8 +4,9 @@ Mate desktop environment.
 
 deps = """
 xserver
-mate
 drivers
+mate
+dm
 print
 internet
 sound-video

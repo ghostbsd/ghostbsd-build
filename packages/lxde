@@ -4,6 +4,7 @@ desc = """
 deps = """
 xserver
 lxde
+dm
 drivers
 print
 internet

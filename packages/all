@@ -5,7 +5,6 @@ all desktop pkg listenvironment.
 deps = """
 drivers
 lxde
-openbox
 utils
 xserver
 graphic
@@ -17,6 +16,7 @@ internet
 office
 sound-video
 xfce4
+dm
 """
 
 packages = """

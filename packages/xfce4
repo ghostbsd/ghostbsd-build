@@ -4,6 +4,7 @@ XFCE desktop environment.
 deps = """
 xserver
 xfce4
+dm
 drivers
 print
 internet
