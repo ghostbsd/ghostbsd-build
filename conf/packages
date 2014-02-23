@@ -2,12 +2,13 @@ xorg-minimal
 virtualbox-ose-additions
 cursor-dmz-theme
 setxkbmap
-mate
-metacity
-gdm
 xorg-drivers
 bwi-firmware-kmod
 bwn-firmware-kmod
+mate
+gdm
+metacity
+gnome-audio
 cups
 system-config-printer
 foomatic-db
@@ -18,11 +19,11 @@ transmission
 firefox
 thunderbird
 xchat
+vlc
 rhythmbox
 brasero
 cheese
 apache-openoffice
-gnome-audio
 dejavu
 cyberbit-ttfonts
 font-kochi
@@ -44,4 +45,5 @@ webcamd
 gksu
 zenity
 spideroak
+gimp
 shotwell

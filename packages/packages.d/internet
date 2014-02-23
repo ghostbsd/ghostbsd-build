@@ -2,7 +2,6 @@ desc = """
 	Internet tool
 """
 packages="""
-#wifimgr
 pidgin
 transmission
 firefox
