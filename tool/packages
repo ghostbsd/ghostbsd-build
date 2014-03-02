@@ -9,9 +9,12 @@ mate
 gdm
 metacity
 gnome-audio
+<<<<<<< HEAD
 gdm
 metacity
 gnome-audio
+=======
+>>>>>>> 002883ad74c612bad5913763900732bf38148dd2
 cups
 system-config-printer
 foomatic-db
@@ -22,7 +25,10 @@ transmission
 firefox
 thunderbird
 xchat
+<<<<<<< HEAD
 networkmgr
+=======
+>>>>>>> 002883ad74c612bad5913763900732bf38148dd2
 vlc
 rhythmbox
 brasero
