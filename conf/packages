@@ -9,6 +9,9 @@ mate
 gdm
 metacity
 gnome-audio
+gdm
+metacity
+gnome-audio
 cups
 system-config-printer
 foomatic-db
@@ -19,11 +22,12 @@ transmission
 firefox
 thunderbird
 xchat
+networkmgr
 vlc
 rhythmbox
 brasero
 cheese
-apache-openoffice
+libreoffice
 dejavu
 cyberbit-ttfonts
 font-kochi

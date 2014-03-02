@@ -1,5 +1,5 @@
 desc = """
-Display Manager.
+Display Manager
 """
 
 packages = """
@@ -9,5 +9,5 @@ gnome-audio
 """
 
 settings="""
-DM
+dm
 """
