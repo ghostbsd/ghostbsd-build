@@ -83,9 +83,6 @@ fi
 cp -f extra/gnome/devfs.rules ${BASEDIR}/etc/
 cat extra/gnome/make.conf >> ${BASEDIR}/etc/make.conf
 
-#add sudo wheel permission
-cp extra/gnome/sudoers ${BASEDIR}/usr/local/etc/ 
-
 # To enable USB devices that are plugged in to be read/written
 # by operators (i.e. the live user), this is needed:
 if [ -z "$(cat ${BASEDIR}/etc/devd.conf| grep ugen[0-9])" ] ; then

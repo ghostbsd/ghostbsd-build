@@ -5,17 +5,17 @@ Mate desktop environment.
 
 deps = """
 xserver
+utils
+utils-x
 drivers
-mate
 dm
 print
 internet
 sound-video
 office
 font
-utils
-utils-x
 graphic
+mate
 """
 
 packages = """

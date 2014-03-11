@@ -15,16 +15,16 @@ call('cd /usr/obj && ls GhostBSD*amd64* > %s' % amd64, shell=True)
 
 release = open(i386, "r")
 for line in release.readlines():
-    foo = pexpect.spawn('scp /usr/obj/%s %s@%s:/home/frs/project/g/gh/ghostbsdproject/release/i386/3.5/%s'
+    foo = pexpect.spawn('scp /usr/obj/%s %s@%s:/home/frs/project/g/gh/ghostbsdproject/release/i386/4.0/%s'
     % (line.strip(), user, server, line.strip()))
-    foo.expect('password:')
+    foo.expect('Password:')
     foo.sendline(password)
     foo.interact()
 
 release = open(amd64, "r")
 for line in release.readlines():
-    foo = pexpect.spawn('scp /usr/obj/%s %s@%s:/home/frs/project/g/gh/ghostbsdproject/release/amd64/3.5/%s'
+    foo = pexpect.spawn('scp /usr/obj/%s %s@%s:/home/frs/project/g/gh/ghostbsdproject/release/amd64/4.0/%s'
     % (line.strip(), user, server, line.strip()))
-    foo.expect('password:')
+    foo.expect('Password:')
     foo.sendline(password)
     foo.interact()

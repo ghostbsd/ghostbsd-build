@@ -71,7 +71,10 @@ class Entire():
             value3 = model.get_value(tree_iter, 2)
         self.disk = value
         self.size = value2
-        self.schm = value3
+        if value3 is None:
+            pass
+        else:
+            self.schm = value3
         sfile = open(part_schem, 'w')
         sfile.writelines('partscheme=%s' % self.schm)
         sfile.close()
