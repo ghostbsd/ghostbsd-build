@@ -131,7 +131,7 @@ def label_window(widget):
     gtk.main_quit()
 
 
-def root_window():
+def root_window(widget):
     Popen(to_root, shell=True)
     gtk.main_quit()
 

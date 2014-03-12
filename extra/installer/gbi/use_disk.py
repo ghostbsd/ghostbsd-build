@@ -72,7 +72,7 @@ class Entire():
         self.disk = value
         self.size = value2
         if value3 is None:
-            pass
+            self.schm = 'GPT'
         else:
             self.schm = value3
         sfile = open(part_schem, 'w')
@@ -86,7 +86,8 @@ class Entire():
         slice_file.writelines('all\n')
         #slice_file.writelines('%s\n' % NUMBER)
         slice_file.close()
-        ram = Popen(memory, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
+        ram = Popen(memory, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT,
+        close_fds=True)
         mem = ram.stdout.read()
         SWAP = int(mem.partition(':')[2].strip()) / (1024 * 1024)
         NUM1 = NUMBER - SWAP

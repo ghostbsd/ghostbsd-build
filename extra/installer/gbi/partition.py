@@ -389,6 +389,8 @@ class Partitions():
                 self.sliceEditor()
             elif scheme_query(self.path) == "GPT":
                 self.labelEditor(self.path, self.slice, self.size, 1, 1)
+        else:
+            self.schemeEditor()
 
     def partition_selection(self, tree_selection):
         (model, pathlist) = tree_selection.get_selected_rows()

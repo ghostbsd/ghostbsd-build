@@ -220,7 +220,7 @@ class partition_repos():
                 self.mbr_partition_slice_list(disk[0])
                 mdlist.append(dlist)
             else:
-                dlist.extend(([disk[0], self.disk_size(disk[0]), '', 'None']))
+                dlist.extend(([disk[0], self.disk_size(disk[0]), '', None]))
                 mdlist.append(dlist)
             dlist = []
         pickle.dump(mdlist, df)
