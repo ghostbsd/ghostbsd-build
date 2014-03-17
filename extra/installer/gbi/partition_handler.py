@@ -11,8 +11,6 @@ if not os.path.exists(tmp):
     os.makedirs(tmp)
 installer = "/usr/local/etc/gbi/"
 partitiondb = "%spartitiondb/" % tmp
-if not os.path.exists(partitiondb):
-    os.makedirs(partitiondb)
 query = "sh /usr/local/etc/gbi/backend-query/"
 query_disk = '%sdisk-list.sh' % query
 detect_sheme = '%sdetect-sheme.sh' % query
@@ -207,6 +205,8 @@ class partition_repos():
         psf.close()
 
     def __init__(self):
+        if not os.path.exists(partitiondb):
+            os.makedirs(partitiondb)
         df = open(diskdb, 'wb')
         dlist = []
         mdlist = []

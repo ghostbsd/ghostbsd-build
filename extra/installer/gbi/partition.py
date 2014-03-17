@@ -37,6 +37,7 @@
 
 import gtk
 import os
+import shutil
 from defutil import partition_bbox, close_application
 from partition_handler import partition_repos, disk_query, Delete_partition
 from partition_handler import partition_query, label_query
@@ -67,6 +68,7 @@ psize = '%spart_size' % tmp
 logo = "/usr/local/etc/gbi/logo.png"
 Part_label = '%spartlabel' % tmp
 part_schem = '%sscheme' % tmp
+partitiondb = "%spartitiondb/" % tmp
 
 
 class Partitions():
@@ -199,16 +201,19 @@ class Partitions():
         value = data.partition(':')[0]
         self.sheme = value
 
-    def add_gpt_mbr(self, widget):
+    def add_gpt_mbr(self, widget, data):
         diskSchemeChanger(self.sheme, self.path)
-        self.update()
+        #self.update()
         self.window.hide()
-        if scheme_query(self.path) == "MBR" and self.path[1] < 4:
+        if data is None:
+            autoDiskPartition(self.slice, self.size, self.scheme)
+            self.update()
+        elif scheme_query(self.path) == "MBR" and self.path[1] < 4:
             self.sliceEditor()
         elif scheme_query(self.path) == "GPT":
             self.labelEditor(self.path, self.slice, self.size, 1, 1)
 
-    def schemeEditor(self):
+    def schemeEditor(self, data):
         self.window = gtk.Window()
         self.window.set_title("Partition Scheme")
         self.window.set_border_width(0)
@@ -247,7 +252,7 @@ class Partitions():
         bbox.set_layout(gtk.BUTTONBOX_END)
         bbox.set_spacing(10)
         button = gtk.Button(stock=gtk.STOCK_ADD)
-        button.connect("clicked", self.add_gpt_mbr)
+        button.connect("clicked", self.add_gpt_mbr, data)
         bbox.add(button)
         box2.pack_start(bbox, True, True, 5)
         self.window.show_all()
@@ -349,8 +354,12 @@ class Partitions():
     def autoPartition(self, widget):
         if len(self.path) == 3:
             pass
-        if len(self.path) == 1:
-            #self.window.hide()
+        elif len(self.path) == 1 and self.scheme is None:
+            self.schemeEditor(None)
+            self.Tree_Store()
+            self.treeview.expand_all()
+            self.treeview.set_cursor(self.path)
+        elif len(self.path) == 1:
             autoDiskPartition(self.slice, self.size, self.scheme)
             self.Tree_Store()
             self.treeview.expand_all()
@@ -366,7 +375,8 @@ class Partitions():
             print("not work")
 
     def revertChange(self, widget):
-        partition_repos()
+        if os.path.exists(partitiondb):
+            shutil.rmtree(partitiondb)
         if os.path.exists(tmp + 'create'):
             os.remove(tmp + 'create')
         if os.path.exists(tmp + 'delete'):
@@ -375,6 +385,7 @@ class Partitions():
             os.remove(tmp + 'destroy')
         if os.path.exists(Part_label):
             os.remove(Part_label)
+        partition_repos()
         self.Tree_Store()
         self.treeview.expand_all()
 
@@ -384,13 +395,13 @@ class Partitions():
                 self.labelEditor(self.path, self.slice, self.size, 0, 1)
         elif len(self.path) == 2 and self.slice == 'freespace':
             if how_partition(self.path) == 1:
-                self.schemeEditor()
+                self.schemeEditor(True)
             elif scheme_query(self.path) == "MBR" and self.path[1] < 4:
                 self.sliceEditor()
             elif scheme_query(self.path) == "GPT":
                 self.labelEditor(self.path, self.slice, self.size, 1, 1)
         else:
-            self.schemeEditor()
+            self.schemeEditor(True)
 
     def partition_selection(self, tree_selection):
         (model, pathlist) = tree_selection.get_selected_rows()

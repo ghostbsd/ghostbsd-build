@@ -202,6 +202,7 @@ setup_users()
   if [ "${INSTALLTYPE}" = "GhostBSD" ]
   then
     rc_halt "pw userdel -n ghostbsd -r"
+    rm -rf ${FSMNT}/home/ghostbsd
   fi
 
   # Check if we need to enable a user to auto-login to the desktop
