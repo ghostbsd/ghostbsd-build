@@ -102,7 +102,7 @@ def slicePartition(part):
 
 class diskSchemeChanger():
 
-    def __init__(self, schm, path):
+    def __init__(self, schm, path, disk, size):
         dlist = disk_query()
         dselected = dlist[path[0]]
         dselected[-1] = schm
@@ -121,6 +121,14 @@ class diskSchemeChanger():
         cf = open(tmp + 'destroy', 'wb')
         pickle.dump(mdsl, cf)
         cf.close()
+        if not os.path.exists(partitiondb + disk):
+            plist = []
+            mplist = []
+            psf = open(partitiondb + disk, 'wb')
+            plist.extend((['freespace', size, '', '']))
+            mplist.append(plist)
+            pickle.dump(mplist, psf)
+            psf.close()
 
 
 class partition_repos():
@@ -398,7 +406,8 @@ class autoDiskPartition():
         if schm == 'GPT':
             self.create_gpt_partiton(disk, size)
         elif schm == 'MBR':
-            self.delete_mbr_partition(disk)
+            if os.path.exists(partitiondb + disk):
+                self.delete_mbr_partition(disk)
             self.create_mbr_partiton(disk, size)
 
     def create_gpt_partiton(self, disk, size):
@@ -586,7 +595,10 @@ class createSlice():
         file_disk = open(disk_file, 'w')
         file_disk.writelines('%s\n' % disk)
         file_disk.close()
-        sl = path[1] + 1
+        if len(path) == 1:
+            sl = 1
+        else:
+            sl = path[1] + 1
         sfile = open(part_schem, 'w')
         sfile.writelines('partscheme=MBR')
         sfile.close()
@@ -632,7 +644,10 @@ class createPartition():
             file_disk = open(disk_file, 'w')
             file_disk.writelines('%s\n' % disk)
             file_disk.close()
-        pl = path[1] + 1
+        if len(path) == 1:
+            pl = 1
+        else:
+            pl = path[1] + 1
         lv = path[1]
         if not os.path.exists(part_schem):
             sfile = open(part_schem, 'w')
@@ -664,13 +679,13 @@ class createPartition():
         pfile.writelines('%s %s %s\n' % (fs, cnumb, lb))
         pfile.close()
         if data is True:
-            pl = []
-            mpl = []
+            plst = []
+            mplst = []
             if not os.path.exists(tmp + 'create'):
-                pl.extend(([pslice, cnumb]))
-                mpl.append(pl)
+                plst.extend(([pslice, cnumb]))
+                mplst.append(plst)
                 cf = open(tmp + 'create', 'wb')
-                pickle.dump(mpl, cf)
+                pickle.dump(mplst, cf)
                 cf.close()
 
 

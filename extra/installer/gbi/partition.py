@@ -87,7 +87,7 @@ class Partitions():
             lb = self.label
             cnumb = entry.get_value_as_int()
             lnumb = inumb - cnumb
-            createLabel(path, lnumb, cnumb, lb, fs)
+            createLabel(path, lnumb, cnumb, lb, fs, data)
         self.window.hide()
         self.update()
 
@@ -199,19 +199,25 @@ class Partitions():
         index = combobox.get_active()
         data = model[index][0]
         value = data.partition(':')[0]
-        self.sheme = value
+        self.scheme = value
 
-    def add_gpt_mbr(self, widget, data):
-        diskSchemeChanger(self.sheme, self.path)
-        #self.update()
+    def add_gpt_mbr(self, widget):
+        diskSchemeChanger(self.scheme, self.path, self.slice, self.size)
+        self.update()
         self.window.hide()
-        if data is None:
-            autoDiskPartition(self.slice, self.size, self.scheme)
+        if scheme_query(self.path) == "MBR" and self.path[1] < 4:
             self.update()
-        elif scheme_query(self.path) == "MBR" and self.path[1] < 4:
             self.sliceEditor()
+            self.update()
         elif scheme_query(self.path) == "GPT":
             self.labelEditor(self.path, self.slice, self.size, 1, 1)
+
+    def autoSchemePartition(self, widget):
+        diskSchemeChanger(self.scheme, self.path, self.slice, self.size)
+        self.update()
+        autoDiskPartition(self.slice, self.size, self.scheme)
+        self.update()
+        self.window.hide()
 
     def schemeEditor(self, data):
         self.window = gtk.Window()
@@ -230,9 +236,8 @@ class Partitions():
         # Creating MBR or GPT drive
         label = gtk.Label('<b>Select a partition sheme for this drive:</b>')
         label.set_use_markup(True)
-        # predetermine GPT sheme.
-        self.sheme = "GPT"
         # Adding a combo box to selecting MBR or GPT sheme.
+        self.scheme = 'GPT'
         shemebox = gtk.combo_box_new_text()
         shemebox.append_text("GPT: GUID Partition Table")
         shemebox.append_text("MBR: DOS Partitions")
@@ -252,7 +257,10 @@ class Partitions():
         bbox.set_layout(gtk.BUTTONBOX_END)
         bbox.set_spacing(10)
         button = gtk.Button(stock=gtk.STOCK_ADD)
-        button.connect("clicked", self.add_gpt_mbr, data)
+        if data is None:
+            button.connect("clicked", self.autoSchemePartition)
+        else:
+            button.connect("clicked", self.add_gpt_mbr)
         bbox.add(button)
         box2.pack_start(bbox, True, True, 5)
         self.window.show_all()
@@ -279,7 +287,6 @@ class Partitions():
         box2.set_border_width(10)
         box1.pack_start(box2, True, True, 0)
         box2.show()
-
         # create Partition slice
         #label = gtk.Label('<b>Create a New Partition Slice</b>')
         #label.set_use_markup(True)
@@ -356,9 +363,7 @@ class Partitions():
             pass
         elif len(self.path) == 1 and self.scheme is None:
             self.schemeEditor(None)
-            self.Tree_Store()
-            self.treeview.expand_all()
-            self.treeview.set_cursor(self.path)
+            self.update()
         elif len(self.path) == 1:
             autoDiskPartition(self.slice, self.size, self.scheme)
             self.Tree_Store()
@@ -489,6 +494,7 @@ class Partitions():
         box2.set_border_width(5)
         box1.pack_start(box2, False, True, 0)
         box2.show()
+        self.scheme = 'GPT'
         box2.pack_start(self.delete_create_button(True,
             10, gtk.BUTTONBOX_START),
             True, True, 5)
