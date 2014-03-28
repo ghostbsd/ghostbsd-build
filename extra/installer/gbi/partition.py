@@ -205,7 +205,11 @@ class Partitions():
         diskSchemeChanger(self.scheme, self.path, self.slice, self.size)
         self.update()
         self.window.hide()
-        if scheme_query(self.path) == "MBR" and self.path[1] < 4:
+        if scheme_query(self.path) == "MBR" and len(self.path) == 1:
+            self.update()
+            self.sliceEditor()
+            self.update()
+        elif scheme_query(self.path) == "MBR" and self.path[1] < 4:
             self.update()
             self.sliceEditor()
             self.update()

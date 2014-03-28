@@ -105,7 +105,10 @@ class diskSchemeChanger():
     def __init__(self, schm, path, disk, size):
         dlist = disk_query()
         dselected = dlist[path[0]]
-        dselected[-1] = schm
+        if schm is None:
+            dselected[-1] = 'GPT'
+        else:
+            dselected[-1] = schm
         dlist[path[0]] = dselected
         disk = dselected[0]
         df = open(diskdb, 'wb')
@@ -556,7 +559,6 @@ class createLabel():
 
     def __init__(self, path, lnumb, cnumb, lb, fs, data):
         disk = disk_query()[path[0]][0]
-        #schm = disk_query()[path[0]][3]
         sl = path[1] + 1
         lv = path[2]
         #slice_file = open(dslice, 'w')
@@ -646,9 +648,10 @@ class createPartition():
             file_disk.close()
         if len(path) == 1:
             pl = 1
+            lv = 0
         else:
             pl = path[1] + 1
-        lv = path[1]
+            lv = path[1]
         if not os.path.exists(part_schem):
             sfile = open(part_schem, 'w')
             sfile.writelines('partscheme=GPT')
