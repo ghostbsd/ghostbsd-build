@@ -17,10 +17,23 @@ fi
 TMPFILE=$(mktemp -t adduser)
 
 
-if [ ! -d ${BASEDIR}/home ]; then
-    mkdir -p ${BASEDIR}/home
+# If directory /home exists, move it to /usr/home and do a symlink
+
+if [ ! -L ${BASEDIR}/home -a -d ${BASEDIR}/home ]; then
+  mv ${BASEDIR}/home ${BASEDIR}/usr/home
+
 fi
 
+
+if [ ! -d ${BASEDIR}/usr/home ]; then
+  mkdir -p ${BASEDIR}/usr/home
+fi
+
+if [ ! -d ${BASEDIR}/usr/home/${GHOSTBSD_USER} ]; then
+
+    mkdir -p ${BASEDIR}/usr/home/${GHOSTBSD_USER}
+
+fi
 
 set +e
 grep -q ^${GHOSTBSD_USER}: ${BASEDIR}/etc/master.passwd
@@ -34,8 +47,6 @@ else
         -u 1000 -c "GhostBSD User" -d "/home/${GHOSTBSD_USER}" \
         -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
 fi
-
-#chroot ${BASEDIR} pw group mod -G wheel operator -m ${GHOSTBSD_USER}
 
 # fish shell for live root.
 #chroot ${BASEDIR} chsh -s /usr/local/bin/fish root 
@@ -52,6 +63,6 @@ if [ ! -z "${NO_UNIONFS:-}" ]; then
 
     echo "Saving mtree structure for /home/"
 
-    mtree -Pcp ${BASEDIR}/home > ${TMPFILE}
+    mtree -Pcp ${BASEDIR}/usr/home > ${TMPFILE}
     mv ${TMPFILE} ${BASEDIR}/etc/mtree/home.dist
 fi

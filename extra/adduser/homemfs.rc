@@ -42,7 +42,7 @@ load_rc_config $name
 
 tempdir=/tmp
 
-echo "Generating MFS /home partition"
+echo "Generating MFS /usr/home partition"
 
 device=$(mdconfig -a -t malloc -o compress -s ${homesize})
 bsdlabel -w ${device} auto
@@ -51,7 +51,7 @@ mount -o noatime /dev/${device} ${tempdir}
 
 back=$PWD
 
-cd /home
+cd /usr/home
 find . -print -depth | cpio -dump --quiet ${tempdir}
 
 cd $back
@@ -59,4 +59,4 @@ cd $back
 mtree -PUer -q -p ${tempdir} < /etc/mtree/home.dist > /dev/null 2>&1
 
 umount ${tempdir}
-mount -o noatime /dev/${device} /home
+mount -o noatime /dev/${device} /usr/home

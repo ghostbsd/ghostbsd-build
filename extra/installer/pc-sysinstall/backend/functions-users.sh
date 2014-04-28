@@ -201,7 +201,7 @@ setup_users()
   # If it is GhostBSD remove the ghostbsd live user.
   if [ "${INSTALLTYPE}" = "GhostBSD" ]
   then
-    rc_halt "pw userdel -n ghostbsd -r"
+    run_chroot_cmd "rmuser ghostbsd"
     rm -rf ${FSMNT}/home/ghostbsd
   fi
 
