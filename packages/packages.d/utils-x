@@ -4,7 +4,7 @@ Xorg basic utilities
 deps="""
 """
 packages="""
-gksu
+#gksu
 zenity
 spideroak
 """

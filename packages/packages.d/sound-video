@@ -5,6 +5,7 @@ packages="""
 vlc
 #banshee
 #rhythmbox
+exaile
 brasero
 cheese
 """

@@ -1,4 +1,4 @@
-#xorg-minimal
+xorg-minimal
 virtualbox-ose-additions
 cursor-dmz-theme
 setxkbmap
@@ -15,10 +15,9 @@ ksh93
 zsh
 portupgrade
 webcamd
-gksu
 zenity
 spideroak
-#xorg-drivers
+xorg-drivers
 bwi-firmware-kmod
 bwn-firmware-kmod
 gdm
@@ -36,6 +35,7 @@ thunderbird
 xchat
 networkmgr
 vlc
+exaile
 brasero
 cheese
 libreoffice
@@ -44,6 +44,5 @@ cyberbit-ttfonts
 font-kochi
 en-aspell
 en-hunspell
-gimp
 shotwell
-#mate
+mate
