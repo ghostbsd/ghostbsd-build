@@ -49,11 +49,11 @@ check_autologin()
     then
       AUTOU="${VAL}"
       # Adding the auto-login user line
-      sed -i "" "/default_user/s/ghostbsd/${AUTOU}/g" ${FSMNT}/usr/local/etc/gdm/custom.conf
+      sed -i "" "s/ghostbsd/${AUTOU}/g" ${FSMNT}/usr/local/etc/gdm/custom.conf
     else
       # Remmoving the auto-login & ghostbsd user line
-      sed -i "" "/AutomaticLoginEnable/s/true/false/g" ${FSMNT}/usr/local/etc/gdm/custom.conf
-      ( echo 'g/AutomaticLogin=ghostbsd/d' ; echo 'wq' ) | ex -s ${FSMNT}/etc/rc.conf
+      sed -i "" "s/AutomaticLoginEnable=true/AutomaticLoginEnable=false/g" ${FSMNT}/usr/local/etc/gdm/custom.conf
+      ( echo 'g/ghostbsd/d' ; echo 'wq' ) | ex -s ${FSMNT}/usr/local/etc/gdm/custom.conf
     fi
   fi
 };
@@ -66,10 +66,14 @@ add_user()
  if [ -e "${FSMNT}/.tmpPass" ]
  then
    # Add a user with a supplied password
+   run_chroot_cmd "pw userdel -n ghostbsd"
+   run_chroot_cmd "rm -rf /home/ghostbsd"
    run_chroot_cmd "cat /.tmpPass | pw useradd ${ARGS}"
    rc_halt "rm ${FSMNT}/.tmpPass"
  else
    # Add a user with no password
+   run_chroot_cmd "pw userdel -n ghostbsd"
+   run_chroot_cmd "rm -rf /home/ghostbsd"
    run_chroot_cmd "cat /.tmpPass | pw useradd ${ARGS}"
  fi
  
@@ -197,15 +201,9 @@ setup_users()
     fi
 
   done <${CFGF}
-  
-  # If it is GhostBSD remove the ghostbsd live user.
-  if [ "${INSTALLTYPE}" = "GhostBSD" ]
-  then
-    run_chroot_cmd "rmuser ghostbsd"
-    rm -rf ${FSMNT}/home/ghostbsd
-  fi
 
   # Check if we need to enable a user to auto-login to the desktop
   check_autologin
 
 };
+

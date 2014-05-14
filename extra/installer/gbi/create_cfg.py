@@ -7,16 +7,14 @@
 # create_cfg.py v 1.4 Friday, January 17 2014 Eric Turgeon
 #
 
-
 import os
 import pickle
 from subprocess import Popen
+
 # Directory use from the installer.
 tmp = "/home/ghostbsd/.gbi/"
 installer = "/usr/local/etc/gbi/"
-
 start_Install = 'python %sinstall.py' % installer
-
 # Installer data file.
 disk = '%sdisk' % tmp
 layout = '%slayout' % tmp
@@ -47,21 +45,21 @@ class cfg_data():
     l_output = lang.readlines()[0].strip().partition(':')[2].strip()
     f.writelines('\n# System Language\n')
     f.writelines('localizeLang=%s\n' % l_output)
-    #os.remove(language)
+    os.remove(language)
     # Keyboard Setting
     if os.path.exists(model):
         f.writelines('\n# Keyboard Setting\n')
-        #os.remove(model)
+        os.remove(model)
     if os.path.exists(layout):
         lay = open(layout, 'r')
         l_output = lay.readlines()[0].strip().partition('-')[2].strip()
         f.writelines('localizeKeyLayout=%s\n' % l_output)
-        #os.remove(layout)
+        os.remove(layout)
     if os.path.exists(variant):
         var = open(variant, 'r')
         v_output = var.readlines()[0].strip().partition(':')[2].strip()
         f.writelines('localizeKeyVariant=%s\n' % v_output)
-        #os.remove(variant)
+        os.remove(variant)
     # Timezone
     if os.path.exists(timezone):
         time = open(timezone, 'r')
@@ -69,32 +67,32 @@ class cfg_data():
         f.writelines('\n# Timezone\n')
         f.writelines('timeZone=%s\n' % t_output)
         #f.writelines('enableNTP=yes\n')
-        #os.remove(timezone)
+        os.remove(timezone)
     # Disk Setup
     r = open(disk, 'r')
     drive = r.readlines()
     d_output = drive[0].strip()
     f.writelines('\n# Disk Setup\n')
     f.writelines('disk0=%s\n' % d_output)
-    #os.remove(disk)
+    os.remove(disk)
     # Partition Slice.
     p = open(dslice, 'r')
     line = p.readlines()
     part = line[0].rstrip()
     f.writelines('partition=%s\n' % part)
-    #os.remove(dslice)
+    os.remove(dslice)
     # Boot Menu
     read = open(boot_file, 'r')
     line = read.readlines()
     boot = line[0].strip()
     f.writelines('bootManager=%s\n' % boot)
-    #os.remove(boot_file)
+    os.remove(boot_file)
     # Sheme sheme
     read = open(disk_schem, 'r')
     shem = read.readlines()[0]
     f.writelines(shem + '\n')
     f.writelines('commitDiskPart\n')
-    #os.remove(disk_schem)
+    os.remove(disk_schem)
     # Partition Setup
     f.writelines('\n# Partition Setup\n')
     part = open(partlabel, 'r')
@@ -106,7 +104,7 @@ class cfg_data():
         else:
             f.writelines('disk0-part=%s\n' % line.strip())
     f.writelines('commitDiskLabel\n')
-    #os.remove(partlabel)
+    os.remove(partlabel)
     # Network Configuration
     f.writelines('\n# Network Configuration\n')
     readu = open(user_passwd, 'rb')
@@ -132,12 +130,14 @@ class cfg_data():
     f.writelines('userShell=%s\n' % shell)
     upath = uf[4]
     f.writelines('userHome=%s\n' % upath.rstrip())
-    f.writelines('userGroups=wheel,operator\n')
+    f.writelines('userGroups=operator\n')
     f.writelines('commitUser\n')
-    f.writelines("runCommand=( echo 'g/# Network interface./d' ; echo 'wq' ) | ex -s ${FSMNT}/etc/rc.conf\n")
-    f.writelines("""runCommand=( echo 'g/hostname="livecd"/d' ; echo 'wq' ) | ex -s ${FSMNT}/etc/rc.conf\n""")
+    # Removing GhostBSD user.
+    f.writelines("runCommand=( echo 'g/# Network interface./d' ; echo 'wq' ) | ex -s /etc/rc.conf")
+    f.writelines("""runCommand=( echo 'g/hostname="livecd"/d' ; echo 'wq' ) | ex -s /etc/rc.conf""")
+    f.writelines("cd /tmp && ls | xargs rm -R")
     f.close()
-    #os.remove(user_passwd)
+    os.remove(user_passwd)
     Popen(start_Install, shell=True)
 
 cfg_data()

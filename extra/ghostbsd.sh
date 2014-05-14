@@ -24,7 +24,7 @@ sed -i "" "s@# %wheel ALL=(ALL) NOPASSWD: ALL@%wheel ALL=(ALL) NOPASSWD: /usr/lo
 # put a GhostBSD-irc icon on the desktop
 cp -f extra/ghostbsd/ghostbsd-irc.desktop ${BASEDIR}/usr/local/share/applications/
 
-# Live cd user gtk-bockmarks.
+# Live CD user gtk-bookmarks.
 printf "file:///root/Documents Documents
 file:///root/Downloads Downloads
 file:///root/Movies Movies
@@ -114,3 +114,7 @@ printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
   </match>
 </config>
 ' > ${BASEDIR}/usr/local/etc/PolicyKit/PolicyKit.conf
+
+# Adding config file for cleaning after installation.
+
+cp -f extra/ghostbsd/config.sh ${BASEDIR}/config.sh

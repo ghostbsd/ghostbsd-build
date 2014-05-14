@@ -15,7 +15,6 @@ ksh93
 zsh
 portupgrade
 webcamd
-gksu
 zenity
 spideroak
 xorg-drivers
@@ -35,7 +34,9 @@ firefox
 thunderbird
 xchat
 networkmgr
+wifimgr
 vlc
+exaile
 brasero
 cheese
 libreoffice

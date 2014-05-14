@@ -16,44 +16,42 @@ fi
 
 TMPFILE=$(mktemp -t adduser)
 
+GHOSTBSD_ADDUSER="${GHOSTBSD_ADDUSER:-ghostbsd}"
 
 # If directory /home exists, move it to /usr/home and do a symlink
 
-if [ ! -L ${BASEDIR}/home -a -d ${BASEDIR}/home ]; then
-  mv ${BASEDIR}/home ${BASEDIR}/usr/home
-
+if [ ! -d ${BASEDIR}/home ]; then
+    mkdir -p ${BASEDIR}/home
 fi
 
-
-if [ ! -d ${BASEDIR}/usr/home ]; then
-  mkdir -p ${BASEDIR}/usr/home
+if [ ! -d ${BASEDIR}/home/${GHOSTBSD_ADDUSER} ]; then
+    mkdir -p ${BASEDIR}/home/${GHOSTBSD_ADDUSER}
 fi
 
-if [ ! -d ${BASEDIR}/usr/home/${GHOSTBSD_USER} ]; then
-
-    mkdir -p ${BASEDIR}/usr/home/${GHOSTBSD_USER}
-
+if [ ! -L ${BASEDIR}/usr/home ]; then
+    ln -s ${BASEDIR}/home ${BASEDIR}/usr/home
 fi
+
 
 set +e
-grep -q ^${GHOSTBSD_USER}: ${BASEDIR}/etc/master.passwd
+grep -q ^${GHOSTBSD_ADDUSER}: ${BASEDIR}/etc/master.passwd
 
 if [ $? -ne 0 ]; then
-    chroot ${BASEDIR} pw useradd ${GHOSTBSD_USER} \
-        -u 1000 -c "GhostBSD User" -d "/home/${GHOSTBSD_USER}" \
-        -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
+    chroot ${BASEDIR} pw useradd ${GHOSTBSD_ADDUSER} \
+        -u 1000 -c "GhostBSD User" -d "/home/${GHOSTBSD_ADDUSER}" \
+        -g 0 -G 5 -m -s /bin/csh -k /usr/share/skel -w none
 else
-    chroot ${BASEDIR} pw usermod ${GHOSTBSD_USER} \
-        -u 1000 -c "GhostBSD User" -d "/home/${GHOSTBSD_USER}" \
-        -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
+    chroot ${BASEDIR} pw usermod ${GHOSTBSD_ADDUSER} \
+        -u 1000 -c "GhostBSD User" -d "/usr/home/${GHOSTBSD_ADDUSER}" \
+        -g 0 -G 5 -m -s /bin/csh -k /usr/share/skel -w none
 fi
 
-# fish shell for live root.
-#chroot ${BASEDIR} chsh -s /usr/local/bin/fish root 
-    
+chroot ${BASEDIR} pw group mod wheel operator -m ${GHOSTBSD_ADDUSER}
+chroot ${BASEDIR} pw mod user ${GHOSTBSD_ADDUSER} -w none
+
 set -e
 
-chown -R 1000:0 ${BASEDIR}/home/${GHOSTBSD_USER}
+chown -R 1000:0 ${BASEDIR}/usr/home/${GHOSTBSD_ADDUSER}
 
 if [ ! -z "${NO_UNIONFS:-}" ]; then
     echo "Adding init script for /home mfs"
