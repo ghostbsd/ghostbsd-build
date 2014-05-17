@@ -105,7 +105,7 @@
   </schema>
   <schema id="org.mate.panel.toplevel.background">
     <key name="type" enum="org.mate.panel.PanelBackgroundType">
-      <default>'none'</default>
+      <default>'color'</default>
       <summary>Background type</summary>
       <description>Which type of background should be used for this panel. Possible values are "none" - the default GTK+ widget background will be used, "color" - the color key will be used as background color or "image" - the image specified by the image key will be used as background.</description>
     </key>
@@ -115,7 +115,7 @@
       <description>Specifies the background color for the panel in #RGB format.</description>
     </key>
     <key type="i" name="opacity">
-      <default>30000</default>
+      <default>20000</default>
       <summary>Background color opacity</summary>
       <description>Specifies the opacity of the background color format. If the color is not completely opaque (a value of less than 65535), the color will be composited onto the desktop background image.</description>
     </key>

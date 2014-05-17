@@ -62,6 +62,7 @@ cp -prf extra/mate/org.mate.caja.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0
 cp -prf extra/mate/org.mate.interface.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 cp -prf extra/mate/org.mate.panel.toplevel.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 cp -prf extra/mate/org.mate.terminal.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
+cp -prf extra/mate/panel-default-layout.mate ${BASEDIR}/usr/local/share/mate-panel/
 
 # Package Manager in Mate menu
 #cp -prf extra/mate/mate-applications.menu ${BASEDIR}/usr/local/etc/xdg/menus/mate-applications.menu
