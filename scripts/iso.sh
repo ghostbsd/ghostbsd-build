@@ -32,9 +32,18 @@ echo "### Running makefs. ###"
 bootable="-o bootimage=i386;${CLONEDIR}/boot/cdboot -o no-emul-boot"
 makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${ISOPATH} ${CLONEDIR}
 
-echo "ISO created:"
+# Reference for hybrid DVD/USB image
+# Use GRUB to create the hybrid DVD/USB image
+#echo "Creating ISO..."
+#grub-mkrescue -o ${PROGDIR}/iso/${bFile}-DVD-USB.iso ${PDESTDIR9} -- -volid ${GHOSTBSD_LABEL}
+#if [ $? -ne 0 ] ; then
+#exit_err "Failed running grub-mkrescue"
+#fi
+
+echo "### ISO created: ###"
 
 # Make mdsums and sha256 for iso
+
 cd /usr/obj
 md5 `echo ${ISOPATH}|cut -d / -f4` >> /usr/obj/MD5SUM   
 sha256 `echo ${ISOPATH}| cut -d / -f4` >> /usr/obj/SHA256SUM
@@ -45,7 +54,7 @@ mkdir -p /usr/obj${CURDIR}_${ARCH}
 ls /usr/obj${CURDIR}/.*_* > ${BASEDIR}/tocopy
 
 while read f ; do
-cp -f $f /usr/obj${CURDIR}_${ARCH}/  
+  cp -f $f /usr/obj${CURDIR}_${ARCH}/  
 done < ${BASEDIR}/tocopy
 mv /usr/obj${CURDIR}_${ARCH}/.tmp_iso /usr/obj${CURDIR}_${ARCH}/.done_iso 
 rm -f ${BASEDIR}/tocopy

@@ -15,28 +15,25 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
-#echo LOGFILE: $LOGFILE
 
-# Local functions
-
+# Cloning file system function. 
 clonefs()
 {
+# Copying file system without /usr.
 echo "### Preparing filesystem hierarchy using $MD_BACKEND backend."
 mkdir -p ${CLONEDIR}
 rsync -avzH --exclude-from='conf/clonefs_exclusion' ${BASEDIR}/ ${CLONEDIR} >> ${LOGFILE} 2>&1
 
-if [ -d ${BASEDIR}/compat/linux/usr/local ];
-then
-    rsync -avzH  ${BASEDIR}/compat/linux/usr/* ${CLONEDIR}/compat/linux/usr/ >> ${LOGFILE} 2>&1
-fi
-
+# Making the directory for linprocfs and uzip.
 if [ ! -d ${CLONEDIR}/compat/linux/proc ];
 then
-    mkdir -p ${CLONEDIR}/compat/linux/proc
+  mkdir -p ${CLONEDIR}/compat/linux/proc
 fi
 if [ ! -d ${CLONEDIR}/uzip ] ; then
-mkdir -p ${CLONEDIR}/uzip
+  mkdir -p ${CLONEDIR}/uzip
 fi
+
+# Copying /usr in the clonedir. 
 rsync -avzH --exclude '.svn' ${BASEDIR}/usr/ ${CLONEDIR}/usr >> ${LOGFILE} 2>&1
 }
 
@@ -45,29 +42,26 @@ uniondirs_prepare()
 echo "### Preparing union dirs"
 echo "### Preparing union dirs" >> ${LOGFILE} 2>&1
 echo ${UNION_DIRS} >> ${LOGFILE} 2>&1
-echo ${UNION_DIRS_MTREE} >> ${LOGFILE} 2>&1
+
 mkdir -p ${CLONEDIR}/dist ${CLONEDIR}/dist/union ${CLONEDIR}/dist/union/usr ${CLONEDIR}/cdmnt-install
 
 if [ -f "${CLONEDIR}/dist/uniondirs" ] ; then
-        rm ${CLONEDIR}/dist/uniondirs
-fi
-if [ -f "${CLONEDIR}/dist/uniondirs" ] ; then
-        rm ${CLONEDIR}/dist/uniondirs
+  rm ${CLONEDIR}/dist/uniondirs
 fi
 
 for dir in  ${UNION_DIRS}; do
-        echo ${dir} >> ${CLONEDIR}/dist/uniondirs
-        cd ${CLONEDIR} && tar -cpzf ${CLONEDIR}/dist/mfs.tgz ./${UNION_DIRS}
+  echo ${dir} >> ${CLONEDIR}/dist/uniondirs
+  cd ${CLONEDIR} && tar -cpzf ${CLONEDIR}/dist/mfs.tgz ./${UNION_DIRS}
 done
 
 if [ ! -f ${CLONEDIR}/etc/rc.d/uzip ] ; then
-    cp ${LOCALDIR}/conf/rc.d/uzip ${CLONEDIR}/etc/rc.d/
-    chmod 555 ${CLONEDIR}/etc/rc.d/uzip
+  cp ${LOCALDIR}/conf/rc.d/uzip ${CLONEDIR}/etc/rc.d/
+  chmod 555 ${CLONEDIR}/etc/rc.d/uzip
 fi
 
 if [ ! -f ${CLONEDIR}/etc/rc.d/unionfs ] ; then
-    cp ${LOCALDIR}/conf/rc.d/unionfs ${CLONEDIR}/etc/rc.d/
-    chmod 555 ${CLONEDIR}/etc/rc.d/unionfs
+  cp ${LOCALDIR}/conf/rc.d/unionfs ${CLONEDIR}/etc/rc.d/
+  chmod 555 ${CLONEDIR}/etc/rc.d/unionfs
 fi
 
 # Removes duplicates from usr after archived them
@@ -79,12 +73,11 @@ done
 compress_fs()
 {
 echo "### Compressing filesystem using ${MD_BACKEND} backend."
-if [ "${MD_BACKEND}" = "file" ] 
-    then
-        mkuzip -v -o ${CLONEDIR}/uzip/usr.uzip -s 65536 ${CLONEDIR}/uzip/usrimg >> ${LOGFILE} 2>&1
-        rm -f ${CLONEDIR}/uzip/usrimg
-    else
-        mkuzip -v -o ${CLONEDIR}/uzip/usr.uzip  -s 65536 /dev/${DEVICE} >> ${LOGFILE} 2>&1
+if [ "${MD_BACKEND}" = "file" ] ; then
+  mkuzip -v -o ${CLONEDIR}/uzip/usr.uzip -s 65536 ${CLONEDIR}/uzip/usrimg >> ${LOGFILE} 2>&1
+  rm -f ${CLONEDIR}/uzip/usrimg
+else
+  mkuzip -v -o ${CLONEDIR}/uzip/usr.uzip  -s 65536 /dev/${DEVICE} >> ${LOGFILE} 2>&1
 fi
 }
 
@@ -110,9 +103,13 @@ fi
 newfs -o space /dev/${DEVICE} 
 mkdir -p ${MOUNTPOINT}
 mount -o noatime /dev/${DEVICE} ${MOUNTPOINT}
+
 clonefs
+
 uniondirs_prepare
+
 umount -f ${MOUNTPOINT}
+
 DEVICE_NO=`echo ${DEVICE} | cut -d 'd' -f2`
 
 if [ "${MD_BACKEND}" = "file" ] 
@@ -128,5 +125,3 @@ echo "### Done filesystem compress" >> ${LOGFILE} 2>&1
 }
 
 mount_ufs
-
-
