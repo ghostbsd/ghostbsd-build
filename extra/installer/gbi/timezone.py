@@ -117,7 +117,7 @@ class Language:
         box1.pack_start(box2, True, True, 0)
         box2.show()
         table = gtk.Table(1, 2, True)
-        label = gtk.Label('<b><span size="xx-large">TimeZone Selection</span></b>')
+        label = gtk.Label('<b><span size="xx-large">Time Zone Selection</span></b>')
         label.set_use_markup(True)
         table.attach(label, 0, 2, 0, 1)
         box2.pack_start(table, False, False, 0)
