@@ -126,6 +126,13 @@ def root_window(widget):
         # Need to make a dialog box for root file system not 
         pass
 
+def noRootFs(widget):
+    md = gtk.MessageDialog(self, 
+    gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING, 
+    gtk.BUTTONS_CLOSE, "Root(/) file system is missing")
+    md.run()
+    md.destroy()
+
 
 def back_window(widget):
     read_file = open(signal, 'r')
