@@ -32,9 +32,9 @@ def close_application(self, widget):
 
 
 def read_output(command, window, probar):
-    probar.set_text("Installation start in progress")
+    probar.set_text("Beginning installation")
     sleep(2)
-    probar.set_text("Preparing partition")
+    probar.set_text("Creating partition table")
     sleep(2)
     if os.path.exists(tmp + 'delete'):
         #new_val = probar.get_fraction() + 0.3
@@ -71,7 +71,7 @@ def read_output(command, window, probar):
         filer.close
         print(bartext)
     probar.set_fraction(1.0)
-    if bartext.rstrip() == "Installation finished!":
+    if bartext.rstrip() == "Installation Completed Successfully!":
         call('python %send.py' % gbi_path, shell=True, close_fds=True)
         gobject.idle_add(window.destroy)
     else:
