@@ -111,8 +111,20 @@ def custom_window(widget):
 
 
 def prepart_window(widget):
-    Popen(to_prepart, shell=True)
-    gtk.main_quit()
+    partlabel = '%spartlabel' % tmp
+    answer = None
+    for line in part:
+        if '/ ' in line:
+            answer = True
+            break
+        else:
+            pass
+    if answer is True:
+        Popen(to_prepart, shell=True)
+        gtk.main_quit()
+    elif answer is None:
+        # Need to make a dialog box for root file system not 
+        pass
 
 
 def back_window(widget):

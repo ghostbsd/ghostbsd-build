@@ -28,7 +28,7 @@ echo "proc /proc procfs rw 0 0" >> ${CLONEDIR}/etc/fstab
 echo "linproc /compat/linux/proc linprocfs rw 0 0" >> ${CLONEDIR}/etc/fstab
 cd ${CLONEDIR} && tar -cpzf ${CLONEDIR}/dist/etc.tgz etc
 
-echo "### Running makefs. ###"
+echo "### Running makefs to create ISO ###"
 bootable="-o bootimage=i386;${CLONEDIR}/boot/cdboot -o no-emul-boot"
 makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${ISOPATH} ${CLONEDIR}
 
@@ -40,7 +40,7 @@ makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${ISOPATH} ${
 #exit_err "Failed running grub-mkrescue"
 #fi
 
-echo "### ISO created: ###"
+echo "### ISO created ###"
 
 # Make mdsums and sha256 for iso
 

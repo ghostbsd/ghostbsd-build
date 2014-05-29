@@ -149,7 +149,8 @@ class Partitions():
         #self.mountpoint.append_text('select labels')
         self.label = "none"
         self.mountpoint.append_text('none')
-        self.mountpoint.append_text('/')
+        # The space for root '/ ' is to recognise / from the file.
+        self.mountpoint.append_text('/ ')
         self.mountpoint.append_text('/boot')
         self.mountpoint.append_text('/etc')
         self.mountpoint.append_text('/home')

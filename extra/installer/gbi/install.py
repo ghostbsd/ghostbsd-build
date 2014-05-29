@@ -31,13 +31,12 @@ def close_application(self, widget):
 
 
 def read_output(command, window, probar):
-    probar.set_text("Installation start in progres")
+    probar.set_text("Installation start in progress")
     sleep(2)
     p = Popen(command, shell=True, stdin=PIPE, stdout=PIPE,
     stderr=STDOUT, close_fds=True)
     while 1:
         line = p.stdout.readline()
-        #for line in p.stdout.readlines():
         if not line:
             break
         new_val = probar.get_fraction() + 0.000004
