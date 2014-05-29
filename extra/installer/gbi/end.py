@@ -9,8 +9,8 @@ from subprocess import Popen
 lyrics = """Installation is complete. You need to restart the
 computer in order to use the new installation.
 You can continue to use this live media, although
-any changes you make or document you save will
-not be preserved."""
+any changes you make or documents you save will
+not be preserved on reboot."""
 
 
 class PyApp(gtk.Window):
@@ -26,7 +26,7 @@ class PyApp(gtk.Window):
         window.set_position(gtk.WIN_POS_CENTER)
         window.set_border_width(8)
         window.connect("destroy", gtk.main_quit)
-        window.set_title("Installation completed")
+        window.set_title("Installation Completed")
         window.set_icon_from_file("/usr/local/etc/gbi/logo.png")
         box1 = gtk.VBox(False, 0)
         window.add(box1)
