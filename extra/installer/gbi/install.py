@@ -15,6 +15,7 @@ import threading
 import locale
 from subprocess import Popen, PIPE, STDOUT, call
 from time import sleep
+from partition_handler import rDeleteParttion, destroyParttion, makingParttion
 
 tmp = "/home/ghostbsd/.gbi/"
 gbi_path = "/usr/local/etc/gbi/"
@@ -33,13 +34,35 @@ def close_application(self, widget):
 def read_output(command, window, probar):
     probar.set_text("Installation start in progress")
     sleep(2)
+    probar.set_text("Preparing partition")
+    sleep(2)
+    if os.path.exists(tmp + 'delete'):
+        #new_val = probar.get_fraction() + 0.3
+        probar.set_fraction(0.001)
+        probar.set_text("Deleting partition")
+        rDeleteParttion()
+        sleep(5)
+    # destroy disk partition and create scheme
+    if os.path.exists(tmp + 'destroy'):
+        #new_val = probar.get_fraction() + 0.3
+        probar.set_fraction(0.002)
+        probar.set_text("Creating new disk with partitions")
+        destroyParttion()
+        sleep(5)
+    # create partition
+    if os.path.exists(tmp + 'create'):
+        #new_val = probar.get_fraction() + 0.4
+        probar.set_fraction(0.003)
+        probar.set_text("Creating new partitions")
+        makingParttion()
+        sleep(5)
     p = Popen(command, shell=True, stdin=PIPE, stdout=PIPE,
     stderr=STDOUT, close_fds=True)
     while 1:
         line = p.stdout.readline()
         if not line:
             break
-        new_val = probar.get_fraction() + 0.000004
+        new_val = probar.get_fraction() + 0.000002
         probar.set_fraction(new_val)
         bartext = line
         probar.set_text("%s" % bartext.rstrip())

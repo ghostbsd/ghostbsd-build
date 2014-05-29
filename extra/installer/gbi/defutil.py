@@ -110,7 +110,7 @@ def custom_window(widget):
         gtk.main_quit()
 
 
-def prepart_window(widget):
+def root_window(widget):
     partlabel = '%spartlabel' % tmp
     answer = None
     for line in part:
@@ -120,7 +120,7 @@ def prepart_window(widget):
         else:
             pass
     if answer is True:
-        Popen(to_prepart, shell=True)
+        Popen(to_root, shell=True)
         gtk.main_quit()
     elif answer is None:
         # Need to make a dialog box for root file system not 
@@ -248,5 +248,5 @@ def partition_bbox(horizontal, spacing, layout):
     button.connect("clicked", close_application)
     button = gtk.Button(stock=gtk.STOCK_GO_FORWARD)
     bbox.add(button)
-    button.connect("clicked", prepart_window)
+    button.connect("clicked", root_window)
     return bbox
