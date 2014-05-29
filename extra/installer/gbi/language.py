@@ -57,7 +57,7 @@ langfile = '%slanguage' % tmp
 
 # Text to be replace be multiple language file.
 welltitle = "Welcome To GhostBSD!"
-welltext = """Select the language you want to use GhostBSD."""
+welltext = """Select the language you want to use with GhostBSD."""
 
 
 class Language():

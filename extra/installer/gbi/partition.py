@@ -239,13 +239,13 @@ class Partitions():
         box1.pack_start(box2, True, True, 0)
         box2.show()
         # Creating MBR or GPT drive
-        label = gtk.Label('<b>Select a partition sheme for this drive:</b>')
+        label = gtk.Label('<b>Select a partition scheme for this drive:</b>')
         label.set_use_markup(True)
         # Adding a combo box to selecting MBR or GPT sheme.
         self.scheme = 'GPT'
         shemebox = gtk.combo_box_new_text()
         shemebox.append_text("GPT: GUID Partition Table")
-        shemebox.append_text("MBR: DOS Partitions")
+        shemebox.append_text("MBR: DOS Partition")
         shemebox.connect('changed', self.sheme_selection)
         shemebox.set_active(0)
         table = gtk.Table(1, 2, True)

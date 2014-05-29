@@ -98,7 +98,7 @@ class Types():
         label = gtk.Label('<b><span size="large">Boot Option</span></b>')
         label.set_use_markup(True)
         #table = gtk.Table(1, 2, True)
-        check = gtk.CheckButton("Install BSD Boot loader")
+        check = gtk.CheckButton("Install BSD Boot Loader")
         check.connect("toggled", self.on_check)
         self.boot = 'none'
         boot = open(boot_file, 'w')

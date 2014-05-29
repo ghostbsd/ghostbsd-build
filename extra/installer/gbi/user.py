@@ -66,7 +66,7 @@ class users:
             Popen(to_cfg, shell=True)
             gtk.main_quit()
         else:
-            msg = "The password of %s Mismatch; Try again!" % self.user.get_text()
+            msg = "Password and password confirmation for %s don't match. Try again!" % self.user.get_text()
             self.label3.set_text(msg)
 
     def on_shell(self, widget):
@@ -130,7 +130,7 @@ class users:
         #box2.set_border_width(10)
         box1.pack_start(box2, False, False, 0)
         box2.show()
-        label = gtk.Label('<b>Administrator(root) Password</b>')
+        label = gtk.Label('<b>Administrator (root) Password</b>')
         label.set_use_markup(True)
         label.set_alignment(.4, .2)
         table = gtk.Table(1, 2, True)
