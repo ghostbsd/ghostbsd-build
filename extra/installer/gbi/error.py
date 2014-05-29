@@ -7,9 +7,9 @@ import gtk
 from subprocess import Popen
 
 lyrics = """
-Installation have failed! Please report to
-http://ghostbsd.org/problem_report, also
-provide /tmp/.pc-sysinstall/pc-sysinstall.log.
+Installation has failed! Please report to
+http://ghostbsd.org/problem_report, and be sure
+to provide /tmp/.pc-sysinstall/pc-sysinstall.log.
 """
 
 
