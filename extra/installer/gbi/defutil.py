@@ -110,30 +110,6 @@ def custom_window(widget):
         gtk.main_quit()
 
 
-def root_window(widget):
-    partlabel = '%spartlabel' % tmp
-    answer = None
-    for line in part:
-        if '/ ' in line:
-            answer = True
-            break
-        else:
-            pass
-    if answer is True:
-        Popen(to_root, shell=True)
-        gtk.main_quit()
-    elif answer is None:
-        # Need to make a dialog box for root file system not 
-        pass
-
-def noRootFs(widget):
-    md = gtk.MessageDialog(self, 
-    gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING, 
-    gtk.BUTTONS_CLOSE, "Root(/) file system is missing")
-    md.run()
-    md.destroy()
-
-
 def back_window(widget):
     read_file = open(signal, 'r')
     nxt = read_file.readlines()[0].rstrip()
@@ -151,8 +127,28 @@ def label_window(widget):
 
 
 def root_window(widget):
-    Popen(to_root, shell=True)
-    gtk.main_quit()
+    partlabel = '%spartlabel' % tmp
+    answer = None
+    if os.path.exists(partlabel): 
+        for line in partlabel:
+            if '/ ' in line:
+                answer = True
+                break
+            else:
+                pass
+        if answer is True:
+            Popen(to_root, shell=True)
+            gtk.main_quit()
+        elif answer is None:
+            message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_OK)
+            message.set_markup("Root(/) file system is missing")
+            message.run()
+            message.destroy()
+    else:
+        message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_OK)
+        message.set_markup("No partition added")
+        message.run()
+        message.destroy()
 
 
 def user_window(widget):
