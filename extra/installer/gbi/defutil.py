@@ -46,6 +46,7 @@ tmp = "/home/ghostbsd/.gbi/"
 installer = "/usr/local/etc/gbi/"
 time = '%stimezone' % tmp
 signal = '%ssignal' % tmp
+disk_schem = '%sscheme' % tmp
 
 # script to starts
 to_language = 'python %slanguage.py' % installer
@@ -128,22 +129,44 @@ def label_window(widget):
 
 def root_window(widget):
     partlabel = '%spartlabel' % tmp
-    answer = None
-    if os.path.exists(partlabel): 
-        for line in partlabel:
-            if '/ ' in line:
-                answer = True
-                break
-            else:
+    if os.path.exists(partlabel):
+        rd = open(partlabel, 'r')
+        part = rd.readlines()
+        print part
+        # Find GPT scheme.
+        rschm = open(disk_schem, 'r')
+        schm = rschm.readlines()[0]
+        print schm
+        if 'GPT' in schm:
+            fs = part[1].split()[-1]
+            print fs
+            boot = part[0]
+            if 'BOOT' in boot:
                 pass
-        if answer is True:
-            Popen(to_root, shell=True)
-            gtk.main_quit()
-        elif answer is None:
-            message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_OK)
-            message.set_markup("Root(/) file system is missing")
-            message.run()
-            message.destroy()
+            else:
+                message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_OK)
+                message.set_markup("Boot patition is missing")
+                message.run()
+                message.destroy()
+            if fs == '/':
+                Popen(to_root, shell=True)
+                gtk.main_quit()
+            else:
+                message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_OK)
+                message.set_markup("Root(/) file system is missing")
+                message.run()
+                message.destroy()
+        else:
+            fs = part[0].split()[-1]
+            print fs
+            if fs == '/':
+                Popen(to_root, shell=True)
+                gtk.main_quit()
+            else:
+                message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_OK)
+                message.set_markup("Root(/) file system is missing")
+                message.run()
+                message.destroy()
     else:
         message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_OK)
         message.set_markup("No partition added")

@@ -561,10 +561,12 @@ class createLabel():
         disk = disk_query()[path[0]][0]
         sl = path[1] + 1
         lv = path[2]
-        #slice_file = open(dslice, 'w')
-        #slice_file.writelines('s%s\n' % sl)
-        #slice_file.writelines('%s\n' % number)
-        #slice_file.close()
+        sfile = open(part_schem, 'w')
+        sfile.writelines('partscheme=MBR')
+        sfile.close()
+        slice_file = open(dslice, 'w')
+        slice_file.writelines('s%s\n' % sl)
+        slice_file.close()
         alph = ord('a')
         alph += lv
         letter = chr(alph)
@@ -606,7 +608,6 @@ class createSlice():
         sfile.close()
         slice_file = open(dslice, 'w')
         slice_file.writelines('s%s\n' % sl)
-        #slice_file.writelines('%s\n' % number)
         slice_file.close()
         plist = partition_query(disk)
         pslice = '%ss%s' % (disk, path[1] + 1)
