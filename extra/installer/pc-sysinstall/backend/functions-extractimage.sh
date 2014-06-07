@@ -135,7 +135,7 @@ start_extract_uzip_tar()
     livecd) 
       #cd /
       #find * -print -depth |grep -v uzip | grep -v media/ | grep -v proc/ | grep -v dist |  cpio -pudmv ${FSMNT}  >&1 2>&1
-      rsync -avzH --exclude 'uzip' --exclude 'media/*' --exclude 'proc/*' --exclude 'dist/*' --exclude 'usr' / ${FSMNT} >&1 2>&1
+      rsync -avzH --exclude 'uzip' --exclude 'media/*' --exclude 'proc/*' --exclude 'mnt/*' --exclude 'tmp/*' --exclude 'dist/*' --exclude 'usr' / ${FSMNT} >&1 2>&1
       rsync -avzH /usr ${FSMNT}/ >&1 2>&1
       if [ "$?" != "0" ]
       then
@@ -149,7 +149,7 @@ start_extract_uzip_tar()
   then
     echo_log "Cleaning up downloaded archive"
     rm ${INSFILE} 
-    rm ${INSFILE}.count >/dev/null 2>/dev/null 
+    rm ${INSFILE}.count >/dev/null 2>/dev/null
     rm ${INSFILE}.md5 >/dev/null 2>/dev/null
   fi
 

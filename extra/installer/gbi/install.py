@@ -13,6 +13,7 @@ import gobject
 import webkit
 import threading
 import locale
+import os
 from subprocess import Popen, PIPE, STDOUT, call
 from time import sleep
 from partition_handler import rDeleteParttion, destroyParttion, makingParttion
