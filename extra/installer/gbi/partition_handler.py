@@ -250,6 +250,20 @@ class Delete_partition():
         ll = pickle.load(llist)
         last_num = len(ll) - 1
         lnum = path[2]
+        # See if partlable exist to delete partiton
+        if os.path.exists(Part_label):
+            p_file = open(Part_label, 'r')
+            pf = p_file.readlines()
+            pnum = len(pf)
+            # Look if or more item.
+            if pnum == 1:
+                os.remove(Part_label)
+            else:
+                pfile = open(Part_label, 'w')
+                pf.pop(lnum)
+                for line in pf:
+                    pfile.writelines('%s' % line)
+                pfile.close()
         if last_num == lnum:
             free = int_size(ll[last_num][1])
             if lnum != 0 and ll[lnum - 1][0] == 'freespace':
@@ -290,22 +304,32 @@ class Delete_partition():
             self.delete_slice(drive, part, path)
 
     def delete_slice(self, drive, part, path):
-        slist = open(partitiondb + drive, 'r')
+        slist = open(partitiondb + drive, 'rb')
         sl = pickle.load(slist)
         last_num = len(sl) - 1
         snum = path[1]
+        if os.path.exists(dslice):
+            sfile = open(dslice, 'r')
+            slf = sfile.readlines()[0].rstrip()
+            slnum = int(re.sub("[^0-9]", "", slf))
+            ptnum = snum - slnum
+        if os.path.exists(Part_label):
+            p_file = open(Part_label, 'r')
+            pf = p_file.readlines()
+            pnum = len(pf)
+            # Look if one or more item.
+            if 's' in part:
+                os.remove(Part_label)
+            elif pnum == 1:
+                os.remove(Part_label)
+            else:
+                pfile = open(Part_label, 'w')
+                pf.pop(ptnum)
+                for line in pf:
+                    pfile.writelines('%s' % line)
+                pfile.close()
         if last_num == snum:
             free = int_size(sl[last_num][1])
-            dl = []
-            mdl = []
-            if os.path.exists(tmp + 'delete'):
-                df = open(tmp + 'delete', 'rb')
-                mdl = pickle.load(df)
-            dl.extend(([part, free]))
-            mdl.append(dl)
-            cf = open(tmp + 'delete', 'wb')
-            pickle.dump(mdl, cf)
-            cf.close()
             if snum != 0 and sl[snum - 1][0] == 'freespace':
                 free = free + int_size(sl[snum - 1][1])
                 sl[snum] = ['freespace', free, '', '']
@@ -314,32 +338,12 @@ class Delete_partition():
                 sl[snum] = ['freespace', free, '', '']
         elif snum == 0:
             free = int_size(sl[snum][1])
-            dl = []
-            mdl = []
-            if os.path.exists(tmp + 'delete'):
-                df = open(tmp + 'delete', 'rb')
-                mdl = pickle.load(df)
-            dl.extend(([part, free]))
-            mdl.append(dl)
-            cf = open(tmp + 'delete', 'wb')
-            pickle.dump(mdl, cf)
-            cf.close()
             if sl[snum + 1][0] == 'freespace':
                 free = free + int_size(sl[snum + 1][1])
                 sl.remove(sl[snum + 1])
             sl[snum] = ['freespace', free, '', '']
         else:
             free = int_size(sl[snum][1])
-            dl = []
-            mdl = []
-            if os.path.exists(tmp + 'delete'):
-                df = open(tmp + 'delete', 'rb')
-                mdl = pickle.load(df)
-            dl.extend(([part, free]))
-            mdl.append(dl)
-            cf = open(tmp + 'delete', 'wb')
-            pickle.dump(mdl, cf)
-            cf.close()
             if sl[snum + 1][0] == 'freespace':
                 free = free + int_size(sl[snum + 1][1])
                 sl.remove(sl[snum + 1])
@@ -349,6 +353,24 @@ class Delete_partition():
                 sl.remove(sl[snum - 1])
             else:
                 sl[snum] = ['freespace', free, '', '']
+        # Making delete file
+        dl = []
+        mdl = []
+        data = True
+        # if delete exist chek if slice is in delete.
+        if os.path.exists(tmp + 'delete'):
+            df = open(tmp + 'delete', 'rb')
+            mdl = pickle.load(df)
+            for line in mdl:
+                if part in line:
+                    data = False
+                    break
+        if data is True:
+            dl.extend(([part, free]))
+            mdl.append(dl)
+            cf = open(tmp + 'delete', 'wb')
+            pickle.dump(mdl, cf)
+            cf.close()
         if os.path.exists(partitiondb + part):
             os.remove(partitiondb + part)
         saveps = open(partitiondb + drive, 'w')
@@ -559,6 +581,10 @@ class createLabel():
 
     def __init__(self, path, lnumb, cnumb, lb, fs, data):
         disk = disk_query()[path[0]][0]
+        if not os.path.exists(disk_file):
+            file_disk = open(disk_file, 'w')
+            file_disk.writelines('%s\n' % disk)
+            file_disk.close()
         sl = path[1] + 1
         lv = path[2]
         sfile = open(part_schem, 'w')
