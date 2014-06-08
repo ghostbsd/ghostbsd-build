@@ -127,7 +127,7 @@ There are many other options available for configuration in ghostbsd.defaults.co
 
    ARCH="amd64"
 
-means that you are building the amd64 system. If you want to build for i386, change it as below:
+Means that you are building the amd64 system. If you want to build for i386, change it as below:
 
    ARCH="i386"
 
