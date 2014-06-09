@@ -451,19 +451,25 @@ class autoDiskPartition():
         stderr=STDOUT, close_fds=True)
         mem = ram.stdout.read()
         swap = int(mem.partition(':')[2].strip()) / (1024 * 1024)
+        bnum = 1
         rootNum = number - swap
+        rnum = rootNum - bnum
         plist = []
         mplist = []
         plf = open(partitiondb + disk, 'wb')
-        plist.extend(([disk + 'p1', number, '/', 'freebsd-ufs']))
+        plist.extend(([disk + 'p1', bnum, 'none', 'freebsd-boot']))
         mplist.append(plist)
         plist = []
-        plist.extend(([disk + 'p2', swap, 'none', 'freebsd-swap']))
+        plist.extend(([disk + 'p2', rnum, '/', 'freebsd-ufs']))
+        mplist.append(plist)
+        plist = []
+        plist.extend(([disk + 'p3', swap, 'none', 'freebsd-swap']))
         mplist.append(plist)
         pickle.dump(mplist, plf)
         plf.close()
         pfile = open(Part_label, 'w')
-        pfile.writelines('UFS+SUJ %s /\n' % rootNum)
+        pfile.writelines('BOOT %s none\n' % bnum)
+        pfile.writelines('UFS+SUJ %s /\n' % rnum)
         pfile.writelines('SWAP 0 none\n')
         pfile.close()
 
@@ -564,6 +570,7 @@ class autoFreeSpace():
         pickle.dump(mplist, plf)
         plf.close()
         pfile = open(Part_label, 'w')
+        pfile.writelines('BOOT %s /\n' % bs)
         pfile.writelines('UFS+SUJ %s /\n' % rootNum)
         pfile.writelines('SWAP 0 none\n')
         pfile.close()
