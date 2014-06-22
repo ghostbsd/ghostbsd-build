@@ -72,7 +72,7 @@ def read_output(command, window, probar):
         filer.close
         print(bartext)
     probar.set_fraction(1.0)
-    if bartext.rstrip() == "Installation Completed Successfully!":
+    if bartext.rstrip() == "Installation finished!":
         call('python %send.py' % gbi_path, shell=True, close_fds=True)
         gobject.idle_add(window.destroy)
     else:

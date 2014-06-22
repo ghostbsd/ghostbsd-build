@@ -1,4 +1,4 @@
-#xorg-minimal
+#xorg
 virtualbox-ose-additions
 cursor-dmz-theme
 setxkbmap
@@ -17,7 +17,7 @@ portupgrade
 webcamd
 zenity
 spideroak
-#xorg-drivers
+xorg-drivers
 bwi-firmware-kmod
 bwn-firmware-kmod
 gdm
@@ -34,9 +34,10 @@ firefox
 thunderbird
 xchat
 networkmgr
+wifimgr
 vlc
 exaile
-brasero
+xfburn
 cheese
 libreoffice
 dejavu
