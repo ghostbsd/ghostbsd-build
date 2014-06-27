@@ -3,10 +3,8 @@ desc = """
 """
 packages="""
 vlc
-#banshee
-#rhythmbox
 exaile
 xfburn
-#brasero
 cheese
+gstreamer-plugins-neon
 """
