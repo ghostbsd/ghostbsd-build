@@ -15,10 +15,6 @@
 #    disclaimer in the documentation and/or other materials provided
 #    with the distribution.
 #
-# 3. Neither then name of GhostBSD Project nor the names of its
-#    contributors maybe used to endorse or promote products derived
-#    from this software without specific prior written permission.
-#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -127,51 +123,55 @@ def label_window(widget):
     gtk.main_quit()
 
 
-def root_window(widget):
+def root_window(widget, data):
     partlabel = '%spartlabel' % tmp
-    if os.path.exists(partlabel):
-        rd = open(partlabel, 'r')
-        part = rd.readlines()
-        print part
-        # Find GPT scheme.
-        rschm = open(disk_schem, 'r')
-        schm = rschm.readlines()[0]
-        print schm
-        if 'GPT' in schm:
-            fs = part[1].split()[-1]
-            print fs
-            boot = part[0]
-            if 'BOOT' in boot:
-                pass
+    if data is True:
+        if os.path.exists(partlabel):
+            rd = open(partlabel, 'r')
+            part = rd.readlines()
+            print part
+            # Find GPT scheme.
+            rschm = open(disk_schem, 'r')
+            schm = rschm.readlines()[0]
+            print schm
+            if 'GPT' in schm:
+                fs = part[1].split()[-1]
+                print fs
+                boot = part[0]
+                if 'BOOT' in boot:
+                    pass
+                else:
+                    message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_OK)
+                    message.set_markup("Boot patition is missing")
+                    message.run()
+                    message.destroy()
+                if fs == '/':
+                    Popen(to_root, shell=True)
+                    gtk.main_quit()
+                else:
+                    message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_OK)
+                    message.set_markup("Root(/) file system is missing")
+                    message.run()
+                    message.destroy()
             else:
-                message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_OK)
-                message.set_markup("Boot patition is missing")
-                message.run()
-                message.destroy()
-            if fs == '/':
-                Popen(to_root, shell=True)
-                gtk.main_quit()
-            else:
-                message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_OK)
-                message.set_markup("Root(/) file system is missing")
-                message.run()
-                message.destroy()
+                fs = part[0].split()[-1]
+                print(fs)
+                if fs == '/':
+                    Popen(to_root, shell=True)
+                    gtk.main_quit()
+                else:
+                    message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_OK)
+                    message.set_markup("Root(/) file system is missing")
+                    message.run()
+                    message.destroy()
         else:
-            fs = part[0].split()[-1]
-            print fs
-            if fs == '/':
-                Popen(to_root, shell=True)
-                gtk.main_quit()
-            else:
-                message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_OK)
-                message.set_markup("Root(/) file system is missing")
-                message.run()
-                message.destroy()
+            message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_OK)
+            message.set_markup("No partition added")
+            message.run()
+            message.destroy()
     else:
-        message = gtk.MessageDialog(type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_OK)
-        message.set_markup("No partition added")
-        message.run()
-        message.destroy()
+        Popen(to_root, shell=True)
+        gtk.main_quit()
 
 
 def user_window(widget):
@@ -257,7 +257,7 @@ def use_disk_bbox(horizontal, spacing, layout):
     button.connect("clicked", close_application)
     button = gtk.Button(stock=gtk.STOCK_GO_FORWARD)
     bbox.add(button)
-    button.connect("clicked", root_window)
+    button.connect("clicked", root_window, False)
     return bbox
 
 
@@ -274,5 +274,5 @@ def partition_bbox(horizontal, spacing, layout):
     button.connect("clicked", close_application)
     button = gtk.Button(stock=gtk.STOCK_GO_FORWARD)
     bbox.add(button)
-    button.connect("clicked", root_window)
+    button.connect("clicked", root_window, True)
     return bbox
