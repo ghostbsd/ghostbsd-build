@@ -52,6 +52,12 @@ set -e
 
 chown -R 1000:0 ${BASEDIR}/usr/home/${GHOSTBSD_ADDUSER}
 
+## Make user Desktop dir if doesn't exists
+if [ ! -d "${BASEDIR}${HOME}/Desktop" ] ; then
+  mkdir -p ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop
+  chown -R 1000:0 ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop
+fi
+
 if [ ! -z "${NO_UNIONFS:-}" ]; then
     echo "Adding init script for /home mfs"
 

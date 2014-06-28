@@ -20,13 +20,6 @@ if [ ! -d ${BASEDIR}/usr/local/etc/gbi ]; then
 fi
 
 ###
-## Make user Desktop dir if doesn't exists
-###
-if [ ! -d "${BASEDIR}${HOME}/Desktop" ] ; then
-        mkdir -p "${BASEDIR}${HOME}/Desktop"
-fi
-
-###
 ## put the installer in the system
 ####
 cp -Rf extra/installer/gbi/ ${BASEDIR}/usr/local/etc/gbi
