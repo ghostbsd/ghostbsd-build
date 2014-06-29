@@ -74,4 +74,3 @@ def Main():
     system('clear')
 screen = curses.initscr()
 Main()
-

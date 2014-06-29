@@ -31,8 +31,8 @@ rm -rf ${BASEDIR}/rescue
 
 # Graphic card Auto configuration at the system boot Script.
 mkdir $BASEDIR/usr/local/etc/card/
-install -C extra/ghostbsd/xconfig.sh $BASEDIR/usr/local/etc/card/
-
+install -C extra/ghostbsd/xconfig.sh $BASEDIR/usr/local/bin/xconfig
+install -C extra/ghostbsd/xdrivers.py $BASEDIR/usr/local/bin/xdrivers
 # Cat rc.cong.extra in 
 cat extra/ghostbsd/rc.conf.extra >> ${BASEDIR}/etc/rc.conf
 
