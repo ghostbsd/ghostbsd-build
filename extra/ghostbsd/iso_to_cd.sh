@@ -6,16 +6,22 @@
 
 rm -f /usr/bin/gbi 
 rm -f /usr/bin/ginstall
-rm -rf /dist
 
-cd /tmp && ls | xargs rm -R
+# removing auto login, startx and X configuration.
+GHOSTBSD=${GHOSTBSD:-"ghostbsd"}
+( echo "g/# ${GHOSTBSD} user autologin/d" ; echo 'wq' ) | ex -s ${FSMNT}/etc/gettytab
+( echo "g/${GHOSTBSD}:\\/d" ; echo 'wq' ) | ex -s ${FSMNT}/etc/gettytab
+( echo "g/:al=${GHOSTBSD}:ht:np:sp#115200:/d" ; echo 'wq' ) | ex -s ${FSMNT}/etc/gettytab
+sed -i "" "/ttyv0/s/${GHOSTBSD}/Pc/g" ${FSMNT}/etc/ttys
+rm -rf ${FSMNT}/usr/local/etc/card
+
+sed -i '' 's@#gdm_enable="YES"@gdm_enable="YES"@g' ${FSMNT}/etc/rc.conf 
 
 cd /home
 LS=`ls`
 cd -
 for user in ${LS}
 do
-
   printf "file:///home/${user}/Documents Documents
 file:///home/${user}/Downloads Downloads
 file:///home/${user}/Movies Movies

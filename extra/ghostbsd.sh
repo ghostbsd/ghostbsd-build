@@ -23,16 +23,16 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# ghostbsd.sh,v Sun Dec 11 2011 23:15, Eric
+# ghostbsd.sh, v4.0, Sunday, June 29 2014, Eric Turgeon
 #
 
 # Removing some MB of the system.
 rm -rf ${BASEDIR}/rescue
 
 # Graphic card Auto configuration at the system boot Script.
-mkdir $BASEDIR/usr/local/etc/card/
 install -C extra/ghostbsd/xconfig.sh $BASEDIR/usr/local/bin/xconfig
 install -C extra/ghostbsd/xdrivers.py $BASEDIR/usr/local/bin/xdrivers
+
 # Cat rc.cong.extra in 
 cat extra/ghostbsd/rc.conf.extra >> ${BASEDIR}/etc/rc.conf
 
@@ -135,5 +135,4 @@ printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
 ' > ${BASEDIR}/usr/local/etc/PolicyKit/PolicyKit.conf
 
 # Adding config file for cleaning after installation.
-
-cp -f extra/ghostbsd/config.sh ${BASEDIR}/config.sh
+install -C extra/ghostbsd/iso_to_cd.sh ${BASEDIR}/usr/local/bin/iso_to_cd
