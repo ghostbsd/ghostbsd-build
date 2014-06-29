@@ -35,6 +35,8 @@
 #
 # Video Card Detection script
 
+clear
+
 if [ -f "/etc/X11/xorg.conf" ]; then
 	echo "xorg.conf found... skipping"
 	exit
@@ -45,3 +47,7 @@ sudo Xorg -configure
 sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
 
 ( echo "g/sudo sh /usr/local/etc/card/xconfig.sh/d" ; echo 'wq' ) | ex -s /home/ghostbsd/.cshrc
+
+gdm
+
+echo 'If X fail to start run "xdrivers"'
