@@ -10,7 +10,6 @@
 #
 # iso:		build an iso image
 # img:		build a loopback image 
-# flash:	copy the built system on a device (interactive)
 # ghostbsd:	same of `iso'
 #
 # pkgselect:	choose packages to include in the built system (interactive)
@@ -103,13 +102,6 @@ img: .done_img
 	@touch ${CANONICALOBJDIR}/.tmp_img
 	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} img ${CANONICALOBJDIR}/.tmp_img
 	@mv ${CANONICALOBJDIR}/.tmp_img ${CANONICALOBJDIR}/.done_img
-
-flash: .done_flash
-.done_flash: .done_clonefs
-	@-rm -f ${CANONICALOBJDIR}/.tmp_flash
-	@touch ${CANONICALOBJDIR}/.tmp_flash
-	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} flash ${CANONICALOBJDIR}/.tmp_flash
-	@mv ${CANONICALOBJDIR}/.tmp_flash ${CANONICALOBJDIR}/.done_flash
 
 clean:
 	@-rm -f .tmp* .done* > /dev/null 2>&1
