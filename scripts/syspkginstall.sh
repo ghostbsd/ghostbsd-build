@@ -1,6 +1,5 @@
 #!/bin/sh 
 
-PLOGFILE=".log_pkginstall"
 pkgfile="conf/packages"
 pkgaddcmd="pkg install -y"
 
@@ -48,8 +47,6 @@ done < $pkgfile
 
 #installing remaining pkg from ports.
 sh script/ports.sh
-
-#!/bin/sh
 
 # Remove Gnome and Mate in .desktop.
 
