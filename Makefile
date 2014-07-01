@@ -110,9 +110,9 @@ cleandir: clean
 	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} cleandir
 
 upgradepkg:
-	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} syspkgupgrade
+	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} upgradepkg
 
 installpkg:
-	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} syspkginstall
+	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} installpkg
 
 
