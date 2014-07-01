@@ -5,7 +5,7 @@
 # Update and create package for GhostBSD
 
 pkgfile="conf/packages"
-pkgaddcmd="pkg install -yf "
+pkgaddcmd="pkg install -y"
 
 # Update GhostBSD pkg
 while read pkgc; do

@@ -39,14 +39,14 @@ if [ -f conf/package ] ; then
 fi
 
 echo "#!/bin/sh" > conf/ports
-echo "portinstall -c" | tr "\n" " " >> script/ports.sh
-cat tool/packages | tr "\n" " " >> script/ports.sh
+echo "portinstall -c" | tr "\n" " " >> scripts/ports.sh
+cat tool/packages | tr "\n" " " >> scripts/ports.sh
 
 # Installing pkg
 while read pkgc; do
   if [ -n "${pkgc}" ]; then
     if [ "$(uname -p)" = "amd64" ]; then
-      if [ ! "${pkgc}" = "xorg"] || [ ! "${pkgc}" = "xorg-minimal"] || [ ! "${pkgc}" = "xorg-drivers"]; then
+      if [ ! "${pkgc}" = "xorg" ] || [ ! "${pkgc}" = "xorg-minimal" ] || org-drivers" ]; then
         $pkgaddcmd $pkgc
       fi
     else
@@ -56,7 +56,7 @@ while read pkgc; do
 done < $pkgfile
 
 #installing remaining pkg from ports.
-sh script/ports.sh
+sh scripts/ports.sh
 
 # Remove Gnome and Mate in .desktop.
 GhostBSD=`ls /usr/local/share/applications/`
@@ -84,9 +84,9 @@ for e in `pkg info | awk '{print $1}'`; do
   este=`ls -l /usr/obj/packages/${PLATFORM} | awk '{print $9}'| grep $e`
   echo $este
   if [ "${este}" = "${e}.txz" ] ; then
-    echo "Package "$e" is allready in /usr/obj/packages/${PLATFORM}"
+    echo "Package ${e} is allready in /usr/obj/packages/${PLATFORM}"
   else
-    echo "Creating backup package(s) "$e" /usr/obj/packages/${PLATFORM}"
+    echo "Creating backup package(s) ${e} /usr/obj/packages/${PLATFORM}"
     cd /usr/obj/packages/${PLATFORM} && pkg create $e
     echo "Package "$e" was created..."
   fi
