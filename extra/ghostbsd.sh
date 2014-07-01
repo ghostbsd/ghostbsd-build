@@ -98,13 +98,20 @@ cd ${BASEDIR}/usr/local/lib/firefox/browser/searchplugins
 rm -f bing.xml yahoo.xml google.xml twitter.xml
 cd -
 
+# Cups and Xfburn adds.
+cp -f extra/ghostbsd/devfs.rules ${BASEDIR}/etc/
+cat extra/ghostbsd/make.conf >> ${BASEDIR}/etc/make.conf
+
+# To enable USB devices that are plugged in to be read/written
+# by operators (i.e. the live user), this is needed:
+if [ -z "$(cat ${BASEDIR}/etc/devd.conf| grep ugen[0-9])" ] ; then
+    cat extra/ghostbsd/devd.conf.extra >> ${BASEDIR}/etc/devd.conf
+fi
 # Replacing duckduckgo.xml.
 cp extra/ghostbsd/ddg/duckduckgo.xml ${BASEDIR}/usr/local/lib/firefox/browser/searchplugins/duckduckgo.xml
 
 # Replacing amazondotcom.xml with GhostBSD affiliate amazondotcom.xml. 
 cp -f extra/ghostbsd/amazon/amazondotcom.xml ${BASEDIR}/usr/local/lib/firefox/browser/searchplugins/amazondotcom.xml
-
-#cp -f extra/gnome/gnome-applications.menu ${BASEDIR}/usr/local/etc/xdg/menus
 
 # Setup PolicyKit for mounting device.
 printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->

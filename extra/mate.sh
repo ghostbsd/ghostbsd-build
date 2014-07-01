@@ -80,15 +80,6 @@ if [ -f ${BASEDIR}/usr/local/share/applications/cups.desktop ] ; then
         /usr/bin/sed -i "" "s@htmlview@firefox@" ${BASEDIR}/usr/local/share/applications/cups.desktop
 fi
 
-# Cups adds.
-cp -f extra/gnome/devfs.rules ${BASEDIR}/etc/
-cat extra/gnome/make.conf >> ${BASEDIR}/etc/make.conf
-
-# To enable USB devices that are plugged in to be read/written
-# by operators (i.e. the live user), this is needed:
-if [ -z "$(cat ${BASEDIR}/etc/devd.conf| grep ugen[0-9])" ] ; then
-    cat extra/gnome/devd.conf.extra >> ${BASEDIR}/etc/devd.conf
-fi
 if [ -z "$(cat ${BASEDIR}/etc/sysctl.conf| grep vfs.usermount)" ] ; then
     echo "vfs.usermount=1" >> ${BASEDIR}/etc/sysctl.conf
 fi

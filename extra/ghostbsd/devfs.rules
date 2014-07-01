@@ -1,0 +1,10 @@
+[system=10]
+add path 'unlpt*' mode 0660 group cups
+add path 'ulpt*' mode 0660 group cups
+add path 'lpt*' mode 0660 group cups
+add path 'usb*' mode 0770 group cups
+add path 'ugen*' mode 0660 group cups
+add path 'da*' mode 0660 group wheel
+add path 'cd*' mode 0666 group wheel
+add path 'xpt*' mode 0660 group wheel
+add path 'video*' mode 0666 group wheel
