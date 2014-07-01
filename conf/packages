@@ -7,7 +7,6 @@ sudo
 nano
 mc
 py27-gobject
-py27-webkit
 py27-webkitgtk
 freedesktop-sound-theme
 fish

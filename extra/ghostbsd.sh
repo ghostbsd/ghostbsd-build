@@ -40,6 +40,7 @@ cat extra/ghostbsd/rc.conf.extra >> ${BASEDIR}/etc/rc.conf
 sed -i "" "s@# %wheel ALL=(ALL) ALL@%wheel ALL=(ALL) ALL@" ${BASEDIR}/usr/local/etc/sudoers
 sed -i "" "s@# %sudo	ALL=(ALL) ALL@%sudo	ALL=(ALL) ALL@" ${BASEDIR}/usr/local/etc/sudoers
 sed -i "" "s@# %wheel ALL=(ALL) NOPASSWD: ALL@%wheel ALL=(ALL) NOPASSWD: /usr/local/share/networkmgr/trayicon.py@" ${BASEDIR}/usr/local/etc/sudoers
+
 # put a GhostBSD-irc icon on the desktop
 cp -f extra/ghostbsd/ghostbsd-irc.desktop ${BASEDIR}/usr/local/share/applications/
 
