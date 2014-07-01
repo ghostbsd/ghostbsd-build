@@ -46,7 +46,11 @@ cat tool/packages | tr "\n" " " >> scripts/ports.sh
 while read pkgc; do
   if [ -n "${pkgc}" ]; then
     if [ "$(uname -p)" = "amd64" ]; then
-      if [ ! "${pkgc}" = "xorg" ] || [ ! "${pkgc}" = "xorg-minimal" ] || org-drivers" ]; then
+      if [ "${pkgc}" = "xorg-minimal" ]; then
+        echo "Pass $pkgc"
+      elif [ "${pkgc}" = "xorg-drivers" ]; then
+        echo "Pass $pkgc"
+      else 
         $pkgaddcmd $pkgc
       fi
     else
@@ -54,6 +58,7 @@ while read pkgc; do
     fi   
   fi
 done < $pkgfile
+
 
 #installing remaining pkg from ports.
 sh scripts/ports.sh
