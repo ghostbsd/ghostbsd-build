@@ -1,10 +1,10 @@
 #
-# Copyright (c) 2011 GhostBSD
+# Copyright (c) 2009 GhostBSD
 #
 # See COPYING for licence terms.
 #
 # GhostBSD
-# Makefile,v 1.5.1 Friday, January 14 2011 01:40:15 Exp 
+# Makefile, v1.6, Monday, June 30 2014 EricTurgeon
 #
 # GhostBSD makefile. Main targets are:
 #
@@ -108,3 +108,7 @@ clean:
 
 cleandir: clean
 	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} cleandir
+	
+syspkginstall:
+	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} syspkginstall
+

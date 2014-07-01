@@ -1,4 +1,8 @@
-#!/bin/sh 
+#!/bin/sh
+#    Author: Eric Turgeon
+# Copyright: 2014 GhostBSD
+#
+# Creates package for GhostBSD
 
 pkgfile="conf/packages"
 pkgaddcmd="pkg install -y"
@@ -40,8 +44,14 @@ cat tool/packages | tr "\n" " " >> script/ports.sh
 
 # Installing pkg
 while read pkgc; do
-  if [ -n "${pkgc}" ] ; then
-  $pkgaddcmd $pkgc 
+  if [ -n "${pkgc}" ]; then
+    if [ "$(uname -p)" = "amd64" ]; then
+      if [ ! "${pkgc}" = "xorg"] || [ ! "${pkgc}" = "xorg-minimal"] || [ ! "${pkgc}" = "xorg-drivers"]; then
+        $pkgaddcmd $pkgc
+      fi
+    else
+      $pkgaddcmd $pkgc
+    fi   
   fi
 done < $pkgfile
 
@@ -49,7 +59,6 @@ done < $pkgfile
 sh script/ports.sh
 
 # Remove Gnome and Mate in .desktop.
-
 GhostBSD=`ls /usr/local/share/applications/`
 
 for desktop in $GhostBSD
