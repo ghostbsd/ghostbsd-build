@@ -75,15 +75,6 @@ if [ -f ${BASEDIR}/usr/local/share/applications/gksu.desktop ] ; then
         /usr/bin/sed -i "" "s@/usr/bin/x-terminal-emulator@/usr/local/bin/mate-terminal@" ${BASEDIR}/usr/local/share/applications/gksu.desktop
 fi
 
-# Cups ussing Firefox.
-if [ -f ${BASEDIR}/usr/local/share/applications/cups.desktop ] ; then
-        /usr/bin/sed -i "" "s@htmlview@firefox@" ${BASEDIR}/usr/local/share/applications/cups.desktop
-fi
-
-if [ -z "$(cat ${BASEDIR}/etc/sysctl.conf| grep vfs.usermount)" ] ; then
-    echo "vfs.usermount=1" >> ${BASEDIR}/etc/sysctl.conf
-fi
-
 # Set cursor theme instead of default from xorg
 if [ -e ${BASEDIR}/usr/local/lib/X11/icons/default ] ; then
 rm ${BASEDIR}/usr/local/lib/X11/icons/default 

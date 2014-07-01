@@ -107,6 +107,15 @@ cat extra/ghostbsd/make.conf >> ${BASEDIR}/etc/make.conf
 if [ -z "$(cat ${BASEDIR}/etc/devd.conf| grep ugen[0-9])" ] ; then
     cat extra/ghostbsd/devd.conf.extra >> ${BASEDIR}/etc/devd.conf
 fi
+
+if [ -z "$(cat ${BASEDIR}/etc/sysctl.conf| grep vfs.usermount)" ] ; then
+    echo "vfs.usermount=1" >> ${BASEDIR}/etc/sysctl.conf
+fi
+# Cups ussing Firefox.
+if [ -f ${BASEDIR}/usr/local/share/applications/cups.desktop ] ; then
+        /usr/bin/sed -i "" "s@htmlview@firefox@" ${BASEDIR}/usr/local/share/applications/cups.desktop
+fi
+
 # Replacing duckduckgo.xml.
 cp extra/ghostbsd/ddg/duckduckgo.xml ${BASEDIR}/usr/local/lib/firefox/browser/searchplugins/duckduckgo.xml
 
