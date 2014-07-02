@@ -16,6 +16,5 @@ sed -i "" "/ttyv0/s/Pc/root/g" ${BASEDIR}/etc/ttys
 
 echo 'if ($tty == ttyv0) then' >> ${BASEDIR}/root/.cshrc
 echo "  xconfig.sh" >> ${BASEDIR}/root/.cshrc
-echo "  startx" >> ${BASEDIR}/root/.cshrc
 echo "endif" >> ${BASEDIR}/root/.cshrc
 

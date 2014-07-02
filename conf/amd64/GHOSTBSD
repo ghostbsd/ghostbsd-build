@@ -239,6 +239,14 @@ device		wlan_ccmp	# 802.11 CCMP support
 device		wlan_tkip	# 802.11 TKIP support
 device		wlan_amrr	# AMRR transmit rate control algorithm
 device      iwn 		# Intel Wireless WiFi Link 802.11n wireless
+device      iwn4965fw
+device      iwn1000fw
+device      iwn5000fw
+device      iwn5150fw
+device      iwn6000fw
+device      iwn6000g2afw
+device      iwn6000g2bfw
+device      iwn6050fw
 device      ixgb		# Intel PRO/10Gb Ethernet
 device      ixgbe		# Intel PRO/10Gb Ethernet PCI Express
 device      jme		# JMicron JMC250 Gigabit/JMC260 Fast Ethernet
@@ -253,7 +261,6 @@ device 		nfe		# NVIDIA nForce MCP Networking Adapter
 device 		nge		# National Semiconductor PCI Gigabit Ethernet
 device		nve		# NVIDIA nForce MCP Networking Adapter
 device		nxge		# Neterion Xframe 10Gb Ethernet
-#device		patm		# IDT77252 ATM
 device		pcn		# AMD PCnet PCI
 device		ral		# Ralink Technology wireless
 device		re			# RealTek 8139C+/8169/8169S/8110S
@@ -261,7 +268,6 @@ device		rl			# RealTek 8129/8139
 device		rue		# RealTek RTL8150 USB to Fast Ethernet
 device		rum		# Ralink Technology USB 802.11a/b/g wireless
 device		run		# Ralink Technology USB 802.11a/g/n wireless
-#device		sbni		# Granch SBNI12 leased line adapters
 device		sf			# Adaptec Duralink PCI (AIC-6915 "starfire")
 device		sge		# Silicon Integrated Systems SiS 190/191
 device		sis		# Silicon Integrated Systems SiS 900/7016
