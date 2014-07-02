@@ -40,7 +40,7 @@ fi
 
 echo "#!/bin/sh" > conf/ports
 echo "portinstall -c" | tr "\n" " " >> scripts/ports.sh
-cat tool/packages | tr "\n" " " >> scripts/ports.sh
+cat conf/packages | tr "\n" " " >> scripts/ports.sh
 
 # Installing pkg
 while read pkgc; do
