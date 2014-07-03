@@ -38,7 +38,7 @@ if [ -f conf/package ] ; then
   rm -f packages/depends
 fi
 
-echo "#!/bin/sh" > conf/ports
+echo "#!/bin/sh" > scripts/ports.sh
 echo "portinstall -c" | tr "\n" " " >> scripts/ports.sh
 cat tool/packages | tr "\n" " " >> scripts/ports.sh
 
