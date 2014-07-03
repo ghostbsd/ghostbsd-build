@@ -24,14 +24,14 @@ cp -Rf extra/installer/gbi/ ${BASEDIR}/usr/local/etc/gbi
 rm -r ${BASEDIR}/usr/share/pc-sysinstall/*
 cp -Rf extra/installer/pc-sysinstall/ ${BASEDIR}/usr/share/pc-sysinstall/
 
-## put a installer on the desktop
+## put the installer on the desktop
 if [ ! -f /usr/local/share/applications/GBI.desktop ]; then
   cp -pf extra/installer/GBI.desktop ${BASEDIR}${HOME}/Desktop/
   chmod g+rwx ${BASEDIR}${HOME}/Desktop/GBI.desktop
 fi
 
-# copy gbi and ginstall script to /usr/bin.
-cp -Rf extra/installer/bin/ ${BASEDIR}/usr/bin
+# copy gbi script to /usr/local/bin.
+install -C extra/installer/gbi.sh ${BASEDIR}/usr/local/bin/gbi
 
 
 
