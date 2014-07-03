@@ -4,6 +4,7 @@ Mate desktop environment
 
 packages = """
 mate
+mate-screensaver
 """
 
 settings="""

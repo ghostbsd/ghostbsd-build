@@ -2,8 +2,8 @@ desc = """
 	Sound and Video.
 """
 packages="""
-vlc
 exaile
+vlc
 xfburn
 cheese
 gstreamer-plugins-neon
