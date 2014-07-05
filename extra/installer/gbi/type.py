@@ -39,15 +39,6 @@ class Types():
         pass_file.writelines(self.ne)
         pass_file.close
 
-    def on_check(self, widget):
-        if widget.get_active():
-            self.boot = "bsd"
-        else:
-            self.boot = 'none'
-        boot = open(boot_file, 'w')
-        boot.writelines(self.boot)
-        boot.close()
-
     def __init__(self):
         window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         window.connect("destroy", close_application)

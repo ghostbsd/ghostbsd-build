@@ -21,6 +21,7 @@ bwi-firmware-kmod
 bwn-firmware-kmod
 gdm
 metacity
+gnome-keyring
 gnome-audio
 cups
 system-config-printer

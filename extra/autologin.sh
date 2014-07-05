@@ -15,6 +15,6 @@ echo ":al=root:ht:np:sp#115200:" >> ${BASEDIR}/etc/gettytab
 sed -i "" "/ttyv0/s/Pc/root/g" ${BASEDIR}/etc/ttys
 
 echo 'if ($tty == ttyv0) then' >> ${BASEDIR}/root/.cshrc
-echo "  xconfig.sh" >> ${BASEDIR}/root/.cshrc
+echo "  xconfig" >> ${BASEDIR}/root/.cshrc
 echo "endif" >> ${BASEDIR}/root/.cshrc
 

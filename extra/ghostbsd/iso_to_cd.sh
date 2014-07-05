@@ -9,11 +9,10 @@ rm -f /usr/bin/ginstall
 
 # removing auto login, startx and X configuration.
 GHOSTBSD=${GHOSTBSD:-"ghostbsd"}
-( echo "g/# ${GHOSTBSD} user autologin/d" ; echo 'wq' ) | ex -s ${FSMNT}/etc/gettytab
-( echo "g/${GHOSTBSD}:\\/d" ; echo 'wq' ) | ex -s ${FSMNT}/etc/gettytab
-( echo "g/:al=${GHOSTBSD}:ht:np:sp#115200:/d" ; echo 'wq' ) | ex -s ${FSMNT}/etc/gettytab
-sed -i "" "/ttyv0/s/${GHOSTBSD}/Pc/g" ${FSMNT}/etc/ttys
-rm -rf ${FSMNT}/usr/local/etc/card
+( echo "g/# root user autologin/d" ; echo 'wq' ) | ex -s ${FSMNT}/etc/gettytab
+( echo "g/root:\\/d" ; echo 'wq' ) | ex -s ${FSMNT}/etc/gettytab
+( echo "g/:al=root:ht:np:sp#115200:/d" ; echo 'wq' ) | ex -s ${FSMNT}/etc/gettytab
+sed -i "" "/ttyv0/s/root/Pc/g" ${FSMNT}/etc/ttys
 
 sed -i '' 's@#gdm_enable="YES"@gdm_enable="YES"@g' ${FSMNT}/etc/rc.conf 
 
