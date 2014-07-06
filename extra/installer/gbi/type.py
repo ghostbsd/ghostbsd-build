@@ -48,7 +48,6 @@ class Types():
         window.set_border_width(0)
         window.set_position(gtk.WIN_POS_CENTER)
         window.set_icon_from_file(logo)
-
         box1 = gtk.VBox(False, 0)
         window.add(box1)
         box1.show()
@@ -56,7 +55,6 @@ class Types():
         box2.set_border_width(10)
         box1.pack_start(box2, True, True, 0)
         box2.show()
-
         #auto partition or Customize Disk Partition.
         bbox = gtk.VBox()
         label = gtk.Label()
@@ -67,7 +65,6 @@ class Types():
         # create a Hbox to center the radio button.
         hbox = gtk.HBox()
         box2.pack_start(hbox, True, True, 10)
-
         radio = gtk.RadioButton(None, "Use Entire Disk")
         bbox.pack_start(radio, False, True, 10)
         radio.connect("toggled", self.partition, "user")
@@ -82,32 +79,13 @@ class Types():
         radio.connect("toggled", self.partition, "custom")
         radio.show()
         #box2.pack_start(radio, True, True, 10)
-
         hbox.pack_start(bbox, True, True, 100)
-
-        # Boot option.
-        label = gtk.Label('<b><span size="large">Boot Option</span></b>')
-        label.set_use_markup(True)
-        #table = gtk.Table(1, 2, True)
-        check = gtk.CheckButton("Install BSD Boot Loader")
-        check.connect("toggled", self.on_check)
-        self.boot = 'none'
-        boot = open(boot_file, 'w')
-        boot.writelines(self.boot)
-        boot.close()
-
-        hbox = gtk.HBox()
-        box2.pack_start(hbox, False, False, 10)
-        #bbox.pack_start(label, False, True, 0)
-        #bbox.pack_start(check, False, True, 0)
         hbox.pack_start(bbox, True, True, 50)
         label = gtk.Label()
         box2.pack_start(label, False, False, 0)
         box2 = gtk.HBox(False, 10)
         box2.set_border_width(5)
-
         box1.pack_start(box2, False, False, 0)
-
         box2.show()
         # Add button
         box2.pack_start(type_bbox(next, True,

@@ -4,7 +4,7 @@
 # Configure only this file.
 #
 
-# Network interface.
+# Network interface
 hostname="livecd"
 
 # Power saver.
