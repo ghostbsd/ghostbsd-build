@@ -35,15 +35,19 @@
 #
 # Video Card Detection script
 
-if [ -f "${X_CFG}" ]; then
+clear
+
+if [ -f "/etc/X11/xorg.conf" ]; then
 	echo "xorg.conf found... skipping"
 	exit
 fi
 echo "Creating xorg.conf..."
 
-/usr/local/bin/Xorg -configure
-cp /root/xorg.conf.new /etc/X11/xorg.conf
+sudo Xorg -configure
+sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
+sed -i '' 's@#gdm_enable="YES"@gdm_enable="YES"@g' /etc/rc.conf
+( echo "g/xconfig/d" ; echo 'wq' ) | ex -s /home/ghostbsd/.cshrc
 
-( echo "g/sudo sh /usr/local/etc/card/xconfig.sh/d" ; echo 'wq' ) | ex -s /home/ghostbsd/.cshrc
+gdm
 
-rm -rf ${FSMNT}/usr/local/etc/card
+echo 'If X fail to start run "xdrivers"'

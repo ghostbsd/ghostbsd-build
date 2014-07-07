@@ -62,6 +62,7 @@ cp -prf extra/mate/org.mate.caja.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0
 cp -prf extra/mate/org.mate.interface.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 cp -prf extra/mate/org.mate.panel.toplevel.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 cp -prf extra/mate/org.mate.terminal.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
+cp -prf extra/mate/org.mate.screensaver.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 cp -prf extra/mate/panel-default-layout.mate ${BASEDIR}/usr/local/share/mate-panel/
 
 # Package Manager in Mate menu
@@ -73,24 +74,6 @@ chroot ${BASEDIR} glib-compile-schemas /usr/local/share/glib-2.0/schemas/
 # gksu configuration.
 if [ -f ${BASEDIR}/usr/local/share/applications/gksu.desktop ] ; then
         /usr/bin/sed -i "" "s@/usr/bin/x-terminal-emulator@/usr/local/bin/mate-terminal@" ${BASEDIR}/usr/local/share/applications/gksu.desktop
-fi
-
-# Cups ussing Firefox.
-if [ -f ${BASEDIR}/usr/local/share/applications/cups.desktop ] ; then
-        /usr/bin/sed -i "" "s@htmlview@firefox@" ${BASEDIR}/usr/local/share/applications/cups.desktop
-fi
-
-# Cups adds.
-cp -f extra/gnome/devfs.rules ${BASEDIR}/etc/
-cat extra/gnome/make.conf >> ${BASEDIR}/etc/make.conf
-
-# To enable USB devices that are plugged in to be read/written
-# by operators (i.e. the live user), this is needed:
-if [ -z "$(cat ${BASEDIR}/etc/devd.conf| grep ugen[0-9])" ] ; then
-    cat extra/gnome/devd.conf.extra >> ${BASEDIR}/etc/devd.conf
-fi
-if [ -z "$(cat ${BASEDIR}/etc/sysctl.conf| grep vfs.usermount)" ] ; then
-    echo "vfs.usermount=1" >> ${BASEDIR}/etc/sysctl.conf
 fi
 
 # Set cursor theme instead of default from xorg

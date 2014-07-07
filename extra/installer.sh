@@ -4,7 +4,7 @@
 #
 # See COPYING for licence terms.
 #
-# installer.sh,v 1.2_1 Monday, January 31 2011 00:53:46 Eric
+# installer.sh, v1.3 Sunday, June 29 2014, Eric Turgeon
 #
 set -e -u
 
@@ -19,30 +19,18 @@ if [ ! -d ${BASEDIR}/usr/local/etc/gbi ]; then
     mkdir -p ${BASEDIR}/usr/local/etc/gbi
 fi
 
-###
-## Make user Desktop dir if doesn't exists
-###
-if [ ! -d "${BASEDIR}${HOME}/Desktop" ] ; then
-        mkdir -p "${BASEDIR}${HOME}/Desktop"
-fi
-
-###
 ## put the installer in the system
-####
 cp -Rf extra/installer/gbi/ ${BASEDIR}/usr/local/etc/gbi
 rm -r ${BASEDIR}/usr/share/pc-sysinstall/*
 cp -Rf extra/installer/pc-sysinstall/ ${BASEDIR}/usr/share/pc-sysinstall/
 
-###
-## put a installer on the desktop
-####
-if [ ! -f /usr/local/share/applications/GBI.desktop ]; then
-  cp -pf extra/installer/GBI.desktop ${BASEDIR}${HOME}/Desktop/
-  chmod g+rwx ${BASEDIR}${HOME}/Desktop/GBI.desktop
-fi
+## put the installer on the desktop
+cp -pf extra/installer/GBI.desktop ${BASEDIR}${HOME}/Desktop/
+chmod -R 1000:0 ${BASEDIR}${HOME}/Desktop/GBI.desktop
 
-# copy gbi and ginstall script to /usr/bin.
-cp -Rf extra/installer/bin/ ${BASEDIR}/usr/bin
+
+# copy gbi script to /usr/local/bin.
+install -C extra/installer/gbi.sh ${BASEDIR}/usr/local/bin/gbi
 
 
 

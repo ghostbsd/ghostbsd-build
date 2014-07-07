@@ -132,10 +132,7 @@ class cfg_data():
     f.writelines('userHome=%s\n' % upath.rstrip())
     f.writelines('userGroups=operator\n')
     f.writelines('commitUser\n')
-    # Removing GhostBSD user.
-    f.writelines("runCommand=( echo 'g/# Network interface./d' ; echo 'wq' ) | ex -s /etc/rc.conf")
-    f.writelines("""runCommand=( echo 'g/hostname="livecd"/d' ; echo 'wq' ) | ex -s /etc/rc.conf""")
-    f.writelines("cd /tmp && ls | xargs rm -R")
+    f.writelines("runCommand=iso_to_cd")
     f.close()
     os.remove(user_passwd)
     Popen(start_Install, shell=True)

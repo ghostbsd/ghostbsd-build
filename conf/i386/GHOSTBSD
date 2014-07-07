@@ -241,6 +241,14 @@ device		hme		# Sun Microelectronics STP2002-STQ Ethernet
 device		igb		# Intel(R) PRO/1000 Gigabit Ethernet
 device		ipw		# Intel PRO/Wireless 2100 wireless
 device		iwi		# Intel PRO/Wireless 2200BG/2225BG/2915ABG
+device      iwn4965fw
+device      iwn1000fw
+device      iwn5000fw
+device      iwn5150fw
+device      iwn6000fw
+device      iwn6000g2afw
+device      iwn6000g2bfw
+device      iwn6050fw
 device		wlan		# 802.11 support
 options 	IEEE80211_DEBUG	# enable debug msgs
 options 	IEEE80211_AMPDU_AGE # age frames in AMPDU reorder q's

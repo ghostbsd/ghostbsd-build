@@ -23,15 +23,15 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# ghostbsd.sh,v Sun Dec 11 2011 23:15, Eric
+# ghostbsd.sh, v4.0, Sunday, June 29 2014, Eric Turgeon
 #
 
 # Removing some MB of the system.
 rm -rf ${BASEDIR}/rescue
 
 # Graphic card Auto configuration at the system boot Script.
-mkdir $BASEDIR/usr/local/etc/card/
-install -C extra/ghostbsd/xconfig.sh $BASEDIR/usr/local/etc/card/
+install -C extra/ghostbsd/xconfig.sh $BASEDIR/usr/local/bin/xconfig
+install -C extra/ghostbsd/xdrivers.py $BASEDIR/usr/local/bin/xdrivers
 
 # Cat rc.cong.extra in 
 cat extra/ghostbsd/rc.conf.extra >> ${BASEDIR}/etc/rc.conf
@@ -40,6 +40,7 @@ cat extra/ghostbsd/rc.conf.extra >> ${BASEDIR}/etc/rc.conf
 sed -i "" "s@# %wheel ALL=(ALL) ALL@%wheel ALL=(ALL) ALL@" ${BASEDIR}/usr/local/etc/sudoers
 sed -i "" "s@# %sudo	ALL=(ALL) ALL@%sudo	ALL=(ALL) ALL@" ${BASEDIR}/usr/local/etc/sudoers
 sed -i "" "s@# %wheel ALL=(ALL) NOPASSWD: ALL@%wheel ALL=(ALL) NOPASSWD: /usr/local/share/networkmgr/trayicon.py@" ${BASEDIR}/usr/local/etc/sudoers
+
 # put a GhostBSD-irc icon on the desktop
 cp -f extra/ghostbsd/ghostbsd-irc.desktop ${BASEDIR}/usr/local/share/applications/
 
@@ -98,13 +99,29 @@ cd ${BASEDIR}/usr/local/lib/firefox/browser/searchplugins
 rm -f bing.xml yahoo.xml google.xml twitter.xml
 cd -
 
+# Cups and Xfburn adds.
+cp -f extra/ghostbsd/devfs.rules ${BASEDIR}/etc/
+cat extra/ghostbsd/make.conf >> ${BASEDIR}/etc/make.conf
+
+# To enable USB devices that are plugged in to be read/written
+# by operators (i.e. the live user), this is needed:
+if [ -z "$(cat ${BASEDIR}/etc/devd.conf| grep ugen[0-9])" ] ; then
+    cat extra/ghostbsd/devd.conf.extra >> ${BASEDIR}/etc/devd.conf
+fi
+
+if [ -z "$(cat ${BASEDIR}/etc/sysctl.conf| grep vfs.usermount)" ] ; then
+    echo "vfs.usermount=1" >> ${BASEDIR}/etc/sysctl.conf
+fi
+# Cups ussing Firefox.
+if [ -f ${BASEDIR}/usr/local/share/applications/cups.desktop ] ; then
+        /usr/bin/sed -i "" "s@htmlview@firefox@" ${BASEDIR}/usr/local/share/applications/cups.desktop
+fi
+
 # Replacing duckduckgo.xml.
 cp extra/ghostbsd/ddg/duckduckgo.xml ${BASEDIR}/usr/local/lib/firefox/browser/searchplugins/duckduckgo.xml
 
 # Replacing amazondotcom.xml with GhostBSD affiliate amazondotcom.xml. 
 cp -f extra/ghostbsd/amazon/amazondotcom.xml ${BASEDIR}/usr/local/lib/firefox/browser/searchplugins/amazondotcom.xml
-
-#cp -f extra/gnome/gnome-applications.menu ${BASEDIR}/usr/local/etc/xdg/menus
 
 # Setup PolicyKit for mounting device.
 printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
@@ -135,5 +152,4 @@ printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
 ' > ${BASEDIR}/usr/local/etc/PolicyKit/PolicyKit.conf
 
 # Adding config file for cleaning after installation.
-
-cp -f extra/ghostbsd/config.sh ${BASEDIR}/config.sh
+install -C extra/ghostbsd/iso_to_cd.sh ${BASEDIR}/usr/local/bin/iso_to_cd

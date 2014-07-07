@@ -2,11 +2,9 @@ desc = """
 	Sound and Video.
 """
 packages="""
-vlc
-#banshee
-#rhythmbox
 exaile
+vlc
 xfburn
-#brasero
 cheese
+gstreamer-plugins-neon
 """

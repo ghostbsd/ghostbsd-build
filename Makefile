@@ -1,16 +1,15 @@
 #
-# Copyright (c) 2011 GhostBSD
+# Copyright (c) 2009 GhostBSD
 #
 # See COPYING for licence terms.
 #
 # GhostBSD
-# Makefile,v 1.5.1 Friday, January 14 2011 01:40:15 Exp 
+# Makefile, v1.6, Monday, June 30 2014 EricTurgeon
 #
 # GhostBSD makefile. Main targets are:
 #
 # iso:		build an iso image
 # img:		build a loopback image 
-# flash:	copy the built system on a device (interactive)
 # ghostbsd:	same of `iso'
 #
 # pkgselect:	choose packages to include in the built system (interactive)
@@ -104,15 +103,16 @@ img: .done_img
 	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} img ${CANONICALOBJDIR}/.tmp_img
 	@mv ${CANONICALOBJDIR}/.tmp_img ${CANONICALOBJDIR}/.done_img
 
-flash: .done_flash
-.done_flash: .done_clonefs
-	@-rm -f ${CANONICALOBJDIR}/.tmp_flash
-	@touch ${CANONICALOBJDIR}/.tmp_flash
-	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} flash ${CANONICALOBJDIR}/.tmp_flash
-	@mv ${CANONICALOBJDIR}/.tmp_flash ${CANONICALOBJDIR}/.done_flash
-
 clean:
 	@-rm -f .tmp* .done* > /dev/null 2>&1
 
 cleandir: clean
 	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} cleandir
+
+upgradepkg:
+	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} upgradepkg
+
+installpkg:
+	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} installpkg
+
+

@@ -7,7 +7,6 @@ sudo
 nano
 mc
 py27-gobject
-py27-webkit
 py27-webkitgtk
 freedesktop-sound-theme
 fish
@@ -22,6 +21,7 @@ bwi-firmware-kmod
 bwn-firmware-kmod
 gdm
 metacity
+gnome-keyring
 gnome-audio
 cups
 system-config-printer
@@ -35,10 +35,11 @@ thunderbird
 xchat
 networkmgr
 wifimgr
-vlc
 exaile
+vlc
 xfburn
 cheese
+gstreamer-plugins-neon
 libreoffice
 dejavu
 cyberbit-ttfonts
@@ -47,3 +48,4 @@ en-aspell
 en-hunspell
 shotwell
 mate
+mate-screensaver

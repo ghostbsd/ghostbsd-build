@@ -5,6 +5,7 @@ Display Manager
 packages = """
 gdm
 metacity
+gnome-keyring
 gnome-audio
 """
 

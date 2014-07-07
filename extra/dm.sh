@@ -36,8 +36,8 @@ cp -f extra/ghostbsd/wallpapers/ghost_horizon.png ${BASEDIR}/usr/local/share/pix
 #Gconf GhostBSD defaults.
 mkdir -p /usr/local/etc/default
 rm -rf ${BASEDIR}/usr/local/etc/gconf/gconf.xml.defaults
-cp -f extra/gnome/gnome-desktop-settings /usr/local/etc/default/
-cp -f extra/gnome/get_settings /usr/local/etc/default/
+cp -f extra/dm/gnome-desktop-settings /usr/local/etc/default/
+cp -f extra/dm/get_settings /usr/local/etc/default/
 mkdir -p ${BASEDIR}/usr/local/etc/default
 sh /usr/local/etc/default/get_settings
 rm -rf /usr/local/etc/default
