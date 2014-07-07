@@ -7,14 +7,16 @@ hostname="livecd"
 # Power saver.
 powerd_enable="YES"
 powerd_flags="-a adp -b adp"
+
 # DEVFS rules
 devfs_system_ruleset="system"
+
 # All Gnome need. 
 cupsd_enable="YES"
 #gdm_enable="YES"
 hald_enable="YES"
 dbus_enable="YES"
 linux_enable="YES"
-# Virtual Box adition configuration
+
 vboxguest_enable="YES"
 vboxservice_enable="YES"

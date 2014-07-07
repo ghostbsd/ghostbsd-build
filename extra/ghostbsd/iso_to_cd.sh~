@@ -15,8 +15,8 @@ GHOSTBSD=${GHOSTBSD:-"ghostbsd"}
 sed -i "" "/ttyv0/s/root/Pc/g" /etc/ttys
 
 sed -i '' 's@#gdm_enable="YES"@gdm_enable="YES"@g' /etc/rc.conf 
-
 # Removing GhostBSD user.
+( echo 'g/# Network interface/d' ; echo 'wq' ) | ex -s /etc/rc.conf
 ( echo 'g/hostname="livecd"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
 
 

@@ -28,11 +28,6 @@ if [ ! -d ${BASEDIR}/home/${GHOSTBSD_ADDUSER} ]; then
     mkdir -p ${BASEDIR}/home/${GHOSTBSD_ADDUSER}
 fi
 
-if [ ! -L ${BASEDIR}/usr/home ]; then
-    ln -s ${BASEDIR}/home ${BASEDIR}/usr/home
-fi
-
-
 set +e
 grep -q ^${GHOSTBSD_ADDUSER}: ${BASEDIR}/etc/master.passwd
 
@@ -42,7 +37,7 @@ if [ $? -ne 0 ]; then
         -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
 else
     chroot ${BASEDIR} pw usermod ${GHOSTBSD_ADDUSER} \
-        -u 1000 -c "GhostBSD User" -d "/usr/home/${GHOSTBSD_ADDUSER}" \
+        -u 1000 -c "GhostBSD User" -d "/home/${GHOSTBSD_ADDUSER}" \
         -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
 fi
 
@@ -50,22 +45,8 @@ chroot ${BASEDIR} pw mod user ${GHOSTBSD_ADDUSER} -w none
 
 set -e
 
-chown -R 1000:0 ${BASEDIR}/usr/home/${GHOSTBSD_ADDUSER}
+chown -R 1000:0 ${BASEDIR}/home/${GHOSTBSD_ADDUSER}
 
-## Make user Desktop dir if doesn't exists
-if [ ! -d "${BASEDIR}${HOME}/Desktop" ] ; then
-  mkdir -p ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop
-  chown -R 1000:0 ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop
-fi
+mkdir -p ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop
+chown -R 1000:0 ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop
 
-if [ ! -z "${NO_UNIONFS:-}" ]; then
-    echo "Adding init script for /home mfs"
-
-    cp ${LOCALDIR}/extra/adduser/homemfs.rc ${BASEDIR}/etc/rc.d/homemfs
-    chmod 555 ${BASEDIR}/etc/rc.d/homemfs
-
-    echo "Saving mtree structure for /home/"
-
-    mtree -Pcp ${BASEDIR}/usr/home > ${TMPFILE}
-    mv ${TMPFILE} ${BASEDIR}/etc/mtree/home.dist
-fi

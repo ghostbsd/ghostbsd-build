@@ -51,7 +51,7 @@ mount -o noatime /dev/${device} ${tempdir}
 
 back=$PWD
 
-cd /usr/home
+cd /home
 find . -print -depth | cpio -dump --quiet ${tempdir}
 
 cd $back
@@ -59,4 +59,4 @@ cd $back
 mtree -PUer -q -p ${tempdir} < /etc/mtree/home.dist > /dev/null 2>&1
 
 umount ${tempdir}
-mount -o noatime /dev/${device} /usr/home
+mount -o noatime /dev/${device} /home
