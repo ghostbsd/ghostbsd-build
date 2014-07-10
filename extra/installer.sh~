@@ -26,7 +26,7 @@ cp -Rf extra/installer/pc-sysinstall/ ${BASEDIR}/usr/share/pc-sysinstall/
 
 ## put the installer on the desktop
 cp -pf extra/installer/GBI.desktop ${BASEDIR}${HOME}/Desktop/
-chown -R 1000:0 ${BASEDIR}${HOME}/Desktop/GBI.desktop
+chmod -R 1000:0 ${BASEDIR}${HOME}/Desktop/GBI.desktop
 
 
 # copy gbi script to /usr/local/bin.
