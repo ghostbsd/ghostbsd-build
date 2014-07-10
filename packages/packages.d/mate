@@ -5,6 +5,7 @@ Mate desktop environment
 packages = """
 mate
 mate-screensaver
+plank
 """
 
 settings="""
