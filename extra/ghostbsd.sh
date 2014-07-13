@@ -152,4 +152,33 @@ printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
 ' > ${BASEDIR}/usr/local/etc/PolicyKit/PolicyKit.conf
 
 # Adding config file for cleaning after installation.
-install -C extra/ghostbsd/iso_to_cd.sh ${BASEDIR}/usr/local/bin/iso_to_cd
+install -C extra/ghostbsd/iso_to_cd.sh ${BASEDIR}/usr/local/bin/iso_to_hd
+
+if [ -f '/usr/local/share/applications/mc.desktop' ]; then
+  printf '[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Midnight Commander
+GenericName=Midnight Commander
+Comment=Midnight Commander, a free Norton Commander Clone
+Icon=mc
+Exec=mate-terminal -e mc
+Categories=System;Utility;Core;FileTools;FileManager;
+' > ${BASEDIR}/usr/local/share/applications/mc.desktop
+fi
+
+if [ -f '/usr/local/share/applications/SpiderOak.desktop' ]; then
+printf '[Desktop Entry]
+Version=1.0
+Type=Application
+Name=SpiderOak
+GenericName=File Backup and Synchronizer
+Comment=Privately sync, backup, and share your data across your computers.
+Comment[en_US]=Privately sync, backup, and share your data across your computers.
+Icon=SpiderOak
+Exec=SpiderOak
+Terminal=false
+Categories=Network;Archiving;Utility;
+X-Desktop-File-Install-Version=0.22
+' > ${BASEDIR}/usr/local/share/applications/SpiderOak.desktop
+fi

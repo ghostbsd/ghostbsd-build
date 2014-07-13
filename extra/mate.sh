@@ -20,7 +20,7 @@ cp -f extra/mate/xinitrc ${BASEDIR}/usr/local/etc/X11/xinit/xinitrc
 # Removing Gnome in GDM.
 cd ${BASEDIR}/usr/local/share/xsessions
 rm -rf gnome.desktop
-cd -
+cd - 
 
 # Ghostbsd theme.
 cd ${BASEDIR}/usr/local/share/themes
@@ -55,7 +55,7 @@ mkdir ${BASEDIR}/usr/local/share/backgrounds/ghostbsd/
 cp -prf extra/ghostbsd/wallpapers/* ${BASEDIR}/usr/local/share/backgrounds/ghostbsd/
 cp -prf extra/mate/ghostbsd.xml ${BASEDIR}/usr/local/share/mate-background-properties/
 
-# Dconf GhostBSD defaults file.
+# GhostBSD dconf GhostBSD defaults file.
 cp -prf extra/mate/org.mate.background.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 cp -prf extra/mate/org.mate.marco.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 cp -prf extra/mate/org.mate.caja.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
@@ -64,6 +64,11 @@ cp -prf extra/mate/org.mate.panel.toplevel.gschema.xml ${BASEDIR}/usr/local/shar
 cp -prf extra/mate/org.mate.terminal.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 cp -prf extra/mate/org.mate.screensaver.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 cp -prf extra/mate/panel-default-layout.mate ${BASEDIR}/usr/local/share/mate-panel/
+
+# GhostBSD shose station.
+cp -rf extra/mate/chose-station ${BASEDIR}/usr/local/share/chose-station
+install -C extra/mate/chose-station/main.py ${BASEDIR}/usr/local/bin/chose-station
+cp extra/mate/chose-station/chose-station.desktop ${BASEDIR}/usr/local/etc/xdg/autostart/
 
 # Package Manager in Mate menu
 #cp -prf extra/mate/mate-applications.menu ${BASEDIR}/usr/local/etc/xdg/menus/mate-applications.menu
