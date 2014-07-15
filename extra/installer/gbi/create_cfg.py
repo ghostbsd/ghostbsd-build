@@ -132,11 +132,7 @@ class cfg_data():
     f.writelines('userHome=%s\n' % upath.rstrip())
     f.writelines('userGroups=operator\n')
     f.writelines('commitUser\n')
-<<<<<<< HEAD
     f.writelines('runCommand=iso_to_hd')
-=======
-    f.writelines("runCommand=iso_to_cd")
->>>>>>> 0600fc0b0bf65eb2ecad26eae98163ae1329899d
     f.close()
     os.remove(user_passwd)
     Popen(start_Install, shell=True)
