@@ -16,9 +16,8 @@ sed -i "" "/ttyv0/s/root/Pc/g" /etc/ttys
 
 sed -i '' 's@#gdm_enable="YES"@gdm_enable="YES"@g' /etc/rc.conf 
 
-# Removing GhostBSD user.
+# Removing livecd hostname.
 ( echo 'g/hostname="livecd"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
-
 
 cd /home
 LS=`ls`
@@ -32,7 +31,7 @@ file:///home/${user}/Music Music
 file:///home/${user}/Pictures Pictures
 " > /home/${user}/.gtk-bookmarks
   chown ${user} /home/${user}/.gtk-bookmarks
-  chmod 755/home/${user}/.gtk-bookmarks
+  chmod 755 /home/${user}/.gtk-bookmarks
   mkdir /home/${user}/Documents
   chown ${user} /home/${user}/Documents
   chmod 755 /home/${user}/Documents
@@ -89,3 +88,5 @@ printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
   </match>
 </config>
 ' > ${FSMNT}/usr/local/etc/PolicyKit/PolicyKit.conf
+
+( echo "g/iso_to_hd/d" ; echo 'wq' ) | ex -s /home/root/.cshrc

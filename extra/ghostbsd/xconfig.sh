@@ -14,10 +14,6 @@
 #    disclaimer in the documentation and/or other materials provided
 #    with the distribution.
 #
-# 3. Neither then name of GhostBSD Project nor the names of its
-#    contributors maybe used to endorse or promote products derived
-#    from this software without specific prior written permission.
-#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -46,7 +42,7 @@ echo "Creating xorg.conf..."
 sudo Xorg -configure
 sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
 sed -i '' 's@#gdm_enable="YES"@gdm_enable="YES"@g' /etc/rc.conf
-( echo "g/xconfig/d" ; echo 'wq' ) | ex -s /home/ghostbsd/.cshrc
+sed -i '' 's@xconfig@iso_to_hd@g' /home/root/.cshrc
 
 gdm
 
