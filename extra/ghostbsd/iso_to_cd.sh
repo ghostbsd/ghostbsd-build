@@ -90,3 +90,5 @@ printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
 ' > ${FSMNT}/usr/local/etc/PolicyKit/PolicyKit.conf
 
 ( echo "g/iso_to_hd/d" ; echo 'wq' ) | ex -s /home/root/.cshrc
+
+gdm
