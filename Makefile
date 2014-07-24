@@ -111,8 +111,12 @@ cleandir: clean
 
 upgradepkg:
 	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} upgradepkg
+	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} cleandesktop
+	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} createpkg
 
 installpkg:
 	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} installpkg
+	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} cleandesktop
+	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} createpkg
 
 
