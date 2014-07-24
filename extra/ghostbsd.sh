@@ -44,6 +44,12 @@ sed -i "" "s@# %wheel ALL=(ALL) NOPASSWD: ALL@%wheel ALL=(ALL) NOPASSWD: /usr/lo
 # put a GhostBSD-irc icon on the desktop
 cp -f extra/ghostbsd/ghostbsd-irc.desktop ${BASEDIR}/usr/local/share/applications/
 
+# Put Login sound
+mkdir -p ${BASEDIR}/usr/local/share/sounds/ghostbsd/
+cp extra/ghostbsd/desktop-login.ogg ${BASEDIR}/usr/local/share/sounds/ghostbsd/desktop-login.ogg
+
+
+
 # Live CD user gtk-bookmarks.
 printf "file:///root/Documents Documents
 file:///root/Downloads Downloads
