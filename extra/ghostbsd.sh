@@ -48,7 +48,14 @@ cp -f extra/ghostbsd/ghostbsd-irc.desktop ${BASEDIR}/usr/local/share/application
 mkdir -p ${BASEDIR}/usr/local/share/sounds/ghostbsd/
 cp extra/ghostbsd/desktop-login.ogg ${BASEDIR}/usr/local/share/sounds/ghostbsd/desktop-login.ogg
 
-
+printf '[Desktop Entry]
+Name=GhostBSD login sound
+Comment=GhostBSD login sound
+Exec=paplay /usr/local/share/sounds/ghostbsd/desktop-login.ogg
+Icon=preferences-desktop-theme
+Terminal=false
+Type=Application
+' > ${BASEDIR}/usr/local/etc/xdg/autostart/desktopsound.desktop
 
 # Live CD user gtk-bookmarks.
 printf "file:///root/Documents Documents
