@@ -42,7 +42,7 @@ echo "Creating xorg.conf..."
 sudo Xorg -configure
 sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
 sed -i '' 's@#gdm_enable="YES"@gdm_enable="YES"@g' /etc/rc.conf
-sed -i '' 's@xconfig@iso_to_hd@g' /home/root/.cshrc
+sed -i '' 's@xconfig@iso_to_hd@g' /root/.cshrc
 
 gdm
 

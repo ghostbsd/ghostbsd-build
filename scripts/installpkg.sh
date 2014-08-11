@@ -4,8 +4,6 @@
 #
 # Creates package for GhostBSD
 
-set -e -u
-
 if [ -z "${LOGFILE:-}" ]; then
   echo "This script can't run standalone."
   echo "Please use launch.sh to execute it."
@@ -50,24 +48,21 @@ echo "#!/bin/sh" > scripts/ports.sh
 echo "portinstall -c" | tr "\n" " " >> scripts/ports.sh
 cat conf/packages | tr "\n" " " >> scripts/ports.sh
 
+portinstall -c xorg-drivers xorg-drivers
+
 # Installing pkg
 while read pkgc; do
   if [ -n "${pkgc}" ]; then
-    if [ "$(uname -p)" = "amd64" ]; then
-      if [ "${pkgc}" = "xorg-minimal" ]; then
-        echo "Pass $pkgc"
-      elif [ "${pkgc}" = "xorg-drivers" ]; then
-        echo "Pass $pkgc"
-      else 
-        $pkgaddcmd $pkgc
-      fi
+    if [ "${pkgc}" = "xorg-minimal" ]; then
+      echo "Pass $pkgc"
+    elif [ "${pkgc}" = "xorg-drivers" ]; then
+      echo "Pass $pkgc"
     else
       $pkgaddcmd $pkgc
     fi   
   fi
 done < $pkgfile
 
-
-#installing remaining pkg from ports.
+# Installing remaining pkg from ports.
 
 sh scripts/ports.sh

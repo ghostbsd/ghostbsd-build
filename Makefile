@@ -119,4 +119,5 @@ installpkg:
 	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} cleandesktop
 	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} createpkg
 
-
+createpkg:
+	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} createpkg

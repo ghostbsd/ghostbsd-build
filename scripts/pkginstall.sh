@@ -87,14 +87,8 @@ rsync -az --exclude 'Makefile' ${PKG_LOCATION} ${BASEDIR}
 cp $PKGFILE ${BASEDIR}
 export PACKAGE_BUILDING=yo
 
-printf '# $FreeBSD: stable/10/etc/pkg/FreeBSD.conf 258710 2013-11-28 14:24:26Z gjb $
-FreeBSD: {
-  url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest",
-  mirror_type: "srv",
-  #signature_type: "fingerprints",
-  fingerprints: "/usr/share/keys/pkg",
-  enabled: yes
-}' > ${BASEDIR}/etc/pkg/FreeBSD.conf
+sed -i '' 's@signature_type: "fingerprints"@#signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
+
 
 cat > ${BASEDIR}/addpkg.sh << "EOF"
 #!/bin/sh 
@@ -102,8 +96,6 @@ cat > ${BASEDIR}/addpkg.sh << "EOF"
 PLOGFILE=".log_pkginstall"
 pkgfile="packages"
 pkgaddcmd="pkg add"
-
-#$pkgaddcmd xz*.txz
 sh /etc/rc.d/ldconfig start
 $pkgaddcmd pkg*.txz #>> ${PLOGFILE} 2>&1
 while read pkgc; do
@@ -120,15 +112,9 @@ rm *.txz
 EOF
 
 chrootcmd="chroot ${BASEDIR} sh addpkg.sh"
+
 $chrootcmd
 
-printf '# $FreeBSD: stable/10/etc/pkg/FreeBSD.conf 258710 2013-11-28 14:24:26Z gjb $
-FreeBSD: {
-  url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest",
-  mirror_type: "srv",
-  signature_type: "fingerprints",
-  fingerprints: "/usr/share/keys/pkg",
-  enabled: yes
-}' > ${BASEDIR}/etc/pkg/FreeBSD.conf
+sed -i '' 's@#signature_type: "fingerprints"@signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 
 mv ${BASEDIR}/${PLOGFILE} /usr/obj/${LOCALDIR}

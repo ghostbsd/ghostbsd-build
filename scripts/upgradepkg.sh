@@ -4,7 +4,7 @@
 #
 # Update and create package for GhostBSD
 
-set -e -u
+#set -e -u
 
 if [ -z "${LOGFILE:-}" ]; then
   echo "This script can't run standalone."
@@ -15,17 +15,15 @@ fi
 pkgfile="conf/packages"
 pkgaddcmd="pkg install -yf"
 
+portupgrade -crf xorg-minimal xorg-drivers
+
 # Update GhostBSD pkg
 while read pkgc; do
   if [ -n "${pkgc}" ]; then
-    if [ "$(uname -p)" = "amd64" ]; then
-      if [ "${pkgc}" = "xorg-minimal" ]; then
-        echo "Pass $pkgc"
-      elif [ "${pkgc}" = "xorg-drivers" ]; then
-        echo "Pass $pkgc"
-      else 
-        $pkgaddcmd $pkgc
-      fi
+    if [ "${pkgc}" = "xorg-minimal" ]; then
+      echo "Pass $pkgc"
+    elif [ "${pkgc}" = "xorg-drivers" ]; then
+      echo "Pass $pkgc"
     else
       $pkgaddcmd $pkgc
     fi

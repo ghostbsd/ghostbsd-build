@@ -67,7 +67,7 @@ class RadioButtonWindow(Gtk.Window):
         self.show_all()
 
     def on_close_clicked(self, widget):
-        call('sudo rm /usr/local/etc/xdg/autostart/chose-station.desktop', shell=True)
+        call('sudo rm -f /usr/local/etc/xdg/autostart/chose-station.desktop', shell=True)
         Gtk.main_quit()
 
     def on_button_toggled(self, button, name):
@@ -88,7 +88,7 @@ class RadioButtonWindow(Gtk.Window):
             shell=True)
             Popen('plank', shell=True)
         elif self.pname != 'element':
-            call('sudo rm /usr/local/etc/xdg/autostart/plank.desktop', shell=True)
+            call('sudo rm -f /usr/local/etc/xdg/autostart/plank.desktop', shell=True)
             call('killall plank', shell=True)
 
     def on_numeric_toggled(self, button):
