@@ -4,12 +4,6 @@
 #
 # Creates package for GhostBSD
 
-if [ -z "${LOGFILE:-}" ]; then
-  echo "This script can't run standalone."
-  echo "Please use launch.sh to execute it."
-  exit 1
-fi
-
 pkgfile="conf/packages"
 pkgaddcmd="pkg install -y "
 

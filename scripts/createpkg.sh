@@ -1,7 +1,5 @@
 #!/bin/sh
 
-#set -e -u
-
 # Creating pkg for GhostBSD. 
 if [ "$(uname -p)" = "amd64" ] ; then
   PLATFORM=${PLATFORM:-"amd64"}
