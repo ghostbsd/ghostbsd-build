@@ -4,8 +4,6 @@
 #
 # Update and create package for GhostBSD
 
-#set -e -u
-
 pkgfile="conf/packages"
 pkgaddcmd="pkg install -yf"
 

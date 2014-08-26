@@ -3,7 +3,7 @@ desc = """
 """
 packages="""
 exaile
-vlc
+gnome-mplayer
 xfburn
 cheese
 gstreamer-plugins-neon

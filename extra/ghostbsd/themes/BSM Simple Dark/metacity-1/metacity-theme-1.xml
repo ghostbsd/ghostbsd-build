@@ -352,12 +352,12 @@
 <!-- menu icon -->
 <draw_ops name="menu_button_icon"> 
 	<!--<icon  x="0" y="0" width="width" height="height"/>-->
-	<icon  x="(width-mini_icon_width)/2" y="(height-mini_icon_height)/2" width="mini_icon_width" height="mini_icon_height"/>
+	<image filename="menu-focus.svg"  x="(width-mini_icon_width)/2" y="(height-mini_icon_height)/2" width="mini_icon_width" height="mini_icon_height"/>
 </draw_ops>
 
 <draw_ops name="menu_button_icon_unfocused"> 
 	<!--<icon  x="0" y="0" width="width" height="height" alpha="0.5"/>-->
-	<icon  x="(width-mini_icon_width)/2" y="(height-mini_icon_height)/2" width="mini_icon_width" height="mini_icon_height"  alpha="0.75"/>
+	 <image filename="menu-focus-none.svg" x="(width-mini_icon_width)/2" y="(height-mini_icon_height)/2" width="mini_icon_width" height="mini_icon_height"  alpha="0.75"/>
 </draw_ops>
 
 <draw_ops name="menu_button_normal">

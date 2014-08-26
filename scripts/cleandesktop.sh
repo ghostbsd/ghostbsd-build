@@ -1,13 +1,5 @@
 #!/bin/sh
 
-set -e -u
-
-if [ -z "${LOGFILE:-}" ]; then
-  echo "This script can't run standalone."
-  echo "Please use launch.sh to execute it."
-  exit 1
-fi
-
 # Remove Gnome and Mate in .desktop.
 GhostBSD=`ls /usr/local/share/applications/ | grep -v libreoffice | grep -v kde4 | grep -v screensavers` 
 
