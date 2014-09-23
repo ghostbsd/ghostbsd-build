@@ -19,8 +19,13 @@ cp -f extra/mate/xinitrc ${BASEDIR}/usr/local/etc/X11/xinit/xinitrc
 
 # Removing Gnome in GDM.
 cd ${BASEDIR}/usr/local/share/xsessions
-rm -rf gnome.desktop
+rm gnome.desktop
 cd - 
+
+# Remove gmplayer.desktop
+if [ -f "/usr/local/share/applications/gmplayer.desktop" ]; then
+  rm ${BASEDIR}/usr/local/share/applications/gmplayer.desktop
+fi
 
 # Ghostbsd theme.
 cd ${BASEDIR}/usr/local/share/themes
