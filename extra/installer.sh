@@ -14,6 +14,17 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
+git clone https://github.com/pcbsd/pcbsd.git ${BASEDIR}/pdbsd
+
+cat > ${BASEDIR}/config.sh << 'EOF'
+#!/bin/sh
+cd pcbsd/src-sh/pc-sysinstall
+sh install.sh /usr
+EOF
+
+chroot ${BASEDIR} sh /config.sh
+rm -f ${BASEDIR}/config.sh 
+
 # Installer backend.
 if [ ! -d ${BASEDIR}/usr/local/etc/gbi ]; then
     mkdir -p ${BASEDIR}/usr/local/etc/gbi
@@ -21,8 +32,6 @@ fi
 
 ## put the installer in the system
 cp -Rf extra/installer/gbi/ ${BASEDIR}/usr/local/etc/gbi
-rm -r ${BASEDIR}/usr/share/pc-sysinstall/*
-cp -Rf extra/installer/pc-sysinstall/ ${BASEDIR}/usr/share/pc-sysinstall/
 
 ## put the installer on the desktop
 cp -pf extra/installer/GBI.desktop ${BASEDIR}${HOME}/Desktop/
