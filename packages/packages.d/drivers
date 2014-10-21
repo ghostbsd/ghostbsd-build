@@ -2,7 +2,6 @@ desc = """
 	drivers
 """
 packages="""
-xorg-drivers
 bwi-firmware-kmod
 bwn-firmware-kmod
 """

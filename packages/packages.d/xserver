@@ -4,8 +4,9 @@ description="""
 deps="""
 """
 packages="""
-xorg-minimal
+xorg
 virtualbox-ose-additions
 cursor-dmz-theme
 setxkbmap
+xrandr
 """

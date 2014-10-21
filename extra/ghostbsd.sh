@@ -65,11 +65,11 @@ file:///root/Music Music
 file:///root/Pictures Pictures
 " > ${BASEDIR}/root/.gtk-bookmarks
 
-mkdir ${BASEDIR}/root/Documents
-mkdir ${BASEDIR}/root/Downloads
-mkdir ${BASEDIR}/root/Movies
-mkdir ${BASEDIR}/root/Music
-mkdir ${BASEDIR}/root/Pictures
+mkdir -p ${BASEDIR}/root/Documents
+mkdir -p ${BASEDIR}/root/Downloads
+mkdir -p ${BASEDIR}/root/Movies
+mkdir -p ${BASEDIR}/root/Music
+mkdir -p ${BASEDIR}/root/Pictures
 
 printf "file:///home/ghostbsd/Documents Documents
 file:///home/ghostbsd/Downloads Downloads
@@ -79,15 +79,15 @@ file:///home/ghostbsd/Pictures Pictures
 " > ${BASEDIR}/home/ghostbsd/.gtk-bookmarks
 
 chmod g+rwx ${BASEDIR}/home/ghostbsd/.gtk-bookmarks
-mkdir ${BASEDIR}/home/ghostbsd/Documents
+mkdir -p ${BASEDIR}/home/ghostbsd/Documents
 chmod g+rwx ${BASEDIR}/home/ghostbsd/Documents
-mkdir ${BASEDIR}/home/ghostbsd/Downloads
+mkdir -p ${BASEDIR}/home/ghostbsd/Downloads
 chmod g+rwx ${BASEDIR}/home/ghostbsd/Downloads
-mkdir ${BASEDIR}/home/ghostbsd/Movies 
+mkdir -p ${BASEDIR}/home/ghostbsd/Movies 
 chmod g+rwx ${BASEDIR}/home/ghostbsd/Movies
-mkdir ${BASEDIR}/home/ghostbsd/Music
+mkdir -p ${BASEDIR}/home/ghostbsd/Music
 chmod g+rwx ${BASEDIR}/home/ghostbsd/Music
-mkdir ${BASEDIR}/home/ghostbsd/Pictures
+mkdir -p ${BASEDIR}/home/ghostbsd/Pictures
 chmod g+rwx ${BASEDIR}/home/ghostbsd/Pictures
 
 # COPYRIGHT

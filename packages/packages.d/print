@@ -5,6 +5,7 @@ deps="""
 """
 packages="""
 cups
+cups-smb-backend
 system-config-printer
 foomatic-db
 foomatic-db-engine

@@ -15,5 +15,6 @@ fish
 ksh93
 zsh
 portupgrade
+git
 webcamd
 """

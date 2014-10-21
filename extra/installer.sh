@@ -14,18 +14,22 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
-git clone https://github.com/pcbsd/pcbsd.git ${BASEDIR}/pdbsd
+# Installer backend.
+if [ ! -d ${BASEDIR}/pdbsd ]; then
+  git clone https://github.com/pcbsd/pcbsd.git ${BASEDIR}/pcbsd
+fi
 
 cat > ${BASEDIR}/config.sh << 'EOF'
 #!/bin/sh
-cd pcbsd/src-sh/pc-sysinstall
+cd /pcbsd/src-sh/pc-sysinstall
 sh install.sh /usr
 EOF
 
 chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh 
+rm -rf ${BASEDIR}/pcbsd
 
-# Installer backend.
+
 if [ ! -d ${BASEDIR}/usr/local/etc/gbi ]; then
     mkdir -p ${BASEDIR}/usr/local/etc/gbi
 fi
