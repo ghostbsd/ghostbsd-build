@@ -5,6 +5,6 @@ deps="""
 """
 packages="""
 #gksu
-zenity
+#zenity
 spideroak
 """

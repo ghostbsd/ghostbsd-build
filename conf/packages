@@ -16,7 +16,6 @@ zsh
 portupgrade
 git
 webcamd
-zenity
 spideroak
 bwi-firmware-kmod
 bwn-firmware-kmod
@@ -25,6 +24,7 @@ metacity
 gnome-keyring
 gnome-audio
 cups
+cups-smb-backend
 system-config-printer
 foomatic-db
 foomatic-db-engine

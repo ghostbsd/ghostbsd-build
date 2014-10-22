@@ -1,46 +1,45 @@
 #!/bin/sh
 #
-# Copyright (c) 2005 Dario Freni
+# Copyright 2010 GhostBSD
 #
-# See COPYING for licence terms.
+# See LICENSE for licence terms.
 #
-# $FreeBSD$
-# $Id: pkginstall.sh,v 1.19 2007/01/16 10:14:46 rionda Exp $
+# $GhostBSD$
+# $Id: pkginstall.sh,v 2.01 Tuesday, October 21 2014 Eric Exp $
 
 set -e -u
 
 if [ -z "${LOGFILE:-}" ]; then
-    echo "This script can't run standalone."
-    echo "Please use launch.sh to execute it."
-    exit 1
+  echo "This script can't run standalone."
+  echo "Please use launch.sh to execute it."
+  exit 1
 fi
 
 PKGFILE=${PKGFILE:-${LOCALDIR}/conf/packages};
 
 if [ ! -f ${PKGFILE} ]; then
-    return
+  return
 fi
 
 
 
-if [ "$(uname -p)" != "amd64" ]
-    then
-	echo "----------------------------------------------------------"
-	echo "You can install packages for i386 architecture"
-	echo "only if your machine architecture is amd64"
-	echo "----------------------------------------------------------"
-	echo "Skipping package installation."
-	echo "----------------------------------------------------------"
-	sleep 5 
-	return
-    else
-	echo "----------------------------------------------------------"
-	echo "You can install packages for i386 architecture"
-	echo "only if your machine architecture is amd64"
-	echo "----------------------------------------------------------"
-	echo "Starting package installation."
-	echo "----------------------------------------------------------"
-	sleep 5
+if [ "$(uname -p)" != "amd64" ]; then
+  echo "----------------------------------------------------------"
+  echo "You can install packages for i386 architecture"
+  echo "only if your machine architecture is amd64"
+  echo "----------------------------------------------------------"
+  echo "Skipping package installation."
+  echo "----------------------------------------------------------"
+  sleep 5 
+  return
+else
+  echo "----------------------------------------------------------"
+  echo "You can install packages for i386 architecture"
+  echo "only if your machine architecture is amd64"
+  echo "----------------------------------------------------------"
+  echo "Starting package installation."
+  echo "----------------------------------------------------------"
+  sleep 5
 fi
 
 # Search main file package for include dependecies
@@ -59,7 +58,7 @@ add_extra=$(cat ${LOCALDIR}/packages/${PACK_PROFILE} | grep -iF1 settings= | gre
 
 # If exist an old .packages file removes it
 if [ -f ${LOCALDIR}/conf/packages ] ; then
-        rm -f ${LOCALDIR}/conf/packages
+  rm -f ${LOCALDIR}/conf/packages
 fi
 
 # Reads packages from packages profile
@@ -76,28 +75,46 @@ cat ${LOCALDIR}/conf/package | grep -v '"""' | grep -v '#' > ${LOCALDIR}/conf/pa
 
 # Removes temporary files
 if [ -f ${LOCALDIR}/conf/package ] ; then
-        rm -f ${LOCALDIR}/conf/package
-        rm -f ${LOCALDIR}/packages/depends
+  rm -f ${LOCALDIR}/conf/package
+  rm -f ${LOCALDIR}/packages/depends
 fi
 
 PLOGFILE=".log_pkginstall"
 echo "Installing packages listed in ${PKGFILE}"
 echo "Rsync packages from build location"
 rsync -az --exclude 'Makefile' ${PKG_LOCATION} ${BASEDIR} 
+
+# Experimentation
+
 cp $PKGFILE ${BASEDIR}
-export PACKAGE_BUILDING=yo
+
+#export PACKAGE_BUILDING=yo
 
 sed -i '' 's@signature_type: "fingerprints"@#signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 
+# Experimentation with pkg -C
+#cd ${PKG_LOCATION}
+
+#pkgaddcmd="pkg -c ${BASEDIR} add -f "
+#while read pkgc; do
+#  if [ -n "${pkgc}" ] ; then
+#    ipkg=`ls | grep $pkgc`
+#    echo "Installing package $pkgc"
+#    echo "Running $pkgaddcmd ${pkgc}" >> ${BASEDIR}/${PLOGFILE} 2>&1
+#    $pkgaddcmd $ipkg >> ${BASEDIR}/${PLOGFILE} 2>&1
+#  fi
+#done < $PKGFILE
+
+#cd -
 
 cat > ${BASEDIR}/addpkg.sh << "EOF"
-#!/bin/sh 
+!/bin/sh 
 
 PLOGFILE=".log_pkginstall"
 pkgfile="packages"
 pkgaddcmd="pkg add"
 sh /etc/rc.d/ldconfig start
-$pkgaddcmd pkg*.txz #>> ${PLOGFILE} 2>&1
+$pkgaddcmd pkg*.txz >> ${PLOGFILE} 2>&1
 while read pkgc; do
     if [ -n "${pkgc}" ] ; then
     echo "Installing package $pkgc"
