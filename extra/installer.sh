@@ -22,7 +22,7 @@ fi
 cat > ${BASEDIR}/config.sh << 'EOF'
 #!/bin/sh
 cd /pcbsd/src-sh/pc-sysinstall
-sh install.sh /usr
+sh install.sh
 EOF
 
 chroot ${BASEDIR} sh /config.sh
