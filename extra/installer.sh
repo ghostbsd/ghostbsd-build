@@ -29,6 +29,8 @@ chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh 
 rm -rf ${BASEDIR}/pcbsd
 
+rm -rf ${BASEDIR}/usr/sbin/pc-sysinstall
+rm -rf ${BASEDIR}/usr/share/pc-sysinstall
 
 if [ ! -d ${BASEDIR}/usr/local/etc/gbi ]; then
     mkdir -p ${BASEDIR}/usr/local/etc/gbi
