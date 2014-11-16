@@ -501,25 +501,27 @@ class Partitions():
         box2.show()
         self.scheme = 'GPT'
         box2.pack_start(self.delete_create_button(True,
-            10, gtk.BUTTONBOX_START),
-            True, True, 5)
+                                                  10, gtk.BUTTONBOX_START),
+                        True, True, 5)
         box2 = gtk.HBox(False, 10)
         box2.set_border_width(5)
         box1.pack_start(box2, False, True, 0)
         box2.show()
         box2.pack_start(partition_bbox(True,
-        10, gtk.BUTTONBOX_END),
-        True, True, 5)
+                                       10, gtk.BUTTONBOX_END),
+                        True, True, 5)
         window.show_all()
 
     def Tree_Store(self):
         self.store.clear()
         for disk in disk_query():
             shem = disk[-1]
-            piter = self.store.append(None, [disk[0], disk[1], disk[2], disk[3], True])
+            piter = self.storxe.append(None, [disk[0],
+                                            disk[1], disk[2], disk[3], True])
             if shem == "GPT":
                 for pi in partition_query(disk[0]):
-                    self.store.append(piter, [pi[0], pi[1], pi[2], pi[3], True])
+                    self.store.append(piter, [pi[0],
+                                              pi[1], pi[2], pi[3], True])
             elif shem == "MBR":
                 for pi in partition_query(disk[0]):
                     piter1 = self.store.append(piter, [pi[0], pi[1], pi[2], pi[3], True])

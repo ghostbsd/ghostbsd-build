@@ -130,6 +130,7 @@ class cfg_data():
     f.writelines('userShell=%s\n' % shell)
     upath = uf[4]
     f.writelines('userHome=%s\n' % upath.rstrip())
+    f.writelines('defaultGroup=wheel')
     f.writelines('userGroups=operator\n')
     f.writelines('commitUser\n')
     f.writelines('runCommand=iso_to_hd')

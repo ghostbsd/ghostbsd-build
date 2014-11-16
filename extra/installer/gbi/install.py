@@ -38,27 +38,27 @@ def read_output(command, window, probar):
     probar.set_text("Creating partition table")
     sleep(2)
     if os.path.exists(tmp + 'delete'):
-        #new_val = probar.get_fraction() + 0.3
+        # new_val = probar.get_fraction() + 0.001
         probar.set_fraction(0.001)
         probar.set_text("Deleting partition")
         rDeleteParttion()
         sleep(5)
     # destroy disk partition and create scheme
     if os.path.exists(tmp + 'destroy'):
-        #new_val = probar.get_fraction() + 0.3
+        # new_val = probar.get_fraction() + 0.001
         probar.set_fraction(0.002)
         probar.set_text("Creating new disk with partitions")
         destroyParttion()
         sleep(5)
     # create partition
     if os.path.exists(tmp + 'create'):
-        #new_val = probar.get_fraction() + 0.4
+        # new_val = probar.get_fraction() + 0.001
         probar.set_fraction(0.003)
         probar.set_text("Creating new partitions")
         makingParttion()
         sleep(5)
     p = Popen(command, shell=True, stdin=PIPE, stdout=PIPE,
-    stderr=STDOUT, close_fds=True)
+              stderr=STDOUT, close_fds=True)
     while 1:
         line = p.stdout.readline()
         if not line:
@@ -106,7 +106,7 @@ class Installs():
         self.pbar.set_orientation(gtk.PROGRESS_LEFT_TO_RIGHT)
         self.pbar.set_fraction(0.0)
         self.pbar.set_size_request(-1, 20)
-        #self.timer = gobject.timeout_add(150, progress_timeout, self.pbar)
+        # self.timer = gobject.timeout_add(150, progress_timeout, self.pbar)
         box2.pack_start(self.pbar, False, False, 0)
         web_view = webkit.WebView()
         web_view.open(self.default_site)
@@ -117,9 +117,9 @@ class Installs():
         window.show_all()
         command = '%s -c %spcinstall.cfg' % (sysinstall, tmp)
         # This is only for testing
-        #command = 'cd /usr/ports/editors/openoffice-4 && make install clean'
+        # command = 'cd /usr/ports/editors/openoffice-4 && make install clean'
         thr = threading.Thread(target=read_output,
-         args=(command, window, self.pbar))
+                               args=(command, window, self.pbar))
         thr.start()
 
 
