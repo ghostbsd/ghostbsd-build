@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Ghomix
+Comment=A modern flat theme
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Ghomix
+MetacityTheme=Ghomix
+ButtonLayout=menu:minimize,maximize,close
