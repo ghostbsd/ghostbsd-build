@@ -61,6 +61,10 @@ cp -prf extra/ghostbsd/wallpapers/* ${BASEDIR}/usr/local/share/backgrounds/ghost
 cp -prf extra/mate/ghostbsd.xml ${BASEDIR}/usr/local/share/mate-background-properties/
 
 # GhostBSD dconf GhostBSD defaults file.
+if [ -f ${BASEDIR}/usr/local/share/glib-2.0/schemas/org.mate.background.gschema.xml ] ; then
+  /usr/bin/sed -i "" "s@mate/desktop/Stripes.png@ghostbsd/Stripes.png@" ${SHAREDIR}/glib-2.0/schemas/org.mate.background.gschema.xml
+fi
+
 #cp -prf extra/mate/org.mate.background.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 #cp -prf extra/mate/org.mate.marco.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 #cp -prf extra/mate/org.mate.caja.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
