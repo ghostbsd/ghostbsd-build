@@ -3,7 +3,7 @@
 from gi.repository import Gtk
 from subprocess import Popen, call
 
-matePanel = '/usr/local/share/mate-panel/panel-default-layout.mate'
+matePanel = '/usr/local/share/mate-panel/layouts/default.layout'
 classicpng = '/usr/local/share/chose-station/classic.png'
 puritypng = '/usr/local/share/chose-station/purity.png'
 elementpng = '/usr/local/share/chose-station/element.png'
