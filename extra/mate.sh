@@ -54,25 +54,27 @@ rm -rf ${BASEDIR}/usr/local/share/icons/matefaenzagray
 rm -f ${BASEDIR}/usr/local/share/icons/mate/icon-theme.cache
 tar xfz extra/ghostbsd/icons.tar.gz -C ${BASEDIR}/usr/local/share
 
-# Wallpapers
+# Wallpapers remove MATE wallpaper.
 rm -rf ${BASEDIR}/usr/local/share/backgrounds/mate/*
-mkdir ${BASEDIR}/usr/local/share/backgrounds/ghostbsd/
-cp -prf extra/ghostbsd/wallpapers/* ${BASEDIR}/usr/local/share/backgrounds/ghostbsd/
-cp -prf extra/mate/ghostbsd.xml ${BASEDIR}/usr/local/share/mate-background-properties/
 
 # GhostBSD dconf GhostBSD defaults file.
 if [ -f ${BASEDIR}/usr/local/share/glib-2.0/schemas/org.mate.background.gschema.xml ] ; then
-  /usr/bin/sed -i "" "s@mate/desktop/Stripes.png@ghostbsd/Stripes.png@" ${SHAREDIR}/glib-2.0/schemas/org.mate.background.gschema.xml
+  sed -i "" "s@mate/desktop/Stripes.png@ghostbsd/Pond.jpg@" ${SHAREDIR}/glib-2.0/schemas/org.mate.background.gschema.xml
 fi
 
-#cp -prf extra/mate/org.mate.background.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
+if [ -f ${SHAREDIR}/glib-2.0/schemas/org.mate.interface.gschema.xml ] ; then
+  sed -i "" "s@menta@Vibrancy-NonMono-Dark-Aqua@" ${SHAREDIR}/glib-2.0/schemas/org.mate.interface.gschema.xml
+  sed -i "" "s@Menta@Ghomix@" ${SHAREDIR}/glib-2.0/schemas/org.mate.interface.gschema.xml
+fi
+
+
+
 #cp -prf extra/mate/org.mate.marco.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 #cp -prf extra/mate/org.mate.caja.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
-#cp -prf extra/mate/org.mate.interface.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 #cp -prf extra/mate/org.mate.panel.toplevel.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 #cp -prf extra/mate/org.mate.terminal.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 #cp -prf extra/mate/org.mate.screensaver.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
-cp -prf extra/mate/panel-default-layout.mate ${BASEDIR}/usr/local/share/mate-panel/
+cp -prf extra/mate/panel-default-layout.mate ${SHAREDIR}/mate-panel/layouts/default.layout
 
 # GhostBSD shose station.
 cp -rf extra/mate/chose-station ${BASEDIR}/usr/local/share/chose-station
