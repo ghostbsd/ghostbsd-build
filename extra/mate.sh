@@ -55,7 +55,7 @@ rm -f ${BASEDIR}/usr/local/share/icons/mate/icon-theme.cache
 tar xfz extra/ghostbsd/icons.tar.gz -C ${BASEDIR}/usr/local/share
 
 # Wallpapers remove MATE wallpaper.
-rm -rf ${BASEDIR}/usr/local/share/backgrounds/mate/*
+rm -rf ${BASEDIR}/usr/local/share/backgrounds/mate
 
 # GhostBSD dconf GhostBSD defaults file.
 if [ -f ${BASEDIR}/usr/local/share/glib-2.0/schemas/org.mate.background.gschema.xml ] ; then
@@ -65,15 +65,22 @@ fi
 if [ -f ${SHAREDIR}/glib-2.0/schemas/org.mate.interface.gschema.xml ] ; then
   sed -i "" "s@menta@Vibrancy-NonMono-Dark-Aqua@" ${SHAREDIR}/glib-2.0/schemas/org.mate.interface.gschema.xml
   sed -i "" "s@Menta@Ghomix@" ${SHAREDIR}/glib-2.0/schemas/org.mate.interface.gschema.xml
+  sed -i "" "s@Sans@Sans Bold@" ${SHAREDIR}/glib-2.0/schemas/org.mate.interface.gschema.xml
+fi
+
+if [ -f ${SHAREDIR}/glib-2.0/schemas/org.mate.Marco.gschema.xml ] ; then
+  sed -i "" "s@Menta@Ghomix@" ${SHAREDIR}/glib-2.0/schemas/org.mate.Macro.gschema.xml
+fi
+
+if [ -f ${SHAREDIR}/glib-2.0/schemas/org.mate.caja.gschema.xml ] ; then
+  sed -i "" "s@Sans@Sans Bold@" ${SHAREDIR}/glib-2.0/schemas/org.mate.caja.gschema.xml
 fi
 
 
-
-#cp -prf extra/mate/org.mate.marco.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
-#cp -prf extra/mate/org.mate.caja.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 #cp -prf extra/mate/org.mate.panel.toplevel.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
-#cp -prf extra/mate/org.mate.terminal.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
-#cp -prf extra/mate/org.mate.screensaver.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
+cp -prf extra/mate/org.mate.terminal.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
+
+cp -prf extra/mate/org.mate.screensaver.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 cp -prf extra/mate/panel-default-layout.mate ${SHAREDIR}/mate-panel/layouts/default.layout
 
 # GhostBSD shose station.
@@ -89,7 +96,7 @@ chroot ${BASEDIR} glib-compile-schemas /usr/local/share/glib-2.0/schemas/
 
 # gksu configuration.
 if [ -f ${BASEDIR}/usr/local/share/applications/gksu.desktop ] ; then
-        /usr/bin/sed -i "" "s@/usr/bin/x-terminal-emulator@/usr/local/bin/mate-terminal@" ${BASEDIR}/usr/local/share/applications/gksu.desktop
+  /usr/bin/sed -i "" "s@/usr/bin/x-terminal-emulator@/usr/local/bin/mate-terminal@" ${SHAREDIR}applications/gksu.desktop
 fi
 
 # Set cursor theme instead of default from xorg
