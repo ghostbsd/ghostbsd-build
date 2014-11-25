@@ -33,6 +33,8 @@ rm -rf ${BASEDIR}/rescue
 install -C extra/ghostbsd/xconfig.sh $BASEDIR/usr/local/bin/xconfig
 install -C extra/ghostbsd/xdrivers.py $BASEDIR/usr/local/bin/xdrivers
 
+sed -i "" "s@latest@new_xorg@" ${BASEDIR}/etc/pkg/FreeBSD.conf
+
 # Cat rc.cong.extra in 
 cat extra/ghostbsd/rc.conf.extra >> ${BASEDIR}/etc/rc.conf
 
@@ -111,6 +113,8 @@ mkdir -p ${BASEDIR}/usr/src/sys
 cd ${BASEDIR}/usr/local/lib/firefox/browser/searchplugins
 rm -f bing.xml yahoo.xml google.xml twitter.xml
 cd -
+
+
 
 # Cups and Xfburn adds.
 cp -f extra/ghostbsd/devfs.rules ${BASEDIR}/etc/

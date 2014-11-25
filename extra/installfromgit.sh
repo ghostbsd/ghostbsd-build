@@ -14,3 +14,15 @@ if [ ! -f "/usr/local/bin/git" ]; then
   exit 1
 if
 
+if [ ! -d ${BASEDIR}/wallpaper ]; then
+  git clone https://github.com/GhostBSD/wallpaper.git ${BASEDIR}/wallpaper
+fi
+
+cat > ${BASEDIR}/config.sh << 'EOF'
+#!/bin/sh
+cd /wallpaper
+sh install.sh
+EOF
+
+rm -f ${BASEDIR}/config.sh
+rm -rf ${BASEDIR}/wallpaper

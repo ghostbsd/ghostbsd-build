@@ -15,7 +15,7 @@ if [ -z "${LOGFILE:-}" ]; then
 fi
 
 # Installer backend.
-if [ ! -d ${BASEDIR}/pdbsd ]; then
+if [ ! -d ${BASEDIR}/pcbsd ]; then
   git clone https://github.com/pcbsd/pcbsd.git ${BASEDIR}/pcbsd
 fi
 
@@ -25,14 +25,14 @@ fi
 
 cat > ${BASEDIR}/config.sh << 'EOF'
 #!/bin/sh
-cd /pcbsd/src-sh/pc-sysinstall
+cd /pcbsd/src-sh/pcbsd-utils/pc-sysinstall
 sh install.sh
 cd /gbi
-make install
+sh install.sh
 EOF
 
 chroot ${BASEDIR} sh /config.sh
-rm -f ${BASEDIR}/config.sh 
+rm -f ${BASEDIR}/config.sh
 rm -rf ${BASEDIR}/pcbsd
 rm -rf ${BASEDIR}/gbi
 
@@ -44,5 +44,5 @@ if [ ! -d ${BASEDIR}/usr/local/etc/gbi ]; then
 fi
 
 ## put the installer on the desktop
-cp -pf  ${BASEDIR}/usr/local/share/gbi.desktop ${BASEDIR}${HOME}/Desktop/
+cp -pf  ${BASEDIR}/usr/local/share/applications/gbi.desktop ${BASEDIR}${HOME}/Desktop/
 chown -R 1000:0 ${BASEDIR}${HOME}/Desktop/gbi.desktop

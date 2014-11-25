@@ -108,7 +108,7 @@ sed -i '' 's@signature_type: "fingerprints"@#signature_type: "fingerprints"@g' $
 #cd -
 
 cat > ${BASEDIR}/addpkg.sh << "EOF"
-!/bin/sh 
+#!/bin/sh 
 
 PLOGFILE=".log_pkginstall"
 pkgfile="packages"
