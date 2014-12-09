@@ -3,10 +3,10 @@ Display Manager
 """
 
 packages = """
-gdm
-metacity
-gnome-keyring
-gnome-audio
+qt4
+qt4-rcc
+qt4-uic
+qt4-qtsolutions-singleapplication
 """
 
 settings="""
