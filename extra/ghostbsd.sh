@@ -33,10 +33,16 @@ rm -rf ${BASEDIR}/rescue
 install -C extra/ghostbsd/xconfig.sh $BASEDIR/usr/local/bin/xconfig
 install -C extra/ghostbsd/xdrivers.py $BASEDIR/usr/local/bin/xdrivers
 
+cp extra/ghostbsd/splash.pcx ${BASEDIR}/boot/splash.pcx
+
+printf 'splash_pcx_load="YES"
+bitmap_load="YES"
+bitmap_name="/boot/splash.pcx"' > ${BASEDIR}/boot/splash.pcx
+
 sed -i "" "s@latest@new_xorg@" ${BASEDIR}/etc/pkg/FreeBSD.conf
 
 # Cat rc.cong.extra in 
-cat extra/ghostbsd/rc.conf.extra >> ${BASEDIR}/etc/rc.conf
+cat extra/ghostbsd/rc.conf.extra >> ${BASEDIR}/etc/rc.conf 
 
 # sudoers modification.
 sed -i "" "s@# %wheel ALL=(ALL) ALL@%wheel ALL=(ALL) ALL@" ${BASEDIR}/usr/local/etc/sudoers
