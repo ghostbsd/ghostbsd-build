@@ -205,3 +205,11 @@ Categories=Network;Archiving;Utility;
 X-Desktop-File-Install-Version=0.22
 ' > ${BASEDIR}/usr/local/share/applications/SpiderOak.desktop
 fi
+
+# Setting installer
+rm -rf ${BASEDIR}/usr/sbin/pc-sysinstall
+rm -rf ${BASEDIR}/usr/share/pc-sysinstall
+
+## put the installer on the desktop
+cp -pf  ${BASEDIR}/usr/local/share/applications/gbi.desktop ${BASEDIR}${HOME}/Desktop/
+chown -R 1000:0 ${BASEDIR}${HOME}/Desktop/gbi.desktop

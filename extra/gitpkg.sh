@@ -26,3 +26,26 @@ EOF
 
 rm -f ${BASEDIR}/config.sh
 rm -rf ${BASEDIR}/wallpaper
+
+# Installer backend.
+if [ ! -d ${BASEDIR}/pcbsd ]; then
+  git clone https://github.com/pcbsd/pcbsd.git ${BASEDIR}/pcbsd
+fi
+
+if [ ! -d ${BASEDIR}/gbi ]; then
+  git clone https://github.com/GhostBSD/gbi.git ${BASEDIR}/gbi
+fi
+
+cat > ${BASEDIR}/config.sh << 'EOF'
+#!/bin/sh
+cd /pcbsd/src-sh/pcbsd-utils/pc-sysinstall
+sh install.sh
+cd /gbi
+sh install.sh
+EOF
+
+chroot ${BASEDIR} sh /config.sh
+rm -f ${BASEDIR}/config.sh
+rm -rf ${BASEDIR}/pcbsd
+rm -rf ${BASEDIR}/gbi
+
