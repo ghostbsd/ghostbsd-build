@@ -3,10 +3,11 @@ Display Manager
 """
 
 packages = """
-qt4
-qt4-rcc
-qt4-uic
-qt4-qtsolutions-singleapplication
+qt5
+qt5-rcc
+qt5-uic
+qt5-qtsolutions-singleapplication
+pcre
 """
 
 settings="""

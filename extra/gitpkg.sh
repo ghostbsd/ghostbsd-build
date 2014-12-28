@@ -46,6 +46,22 @@ EOF
 
 chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
+
+cat > ${BASEDIR}/config.sh << 'EOF'
+#!/bin/sh
+cd /pcbsd/src-qt4/libpcbsd
+qmake-qt4 *.pro
+make
+make install
+cd /pcbsd/src-qt4/PCDM
+qmake-qt4 *.pro
+make
+make install
+EOF
+
+chroot ${BASEDIR} sh /config.sh
+rm -f ${BASEDIR}/config.sh
+
 rm -rf ${BASEDIR}/pcbsd
 rm -rf ${BASEDIR}/gbi
 
