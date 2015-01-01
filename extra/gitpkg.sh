@@ -13,7 +13,8 @@ if [ ! -f "/usr/local/bin/git" ]; then
   echo "Install Git to fetch pkg from GitHub"
   exit 1
 if
-
+      
+# installing GhostBSD wallpapers 
 if [ ! -d ${BASEDIR}/wallpaper ]; then
   git clone https://github.com/GhostBSD/wallpaper.git ${BASEDIR}/wallpaper
 fi
@@ -27,7 +28,7 @@ EOF
 rm -f ${BASEDIR}/config.sh
 rm -rf ${BASEDIR}/wallpaper
 
-# Installer backend.
+# Installing pc-sysinstall and ghostbsd installer
 if [ ! -d ${BASEDIR}/pcbsd ]; then
   git clone https://github.com/pcbsd/pcbsd.git ${BASEDIR}/pcbsd
 fi
@@ -47,6 +48,7 @@ EOF
 chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
 
+# installing PCDM
 cat > ${BASEDIR}/config.sh << 'EOF'
 #!/bin/sh
 cd /pcbsd/src-qt4/libpcbsd
