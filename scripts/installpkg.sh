@@ -42,18 +42,10 @@ echo "#!/bin/sh" > scripts/ports.sh
 echo "portinstall -c" | tr "\n" " " >> scripts/ports.sh
 cat conf/packages | tr "\n" " " >> scripts/ports.sh
 
-portinstall -c xorg-drivers xorg-drivers
-
 # Installing pkg
 while read pkgc; do
   if [ -n "${pkgc}" ]; then
-    if [ "${pkgc}" = "xorg-minimal" ]; then
-      echo "Pass $pkgc"
-    elif [ "${pkgc}" = "xorg-drivers" ]; then
-      echo "Pass $pkgc"
-    else
-      $pkgaddcmd $pkgc
-    fi   
+    $pkgaddcmd $pkgc   
   fi
 done < $pkgfile
 

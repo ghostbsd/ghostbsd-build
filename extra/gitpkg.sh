@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 set -e -u
 
 if [ -z "${LOGFILE:-}" ]; then
@@ -12,9 +11,9 @@ fi
 if [ ! -f "/usr/local/bin/git" ]; then
   echo "Install Git to fetch pkg from GitHub"
   exit 1
-if
+fi
       
-# installing GhostBSD wallpapers 
+# installing GhostBSD wallpapers
 if [ ! -d ${BASEDIR}/wallpaper ]; then
   git clone https://github.com/GhostBSD/wallpaper.git ${BASEDIR}/wallpaper
 fi
@@ -37,6 +36,7 @@ if [ ! -d ${BASEDIR}/gbi ]; then
   git clone https://github.com/GhostBSD/gbi.git ${BASEDIR}/gbi
 fi
 
+
 cat > ${BASEDIR}/config.sh << 'EOF'
 #!/bin/sh
 cd /pcbsd/src-sh/pcbsd-utils/pc-sysinstall
@@ -51,12 +51,12 @@ rm -f ${BASEDIR}/config.sh
 # installing PCDM
 cat > ${BASEDIR}/config.sh << 'EOF'
 #!/bin/sh
-cd /pcbsd/src-qt4/libpcbsd
-qmake-qt4 *.pro
+cd /pcbsd/src-qt5/libpcbsd
+/usr/local/lib/qt5/bin/qmake *.pro
 make
 make install
-cd /pcbsd/src-qt4/PCDM
-qmake-qt4 *.pro
+cd /pcbsd/src-qt5/PCDM
+/usr/local/lib/qt5/bin/qmake *.pro
 make
 make install
 EOF
@@ -66,4 +66,3 @@ rm -f ${BASEDIR}/config.sh
 
 rm -rf ${BASEDIR}/pcbsd
 rm -rf ${BASEDIR}/gbi
-

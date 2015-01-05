@@ -19,10 +19,7 @@ webcamd
 spideroak
 bwi-firmware-kmod
 bwn-firmware-kmod
-gdm
-metacity
-gnome-keyring
-gnome-audio
+qt5
 cups
 cups-smb-backend
 system-config-printer

@@ -11,7 +11,7 @@ powerd_flags="-a adp -b adp"
 devfs_system_ruleset="system"
 # All Gnome need. 
 cupsd_enable="YES"
-#gdm_enable="YES"
+#pcdm_enable="YES"
 hald_enable="YES"
 dbus_enable="YES"
 linux_enable="YES"

@@ -213,3 +213,17 @@ rm -rf ${BASEDIR}/usr/share/pc-sysinstall
 ## put the installer on the desktop
 cp -pf  ${BASEDIR}/usr/local/share/applications/gbi.desktop ${BASEDIR}${HOME}/Desktop/
 chown -R 1000:0 ${BASEDIR}${HOME}/Desktop/gbi.desktop
+
+printf "[Restart]
+Identity=unix-group:operator
+Action=org.freedesktop.consolekit.system.restart
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes
+
+[Shutdown]
+Identity=unix-group:operator
+Action=org.freedesktop.consolekit.system.stop
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes" > ${BASEDIR}/usr/local/etc/polkit-1/localauthority/50-local.d/org.freedesktop.consolekit.pkla

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="22"
+   height="22"
+   id="svg3920">
+  <defs
+     id="defs3922" />
+  <metadata
+     id="metadata3925">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     d="M 10.067832,2 C 8.526949,2 7.2775,3.3065749 7.2775,4.9180249 l 0,7.8397861 C 6.539029,13.529111 6,14.52654 6,15.71094 6,18.066351 7.849024,20 10.10145,20 c 2.252426,0 4.101451,-1.933649 4.101451,-4.28906 0,-1.189463 -0.563315,-2.176763 -1.31112,-2.953129 -7.74e-4,-0.836771 -9.94e-4,-1.529771 0,-2.249995 a 1.0805074,1.1299329 0 0 0 0.06724,0 l 1.94987,0 a 1.0758978,1.1251123 0 1 0 0,-2.2500039 l -1.94987,0 a 1.0758978,1.1251123 0 0 0 -0.06724,0 c 3.69e-4,-0.3413246 3.5e-5,-0.7346246 0,-1.0897873 a 1.0805074,1.1299329 0 0 0 0.06724,0 l 1.94987,0 a 1.0758978,1.1251123 0 1 0 0,-2.2499999 l -1.94987,0 a 1.0758978,1.1251123 0 0 0 -0.06724,0 C 12.891788,3.2825 11.608714,2 10.067832,2 z m 0,2.2499999 c 0.292603,0 0.67237,0.3861 0.672369,0.668025 0.01189,3.1488749 -0.0041,5.0340358 0,8.1913521 l 0,0.597713 0.470658,0.31635 c 0.50849,0.371137 0.840461,0.997537 0.840461,1.6875 0,1.139511 -0.860244,2.03906 -1.94987,2.03906 -1.089626,0 -1.94987,-0.899549 -1.94987,-2.03906 0,-0.67568 0.340384,-1.275529 0.840461,-1.652289 l 0.43704,-0.351561 0,-0.5625 0,-8.2265651 c 0,-0.306 0.346146,-0.668025 0.638751,-0.668025 z"
+     id="path3008-6-89"
+     style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:2;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans" />
+</svg>
