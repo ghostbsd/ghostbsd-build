@@ -44,10 +44,38 @@ fi
 #cp -prf /usr/local/etc/gconf/* ${BASEDIR}/usr/local/etc/gconf
 
 cp -rf extra/dm/default/* ${BASEDIR}/usr/local/share/PCDM/themes/default
-cp ${BASEDIR}/usr/local/share/PCDM/pcdm.conf.sample ${BASEDIR}/usr/local/share/PCDM/pcdm.conf
+#cp ${BASEDIR}/usr/local/share/PCDM/pcdm.conf.sample ${BASEDIR}/usr/local/share/PCDM/pcdm.conf
 
 #sed -i "" "s@THEME_FILE=/usr/local/share/PCDM/themes/default/default.theme@THEME_FILE=/usr/local/share/PCDM/themes/default/default.theme@" ${BASEDIR}/usr/local/share/PCDM/pcdm.conf
-sed -i "" "s@ENABLE_AUTO_LOGIN=FALSE@ENABLE_AUTO_LOGIN=TRUE@" ${BASEDIR}/usr/local/share/PCDM/pcdm.conf
-sed -i "" "s@AUTO_LOGIN_USER=no-username@AUTO_LOGIN_USER=ghostbsd@" ${BASEDIR}/usr/local/share/PCDM/pcdm.conf
+#sed -i "" "s@ENABLE_AUTO_LOGIN=FALSE@ENABLE_AUTO_LOGIN=TRUE@" ${BASEDIR}/usr/local/share/PCDM/pcdm.conf
+#sed -i "" "s@AUTO_LOGIN_USER=no-username@AUTO_LOGIN_USER=ghostbsd@" ${BASEDIR}/usr/local/share/PCDM/pcdm.conf
 
 sed -i "" "s@: ${pcdm_enable:=no}@# : ${pcdm_enable:=no}@" ${BASEDIR}/usr/local/etc/rc.d/pcdm
+printf "#####################################
+#  PCDM CONFIGURATION FILE          #
+# (/usr/local/etc/pcdm.conf.dist)   #
+#####################################
+
+## APPEARANCE SETTINGS ##
+THEME_FILE=/usr/local/share/PCDM/themes/default/default.theme
+SPLASHSCREEN_FILE=/usr/local/share/PCDM/themes/default/splashscreen.png
+
+## Base Directories for files ##
+DE_STARTUP_DIR=/usr/local/share/xsessions  #location for *.desktop entries for desktop environments(s)
+DE_STARTUP_IMAGE_DIR=/usr/local/share/pixmaps   #location of images contained in *.desktop file (if not explicitly given)
+
+## AUTO-LOGIN ##
+## This presents a security risk - use carefully! ##
+ENABLE_AUTO_LOGIN=TRUE        
+AUTO_LOGIN_USER=ghostbsd
+AUTO_LOGIN_PASSWORD=no-password
+
+## VNC Remote Desktop SUPPORT ##
+## This presents a security risk - use carefully! ##
+ALLOW_REMOTE_LOGIN=FALSE
+
+## Share the remote screen ##
+REMOTE_SHARED_SCREEN=FALSE
+
+## ADDITIONAL SETTINGS ##
+ENABLE_VIEW_PASSWORD_BUTTON=FALSE  #enable the option to show the password as text when a button is held" > ${BASEDIR}/usr/local/share/PCDM/pcdm.conf

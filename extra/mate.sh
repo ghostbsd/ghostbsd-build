@@ -15,12 +15,7 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
-cp -f extra/mate/xinitrc ${BASEDIR}/usr/local/etc/X11/xinit/xinitrc
-
-# Removing Gnome in GDM.
-cd ${BASEDIR}/usr/local/share/xsessions
-rm gnome.desktop
-cd - 
+cp -f extra/mate/xinitrc ${BASEDIR}/usr/local/etc/X11/xinit/xinitrc 
 
 # Remove gmplayer.desktop
 if [ -f "/usr/local/share/applications/gmplayer.desktop" ]; then
