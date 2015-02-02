@@ -37,7 +37,8 @@ cp extra/ghostbsd/splash.pcx ${BASEDIR}/boot/splash.pcx
 
 printf 'splash_pcx_load="YES"
 bitmap_load="YES"
-bitmap_name="/boot/splash.pcx"' > ${BASEDIR}/boot/splash.pcx
+bitmap_name="/boot/splash.pcx
+beastie_disable="NO""' > ${BASEDIR}/boot/loader.conf
 
 sed -i "" "s@latest@new_xorg@" ${BASEDIR}/etc/pkg/FreeBSD.conf
 
@@ -102,13 +103,13 @@ chmod g+rwx ${BASEDIR}/home/ghostbsd/Pictures
 cp -f extra/ghostbsd/COPYRIGHT ${BASEDIR}/COPYRIGHT
 
 # Replace FreeBSD By GhostBSD.
-cp -f extra/ghostbsd/motd ${BASEDIR}/etc/
-cp extra/ghostbsd/beastie.4th ${BASEDIR}/boot/
-cp extra/ghostbsd/brand.4th  ${BASEDIR}/boot/
-cp extra/ghostbsd/menu.4th ${BASEDIR}/boot/
-sed -i "" "s@FreeBSD@GhostBSD@" ${BASEDIR}/boot/version.4th
-sed -i "" "s@Nakatomi Socrates@Levi@" ${BASEDIR}/boot/version.4th
-sed -i "" "s@9.2@3.5@" ${BASEDIR}/boot/version.4th
+#cp -f extra/ghostbsd/motd ${BASEDIR}/etc/
+#cp extra/ghostbsd/beastie.4th ${BASEDIR}/boot/
+#cp extra/ghostbsd/brand.4th  ${BASEDIR}/boot/
+#cp extra/ghostbsd/menu.4th ${BASEDIR}/boot/
+#sed -i "" "s@FreeBSD@GhostBSD@" ${BASEDIR}/boot/version.4th
+#sed -i "" "s@Nakatomi Socrates@Levi@" ${BASEDIR}/boot/version.4th
+#sed -i "" "s@9.2@3.5@" ${BASEDIR}/boot/version.4th
 
 #cp extra/ghostbsd/menu-commands.4th ${BASEDIR}/boot/
 cp extra/ghostbsd/mountcritlocal ${BASEDIR}/etc/rc.d/

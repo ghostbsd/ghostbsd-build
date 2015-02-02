@@ -66,3 +66,46 @@ rm -f ${BASEDIR}/config.sh
 
 rm -rf ${BASEDIR}/pcbsd
 rm -rf ${BASEDIR}/gbi
+
+# installing GhostBSD wallpapers
+if [ ! -d ${BASEDIR}/operator ]; then
+  git clone https://github.com/GhostBSD/operator.git ${BASEDIR}/operator
+fi
+
+cat > ${BASEDIR}/config.sh << 'EOF'
+#!/bin/sh
+cd /operator
+sh install.sh
+EOF
+
+rm -f ${BASEDIR}/config.sh
+rm -rf ${BASEDIR}/operator
+
+# installing GhostBSD wallpapers
+if [ ! -d ${BASEDIR}/update-station ]; then
+  git clone https://github.com/GhostBSD/update-station.git ${BASEDIR}/update-station
+fi
+
+cat > ${BASEDIR}/config.sh << 'EOF'
+#!/bin/sh
+cd /update-station
+sh install.sh
+EOF
+
+rm -f ${BASEDIR}/config.sh
+rm -rf ${BASEDIR}/update-station
+
+# installing GhostBSD wallpapers
+if [ ! -d ${BASEDIR}/networkmgr ]; then
+  git clone https://github.com/GhostBSD/wallpaper.git ${BASEDIR}/networkmgr
+fi
+
+cat > ${BASEDIR}/config.sh << 'EOF'
+#!/bin/sh
+cd /networkmgr
+sh install.sh
+EOF
+
+rm -f ${BASEDIR}/config.sh
+rm -rf ${BASEDIR}/networkmgr
+
