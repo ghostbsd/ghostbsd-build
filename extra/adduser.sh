@@ -33,12 +33,12 @@ grep -q ^${GHOSTBSD_ADDUSER}: ${BASEDIR}/etc/master.passwd
 
 if [ $? -ne 0 ]; then
     chroot ${BASEDIR} pw useradd ${GHOSTBSD_ADDUSER} \
-        -u 1000 -c "GhostBSD User" -d "/home/${GHOSTBSD_ADDUSER}" \
-        -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
+        -u 1000 -c "Live User" -d "/home/${GHOSTBSD_ADDUSER}" \
+        -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
 else
     chroot ${BASEDIR} pw usermod ${GHOSTBSD_ADDUSER} \
-        -u 1000 -c "GhostBSD User" -d "/home/${GHOSTBSD_ADDUSER}" \
-        -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
+        -u 1000 -c "Live User" -d "/home/${GHOSTBSD_ADDUSER}" \
+        -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
 fi
 
 chroot ${BASEDIR} pw mod user ${GHOSTBSD_ADDUSER} -w none

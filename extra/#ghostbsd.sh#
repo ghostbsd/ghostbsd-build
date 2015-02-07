@@ -38,7 +38,7 @@ cp extra/ghostbsd/splash.pcx ${BASEDIR}/boot/splash.pcx
 printf 'splash_pcx_load="YES"
 bitmap_load="YES"
 bitmap_name="/boot/splash.pcx"
-beastie_disable="YES"' > ${BASEDIR}/boot/loader.conf
+beastie_disable="NO"' > ${BASEDIR}/boot/loader.conf
 
 sed -i "" "s@latest@new_xorg@" ${BASEDIR}/etc/pkg/FreeBSD.conf
 
@@ -48,7 +48,7 @@ cat extra/ghostbsd/rc.conf.extra >> ${BASEDIR}/etc/rc.conf
 # sudoers modification.
 sed -i "" "s@# %wheel ALL=(ALL) ALL@%wheel ALL=(ALL) ALL@" ${BASEDIR}/usr/local/etc/sudoers
 sed -i "" "s@# %sudo	ALL=(ALL) ALL@%sudo	ALL=(ALL) ALL@" ${BASEDIR}/usr/local/etc/sudoers
-# sed -i "" "s@# %wheel ALL=(ALL) NOPASSWD: ALL@%wheel ALL=(ALL) NOPASSWD: /usr/local/share/networkmgr/trayicon.py@" ${BASEDIR}/usr/local/etc/sudoers
+sed -i "" "s@# %wheel ALL=(ALL) NOPASSWD: ALL@%wheel ALL=(ALL) NOPASSWD: /usr/local/share/networkmgr/trayicon.py@" ${BASEDIR}/usr/local/etc/sudoers
 
 # put a GhostBSD-irc icon on the desktop
 cp -f extra/ghostbsd/ghostbsd-irc.desktop ${BASEDIR}/usr/local/share/applications/
@@ -130,15 +130,15 @@ cat extra/ghostbsd/make.conf >> ${BASEDIR}/etc/make.conf
 # To enable USB devices that are plugged in to be read/written
 # by operators (i.e. the live user), this is needed:
 if [ -z "$(cat ${BASEDIR}/etc/devd.conf| grep ugen[0-9])" ] ; then
-  cat extra/ghostbsd/devd.conf.extra >> ${BASEDIR}/etc/devd.conf
+    cat extra/ghostbsd/devd.conf.extra >> ${BASEDIR}/etc/devd.conf
 fi
 
 if [ -z "$(cat ${BASEDIR}/etc/sysctl.conf| grep vfs.usermount)" ] ; then
-  echo "vfs.usermount=1" >> ${BASEDIR}/etc/sysctl.conf
+    echo "vfs.usermount=1" >> ${BASEDIR}/etc/sysctl.conf
 fi
 # Cups ussing Firefox.
 if [ -f ${BASEDIR}/usr/local/share/applications/cups.desktop ] ; then
-  /usr/bin/sed -i "" "s@htmlview@firefox@" ${BASEDIR}/usr/local/share/applications/cups.desktop
+        /usr/bin/sed -i "" "s@htmlview@firefox@" ${BASEDIR}/usr/local/share/applications/cups.desktop
 fi
 
 # Replacing duckduckgo.xml.

@@ -24,6 +24,7 @@ cd /wallpaper
 sh install.sh
 EOF
 
+chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
 rm -rf ${BASEDIR}/wallpaper
 
@@ -75,9 +76,10 @@ fi
 cat > ${BASEDIR}/config.sh << 'EOF'
 #!/bin/sh
 cd /operator
-sh install.sh
+make install
 EOF
 
+chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
 rm -rf ${BASEDIR}/operator
 
@@ -89,23 +91,24 @@ fi
 cat > ${BASEDIR}/config.sh << 'EOF'
 #!/bin/sh
 cd /update-station
-sh install.sh
+make install
 EOF
 
+chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
 rm -rf ${BASEDIR}/update-station
 
 # installing GhostBSD wallpapers
 if [ ! -d ${BASEDIR}/networkmgr ]; then
-  git clone https://github.com/GhostBSD/wallpaper.git ${BASEDIR}/networkmgr
+  git clone https://github.com/GhostBSD/networkmgr.git ${BASEDIR}/networkmgr
 fi
 
 cat > ${BASEDIR}/config.sh << 'EOF'
 #!/bin/sh
 cd /networkmgr
-sh install.sh
+make install
 EOF
 
+chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
 rm -rf ${BASEDIR}/networkmgr
-
