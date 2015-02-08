@@ -37,13 +37,13 @@ if [ -f "/etc/X11/xorg.conf" ]; then
 	echo "xorg.conf found... skipping"
 	exit
 fi
+
 echo "Creating xorg.conf..."
 
 sudo Xorg -configure
 sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
-sed -i '' 's@#gdm_enable="YES"@gdm_enable="YES"@g' /etc/rc.conf
-sed -i '' 's@xconfig@iso_to_hd@g' /root/.cshrc
+sudo sed -i '' 's@#pcdm_enable="YES"@pcdm_enable="YES"@g' /etc/rc.conf
 
-gdm
+startx
 
-echo 'If X fail to start run "xdrivers"'
+echo 'If X fail to start, run "xdrivers"'
