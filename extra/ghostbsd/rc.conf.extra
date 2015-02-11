@@ -15,7 +15,7 @@ devfs_system_ruleset="devfsrules_common"
  
 cupsd_enable="YES"
 
-# pcdm_enable="YES"
+#pcdm_enable="YES"
 hald_enable="YES"
 dbus_enable="YES"
 

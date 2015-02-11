@@ -9,12 +9,12 @@ rm -f /usr/bin/ginstall
 
 # removing auto login, startx and X configuration.
 GHOSTBSD=${GHOSTBSD:-"ghostbsd"}
-( echo "g/# root user autologin/d" ; echo 'wq' ) | ex -s /etc/gettytab
-( echo "g/root:\\/d" ; echo 'wq' ) | ex -s /etc/gettytab
-( echo "g/:al=root:ht:np:sp#115200:/d" ; echo 'wq' ) | ex -s /etc/gettytab
-sed -i "" "/ttyv0/s/root/Pc/g" /etc/ttys
+( echo "g/# ghostbsd user autologin/d" ; echo 'wq' ) | ex -s /etc/gettytab
+( echo "g/ghostbsd:\\/d" ; echo 'wq' ) | ex -s /etc/gettytab
+( echo "g/:al=ghostbsd:ht:np:sp#115200:/d" ; echo 'wq' ) | ex -s /etc/gettytab
+sed -i "" "/ttyv0/s/ghostbsd/Pc/g" /etc/ttys
 
-sed -i '' 's@#gdm_enable="YES"@gdm_enable="YES"@g' /etc/rc.conf 
+sed -i '' 's@#pcdm_enable="YES"@pcdm_enable="YES"@g' /etc/rc.conf 
 
 # Removing livecd hostname.
 ( echo 'g/hostname="livecd"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
@@ -89,8 +89,4 @@ printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
 </config>
 ' > ${FSMNT}/usr/local/etc/PolicyKit/PolicyKit.conf
 
-( echo "g/iso_to_hd/d" ; echo 'wq' ) | ex -s /root/.cshrc
-
 rm -f /usr/local/etc/xdg/autostart/chose-station.desktop
-
-gdm

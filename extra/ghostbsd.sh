@@ -38,7 +38,8 @@ cp extra/ghostbsd/splash.pcx ${BASEDIR}/boot/splash.pcx
 printf 'splash_pcx_load="YES"
 bitmap_load="YES"
 bitmap_name="/boot/splash.pcx"
-beastie_disable="YES"' > ${BASEDIR}/boot/loader.conf
+beastie_disable="YES"
+' > ${BASEDIR}/boot/loader.conf
 
 sed -i "" "s@latest@new_xorg@" ${BASEDIR}/etc/pkg/FreeBSD.conf
 
