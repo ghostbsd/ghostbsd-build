@@ -7,7 +7,6 @@ deps = """
 xserver
 utils
 utils-x
-drivers
 dm
 print
 internet
