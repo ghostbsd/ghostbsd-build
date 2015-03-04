@@ -110,14 +110,17 @@ cleandir: clean
 	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} cleandir
 
 upgradepkg:
-	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} upgradepkg
-	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} cleandesktop
-	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} createpkg
+	@-sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} upgradepkg
+	@-sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} cleandesktop
+	@-sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} createpkg
 
 installpkg:
-	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} installpkg
-	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} cleandesktop
-	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} createpkg
+	@-sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} installpkg
+	@-sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} cleandesktop
+	@-sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} createpkg
+
+cleandesk:
+	@-sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} cleandesktop
 
 createpkg:
-	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} createpkg
+	@-sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} createpkg
