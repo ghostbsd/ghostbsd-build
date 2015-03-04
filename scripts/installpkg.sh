@@ -49,6 +49,3 @@ while read pkgc; do
   fi
 done < $pkgfile
 
-# Installing remaining pkg from ports.
-
-sh scripts/ports.sh
