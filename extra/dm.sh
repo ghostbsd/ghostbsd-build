@@ -36,6 +36,8 @@
 #cp -prf /usr/local/etc/gconf/* ${BASEDIR}/usr/local/etc/gconf
 
 cp -rf extra/dm/default/* ${BASEDIR}/usr/local/share/PCDM/themes/default
+cp -rf /usr/local/share/backgrounds/ghostbsd/GreenLeaf.jpg ${BASEDIR}/usr/local/share/PCDM/themes/default/default.theme
+
 #cp ${BASEDIR}/usr/local/share/PCDM/pcdm.conf.sample ${BASEDIR}/usr/local/share/PCDM/pcdm.conf
 
 #sed -i "" "s@THEME_FILE=/usr/local/share/PCDM/themes/default/default.theme@THEME_FILE=/usr/local/share/PCDM/themes/default/default.theme@" ${BASEDIR}/usr/local/share/PCDM/pcdm.conf
