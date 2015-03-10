@@ -54,7 +54,7 @@ rm -rf ${BASEDIR}/usr/local/share/backgrounds/mate
 
 # GhostBSD dconf GhostBSD defaults file.
 if [ -f ${BASEDIR}/usr/local/share/glib-2.0/schemas/org.mate.background.gschema.xml ] ; then
-  sed -i "" "s@mate/desktop/Stripes.png@ghostbsd/Pond.jpg@" ${SHAREDIR}/glib-2.0/schemas/org.mate.background.gschema.xml
+  sed -i "" "s@mate/desktop/Stripes.png@ghostbsd/GreenLeaf.jpg@" ${SHAREDIR}/glib-2.0/schemas/org.mate.background.gschema.xml
 fi
 
 if [ -f ${SHAREDIR}/glib-2.0/schemas/org.mate.interface.gschema.xml ] ; then
