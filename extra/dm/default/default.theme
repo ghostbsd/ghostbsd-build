@@ -43,7 +43,7 @@ VKEYBOARD_IMAGE=virtualkeyboard.png		# Image for the virtual keyboard item
   VKEYBOARD_DISABLE=TRUE
 
 # TOOLBAR SETTINGS
-TOOLBAR_LOCATION=bottom 	# [bottom | top | left | right]
+TOOLBAR_LOCATION=top 	# [bottom | top | left | right]
 TOOLBAR_IMAGE_SIZE=28x28     # Set the default size for all images in the toolbar
 TOOLBAR_STYLE=textbesideicon 	 	# [icononly | textonly | textbesideicon | textundericon]
 
@@ -76,7 +76,7 @@ ADDSPACER=horizontal::[2,2]
 # Header Image: QLabel
 # ----------
 APP_STYLESHEET_START
-QToolBar{ background-color: rgba(253,253,255,100); }
+QToolBar{ background-color: rgba(20,20,20,255); border: none; }
 QWindow{ background-color: white; color: black; }
 QListWidget{
 	font-size: 20px;
@@ -95,20 +95,20 @@ QComboBox QAbstractItemView{
 	background: rgba(253,253,253,180);
 	font-size: 13px;
 }
-QToolButton{ background-color: transparent; border: none; }
+QToolButton{ background-color: transparent; border: none; color: white; }
 QToolButton:hover{ background-color: transparent; border: 1px solid grey; border-radius: 5px; }
 QGroupBox{ 
-	background-color: rgba(253,253,255,245); 
+	background-color: rgba(20,20,20,255); 
 	border: 1px solid grey; 
 	border-radius: 5px;
 	padding: 15px;
 }
 QGroupBox::title{ 
-	background-color: rgba(253,253,255,150); 
+	background-color: transparent;
 	border: 1px solid grey;
 	border-radius: 5px;
 	subcontrol-position: top center;
-	color: black;
+	color: white;
 }
 QGraphicsView{ 
 	background: rgba(253,253,253,180); 
@@ -116,7 +116,7 @@ QGraphicsView{
 	border: 1px solid grey; 
 	border-radius: 5px; 
 }
-QPushButton{ background-color: transparent; border: none; }
+QPushButton{ background-color: transparent; border: none; color: }
 QPushButton:hover{ background-color: transparent; border: 1px solid grey; border-radius: 5px; }
 QMessageBox{}
 QWidget{}

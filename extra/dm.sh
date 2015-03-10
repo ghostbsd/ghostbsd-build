@@ -5,15 +5,7 @@
 # See COPYING for license terms.
 #
 # dm.sh,v 0.1
-#
 
-set -e -u
-
-if [ -z "${LOGFILE:-}" ]; then
-    echo "This script can't run standalone."
-    echo "Please use launch.sh to execute it."
-    exit 1
-fi
 
 # Allow GDM auto login:
 # printf "
@@ -50,7 +42,8 @@ cp -rf extra/dm/default/* ${BASEDIR}/usr/local/share/PCDM/themes/default
 #sed -i "" "s@ENABLE_AUTO_LOGIN=FALSE@ENABLE_AUTO_LOGIN=TRUE@" ${BASEDIR}/usr/local/share/PCDM/pcdm.conf
 #sed -i "" "s@AUTO_LOGIN_USER=no-username@AUTO_LOGIN_USER=ghostbsd@" ${BASEDIR}/usr/local/share/PCDM/pcdm.conf
 
-sed -i "" "s@: ${pcdm_enable:=no}@# : ${pcdm_enable:=no}@" ${BASEDIR}/usr/local/etc/rc.d/pcdm
+sed -i.bak 's/${command} stop/# ${command} stop/g' ${BASEDIR}/usr/local/etc/rc.d/pcdm
+
 printf "#####################################
 #  PCDM CONFIGURATION FILE          #
 # (/usr/local/etc/pcdm.conf.dist)   #
@@ -79,3 +72,4 @@ REMOTE_SHARED_SCREEN=FALSE
 
 ## ADDITIONAL SETTINGS ##
 ENABLE_VIEW_PASSWORD_BUTTON=FALSE  #enable the option to show the password as text when a button is held" > ${BASEDIR}/usr/local/share/PCDM/pcdm.conf
+

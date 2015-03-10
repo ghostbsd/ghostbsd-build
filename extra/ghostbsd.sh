@@ -39,6 +39,7 @@ printf 'splash_pcx_load="YES"
 bitmap_load="YES"
 bitmap_name="/boot/splash.pcx"
 beastie_disable="YES"
+autoboot_delay="-1"
 ' > ${BASEDIR}/boot/loader.conf
 
 sed -i "" "s@latest@new_xorg@" ${BASEDIR}/etc/pkg/FreeBSD.conf

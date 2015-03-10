@@ -17,8 +17,6 @@ portupgrade
 git
 webcamd
 spideroak
-bwi-firmware-kmod
-bwn-firmware-kmod
 qt5
 cups
 cups-smb-backend
@@ -38,8 +36,6 @@ cheese
 gstreamer-plugins-neon
 libreoffice
 dejavu
-cyberbit-ttfonts
-font-kochi
 af-aspell
 am-aspell
 ar-aspell
