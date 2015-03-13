@@ -16,7 +16,7 @@ amd64 = Popen('cd /usr/obj && ls GhostBSD*amd64*', stdout=PIPE, shell=True)
 
 for line in i386.stdout.readlines():
     foo = pexpect.spawn(
-    'scp /usr/obj/%s %s@%s:/home/frs/project/g/gh/ghostbsdproject/release/i386/4.0/%s'
+    'scp /usr/obj/%s %s@%s:/home/frs/project/g/gh/ghostbsdproject/release/i386/10.1/%s'
     % (line.strip(), user, server, line.strip()))
     foo.expect('Password:')
     foo.sendline(password)
@@ -24,7 +24,7 @@ for line in i386.stdout.readlines():
 
 for line in amd64.stdout.readlines():
     foo = pexpect.spawn(
-    'scp /usr/obj/%s %s@%s:/home/frs/project/g/gh/ghostbsdproject/release/amd64/4.0/%s'
+    'scp /usr/obj/%s %s@%s:/home/frs/project/g/gh/ghostbsdproject/release/amd64/10.1/%s'
     % (line.strip(), user, server, line.strip()))
     foo.expect('Password:')
     foo.sendline(password)

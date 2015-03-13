@@ -42,8 +42,6 @@ beastie_disable="YES"
 autoboot_delay="-1"
 ' > ${BASEDIR}/boot/loader.conf
 
-sed -i "" "s@latest@new_xorg@" ${BASEDIR}/etc/pkg/FreeBSD.conf
-
 # Cat rc.cong.extra in 
 cat extra/ghostbsd/rc.conf.extra >> ${BASEDIR}/etc/rc.conf 
 
