@@ -30,7 +30,7 @@ rm -rf ${BASEDIR}/wallpaper
 
 # Installing pc-sysinstall and ghostbsd installer
 if [ ! -d ${BASEDIR}/pcbsd ]; then
-  git clone https://github.com/pcbsd/pcbsd.git ${BASEDIR}/pcbsd
+  git clone https://github.com/ericbsd/pcbsd.git ${BASEDIR}/pcbsd
 fi
 
 if [ ! -d ${BASEDIR}/gbi ]; then
