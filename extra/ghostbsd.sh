@@ -48,7 +48,6 @@ cat extra/ghostbsd/rc.conf.extra >> ${BASEDIR}/etc/rc.conf
 # sudoers modification.
 sed -i "" "s@# %wheel ALL=(ALL) ALL@%wheel ALL=(ALL) ALL@" ${BASEDIR}/usr/local/etc/sudoers
 sed -i "" "s@# %sudo	ALL=(ALL) ALL@%sudo	ALL=(ALL) ALL@" ${BASEDIR}/usr/local/etc/sudoers
-# sed -i "" "s@# %wheel ALL=(ALL) NOPASSWD: ALL@%wheel ALL=(ALL) NOPASSWD: /usr/local/share/networkmgr/trayicon.py@" ${BASEDIR}/usr/local/etc/sudoers
 
 # put a GhostBSD-irc icon on the desktop
 cp -f extra/ghostbsd/ghostbsd-irc.desktop ${BASEDIR}/usr/local/share/applications/
@@ -65,39 +64,6 @@ Icon=preferences-desktop-theme
 Terminal=false
 Type=Application
 ' > ${BASEDIR}/usr/local/etc/xdg/autostart/desktopsound.desktop
-
-# Live CD user gtk-bookmarks.
-printf "file:///root/Documents Documents
-file:///root/Downloads Downloads
-file:///root/Movies Movies
-file:///root/Music Music
-file:///root/Pictures Pictures
-" > ${BASEDIR}/root/.gtk-bookmarks
-
-mkdir -p ${BASEDIR}/root/Documents
-mkdir -p ${BASEDIR}/root/Downloads
-mkdir -p ${BASEDIR}/root/Movies
-mkdir -p ${BASEDIR}/root/Music
-mkdir -p ${BASEDIR}/root/Pictures
-
-printf "file:///home/ghostbsd/Documents Documents
-file:///home/ghostbsd/Downloads Downloads
-file:///home/ghostbsd/Movies Movies
-file:///home/ghostbsd/Music Music
-file:///home/ghostbsd/Pictures Pictures
-" > ${BASEDIR}/home/ghostbsd/.gtk-bookmarks
-
-chmod g+rwx ${BASEDIR}/home/ghostbsd/.gtk-bookmarks
-mkdir -p ${BASEDIR}/home/ghostbsd/Documents
-chmod g+rwx ${BASEDIR}/home/ghostbsd/Documents
-mkdir -p ${BASEDIR}/home/ghostbsd/Downloads
-chmod g+rwx ${BASEDIR}/home/ghostbsd/Downloads
-mkdir -p ${BASEDIR}/home/ghostbsd/Movies 
-chmod g+rwx ${BASEDIR}/home/ghostbsd/Movies
-mkdir -p ${BASEDIR}/home/ghostbsd/Music
-chmod g+rwx ${BASEDIR}/home/ghostbsd/Music
-mkdir -p ${BASEDIR}/home/ghostbsd/Pictures
-chmod g+rwx ${BASEDIR}/home/ghostbsd/Pictures
 
 # COPYRIGHT
 cp -f extra/ghostbsd/COPYRIGHT ${BASEDIR}/COPYRIGHT
@@ -117,9 +83,9 @@ mkdir -p ${BASEDIR}/usr/src/sys
 
 # Setup browser for partnership and affiliate.
 # Deleting bing.xml yahoo.xml google.xml twitter.xml.
-cd ${BASEDIR}/usr/local/lib/firefox/browser/searchplugins
-rm -f bing.xml yahoo.xml google.xml twitter.xml
-cd -
+#cd ${BASEDIR}/usr/local/lib/firefox/browser/searchplugins
+#rm -f bing.xml yahoo.xml google.xml twitter.xml
+#cd -
 
 
 
