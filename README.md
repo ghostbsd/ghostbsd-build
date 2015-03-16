@@ -1,9 +1,7 @@
 ghostbsd-build
 ==============
 
-## Tool to build GhostBSD image.
-
-The GhostBSD toolkit has been designed to allow building of both, i386 and amd64 architectures
+The ghostbsd-build is been designed to allow building of both, i386 and amd64 architectures
 on amd64 architectures. However, in order to build the packages for a specific environment, 
 the packaging process must take place on this exact environment (so amd64 packages can only be 
 built on amd64 environment and i386 packages - on i386).
@@ -22,7 +20,7 @@ First thing to do is download the newest version of the GhostBSD toolkit. The be
 so is via subversion (svn). It is not included by default on your new FreeBSD machine - to 
 install it you must issue one of the following commands:
 
-   pkg_add -r git
+   pkg install git
 
 or
 
