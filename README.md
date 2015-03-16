@@ -1,9 +1,7 @@
 ghostbsd-build
 ==============
 
-Tool to build GhostBSD image.
-
-The GhostBSD toolkit has been designed to allow building of both, i386 and amd64 architectures
+The ghostbsd-build is been designed to allow building of both, i386 and amd64 architectures
 on amd64 architectures. However, in order to build the packages for a specific environment, 
 the packaging process must take place on this exact environment (so amd64 packages can only be 
 built on amd64 environment and i386 packages - on i386).
@@ -21,59 +19,54 @@ intend to build from ports).
 First thing to do is download the newest version of the GhostBSD toolkit. The best way to do it 
 so is via subversion (svn). It is not included by default on your new FreeBSD machine - to 
 install it you must issue one of the following commands:
-
-   pkg_add -r git
-
-or
-
-   cd /usr/ports/devel/git && make install clean
-
-this one has to be done after fetching the ports tree, which you can do with:
-
-   portsnap fetch update
+```
+pkg install git
+```
 
 I strongly suggest downloading the toolkit itself to /src
 
    cd /usr
 
 and then
-
-    git clone https://github.com/GhostBSD/ghostbsd-build.git 
-
+```
+git clone https://github.com/GhostBSD/ghostbsd-build.git
+```
 Once svn checkout completes, you will have the whole GhostBSD development environment available 
 on your machine locally. Time to do some preliminary configuration!
-[edit] Preliminary configuration
+
+## Preliminary configuration
 
 First, you need to make some changes in fstab and rc.conf (using your favourite editor - we are 
 going to be using ee here)
-
-   ee /etc/fstab
-
+```
+ee /etc/fstab
+```
 add the following lines to the file:
-
-   proc /proc procfs rw 0 0
-   linproc /compat/linux/proc linprocfs rw 0 0
-
+```
+proc /proc procfs rw 0 0
+linproc /compat/linux/proc linprocfs rw 0 0
+```
 Make sure to create /compat/linux/proc directory before proceeding.
-
-   mkdir -p /compat/linux/proc
-
+```
+mkdir -p /compat/linux/proc
+```
 Now mount linproc and proc
-
-   mount linproc
-   mount proc
-
+```
+mount linproc
+mount proc
+```
 Edit rc.conf
-
-   ee /etc/rc.conf
-
+```
+ee /etc/rc.conf
+```
 Add the following settings to the file:
 
-   gnome_enable="YES"
-   hald_enable="YES"
-   dbus_enable="YES"
-   linux_enable="YES"
-
+```
+gnome_enable="YES"
+hald_enable="YES"
+dbus_enable="YES"
+linux_enable="YES"
+```
 Reboot your machine.
 
 Your development environment is now ready for building the packages.
