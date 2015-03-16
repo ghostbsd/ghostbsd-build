@@ -1,7 +1,7 @@
 ghostbsd-build
 ==============
 
-Tool to build GhostBSD image.
+= Tool to build GhostBSD image. =
 
 The GhostBSD toolkit has been designed to allow building of both, i386 and amd64 architectures
 on amd64 architectures. However, in order to build the packages for a specific environment, 
