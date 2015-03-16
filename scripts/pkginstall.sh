@@ -92,21 +92,6 @@ cp $PKGFILE ${BASEDIR}
 
 sed -i '' 's@signature_type: "fingerprints"@#signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 
-# Experimentation with pkg -C
-#cd ${PKG_LOCATION}
-
-#pkgaddcmd="pkg -c ${BASEDIR} add -f "
-#while read pkgc; do
-#  if [ -n "${pkgc}" ] ; then
-#    ipkg=`ls | grep $pkgc`
-#    echo "Installing package $pkgc"
-#    echo "Running $pkgaddcmd ${pkgc}" >> ${BASEDIR}/${PLOGFILE} 2>&1
-#    $pkgaddcmd $ipkg >> ${BASEDIR}/${PLOGFILE} 2>&1
-#  fi
-#done < $PKGFILE
-
-#cd -
-
 cat > ${BASEDIR}/addpkg.sh << "EOF"
 #!/bin/sh 
 
