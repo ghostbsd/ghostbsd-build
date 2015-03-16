@@ -1,7 +1,7 @@
 ghostbsd-build
 ==============
 
-= Tool to build GhostBSD image. =
+## Tool to build GhostBSD image.
 
 The GhostBSD toolkit has been designed to allow building of both, i386 and amd64 architectures
 on amd64 architectures. However, in order to build the packages for a specific environment, 
@@ -42,7 +42,8 @@ and then
 
 Once svn checkout completes, you will have the whole GhostBSD development environment available 
 on your machine locally. Time to do some preliminary configuration!
-[edit] Preliminary configuration
+
+## Preliminary configuration
 
 First, you need to make some changes in fstab and rc.conf (using your favourite editor - we are 
 going to be using ee here)
