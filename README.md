@@ -19,16 +19,9 @@ intend to build from ports).
 First thing to do is download the newest version of the GhostBSD toolkit. The best way to do it 
 so is via subversion (svn). It is not included by default on your new FreeBSD machine - to 
 install it you must issue one of the following commands:
-
-   pkg install git
-
-or
-
-   cd /usr/ports/devel/git && make install clean
-
-this one has to be done after fetching the ports tree, which you can do with:
-
-   portsnap fetch update
+```
+pkg install git
+```
 
 I strongly suggest downloading the toolkit itself to /src
 
