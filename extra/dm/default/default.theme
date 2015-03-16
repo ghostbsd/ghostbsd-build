@@ -116,7 +116,7 @@ QGraphicsView{
 	border: 1px solid grey; 
 	border-radius: 5px; 
 }
-QPushButton{ background-color: transparent; border: none; color: }
+QPushButton{ background-color: transparent; border: none; }
 QPushButton:hover{ background-color: transparent; border: 1px solid grey; border-radius: 5px; }
 QMessageBox{}
 QWidget{}
