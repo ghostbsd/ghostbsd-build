@@ -28,9 +28,9 @@ I strongly suggest downloading the toolkit itself to /src
    cd /usr
 
 and then
-
-    git clone https://github.com/GhostBSD/ghostbsd-build.git 
-
+```
+git clone https://github.com/GhostBSD/ghostbsd-build.git
+```
 Once svn checkout completes, you will have the whole GhostBSD development environment available 
 on your machine locally. Time to do some preliminary configuration!
 
@@ -38,34 +38,35 @@ on your machine locally. Time to do some preliminary configuration!
 
 First, you need to make some changes in fstab and rc.conf (using your favourite editor - we are 
 going to be using ee here)
-
-   ee /etc/fstab
-
+```
+ee /etc/fstab
+```
 add the following lines to the file:
-
-   proc /proc procfs rw 0 0
-   linproc /compat/linux/proc linprocfs rw 0 0
-
+```
+proc /proc procfs rw 0 0
+linproc /compat/linux/proc linprocfs rw 0 0
+```
 Make sure to create /compat/linux/proc directory before proceeding.
-
-   mkdir -p /compat/linux/proc
-
+```
+mkdir -p /compat/linux/proc
+```
 Now mount linproc and proc
-
-   mount linproc
-   mount proc
-
+```
+mount linproc
+mount proc
+```
 Edit rc.conf
-
-   ee /etc/rc.conf
-
+```
+ee /etc/rc.conf
+```
 Add the following settings to the file:
 
-   gnome_enable="YES"
-   hald_enable="YES"
-   dbus_enable="YES"
-   linux_enable="YES"
-
+```
+gnome_enable="YES"
+hald_enable="YES"
+dbus_enable="YES"
+linux_enable="YES"
+```
 Reboot your machine.
 
 Your development environment is now ready for building the packages.
