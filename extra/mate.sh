@@ -64,7 +64,7 @@ if [ -f ${SHAREDIR}/glib-2.0/schemas/org.mate.interface.gschema.xml ] ; then
 fi
 
 if [ -f ${SHAREDIR}/glib-2.0/schemas/org.mate.marco.gschema.xml ] ; then
-  sed -i "" "s@Menta@Ghomix@" ${SHAREDIR}/glib-2.0/schemas/org.mate.macro.gschema.xml
+  sed -i "" "s@Menta@Ghomix@" ${SHAREDIR}/glib-2.0/schemas/org.mate.marco.gschema.xml
 fi
 
 if [ -f ${SHAREDIR}/glib-2.0/schemas/org.mate.caja.gschema.xml ] ; then
