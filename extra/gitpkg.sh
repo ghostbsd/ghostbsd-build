@@ -12,10 +12,13 @@ if [ ! -f "/usr/local/bin/git" ]; then
   echo "Install Git to fetch pkg from GitHub"
   exit 1
 fi
-      
+
+echo "### Installing software from GitHub ###"
+
 # installing GhostBSD wallpapers
 if [ ! -d ${BASEDIR}/wallpaper ]; then
-  git clone https://github.com/GhostBSD/wallpaper.git ${BASEDIR}/wallpaper
+  echo "# Downloading wallpaper from GitHub #"
+  git clone https://github.com/GhostBSD/wallpaper.git ${BASEDIR}/wallpaper >/dev/null 2>&1
 fi
 
 cat > ${BASEDIR}/config.sh << 'EOF'
@@ -30,11 +33,13 @@ rm -rf ${BASEDIR}/wallpaper
 
 # Installing pc-sysinstall and ghostbsd installer
 if [ ! -d ${BASEDIR}/pcbsd ]; then
-  git clone https://github.com/ericbsd/pcbsd.git ${BASEDIR}/pcbsd
+  echo "# Downloading pcbsd tools from GitHub #"
+  git clone https://github.com/ericbsd/pcbsd.git ${BASEDIR}/pcbsd >/dev/null 2>&1
 fi
 
 if [ ! -d ${BASEDIR}/gbi ]; then
-  git clone https://github.com/GhostBSD/gbi.git ${BASEDIR}/gbi
+  echo "# Downloading gbi from GitHub #"
+  git clone https://github.com/GhostBSD/gbi.git ${BASEDIR}/gbi >/dev/null 2>&1
 fi
 
 
@@ -70,7 +75,8 @@ rm -rf ${BASEDIR}/gbi
 
 # installing GhostBSD wallpapers
 if [ ! -d ${BASEDIR}/operator ]; then
-  git clone https://github.com/GhostBSD/operator.git ${BASEDIR}/operator
+  echo "# Downloading operator from GitHub #"
+  git clone https://github.com/GhostBSD/operator.git ${BASEDIR}/operator >/dev/null 2>&1
 fi
 
 cat > ${BASEDIR}/config.sh << 'EOF'
@@ -85,7 +91,8 @@ rm -rf ${BASEDIR}/operator
 
 # installing GhostBSD wallpapers
 if [ ! -d ${BASEDIR}/update-station ]; then
-  git clone https://github.com/GhostBSD/update-station.git ${BASEDIR}/update-station
+  echo "# Downloading uodate-station from GitHub #"
+  git clone https://github.com/GhostBSD/update-station.git ${BASEDIR}/update-station >/dev/null 2>&1
 fi
 
 cat > ${BASEDIR}/config.sh << 'EOF'
@@ -100,7 +107,8 @@ rm -rf ${BASEDIR}/update-station
 
 # installing GhostBSD wallpapers
 if [ ! -d ${BASEDIR}/networkmgr ]; then
-  git clone https://github.com/GhostBSD/networkmgr.git ${BASEDIR}/networkmgr
+  echo "# Downloading netwokmgr from GitHub #"
+  git clone https://github.com/GhostBSD/networkmgr.git ${BASEDIR}/networkmgr >/dev/null 2>&1
 fi
 
 cat > ${BASEDIR}/config.sh << 'EOF'

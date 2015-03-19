@@ -80,8 +80,8 @@ if [ -f ${LOCALDIR}/conf/package ] ; then
 fi
 
 PLOGFILE=".log_pkginstall"
-echo "Installing packages listed in ${PKGFILE}"
-echo "Rsync packages from build location"
+echo "### Installing packages listed in ${PKGFILE} ###"
+echo "### Rsync packages from build location ###"
 rsync -az --exclude 'Makefile' ${PKG_LOCATION} ${BASEDIR} 
 
 # Experimentation
@@ -102,7 +102,7 @@ sh /etc/rc.d/ldconfig start
 $pkgaddcmd pkg*.txz >> ${PLOGFILE} 2>&1
 while read pkgc; do
     if [ -n "${pkgc}" ] ; then
-    echo "Installing package $pkgc"
+    echo "## Installing package $pkgc ##"
     echo "Running $pkgaddcmd ${pkgc}" >> ${PLOGFILE} 2>&1
     $pkgaddcmd $pkgc*.txz >> ${PLOGFILE} 2>&1
     fi
