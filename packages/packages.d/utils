@@ -10,6 +10,7 @@ nano
 mc
 py27-gobject
 py27-webkitgtk
+py27-pexpect
 freedesktop-sound-theme
 fish
 ksh93

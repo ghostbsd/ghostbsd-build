@@ -61,6 +61,10 @@ cd /pcbsd/src-qt5/libpcbsd
 /usr/local/lib/qt5/bin/qmake *.pro
 make
 make install
+cd /pcbsd/build-files/ports-overlay/misc/pcbsd-i18n-qt5
+/usr/local/lib/qt5/bin/qmake *.pro
+make
+make install
 cd /pcbsd/src-qt5/PCDM
 /usr/local/lib/qt5/bin/qmake *.pro
 make
