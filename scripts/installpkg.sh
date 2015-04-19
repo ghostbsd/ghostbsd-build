@@ -5,7 +5,7 @@
 # Creates package for GhostBSD
 
 pkgfile="conf/packages"
-pkgaddcmd="pkg install -fy "
+pkgaddcmd="pkg install -y "
 
 # Search main file package for include dependecies
 # and build an depends file ( depends )
