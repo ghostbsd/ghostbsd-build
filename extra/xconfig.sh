@@ -18,6 +18,7 @@ fi
 mkdir -p $BASEDIR/etc/X11/ $BASEDIR/etc/rc.d/ $BASEDIR/usr/local/sbin/
 
 cp extra/xconfig/xorg.conf.orig $BASEDIR/etc/X11/
+cp extra/xconfig/xorg.conf.vbox $BASEDIR/etc/X11/
 
 cp extra/xconfig/xconfig.sh $BASEDIR/etc/rc.d/xconfig
 chmod 555 $BASEDIR/etc/rc.d/xconfig

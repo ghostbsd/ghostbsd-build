@@ -35,6 +35,8 @@ clear
 
 if [ -f "/etc/X11/xorg.conf" ]; then
 	echo "xorg.conf found... skipping"
+	sudo sed -i '' 's@#pcdm_enable="YES"@pcdm_enable="YES"@g' /etc/rc.conf
+	startx
 	exit
 fi
 
