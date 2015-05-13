@@ -18,6 +18,8 @@ zsh
 portupgrade
 git
 webcamd
+grub
+xorriso
 guake
 spideroak
 qt5

@@ -19,4 +19,6 @@ zsh
 portupgrade
 git
 webcamd
+grub
+xorriso
 """

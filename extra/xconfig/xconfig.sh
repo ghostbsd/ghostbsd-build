@@ -37,30 +37,17 @@ if [ -f ${X_CFG} ]; then
     exit
 fi
 
-pciconf="/usr/sbin/pciconf -lv"
-
-pciline=$(${pciconf} | grep -B 4 VGA)
-
-vendor=$(echo ${pciline} | grep vendor)
-device=$(echo ${pciline} | grep device)
-
-
-echo -n " using \"${DRIVER_STR}\" driver..."
-
-case "${DRIVER_STR:-NULL}" in
-NULL)
-	echo "no drivers found... using vesa"
-	cp ${X_CFG_ORIG} ${X_CFG}
-	;;
-vesa)
-	cp ${X_CFG_ORIG} ${X_CFG}
-	;;
-vbox)
+/usr/sbin/pciconf -lv | grep -q VirtualBox
+if [ $? -eq 0 ] ; then
     cp ${X_CFG_VBOX} ${X_CFG}
-*)
-	sed "s/vesa/${DRIVER_STR}/" < ${X_CFG_ORIG} > ${X_CFG}
+else
+    exit
+fi
+
+# echo -n " using \"${DRIVER_STR}\" driver..."
+
+# sed "s/vesa/${DRIVER_STR}/" < ${X_CFG_ORIG} > ${X_CFG}
 	;;
-esac
 
 echo " done."
 
@@ -68,4 +55,3 @@ echo " done."
 
 load_rc_config $name
 run_rc_command "$1"
-

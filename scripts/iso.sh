@@ -23,6 +23,7 @@ echo "Saving mtree structure..."
 mtree -Pcp ${CLONEDIR} | bzip2 -9 > root.dist.bz2
 mkdir -p ${CLONEDIR}/dist
 mv root.dist.bz2 ${CLONEDIR}/dist/
+
 echo "/dev/iso9660/`echo ${GHOSTBSD_LABEL} | tr '[:lower:]' '[:upper:]'` / cd9660 ro 0 0" > ${CLONEDIR}/etc/fstab
 echo "proc /proc procfs rw 0 0" >> ${CLONEDIR}/etc/fstab
 echo "linproc /compat/linux/proc linprocfs rw 0 0" >> ${CLONEDIR}/etc/fstab
@@ -34,8 +35,8 @@ makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${ISOPATH} ${
 
 # Reference for hybrid DVD/USB image
 # Use GRUB to create the hybrid DVD/USB image
-#echo "Creating ISO..."
-#grub-mkrescue -o ${PROGDIR}/iso/${bFile}-DVD-USB.iso ${PDESTDIR9} -- -volid ${GHOSTBSD_LABEL}
+# echo "Creating ISO..."
+# grub-mkrescue -o ${ISOPATH} ${CLONEDIR} -- -volid ${GHOSTBSD_LABEL}
 #if [ $? -ne 0 ] ; then
 #exit_err "Failed running grub-mkrescue"
 #fi
@@ -45,8 +46,8 @@ echo "### ISO created ###"
 # Make mdsums and sha256 for iso
 
 cd /usr/obj
-md5 `echo ${ISOPATH}|cut -d / -f4` >> /usr/obj/MD5SUM   
-sha256 `echo ${ISOPATH}| cut -d / -f4` >> /usr/obj/SHA256SUM
+md5 `echo ${ISOPATH}|cut -d / -f4` >> /usr/obj/CHECKSUM   
+sha256 `echo ${ISOPATH}| cut -d / -f4` >> /usr/obj/CECKSUM
 cd -
 
 # Preserve log files from /usr/obj${CURDIR} to /usr/obj${CURDIR}_${ARCH}

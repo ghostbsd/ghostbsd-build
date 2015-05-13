@@ -30,19 +30,30 @@
 rm -rf ${BASEDIR}/rescue
 
 # Graphic card Auto configuration at the system boot Script.
+
+cp extra/xconfig/xorg.conf.orig $BASEDIR/etc/X11/
+cp extra/xconfig/xorg.conf.vbox $BASEDIR/etc/X11/
 install -C extra/ghostbsd/xconfig.sh $BASEDIR/usr/local/bin/xconfig
+
 install -C extra/ghostbsd/xdrivers.py $BASEDIR/usr/local/bin/xdrivers
+
+# grub2 setting
+mkdir -p ${BASEDIR}/boot/grub
+cp extra/ghostbsd/grub/grub.cfg.ghostbsd ${BASEDIR}/boot/grub/grub.cfg
+cp extra/ghostbsd/grub/pcbsdfont.pf2 ${BASEDIR}/boot/grub/pcbsdfont.pf2
+cp -rf extra/ghostbsd/grub/themes ${BASEDIR}/boot/grub/themes
 
 cp extra/ghostbsd/splash.pcx ${BASEDIR}/boot/splash.pcx
 
-printf 'splash_pcx_load="YES"
-bitmap_load="YES"
+printf 'spl8ash_pcx_load="YES"
+bitmap_load=
+YES"
 bitmap_name="/boot/splash.pcx"
 beastie_disable="YES"
 autoboot_delay="-1"
 ' > ${BASEDIR}/boot/loader.conf
 
-# Cat rc.cong.extra in 
+# Cat rc.cong.extra in rc.conf 
 cat extra/ghostbsd/rc.conf.extra >> ${BASEDIR}/etc/rc.conf 
 
 # sudoers modification.
@@ -189,6 +200,13 @@ ResultInactive=yes
 ResultActive=yes
 
 [Shutdown]
+Identity=unix-group:operator
+Action=org.freedesktop.consolekit.system.stop
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes
+
+[Suspend]
 Identity=unix-group:operator
 Action=org.freedesktop.consolekit.system.stop
 ResultAny=yes

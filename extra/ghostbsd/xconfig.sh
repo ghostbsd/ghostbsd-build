@@ -42,10 +42,15 @@ fi
 
 echo "Creating xorg.conf..."
 
-sudo Xorg -configure
-sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
-sudo sed -i '' 's@#pcdm_enable="YES"@pcdm_enable="YES"@g' /etc/rc.conf
-
+/usr/sbin/pciconf -lv | grep -q VirtualBox
+if [ $? -eq 0 ] ; then
+    sudo cp /etc/X11/xorg.conf.vbox /etc/X11/xorg.conf
+	sudo sed -i '' 's@#pcdm_enable="YES"@pcdm_enable="YES"@g' /etc/rc.conf
+else
+	sudo Xorg -configure
+	sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
+	sudo sed -i '' 's@#pcdm_enable="YES"@pcdm_enable="YES"@g' /etc/rc.conf
+fi
 startx
 
 echo 'If X fail to start, run "xdrivers"'
