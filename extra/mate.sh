@@ -31,7 +31,6 @@ rm -rf Glossy Glider Fog Esco Emacs DustBlue Dopple-Left Dopple Crux ContrastLow
 rm -rf ContrastHighInverse ContrastHigh ClearlooksRe ClearlooksClassic Clearlooks Bright Atlanta Atantla AlaDelta
 rm -rf AgingGorilla
 cd -
-cp -prf extra/ghostbsd/themes ${BASEDIR}/usr/local/share/
 
 #GhostBSD icons
 rm -rf ${BASEDIR}/usr/local/share/icons/Quid
@@ -47,29 +46,9 @@ rm -rf ${BASEDIR}/usr/local/share/icons/matefaenzacd
 rm -rf ${BASEDIR}/usr/local/share/icons/matefaenzadark
 rm -rf ${BASEDIR}/usr/local/share/icons/matefaenzagray
 rm -f ${BASEDIR}/usr/local/share/icons/mate/icon-theme.cache
-tar xfz extra/ghostbsd/icons.tar.gz -C ${BASEDIR}/usr/local/share
 
 # Wallpapers remove MATE wallpaper.
 rm -rf ${BASEDIR}/usr/local/share/backgrounds/mate
-
-# GhostBSD dconf GhostBSD defaults file.
-if [ -f ${BASEDIR}/usr/local/share/glib-2.0/schemas/org.mate.background.gschema.xml ] ; then
-  sed -i "" "s@mate/desktop/Stripes.png@ghostbsd/GreenLeaf.jpg@" ${SHAREDIR}/glib-2.0/schemas/org.mate.background.gschema.xml
-fi
-
-if [ -f ${SHAREDIR}/glib-2.0/schemas/org.mate.interface.gschema.xml ] ; then
-  sed -i "" "s@menta@Vibrancy-NonMono-Dark-Aqua@" ${SHAREDIR}/glib-2.0/schemas/org.mate.interface.gschema.xml
-  sed -i "" "s@Menta@Ghomix@" ${SHAREDIR}/glib-2.0/schemas/org.mate.interface.gschema.xml
-  sed -i "" "s@Sans@Sans Bold@" ${SHAREDIR}/glib-2.0/schemas/org.mate.interface.gschema.xml
-fi
-
-if [ -f ${SHAREDIR}/glib-2.0/schemas/org.mate.marco.gschema.xml ] ; then
-  sed -i "" "s@Menta@Ghomix@" ${SHAREDIR}/glib-2.0/schemas/org.mate.marco.gschema.xml
-fi
-
-if [ -f ${SHAREDIR}/glib-2.0/schemas/org.mate.caja.gschema.xml ] ; then
-  sed -i "" "s@Sans@Sans Bold@" ${SHAREDIR}/glib-2.0/schemas/org.mate.caja.gschema.xml
-fi
 
 
 #cp -prf extra/mate/org.mate.panel.toplevel.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
