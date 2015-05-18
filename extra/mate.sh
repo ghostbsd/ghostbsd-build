@@ -68,11 +68,6 @@ cp extra/mate/chose-station/chose-station.desktop ${BASEDIR}/usr/local/etc/xdg/a
 # Compile schemas with glib
 chroot ${BASEDIR} glib-compile-schemas /usr/local/share/glib-2.0/schemas/
 
-# gksu configuration.
-if [ -f ${BASEDIR}/usr/local/share/applications/gksu.desktop ] ; then
-  /usr/bin/sed -i "" "s@/usr/bin/x-terminal-emulator@/usr/local/bin/mate-terminal@" ${SHAREDIR}applications/gksu.desktop
-fi
-
 # Set cursor theme instead of default from xorg
 if [ -e ${BASEDIR}/usr/local/lib/X11/icons/default ] ; then
 rm ${BASEDIR}/usr/local/lib/X11/icons/default 
