@@ -3,6 +3,7 @@ Mate desktop environment
 """
 
 packages = """
+dconf-editor
 mate
 mate-screensaver
 plank
