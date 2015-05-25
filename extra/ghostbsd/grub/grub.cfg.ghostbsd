@@ -59,18 +59,18 @@ if loadfont ($root)/boot/grub/pcbsdfont.pf2 ; then
 fi
 terminal_output gfxterm
 insmod gfxmenu
-loadfont ($root)/boot/grub/themes/pcbsd/dejavu_10.pf2
-loadfont ($root)/boot/grub/themes/pcbsd/dejavu_12.pf2
-loadfont ($root)/boot/grub/themes/pcbsd/dejavu_14.pf2
-loadfont ($root)/boot/grub/themes/pcbsd/dejavu_16.pf2
-loadfont ($root)/boot/grub/themes/pcbsd/dejavu_bold_14.pf2
+loadfont ($root)/boot/grub/themes/ghostbsd/dejavu_10.pf2
+loadfont ($root)/boot/grub/themes/ghostbsd/dejavu_12.pf2
+loadfont ($root)/boot/grub/themes/ghostbsd/dejavu_14.pf2
+loadfont ($root)/boot/grub/themes/ghostbsd/dejavu_16.pf2
+loadfont ($root)/boot/grub/themes/ghostbsd/dejavu_bold_14.pf2
 insmod png
-set theme=($root)/boot/grub/themes/pcbsd/theme.txt
+set theme=($root)/boot/grub/themes/ghostbsd/theme.txt
 export theme
-set timeout=15
+set timeout=0
 
 menuentry "Graphical Install" {
-  kfreebsd /boot/kernel/kernel.gz
+  kfreebsd /boot/kernel/kernel
   kfreebsd_loadenv /boot/device.hints
   kfreebsd_module_elf /boot/kernel/ums.ko
   set kFreeBSD.vfs.root.mountfrom=cd9660:/dev/iso9660/GhostBSD
@@ -85,7 +85,7 @@ menuentry "Graphical Install" {
 }
 
 menuentry "Graphical Install - (Failsafe VESA mode)" {
-  kfreebsd /boot/kernel/kernel.gz
+  kfreebsd /boot/kernel/kernel
   kfreebsd_loadenv /boot/device.hints
   kfreebsd_module_elf /boot/kernel/ums.ko
   set kFreeBSD.vfs.root.mountfrom=cd9660:/dev/iso9660/GhostBSD
@@ -94,21 +94,6 @@ menuentry "Graphical Install - (Failsafe VESA mode)" {
   set kFreeBSD.vfs.zfs.arc_max=128M
   set kFreeBSD.grub.platform=$grub_platform
   set kFreeBSD.xvesa=YES
-  set kFreeBSD.kern.geom.label.disk_ident.enable=0
-  set kFreeBSD.kern.geom.label.gptid.enable=0
-  set kFreeBSD.kern.geom.label.ufsid.enable=0
-}
-
-menuentry "Text Install / Emergency Console" {
-  kfreebsd /boot/kernel/kernel.gz
-  kfreebsd_loadenv /boot/device.hints
-  kfreebsd_module_elf /boot/kernel/ums.ko
-  set kFreeBSD.vfs.root.mountfrom=cd9660:/dev/iso9660/GhostBSD
-  set kFreeBSD.kern.geom.eli.visible_passphrase=2
-  set kFreeBSD.hw.memtest.tests=0
-  set kFreeBSD.vfs.zfs.arc_max=128M
-  set kFreeBSD.grub.platform=$grub_platform
-  set kFreeBSD.xconsole=YES
   set kFreeBSD.kern.geom.label.disk_ident.enable=0
   set kFreeBSD.kern.geom.label.gptid.enable=0
   set kFreeBSD.kern.geom.label.ufsid.enable=0

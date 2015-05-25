@@ -46,8 +46,7 @@ cp -rf extra/ghostbsd/grub/themes ${BASEDIR}/boot/grub/themes
 cp extra/ghostbsd/splash.pcx ${BASEDIR}/boot/splash.pcx
 
 printf 'spl8ash_pcx_load="YES"
-bitmap_load=
-YES"
+bitmap_load="YES"
 bitmap_name="/boot/splash.pcx"
 beastie_disable="YES"
 autoboot_delay="-1"

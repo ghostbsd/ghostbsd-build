@@ -1,4 +1,4 @@
-f[devfsrules_common=7]
+[devfsrules_common=7]
 add path 'ad[0-9]\*' mode 666
 add path 'ada[0-9]\*' mode 666
 add path 'da[0-9]\*' mode 666
