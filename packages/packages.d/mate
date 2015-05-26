@@ -4,6 +4,7 @@ Mate desktop environment
 
 packages = """
 dconf-editor
+gnome-keyring
 mate
 mate-screensaver
 plank
