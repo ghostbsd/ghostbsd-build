@@ -83,7 +83,7 @@ if [ ! -f ${CLONEDIR}/etc/rc.d/unionfs ] ; then
 fi
 
 # Removes duplicates after archived them
-for i in ${UNION_DIRS}; do
+for i in $(echo "${UNION_DIRS}" | grep -v boot); do
 rm -Rf ${CLONEDIR}/$i/*
 done
 }
