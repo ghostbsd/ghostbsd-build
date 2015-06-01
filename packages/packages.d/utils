@@ -4,6 +4,7 @@ Basic utilities
 deps="""
 """
 packages="""
+dpkg
 rsync
 sudo
 nano

@@ -46,15 +46,13 @@ fi
 # and build an depends file ( depends )
 awk '/^deps/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} | grep -v '"""' | grep -v '#' > ${LOCALDIR}/packages/depends
 
+# Search main file package for included settings
+# and build a settings file 
+#awk '/^settings/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} | grep -v '"""' | grep -v '#' > ${LOCALDIR}/packages/settings
+
 # Add to EXTRA plugins the needed plugin readed from settings section
 # Readed plugin is added only if it isn't already in conf file
-add_extra=$(cat ${LOCALDIR}/packages/${PACK_PROFILE} | grep -iF1 settings= | grep -v '"""')
-#isallready=$(cat ${LOCALDIR}/conf/ghostbsd.defaults.conf| grep EXTRA= | grep $add_extra)
-#echo $add_extra 
-#if [ ! ${isallready} ] ; then
-
-#	echo 'EXTRA=${EXTRA}'"\" ${add_extra}\"" >> ${LOCALDIR}/conf/ghostbsd.defaults.conf
-#fi
+#add_extra=$(cat ${LOCALDIR}/packages/${PACK_PROFILE} | grep -iF1 settings= | grep -v '"""')
 
 # If exist an old .packages file removes it
 if [ -f ${LOCALDIR}/conf/packages ] ; then
@@ -80,43 +78,42 @@ if [ -f ${LOCALDIR}/conf/package ] ; then
 fi
 
 PLOGFILE=".log_pkginstall"
-echo "### Installing packages listed in ${PKGFILE} ###"
-echo "### Rsync packages from build location ###"
-rsync -az --exclude 'Makefile' ${PKG_LOCATION} ${BASEDIR} 
+echo "Installing packages listed in ${PKGFILE}"
 
-# Experimentation
-
-cp $PKGFILE ${BASEDIR}
-
-#export PACKAGE_BUILDING=yo
+# cp resolv.conf for fetching packages
+cp /etc/resolv.conf ${BASEDIR}/etc
+cp $PKGFILE ${BASEDIR}/mnt
 
 sed -i '' 's@signature_type: "fingerprints"@#signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 
-cat > ${BASEDIR}/addpkg.sh << "EOF"
+cat > ${BASEDIR}/mnt/addpkg.sh << "EOF"
 #!/bin/sh 
 
+cd /mnt
 PLOGFILE=".log_pkginstall"
 pkgfile="packages"
-pkgaddcmd="pkg add"
-sh /etc/rc.d/ldconfig start
-$pkgaddcmd pkg*.txz >> ${PLOGFILE} 2>&1
+pkgaddcmd="pkg install -y "
+/usr/sbin/pkg bootstrap -y
+
 while read pkgc; do
     if [ -n "${pkgc}" ] ; then
-    echo "## Installing package $pkgc ##"
+    echo "Installing package $pkgc"
     echo "Running $pkgaddcmd ${pkgc}" >> ${PLOGFILE} 2>&1
-    $pkgaddcmd $pkgc*.txz >> ${PLOGFILE} 2>&1
+    $pkgaddcmd $pkgc >> ${PLOGFILE} 2>&1
     fi
 done < $pkgfile
 
 rm addpkg.sh
 rm $pkgfile
-rm *.txz
+rm /etc/resolv.conf
+
 EOF
 
-chrootcmd="chroot ${BASEDIR} sh addpkg.sh"
+chrootcmd="chroot ${BASEDIR} sh /mnt/addpkg.sh"
 
 $chrootcmd
 
+ 
 sed -i '' 's@#signature_type: "fingerprints"@signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 
-mv ${BASEDIR}/${PLOGFILE} /usr/obj/${LOCALDIR}
+mv ${BASEDIR}/mnt/${PLOGFILE} /usr/obj/${LOCALDIR}

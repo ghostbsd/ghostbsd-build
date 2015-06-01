@@ -4,6 +4,7 @@ desc = """
 
 packages="""
 dejavu
+fonts-indic
 af-aspell
 am-aspell
 ar-aspell

@@ -3,6 +3,7 @@ virtualbox-ose-additions
 cursor-dmz-theme
 setxkbmap
 xrandr
+dpkg
 rsync
 sudo
 nano
@@ -39,8 +40,10 @@ gnome-mplayer
 xfburn
 cheese
 gstreamer-plugins-neon
+pulsaudio
 libreoffice
 dejavu
+fonts-indic
 af-aspell
 am-aspell
 ar-aspell
@@ -165,6 +168,8 @@ xh-hunspell
 yi-hunspell
 zu-hunspell
 shotwell
+dconf-editor
+gnome-keyring
 mate
 mate-screensaver
 plank

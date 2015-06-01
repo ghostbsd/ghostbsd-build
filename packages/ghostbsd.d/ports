@@ -1,0 +1,11 @@
+desc = """
+GhostBSD common ports
+"""
+
+packages = """
+ghostbsd-bug-report
+ghostbsd-irc
+"""
+
+settings="""
+"""

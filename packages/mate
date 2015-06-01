@@ -16,11 +16,15 @@ font
 graphic
 mate
 """
-
 packages = """
 """
 
-settings="""
+settings = """
 mate
+"""
+ghostbsd_deps="""
+ports
+mate
+common
 """
 
