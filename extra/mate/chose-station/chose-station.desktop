@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Appearance
+Comment=Customize the look of the desktop
+Exec=chose-station
+Icon=preferences-desktop-theme
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GTK;Settings;DesktopSettings;

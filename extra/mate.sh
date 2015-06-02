@@ -15,7 +15,7 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
-cp -f extra/mate/xinitrc ${BASEDIR}/usr/local/etc/X11/xinit/xinitrc 
+#cp -f extra/mate/xinitrc ${BASEDIR}/usr/local/etc/X11/xinit/xinitrc 
 
 # Remove gmplayer.desktop
 if [ -f "/usr/local/share/applications/gmplayer.desktop" ]; then
@@ -25,7 +25,7 @@ fi
 
 # to add 
 cp -prf extra/mate/org.mate.panel.toplevel.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
-#cp -prf extra/mate/org.mate.screensaver.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
+cp -prf extra/mate/org.mate.screensaver.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 
 # GhostBSD shose station.
 cp -rf extra/mate/chose-station ${BASEDIR}/usr/local/share/chose-station

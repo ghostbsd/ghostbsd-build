@@ -47,6 +47,7 @@ cd ${BASEDIR}/boot/kernel
 if [ "${ARCH}" = "$(uname -p)" -a -z "${DEBUG:-}" ]; then
     strip kernel
 fi
-gzip -f9 kernel
+
+#gzip -f9 kernel
 
 cd $LOCALDIR

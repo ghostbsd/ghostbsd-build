@@ -1,0 +1,34 @@
+[Toplevel top]
+expand=true
+orientation=top
+size=24
+
+[Object menu-bar]
+object-type=menu-bar
+toplevel-id=top
+position=0
+locked=true
+
+[Object notification-area]
+object-type=applet
+applet-iid=NotificationAreaAppletFactory::NotificationArea
+toplevel-id=top
+position=20
+panel-right-stick=true
+locked=true
+
+[Object mixer]
+object-type=applet
+applet-iid=MixerAppletFactory::MixerApplet
+toplevel-id=top
+panel-right-stick=true
+position=10
+locked=true
+
+[Object clock]
+object-type=applet
+applet-iid=ClockAppletFactory::ClockApplet
+toplevel-id=top
+position=0
+panel-right-stick=true
+locked=true
