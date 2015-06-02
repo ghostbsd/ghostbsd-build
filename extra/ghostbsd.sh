@@ -35,3 +35,7 @@ rm -rf ${BASEDIR}/usr/share/pc-sysinstall
 cp -pf  ${BASEDIR}/usr/local/share/applications/gbi.desktop ${BASEDIR}${HOME}/Desktop/
 chown -R 1000:0 ${BASEDIR}${HOME}/Desktop/gbi.desktop
 
+# enable pcdm if installed
+if [ -e $(which pcdm) ] ; then 
+    sed -i '' 's@#pcdm_enable="YES"@pcdm_enable="YES"@g' /etc/rc.conf
+fi

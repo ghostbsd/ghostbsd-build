@@ -54,6 +54,6 @@ chown -R 1000:0 ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop
 if [ -e ${BASEDIR}/usr/local/share/applications/ghostbsd-irc.desktop ] ; then
     cp -af ${BASEDIR}/usr/local/share/applications/ghostbsd-irc.desktop \
     ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop
-    chroot ${BASEDIR} chown -R 1000:0 /home/${GHOSTBSD_ADDUSER}/Desktop/ghostbsd-irc.desktop
-    chroot ${BASEDIR} chmod +x /home/${GHOSTBSD_ADDUSER}/Desktop/ghostbsd-irc.desktop
+    chown -R 1000:0 ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop/ghostbsd-irc.desktop
+    chmod +x ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop/ghostbsd-irc.desktop
 fi
