@@ -44,6 +44,8 @@ if [ ! -d ${BASEDIR}/usr/local/etc/pkg/repos ]; then
   mkdir -p ${BASEDIR}/usr/local/etc/pkg/repos
 fi
 
+cp /etc/resolv.conf ${BASEDIR}/etc/resolv.conf
+
 mount_nullfs /usr/ports ${BASEDIR}/usr/ports
 
 cat > ${BASEDIR}/portsbuild.sh << "EOF"
@@ -89,5 +91,6 @@ chrootcmd="chroot ${BASEDIR} pkg update"
 
 $chrootcmd
 
+rm -f ${BASEDIR}/etc/resolv.conf
 rm -Rf ${BASEDIR}/ports
 umount ${BASEDIR}/usr/ports
