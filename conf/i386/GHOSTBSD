@@ -9,6 +9,7 @@ cpu		I686_CPU
 ident		GENERIC
 
 options		GEOM_UZIP		# Read-only compressed disks
+options		NULLFS			# nullfs support
 
 makeoptions	WITH_CTF=1		# Run ctfconvert(1) for DTrace support
 

@@ -9,7 +9,7 @@ ident		GENERIC
 makeoptions	WITH_CTF=1		# Run ctfconvert(1) for DTrace support
 
 options		GEOM_UZIP		# Read-only compressed disks
-
+options		NULLFS			# nullfs support
 options 	SCHED_ULE		# ULE scheduler
 options 	PREEMPTION		# Enable kernel thread preemption
 options 	INET			# InterNETworking
