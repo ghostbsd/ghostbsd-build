@@ -25,7 +25,7 @@ mkdir -p ${CLONEDIR}/dist
 mv root.dist.bz2 ${CLONEDIR}/dist/
 
 # Creates etc/fstab
-#echo "/dev/iso9660/`echo ${GHOSTBSD_LABEL} | tr '[:lower:]' '[:upper:]'` / cd9660 ro 0 0" > ${CLONEDIR}/etc/fstab
+echo "/dev/iso9660/`echo ${GHOSTBSD_LABEL} | tr '[:lower:]' '[:upper:]'` / cd9660 ro 0 0" > ${CLONEDIR}/etc/fstab
 echo "proc /proc procfs rw 0 0" >> ${CLONEDIR}/etc/fstab
 #echo "linproc /compat/linux/proc linprocfs rw 0 0" >> ${CLONEDIR}/etc/fstab
 

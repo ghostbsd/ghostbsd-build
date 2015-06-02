@@ -37,5 +37,5 @@ chown -R 1000:0 ${BASEDIR}${HOME}/Desktop/gbi.desktop
 
 # enable pcdm if installed
 if [ -e $(which pcdm) ] ; then 
-    sed -i '' 's@#pcdm_enable="YES"@pcdm_enable="YES"@g' /etc/rc.conf
+    sed -i '' 's@#pcdm_enable="YES"@pcdm_enable="YES"@g' ${BASEDIR}/etc/rc.conf
 fi

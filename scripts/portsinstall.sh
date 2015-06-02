@@ -77,6 +77,7 @@ pkgfile="ghostbsd"
 pkgaddcmd="pkg install -y "
 
 cd /mnt
+pkg update
 
 while read pkgc; do
     if [ -n "${pkgc}" ] ; then

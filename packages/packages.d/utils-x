@@ -6,6 +6,6 @@ deps="""
 packages="""
 guake
 #gksu
-#zenity
+zenity
 spideroak
 """
