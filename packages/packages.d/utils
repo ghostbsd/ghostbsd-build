@@ -20,6 +20,7 @@ zsh
 portupgrade
 git
 webcamd
-grub
+grub2
+grub2-efi
 xorriso
 """

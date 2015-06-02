@@ -31,17 +31,17 @@ echo "proc /proc procfs rw 0 0" >> ${CLONEDIR}/etc/fstab
 
 cd ${CLONEDIR} && tar -cpzf ${CLONEDIR}/dist/etc.tgz etc
 
-echo "### Running makefs to create ISO ###"
-bootable="-o bootimage=i386;${CLONEDIR}/boot/cdboot -o no-emul-boot"
-makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${ISOPATH} ${CLONEDIR}
+#echo "### Running makefs to create ISO ###"
+#bootable="-o bootimage=i386;${CLONEDIR}/boot/cdboot -o no-emul-boot"
+#makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${ISOPATH} ${CLONEDIR}
 
 # Reference for hybrid DVD/USB image
 # Use GRUB to create the hybrid DVD/USB image
-#echo "Creating ISO..."
-#grub-mkrescue -o ${ISOPATH} ${CLONEDIR} -- -volid ${GHOSTBSD_LABEL}
-#if [ $? -ne 0 ] ; then
-#exit_err "Failed running grub-mkrescue"
-#fi
+echo "Creating ISO..."
+grub-mkrescue -o ${ISOPATH} ${CLONEDIR} -- -volid ${GHOSTBSD_LABEL}
+if [ $? -ne 0 ] ; then
+exit_err "Failed running grub-mkrescue"
+fi
 
 echo "### ISO created ###"
 
