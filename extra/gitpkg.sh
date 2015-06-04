@@ -16,22 +16,24 @@ fi
 
 # Installing pc-sysinstall and ghostbsd installer
 if [ ! -d ${BASEDIR}/pcbsd ]; then
-  echo "# Downloading pcbsd tools from GitHub #"
+  echo "Downloading pcbsd tools from GitHub"
   git clone https://github.com/ericbsd/pcbsd.git ${BASEDIR}/pcbsd >/dev/null 2>&1
 fi
 
 if [ ! -d ${BASEDIR}/gbi ]; then
-  echo "# Downloading gbi from GitHub #"
+  echo "Downloading gbi from GitHub"
   git clone https://github.com/GhostBSD/gbi.git ${BASEDIR}/gbi >/dev/null 2>&1
 fi
 
 
 cat > ${BASEDIR}/config.sh << 'EOF'
 #!/bin/sh
+echo "installing pc-syinstall">
 cd /pcbsd/src-sh/pcbsd-utils/pc-sysinstall
-sh install.sh
+sh install.sh >/dev/null 2>&1
+echo "installing gbi">
 cd /gbi
-sh install.sh
+sh install.sh >/dev/null 2>&1
 EOF
 
 chroot ${BASEDIR} sh /config.sh
@@ -99,7 +101,7 @@ chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
 rm -rf ${BASEDIR}/update-station
 
-# installing GhostBSD wallpapers
+# installing Networkmgr
 if [ ! -d ${BASEDIR}/networkmgr ]; then
   echo "# Downloading netwokmgr from GitHub #"
   git clone https://github.com/GhostBSD/networkmgr.git ${BASEDIR}/networkmgr >/dev/null 2>&1
@@ -114,3 +116,20 @@ EOF
 chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
 rm -rf ${BASEDIR}/networkmgr
+
+# installing Station Tweak 
+if [ ! -d ${BASEDIR}/station-tweak ]; then
+  echo "# Downloading station-tweak from GitHub #"
+  git clone https://github.com/GhostBSD/station-tweak.git ${BASEDIR}/station-tweak >/dev/null 2>&1
+fi
+
+cat > ${BASEDIR}/config.sh << 'EOF'
+#!/bin/sh
+cd /station-tweak
+python setup.py build
+python setup.py install
+EOF
+
+chroot ${BASEDIR} sh /config.sh
+rm -f ${BASEDIR}/config.sh
+rm -rf ${BASEDIR}/station-tweak
