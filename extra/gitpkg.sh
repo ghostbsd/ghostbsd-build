@@ -13,23 +13,6 @@ if [ ! -f "/usr/local/bin/git" ]; then
   exit 1
 fi
 
-echo "### Installing software from GitHub ###"
-
-# installing GhostBSD wallpapers
-if [ ! -d ${BASEDIR}/wallpaper ]; then
-  echo "# Downloading wallpaper from GitHub #"
-  git clone https://github.com/GhostBSD/wallpaper.git ${BASEDIR}/wallpaper >/dev/null 2>&1
-fi
-
-cat > ${BASEDIR}/config.sh << 'EOF'
-#!/bin/sh
-cd /wallpaper
-sh install.sh
-EOF
-
-chroot ${BASEDIR} sh /config.sh
-rm -f ${BASEDIR}/config.sh
-rm -rf ${BASEDIR}/wallpaper
 
 # Installing pc-sysinstall and ghostbsd installer
 if [ ! -d ${BASEDIR}/pcbsd ]; then

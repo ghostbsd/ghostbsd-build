@@ -1,0 +1,14 @@
+desc = """
+GhostBSD mate settings
+"""
+
+packages = """
+ghostbsd-icons
+ghostbsd-wallpapers
+ghostbsd-mate-themes
+mate-installed-settings
+mate-live-settings
+"""
+
+settings="""
+"""

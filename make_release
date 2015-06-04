@@ -42,7 +42,7 @@ sed -i '' 's@ARCH="amd64"@ARCH="i386"@' ${CONF}
 #sed -i '' 's@PACK_PROFILE=${PACK_PROFILE:-"xfce4"}@PACK_PROFILE=${PACK_PROFILE:-"lxde"}@' ${CONF}
 make clean cleandir
 make
-make img
+#make img
 
 # Build for Mate i386.
 #sed -i '' 's@PACK_PROFILE=${PACK_PROFILE:-"lxde"}@PACK_PROFILE=${PACK_PROFILE:-"mate"}@' ${CONF}
@@ -69,7 +69,7 @@ sed -i '' 's@ARCH="i386"@ARCH="amd64"@' ${CONF}
 #sed -i '' 's@PACK_PROFILE=${PACK_PROFILE:-"openbox"}@PACK_PROFILE=${PACK_PROFILE:-"lxde"}@' ${CONF}
 make clean cleandir
 make
-make img
+#make img
 make clean cleandir
 # Build for Mate amd64.
 #sed -i '' 's@PACK_PROFILE=${PACK_PROFILE:-"lxde"}@PACK_PROFILE=${PACK_PROFILE:-"mate"}@' ${CONF}

@@ -43,10 +43,11 @@ cd ${SRCDIR}
 makeargs="${MAKEOPT:-} ${MAKEJ_KERNEL:-} __MAKE_CONF=${MAKE_CONF} TARGET_ARCH=${ARCH} DESTDIR=${BASEDIR} SRCCONF=${SRC_CONF}"
 (env $MAKE_ENV script -aq $LOGFILE make ${makeargs:-} installkernel || print_error;) | grep '^>>>'
 
-# cd ${BASEDIR}/boot/kernel
-# if [ "${ARCH}" = "$(uname -p)" -a -z "${DEBUG:-}" ]; then
-#     strip kernel
-# fi
-# gzip -f9 kernel
+#cd ${BASEDIR}/boot/kernel
+#if [ "${ARCH}" = "$(uname -p)" -a -z "${DEBUG:-}" ]; then
+#    strip kernel
+#fi
+
+#gzip -f9 kernel
 
 cd $LOCALDIR

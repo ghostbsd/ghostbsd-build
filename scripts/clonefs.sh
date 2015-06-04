@@ -37,7 +37,7 @@ fi
 # Cloning file system function. 
 clonefs()
 {
-# Copying file system without /usr.
+# Copying file system without /usr and /var/cache/pkg
 echo "### Preparing filesystem hierarchy using $MD_BACKEND backend."
 mkdir -p ${CLONEDIR}
 rsync -avzH --exclude-from='conf/clonefs_exclusion' ${BASEDIR}/ ${CLONEDIR} >> ${LOGFILE} 2>&1
@@ -82,8 +82,8 @@ if [ ! -f ${CLONEDIR}/etc/rc.d/unionfs ] ; then
   chmod 555 ${CLONEDIR}/etc/rc.d/unionfs
 fi
 
-# Removes duplicates from usr after archived them
-for i in /usr/local/etc /usr/local/www ; do
+# Removes duplicates after archived them
+for i in $(echo "${UNION_DIRS}" | grep -v boot); do
 rm -Rf ${CLONEDIR}/$i/*
 done
 }

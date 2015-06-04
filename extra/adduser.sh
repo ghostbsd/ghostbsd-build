@@ -50,3 +50,10 @@ chown -R 1000:0 ${BASEDIR}/home/${GHOSTBSD_ADDUSER}
 mkdir -p ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop
 chown -R 1000:0 ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop
 
+
+if [ -e ${BASEDIR}/usr/local/share/applications/ghostbsd-irc.desktop ] ; then
+    cp -af ${BASEDIR}/usr/local/share/applications/ghostbsd-irc.desktop \
+    ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop
+    chown -R 1000:0 ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop/ghostbsd-irc.desktop
+    chmod +x ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop/ghostbsd-irc.desktop
+fi

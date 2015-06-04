@@ -1,0 +1,12 @@
+desc = """
+GhostBSD common settings
+"""
+
+packages = """
+ghostbsd-grub2-settings
+ghostbsd-installed-common-settings
+ghostbsd-live-common-settings
+"""
+
+settings="""
+"""
