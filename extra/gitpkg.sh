@@ -28,10 +28,10 @@ fi
 
 cat > ${BASEDIR}/config.sh << 'EOF'
 #!/bin/sh
-echo "installing pc-syinstall">
+echo "installing pc-syinstall"
 cd /pcbsd/src-sh/pcbsd-utils/pc-sysinstall
 sh install.sh >/dev/null 2>&1
-echo "installing gbi">
+echo "installing gbi"
 cd /gbi
 sh install.sh >/dev/null 2>&1
 EOF
