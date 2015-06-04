@@ -27,12 +27,6 @@ fi
 #cp -prf extra/mate/org.mate.panel.toplevel.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 #cp -prf extra/mate/org.mate.screensaver.gschema.xml ${BASEDIR}/usr/local/share/glib-2.0/schemas/
 
-# GhostBSD shose station.
-cp -rf extra/mate/chose-station ${BASEDIR}/usr/local/share/chose-station
-install -C extra/mate/chose-station/main.py ${BASEDIR}/usr/local/bin/chose-station
-cp extra/mate/chose-station/chose-station.desktop ${BASEDIR}/usr/local/etc/xdg/autostart/
-
-
 # Compile schemas with glib
 chroot ${BASEDIR} glib-compile-schemas /usr/local/share/glib-2.0/schemas/
 
