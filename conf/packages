@@ -12,6 +12,7 @@ mc
 py27-gobject
 py27-webkitgtk
 py27-pexpect
+py27-distutils-extra
 freedesktop-sound-theme
 fish
 ksh93
