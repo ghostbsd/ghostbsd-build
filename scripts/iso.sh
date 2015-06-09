@@ -24,10 +24,13 @@ mtree -Pcp ${CLONEDIR} | bzip2 -9 > root.dist.bz2
 mkdir -p ${CLONEDIR}/dist
 mv root.dist.bz2 ${CLONEDIR}/dist/
 
-# Creates etc/fstab
+# Creates etc/fstab to avoid messages about missing it
 #echo "/dev/iso9660/`echo ${GHOSTBSD_LABEL} | tr '[:lower:]' '[:upper:]'` / cd9660 ro 0 0" > ${CLONEDIR}/etc/fstab
 #echo "proc /proc procfs rw 0 0" >> ${CLONEDIR}/etc/fstab
 #echo "linproc /compat/linux/proc linprocfs rw 0 0" >> ${CLONEDIR}/etc/fstab
+if [ ! -e ${CLONEDIR}/etc/fstab ] ; then
+    touch ${CLONEDIR}/etc/fstab
+fi
 
 cd ${CLONEDIR} && tar -cpzf ${CLONEDIR}/dist/etc.tgz etc
 
