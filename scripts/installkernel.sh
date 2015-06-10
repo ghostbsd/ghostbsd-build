@@ -31,7 +31,7 @@ if [ -n "${KERNELCONF:-}" ]; then
     export KERNCONF=$(basename ${KERNELCONF})
 elif [ -z "${KERNCONF:-}" ]; then
     export KERNCONFDIR=${LOCALDIR}/conf/${ARCH}
-    export KERNCONF="GHOSTBSD"
+    export KERNCONF="GENERIC"
 fi
 
 mkdir -p ${BASEDIR}/boot

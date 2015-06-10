@@ -131,5 +131,7 @@ python setup.py install
 EOF
 
 chroot ${BASEDIR} sh /config.sh
+cp ${BASEDIR}/station-tweak/station-tweak ${BASEDIR}/usr/local/bin/station-tweak
+chmod +x ${BASEDIR}/usr/local/bin/station-tweak
 rm -f ${BASEDIR}/config.sh
 rm -rf ${BASEDIR}/station-tweak
