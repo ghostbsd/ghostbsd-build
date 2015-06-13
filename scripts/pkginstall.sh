@@ -22,37 +22,9 @@ if [ ! -f ${PKGFILE} ]; then
 fi
 
 
-
-if [ "$(uname -p)" != "amd64" ]; then
-  echo "----------------------------------------------------------"
-  echo "You can install packages for i386 architecture"
-  echo "only if your machine architecture is amd64"
-  echo "----------------------------------------------------------"
-  echo "Skipping package installation."
-  echo "----------------------------------------------------------"
-  sleep 5 
-  return
-else
-  echo "----------------------------------------------------------"
-  echo "You can install packages for i386 architecture"
-  echo "only if your machine architecture is amd64"
-  echo "----------------------------------------------------------"
-  echo "Starting package installation."
-  echo "----------------------------------------------------------"
-  sleep 5
-fi
-
 # Search main file package for include dependecies
 # and build an depends file ( depends )
 awk '/^deps/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} | grep -v '"""' | grep -v '#' > ${LOCALDIR}/packages/depends
-
-# Search main file package for included settings
-# and build a settings file 
-#awk '/^settings/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} | grep -v '"""' | grep -v '#' > ${LOCALDIR}/packages/settings
-
-# Add to EXTRA plugins the needed plugin readed from settings section
-# Readed plugin is added only if it isn't already in conf file
-#add_extra=$(cat ${LOCALDIR}/packages/${PACK_PROFILE} | grep -iF1 settings= | grep -v '"""')
 
 # If exist an old .packages file removes it
 if [ -f ${LOCALDIR}/conf/packages ] ; then
@@ -71,10 +43,22 @@ done < ${LOCALDIR}/packages/depends
 # Removes """ and # from temporary package file
 cat ${LOCALDIR}/conf/package | grep -v '"""' | grep -v '#' > ${LOCALDIR}/conf/packages
 
-# Removes temporary files
+# Removes temporary/leftover files
 if [ -f ${LOCALDIR}/conf/package ] ; then
   rm -f ${LOCALDIR}/conf/package
   rm -f ${LOCALDIR}/packages/depends
+fi
+
+for left_files in ports ghostbsd pcbsd gbi ; do
+    rm -Rf ${BASEDIR}/${left_files}
+done
+
+if [ -f ${BASEDIR}/usr/local/etc/repos/GhostBSD.conf ]; then
+    rm -f  ${BASEDIR}/usr/local/etc/repos/GhostBSD.conf
+fi
+
+if [ -n "$(mount | grep ${BASEDIR}/var/run)" ]; then
+    umount -f ${BASEDIR}/var/run
 fi
 
 PLOGFILE=".log_pkginstall"
@@ -86,14 +70,28 @@ cp $PKGFILE ${BASEDIR}/mnt
 
 sed -i '' 's@signature_type: "fingerprints"@#signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 
+# prepares ports tree
+portsnap fetch
+portsnap extract -p ${BASEDIR}/usr/ports
+
+#mounts ${BASEDIR}/var/run because it's needed when building ports in chroot
+mount_nullfs /var/run ${BASEDIR}/var/run
+
+# prepares addpkg.sh script to add packages under chroot
 cat > ${BASEDIR}/mnt/addpkg.sh << "EOF"
 #!/bin/sh 
 
+# builds pkg from ports to avoid Y/N question
+cd /usr/ports/ports-mgmt/pkg
+make deinstall
+make
+make install
+
+# pkg install part
 cd /mnt
 PLOGFILE=".log_pkginstall"
 pkgfile="packages"
 pkgaddcmd="pkg install -y "
-/usr/sbin/pkg bootstrap -y
 
 while read pkgc; do
     if [ -n "${pkgc}" ] ; then
@@ -105,15 +103,14 @@ done < $pkgfile
 
 rm addpkg.sh
 rm $pkgfile
-rm /etc/resolv.conf
-
 EOF
 
+# run addpkg.sh in chroot to add packages
 chrootcmd="chroot ${BASEDIR} sh /mnt/addpkg.sh"
-
 $chrootcmd
 
- 
+rm ${BASEDIR}/etc/resolv.conf
+
 sed -i '' 's@#signature_type: "fingerprints"@signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 
 mv ${BASEDIR}/mnt/${PLOGFILE} /usr/obj/${LOCALDIR}

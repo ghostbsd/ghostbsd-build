@@ -17,6 +17,10 @@ fi
 
 echo "#### Removing build directories ####"
 
+if [ -n "$(mount | grep ${BASEDIR}/var/run )" ] ; then
+    umount -f ${BASEDIR}/var/run
+fi
+
 if [ -d "${BASEDIR}" ]; then
     chflags -R noschg ${BASEDIR}
     rm -rf ${BASEDIR}

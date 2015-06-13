@@ -33,5 +33,11 @@ for plugin in ${EXTRA}; do
 	echo "or ${LOCALDIR}/extra/, skipping"
 	sleep 3
     fi
+    if [ -d ${BASEDIR}/usr/ports/Mk ] ; then
+        rm -Rf ${BASEDIR}/usr/ports/*
+    fi
+    if [ -n "$(mount | grep ${BASEDIR}/var/run)" ]; then
+        umount ${BASEDIR}/var/run
+    fi
 done
 

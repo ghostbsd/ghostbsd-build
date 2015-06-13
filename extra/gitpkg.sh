@@ -13,6 +13,7 @@ if [ ! -f "/usr/local/bin/git" ]; then
   exit 1
 fi
 
+cp /etc/resolv.conf ${BASEDIR}/etc/resolv.conf
 
 # Installing pc-sysinstall and ghostbsd installer
 if [ ! -d ${BASEDIR}/pcbsd ]; then
@@ -135,3 +136,5 @@ cp ${BASEDIR}/station-tweak/station-tweak ${BASEDIR}/usr/local/bin/station-tweak
 chmod +x ${BASEDIR}/usr/local/bin/station-tweak
 rm -f ${BASEDIR}/config.sh
 rm -rf ${BASEDIR}/station-tweak
+
+rm ${BASEDIR}/etc/resolv.conf

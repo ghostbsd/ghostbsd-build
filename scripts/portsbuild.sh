@@ -46,12 +46,10 @@ fi
 
 cp /etc/resolv.conf ${BASEDIR}/etc/resolv.conf
 
-mount_nullfs /usr/ports ${BASEDIR}/usr/ports
-
 cat > ${BASEDIR}/portsbuild.sh << "EOF"
 #!/bin/sh
 
-
+# builds ghostbsd ports
 for port in $(find /ports/ -type d -depth 2)  ; do
     echo $port
     cd $port
@@ -59,9 +57,9 @@ for port in $(find /ports/ -type d -depth 2)  ; do
     make package
     cd work/pkg
     mv *txz /ghostbsd/All
-    #rm -Rf $port
 done
 
+#prepares ghostbsd repo for ghostbsd ports
 pkg repo /ghostbsd
 rm -f /portsbuild.sh
 EOF
@@ -83,14 +81,10 @@ GhostBSD: {
 }
 EOF
 
+# Build ghostbsd ports in chroot 
 chrootcmd="chroot ${BASEDIR} sh /portsbuild.sh"
-
-$chrootcmd
-
-chrootcmd="chroot ${BASEDIR} pkg update"
-
 $chrootcmd
 
 rm -f ${BASEDIR}/etc/resolv.conf
 rm -Rf ${BASEDIR}/ports
-umount ${BASEDIR}/usr/ports
+#rm -Rf ${BASEDIR}/usr/ports/*

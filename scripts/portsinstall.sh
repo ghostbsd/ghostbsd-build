@@ -16,25 +16,6 @@ if [ -z "${LOGFILE:-}" ]; then
 fi
 
 
-if [ "$(uname -p)" != "amd64" ]; then
-  echo "----------------------------------------------------------"
-  echo "You can install packages for i386 architecture"
-  echo "only if your machine architecture is amd64"
-  echo "----------------------------------------------------------"
-  echo "Skipping package installation."
-  echo "----------------------------------------------------------"
-  sleep 5 
-  return
-else
-  echo "----------------------------------------------------------"
-  echo "You can install packages for i386 architecture"
-  echo "only if your machine architecture is amd64"
-  echo "----------------------------------------------------------"
-  echo "Starting package installation."
-  echo "----------------------------------------------------------"
-  sleep 5
-fi
-
 PKGFILE=${PKGFILE:-${LOCALDIR}/conf/ghostbsd};
 
 if [ ! -f ${PKGFILE} ]; then
@@ -103,3 +84,4 @@ rm -f ${BASEDIR}/usr/local/etc/pkg/repos/GhostBSD.cfg
 
 mv ${BASEDIR}/mnt/${PLOGFILE} /usr/obj/${LOCALDIR}
 
+#umount ${BASEDIR}/var/run
