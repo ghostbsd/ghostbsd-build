@@ -50,4 +50,10 @@ makeargs="${MAKEOPT:-} ${MAKEJ_KERNEL:-} __MAKE_CONF=${MAKE_CONF} TARGET_ARCH=${
 
 #gzip -f9 kernel
 
+# fix missing linker.hints from /boot/kernel
+if [ "${ARCH}" = "i386" ] ; then
+    chrootcmd="chroot ${BASEDIR} kldxref /boot/kernel /boot/modules"
+    $chrootcmd
+fi
+
 cd $LOCALDIR
