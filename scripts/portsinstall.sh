@@ -80,7 +80,7 @@ $chrootcmd
 
 # removes ghostbsd local repo
 rm -Rf ${BASEDIR}/ghostbsd 
-rm -f ${BASEDIR}/usr/local/etc/pkg/repos/GhostBSD.cfg
+rm -f ${BASEDIR}/usr/local/etc/pkg/repos/GhostBSD.conf
 
 mv ${BASEDIR}/mnt/${PLOGFILE} /usr/obj/${LOCALDIR}
 
