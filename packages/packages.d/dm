@@ -1,0 +1,11 @@
+desc = """
+Display Manager
+"""
+
+packages = """
+qt5
+"""
+
+settings="""
+dm
+"""

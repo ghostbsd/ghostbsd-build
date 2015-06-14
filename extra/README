@@ -1,0 +1,24 @@
+README,v 1.2 Thursday, January 13 2011 07:36:36 PM ghostbsd
+
+This directory contains files and subdirectories related to the
+plugins'set.  Available plugins and a brief description of each
+follows.
+
+adduser			Add the user "ghostbsd" to the LiveCD (username can be
+				set using the GHOSTBSD_ADDUSER variable
+
+autologin		Enable autologin for the user "ghostbsd"
+
+installports	Remount the ports' tree under ${BASEDIR}/usr/ports
+				and install ports listed in the INSTALL_PORTS variable
+				in the usual category/portname
+
+pf				Create basic PF rulesets at bootime
+
+xautostart		Start X.org at bootime
+
+xconfig			Autoconfigure X.org at boottime using X.org
+				autoconfigure features
+
+xconfig-probe	Autoconfigure X.org at bootime using X.org -configure
+

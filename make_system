@@ -1,0 +1,44 @@
+#!/bin/sh
+
+#Now mount linproc and proc
+if [ ! -d /compat/linux/proc ]; then
+  printf 'proc /proc procfs rw 0 0
+linproc /compat/linux/proc linprocfs rw 0 0' >> /etc/fstab
+  mkdir -p /compat/linux/proc
+  mount linproc
+  mount proc
+  # Adding gnome, hald, dbus and linux to the /etc/rc.conf.
+  printf '#gdm_enable="YES" 
+hald_enable="YES"
+dbus_enable="YES"
+linux_enable="YES"' >> /etc/rc.conf
+  # xconfiguration.
+  #printf 'WITH_KMS="YES"' >> /etc/make.conf
+
+else
+  echo "Proc is already configure"
+fi
+
+#read -p 'Installing application using ports or pkg: ' imod
+#
+#
+#if "$imod" == "pkg"; then
+# 
+#  if [ ! -f '/usr/local/bin/portupgrade' ]; then
+#    pkg install -y portupgrade
+#  fi
+#  portinstall -c xorg-minimal xorg-drivers
+#
+#  cd tool/
+#  sh pkginstall.sh
+#fi
+#if "$imod" == "ports"; then
+#  if [ ! -f '/usr/local/bin/portupgrade' ]; then
+#    cd /usr/ports/ports-mgmt/portupgrade
+#    make config-recursive install clean
+#    cd -
+#  fi
+#
+#  cd tool/
+#  sh ports
+#fi

@@ -1,0 +1,7 @@
+desc = """
+	drivers
+"""
+packages="""
+bwi-firmware-kmod
+bwn-firmware-kmod
+"""

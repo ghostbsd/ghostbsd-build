@@ -1,0 +1,5 @@
+.svn/
+.git/
+usr/*
+var/cache/pkg/*
+

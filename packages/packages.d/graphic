@@ -1,0 +1,9 @@
+description="""
+graphic suite
+"""
+deps="""
+"""
+packages="""
+#gimp
+shotwell
+"""

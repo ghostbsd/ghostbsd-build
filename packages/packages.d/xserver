@@ -1,0 +1,12 @@
+description="""
+	Minimal xorg packages
+"""
+deps="""
+"""
+packages="""
+xorg
+virtualbox-ose-additions
+cursor-dmz-theme
+setxkbmap
+xrandr
+"""

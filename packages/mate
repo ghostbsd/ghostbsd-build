@@ -1,0 +1,30 @@
+
+desc = """
+Mate desktop environment.
+"""
+
+deps = """
+xserver
+utils
+utils-x
+dm
+print
+internet
+sound-video
+office
+font
+graphic
+mate
+"""
+packages = """
+"""
+
+settings = """
+mate
+"""
+ghostbsd_deps="""
+ports
+mate
+common
+"""
+
