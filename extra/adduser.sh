@@ -43,6 +43,25 @@ fi
 
 chroot ${BASEDIR} pw mod user ${GHOSTBSD_ADDUSER} -w none
 
+printf "file:///home/${GHOSTBSD_ADDUSER}/Documents Documents
+file:///home/${GHOSTBSD_ADDUSER}/Downloads Downloads
+file:///home/${GHOSTBSD_ADDUSER}/Movies Movies
+file:///home/${GHOSTBSD_ADDUSER}/Music Music
+file:///home/${GHOSTBSD_ADDUSER}/Pictures Pictures
+" > ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/.gtk-bookmarks
+
+chroot ${BASEDIR}    chmod g+rwx /home/${GHOSTBSD_ADDUSER}/.gtk-bookmarks
+chroot ${BASEDIR}    mkdir -p /home/${GHOSTBSD_ADDUSER}/Documents
+chroot ${BASEDIR}    chmod g+rwx /home/${GHOSTBSD_ADDUSER}/Documents
+chroot ${BASEDIR}    mkdir -p /home/${GHOSTBSD_ADDUSER}/Downloads
+chroot ${BASEDIR}    chmod g+rwx /home/${GHOSTBSD_ADDUSER}/Downloads
+chroot ${BASEDIR}    mkdir -p /home/${GHOSTBSD_ADDUSER}/Movies 
+chroot ${BASEDIR}    chmod g+rwx /home/${GHOSTBSD_ADDUSER}/Movies
+chroot ${BASEDIR}    mkdir -p /home/${GHOSTBSD_ADDUSER}/Music
+chroot ${BASEDIR}    chmod g+rwx /home/${GHOSTBSD_ADDUSER}/Music
+chroot ${BASEDIR}    mkdir -p /home/${GHOSTBSD_ADDUSER}/Pictures
+chroot ${BASEDIR}    chmod g+rwx /home/${GHOSTBSD_ADDUSER}/Pictures
+
 set -e
 
 chown -R 1000:0 ${BASEDIR}/home/${GHOSTBSD_ADDUSER}
@@ -56,4 +75,7 @@ if [ -e ${BASEDIR}/usr/local/share/applications/ghostbsd-irc.desktop ] ; then
     ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop
     chown -R 1000:0 ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop/ghostbsd-irc.desktop
     chmod +x ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop/ghostbsd-irc.desktop
-fi
+fi    
+
+chown -R 1000:0 ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop/gbi.desktop
+    chmod +x ${BASEDIR}/home/${GHOSTBSD_ADDUSER}/Desktop/gbi.desktop
