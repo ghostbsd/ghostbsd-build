@@ -1,0 +1,14 @@
+desc = """
+GhostBSD gnome settings
+"""
+
+packages = """
+ghostbsd-icons
+ghostbsd-wallpapers
+ghostbsd-mate-themes
+gnome-installed-settings
+gnome-live-settings
+"""
+
+settings="""
+"""

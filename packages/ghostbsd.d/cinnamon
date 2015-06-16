@@ -1,0 +1,14 @@
+desc = """
+GhostBSD cinnamon settings
+"""
+
+packages = """
+ghostbsd-icons
+ghostbsd-wallpapers
+ghostbsd-mate-themes
+cinnamon-installed-settings
+cinnamon-live-settings
+"""
+
+settings="""
+"""
