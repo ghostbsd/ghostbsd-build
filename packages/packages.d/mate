@@ -3,6 +3,7 @@ Mate desktop environment
 """
 
 packages = """
+cups-pk-helper
 dconf-editor
 gnome-keyring
 mate

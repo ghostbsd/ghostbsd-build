@@ -16,7 +16,7 @@ packages = """
     file-roller
     gcalctool
     gconf-editor
-#    gdm3
+    gdm3
     geary
     gedit
     gengetopt
@@ -62,13 +62,6 @@ packages = """
     gnome-tweak-tool
     gnome-user-guide
     gnome-user-share
-    gstreamer1.0-alsa
-    gstreamer1.0-plugins-base
-    gstreamer1.0-plugins-good
-    gstreamer1.0-plugins-bad
-    gstreamer1.0-plugins-ugly
-    gstreamer1.0-fluendo-mp3
-    gstreamer1.0-tools
     gucharmap
     hamster-applet
     libcanberra-pulse
@@ -77,7 +70,6 @@ packages = """
     libxml2-utils
     mpg321
     nautilus
-    nautilus-open-terminal
     shared-mime-info
     tracker-gui
     transmission-gtk
