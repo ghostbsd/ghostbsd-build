@@ -20,9 +20,9 @@ GHOSTBSD_LABEL=${GHOSTBSD_LABEL:-"GhostBSD"}
 echo "#### Building bootable ISO image for ${ARCH} ####"
 
 echo "Saving mtree structure..."
-mtree -Pcp ${CLONEDIR} | bzip2 -9 > root.dist.bz2
-mkdir -p ${CLONEDIR}/dist
-mv root.dist.bz2 ${CLONEDIR}/dist/
+#mtree -Pcp ${CLONEDIR} | bzip2 -9 > root.dist.bz2
+#mkdir -p ${CLONEDIR}/dist
+#mv root.dist.bz2 ${CLONEDIR}/dist/
 
 # Creates etc/fstab to avoid messages about missing it
 #echo "/dev/iso9660/`echo ${GHOSTBSD_LABEL} | tr '[:lower:]' '[:upper:]'` / cd9660 ro 0 0" > ${CLONEDIR}/etc/fstab

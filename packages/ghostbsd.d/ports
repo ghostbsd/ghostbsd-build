@@ -3,9 +3,9 @@ GhostBSD common ports
 """
 
 packages = """
+ssft
 ghostbsd-bug-report
 ghostbsd-irc
-ssft
 """
 
 settings="""

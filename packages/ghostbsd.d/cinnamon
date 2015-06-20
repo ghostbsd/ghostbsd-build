@@ -1,0 +1,11 @@
+desc = """
+GhostBSD cinnamon settings
+"""
+
+packages = """
+cinnamon-installed-settings
+cinnamon-live-settings
+"""
+
+settings="""
+"""

@@ -1,0 +1,11 @@
+desc = """
+GhostBSD gnome settings
+"""
+
+packages = """
+gnome-installed-settings
+gnome-live-settings
+"""
+
+settings="""
+"""

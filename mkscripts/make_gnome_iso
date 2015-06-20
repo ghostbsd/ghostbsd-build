@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# Wrapper to include configuration variables and invoke correct scripts
+#
+# $FreeBSD$
+
+set -e -u
+
+if [ "`id -u`" != "0" ]; then
+    echo "Sorry, this must be done as root."
+    exit 1
+fi
+
+curdir=`pwd`
+
+PACK_PROFILE=gnome
+
+export PACK_PROFILE
+
+cd $curdir && cd .. && make iso
