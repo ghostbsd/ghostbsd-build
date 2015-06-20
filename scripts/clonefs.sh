@@ -42,13 +42,9 @@ echo "### Preparing filesystem hierarchy using $MD_BACKEND backend."
 mkdir -p ${CLONEDIR}
 rsync -avzH --exclude-from='conf/clonefs_exclusion' ${BASEDIR}/ ${CLONEDIR} >> ${LOGFILE} 2>&1
 
-# Making the directory for linprocfs and uzip.
-if [ ! -d ${CLONEDIR}/compat/linux/proc ];
-then
+# Making the directory for linprocfs.
+if [ ! -d ${CLONEDIR}/compat/linux/proc ]; then
   mkdir -p ${CLONEDIR}/compat/linux/proc
-fi
-if [ ! -d ${CLONEDIR}/uzip ] ; then
-  mkdir -p ${CLONEDIR}/uzip
 fi
 
 # Copying /usr in the clonedir. 
@@ -61,7 +57,9 @@ echo "### Preparing union dirs"
 echo "### Preparing union dirs" >> ${LOGFILE} 2>&1
 echo ${UNION_DIRS} >> ${LOGFILE} 2>&1
 
-mkdir -p ${CLONEDIR}/dist ${CLONEDIR}/dist/union ${CLONEDIR}/dist/union/usr ${CLONEDIR}/cdmnt-install
+if [ ! -d ${CLONEDIR}/dist ]; then
+    mkdir -p ${CLONEDIR}/dist ${CLONEDIR}/dist/uzip ${CLONEDIR}/dist/union ${CLONEDIR}/cdmnt-install
+fi
 
 if [ -f "${CLONEDIR}/dist/uniondirs" ] ; then
   rm ${CLONEDIR}/dist/uniondirs
@@ -72,13 +70,11 @@ for dir in  ${UNION_DIRS}; do
   cd ${CLONEDIR} && tar -cpzf ${CLONEDIR}/dist/mfs.tgz ./${UNION_DIRS}
 done
 
-if [ ! -f ${CLONEDIR}/etc/rc.d/uzip ] ; then
-  cp ${LOCALDIR}/conf/rc.d/uzip ${CLONEDIR}/etc/rc.d/
+if [ -f ${CLONEDIR}/etc/rc.d/uzip ] ; then
   chmod 555 ${CLONEDIR}/etc/rc.d/uzip
 fi
 
-if [ ! -f ${CLONEDIR}/etc/rc.d/unionfs ] ; then
-  cp ${LOCALDIR}/conf/rc.d/unionfs ${CLONEDIR}/etc/rc.d/
+if [ -f ${CLONEDIR}/etc/rc.d/unionfs ] ; then
   chmod 555 ${CLONEDIR}/etc/rc.d/unionfs
 fi
 
@@ -92,10 +88,10 @@ compress_fs()
 {
 echo "### Compressing filesystem using ${MD_BACKEND} backend."
 if [ "${MD_BACKEND}" = "file" ] ; then
-  mkuzip -v -o ${CLONEDIR}/uzip/usr.uzip -s 65536 ${CLONEDIR}/uzip/usrimg >> ${LOGFILE} 2>&1
-  rm -f ${CLONEDIR}/uzip/usrimg
+  mkuzip -v -o ${CLONEDIR}/dist/uzip/usr.uzip -s 65536 ${CLONEDIR}/dist/uzip/usrimg >> ${LOGFILE} 2>&1
+  rm -f ${CLONEDIR}/dist/uzip/usrimg
 else
-  mkuzip -v -o ${CLONEDIR}/uzip/usr.uzip  -s 65536 /dev/${DEVICE} >> ${LOGFILE} 2>&1
+  mkuzip -v -o ${CLONEDIR}/dist/uzip/usr.uzip  -s 65536 /dev/${DEVICE} >> ${LOGFILE} 2>&1
 fi
 }
 
@@ -103,8 +99,8 @@ mount_ufs()
 {
 echo "### Making and mounting device for compressing filesystem using $MD_BACKEND"
 echo "### Making and mounting device for compressing filesystem using $MD_BACKEND" >> ${LOGFILE} 2>&1
-mkdir -p ${CLONEDIR}/uzip
-UFSFILE=${CLONEDIR}/uzip/usrimg
+mkdir -p ${CLONEDIR}/dist/uzip
+UFSFILE=${CLONEDIR}/dist/uzip/usrimg
 MOUNTPOINT=${CLONEDIR}/usr
 DIRSIZE=$(($(du -kd 0 -I ".svn" ${BASEDIR}/usr | cut -f 1)))
 FSSIZE=$(($DIRSIZE + ($DIRSIZE/5)))
