@@ -57,8 +57,9 @@ if [ -f ${BASEDIR}/usr/local/etc/repos/GhostBSD.conf ]; then
     rm -f  ${BASEDIR}/usr/local/etc/repos/GhostBSD.conf
 fi
 
-if [ -n "$(mount | grep ${BASEDIR}/var/run)" ]; then
-    umount -f ${BASEDIR}/var/run
+#mounts ${BASEDIR}/var/run because it's needed when building ports in chroot
+if [ -z "$(mount | grep ${BASEDIR}/var/run)" ]; then
+    mount_nullfs /var/run ${BASEDIR}/var/run
 fi
 
 PLOGFILE=".log_pkginstall"
@@ -73,9 +74,6 @@ sed -i '' 's@signature_type: "fingerprints"@#signature_type: "fingerprints"@g' $
 # prepares ports tree
 portsnap fetch
 portsnap extract -p ${BASEDIR}/usr/ports
-
-#mounts ${BASEDIR}/var/run because it's needed when building ports in chroot
-mount_nullfs /var/run ${BASEDIR}/var/run
 
 # prepares addpkg.sh script to add packages under chroot
 cat > ${BASEDIR}/mnt/addpkg.sh << "EOF"
@@ -114,3 +112,7 @@ rm ${BASEDIR}/etc/resolv.conf
 sed -i '' 's@#signature_type: "fingerprints"@signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 
 mv ${BASEDIR}/mnt/${PLOGFILE} /usr/obj/${LOCALDIR}
+
+if [ -n "$(mount | grep ${BASEDIR}/var/run)" ]; then
+    umount ${BASEDIR}/var/run
+fi

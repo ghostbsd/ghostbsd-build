@@ -19,25 +19,35 @@ TMPFILE=$(mktemp -t adduser)
 # If directory /home exists, move it to /usr/home and do a symlink
 
 if [ ! -d ${BASEDIR}/home ]; then
-    mkdir -p ${BASEDIR}/home
+    mkdir -p ${BASEDIR}/usr/home
+else
+    rm -Rf ${BASEDIR}/usr/home
+    mkdir -p ${BASEDIR}/usr/home
 fi
 
-if [ ! -d ${BASEDIR}/home/${GHOSTBSD_USER} ]; then
-    mkdir -p ${BASEDIR}/home/${GHOSTBSD_USER}
-fi
+cd ${BASEDIR}
+ln -sf /usr/home /home
+cd -
+
+#if [ ! -d ${BASEDIR}/home/${GHOSTBSD_USER} ]; then
+#    mkdir -p ${BASEDIR}/home/${GHOSTBSD_USER}
+#fi
 
 set +e
 grep -q ^${GHOSTBSD_USER}: ${BASEDIR}/etc/master.passwd
 
 if [ $? -ne 0 ]; then
     chroot ${BASEDIR} pw useradd ${GHOSTBSD_USER} \
-        -u 1000 -c "Live User" -d "/home/${GHOSTBSD_USER}" \
+         -c "Live User" -d "/home/${GHOSTBSD_USER}" \
         -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
 else
     chroot ${BASEDIR} pw usermod ${GHOSTBSD_USER} \
-        -u 1000 -c "Live User" -d "/home/${GHOSTBSD_USER}" \
+        -c "Live User" -d "/home/${GHOSTBSD_USER}" \
         -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
 fi
 
+
 chroot ${BASEDIR} pw mod user ${GHOSTBSD_USER} -w none
+
+chroot ${BASEDIR} su ${GHOSTBSD_USER} -c /usr/local/share/ghostbsd/common-live-settings/config-live-settings
 

@@ -19,6 +19,9 @@ if [ ! -f "/usr/local/bin/git" ]; then
   exit 1
 fi
 
+if [ -z "$(mount | grep ${BASEDIR}/var/run)" ]; then
+    mount_nullfs /var/run ${BASEDIR}/var/run
+fi
 
 # Compiling ghostbsd ports
 if [ ! -d ${BASEDIR}/ports ]; then
@@ -26,7 +29,7 @@ if [ ! -d ${BASEDIR}/ports ]; then
 fi
 
 echo "# Downloading ghostbsd ports from GitHub #"
-git clone https://github.com/GhostBSD/ports.git ${BASEDIR}/ports >/dev/null 2>&1
+git clone https://github.com/angelescuo/ports.git ${BASEDIR}/ports >/dev/null 2>&1
 rm -Rf ${BASEDIR}/ports/.git
 rm -Rf ${BASEDIR}/ports/net-mgmt
 
@@ -88,3 +91,7 @@ $chrootcmd
 rm -f ${BASEDIR}/etc/resolv.conf
 rm -Rf ${BASEDIR}/ports
 #rm -Rf ${BASEDIR}/usr/ports/*
+
+if [ -n "$(mount | grep ${BASEDIR}/var/run)" ]; then
+    umount ${BASEDIR}/var/run
+fi

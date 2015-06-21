@@ -57,9 +57,13 @@ echo "### Preparing union dirs"
 echo "### Preparing union dirs" >> ${LOGFILE} 2>&1
 echo ${UNION_DIRS} >> ${LOGFILE} 2>&1
 
-if [ ! -d ${CLONEDIR}/dist ]; then
-    mkdir -p ${CLONEDIR}/dist ${CLONEDIR}/dist/uzip ${CLONEDIR}/dist/union
-fi
+
+for dirs in union uzip ; do
+    if [ ! -d ${CLONEDIR}/dist/${dirs} ]; then
+        mkdir -p ${CLONEDIR}/dist/${dirs}
+    fi
+done
+
 
 if [ -f "${CLONEDIR}/dist/uniondirs" ] ; then
   rm ${CLONEDIR}/dist/uniondirs
@@ -94,7 +98,8 @@ mount_ufs()
 {
 echo "### Making and mounting device for compressing filesystem using $MD_BACKEND"
 echo "### Making and mounting device for compressing filesystem using $MD_BACKEND" >> ${LOGFILE} 2>&1
-mkdir -p ${CLONEDIR}/dist/uzip
+
+
 UFSFILE=${CLONEDIR}/dist/uzip/usrimg
 MOUNTPOINT=${CLONEDIR}/usr
 DIRSIZE=$(($(du -kd 0 -I ".svn" ${BASEDIR}/usr | cut -f 1)))

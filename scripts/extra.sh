@@ -23,6 +23,9 @@ fi
 echo "#### Running plugins ####"
 
 for plugin in ${EXTRA}; do
+    if [ -z "$(mount | grep ${BASEDIR}/var/run)" ]; then
+        mount_nullfs /var/run ${BASEDIR}/var/run
+    fi
     echo "-> ${plugin}"
     if [ -f "${LOCALDIR}/extra/${ARCH}/${plugin}.sh" ]; then
 	. ${LOCALDIR}/extra/${ARCH}/${plugin}.sh

@@ -24,6 +24,8 @@ echo "Saving mtree structure..."
 #mkdir -p ${CLONEDIR}/dist
 #mv root.dist.bz2 ${CLONEDIR}/dist/
 
+mtree -Pcp ${BASEDIR}/usr/home  > ${CLONEDIR}/dist/home.dist
+
 # Creates etc/fstab to avoid messages about missing it
 #echo "/dev/iso9660/`echo ${GHOSTBSD_LABEL} | tr '[:lower:]' '[:upper:]'` / cd9660 ro 0 0" > ${CLONEDIR}/etc/fstab
 #echo "proc /proc procfs rw 0 0" >> ${CLONEDIR}/etc/fstab

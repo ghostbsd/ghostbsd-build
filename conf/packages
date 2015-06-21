@@ -7,8 +7,8 @@ dpkg
 fish
 freedesktop-sound-theme
 fuse
-fuse-ntfs
-fuse-ext4fs
+fusefs-ntfs
+fusefs-ext4fs
 git
 grub2
 grub2-efi

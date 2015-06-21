@@ -46,6 +46,10 @@ if [ -f ${LOCALDIR}/conf/package ] ; then
   rm -f ${LOCALDIR}/packages/depends
 fi
 
+if [ -z "$(mount | grep ${BASEDIR}/var/run)" ]; then
+    mount_nullfs /var/run ${BASEDIR}/var/run
+fi
+
 PLOGFILE=".log_portsinstall"
 cp -af ${PKGFILE} ${BASEDIR}/mnt
 cp -af /etc/resolv.conf ${BASEDIR}/etc
@@ -84,4 +88,6 @@ rm -f ${BASEDIR}/usr/local/etc/pkg/repos/GhostBSD.conf
 
 mv ${BASEDIR}/mnt/${PLOGFILE} /usr/obj/${LOCALDIR}
 
-#umount ${BASEDIR}/var/run
+if [ -n "$(mount | grep ${BASEDIR}/var/run)" ]; then
+    umount ${BASEDIR}/var/run
+fi
