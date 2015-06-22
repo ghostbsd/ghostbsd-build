@@ -29,10 +29,15 @@ fi
 
 cd ${CLONEDIR} && tar -cpzf ${CLONEDIR}/dist/etc.tgz etc
 
-#echo "### Running makefs to create ISO ###"
-#bootable="-o bootimage=i386;${CLONEDIR}/boot/cdboot -o no-emul-boot"
-#makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${ISOPATH} ${CLONEDIR}
+make_standard_iso()
+{
+echo "### Running makefs to create ISO ###"
+bootable="-o bootimage=i386;${CLONEDIR}/boot/cdboot -o no-emul-boot"
+makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${ISOPATH} ${CLONEDIR}
+}
 
+make_grub_iso()
+{
 # Reference for hybrid DVD/USB image
 # Use GRUB to create the hybrid DVD/USB image
 echo "Creating ISO..."
@@ -41,6 +46,7 @@ if [ $? -ne 0 ] ; then
 	echo "Failed running grub-mkrescue"
 	exit 1
 fi
+}
 
 make_manifest()
 {
@@ -74,6 +80,7 @@ cd -
 }
 
 make_manifest
+make_grub_iso
 make_checksums
 
 cd ${LOCALDIR}
