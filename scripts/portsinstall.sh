@@ -86,7 +86,7 @@ $chrootcmd
 rm -Rf ${BASEDIR}/ghostbsd 
 rm -f ${BASEDIR}/usr/local/etc/pkg/repos/GhostBSD.conf
 
-mv ${BASEDIR}/mnt/${PLOGFILE} /usr/obj/${LOCALDIR}
+mv ${BASEDIR}/mnt/${PLOGFILE} ${MAKEOBJDIRPREFIX}/${LOCALDIR}
 
 if [ -n "$(mount | grep ${BASEDIR}/var/run)" ]; then
     umount ${BASEDIR}/var/run

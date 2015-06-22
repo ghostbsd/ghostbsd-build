@@ -111,7 +111,7 @@ rm ${BASEDIR}/etc/resolv.conf
 
 sed -i '' 's@#signature_type: "fingerprints"@signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 
-mv ${BASEDIR}/mnt/${PLOGFILE} /usr/obj/${LOCALDIR}
+mv ${BASEDIR}/mnt/${PLOGFILE} ${MAKEOBJDIRPREFIX}/${LOCALDIR}
 
 if [ -n "$(mount | grep ${BASEDIR}/var/run)" ]; then
     umount ${BASEDIR}/var/run

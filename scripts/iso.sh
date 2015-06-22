@@ -20,16 +20,9 @@ GHOSTBSD_LABEL=${GHOSTBSD_LABEL:-"GhostBSD"}
 echo "#### Building bootable ISO image for ${ARCH} ####"
 
 echo "Saving mtree structure..."
-#mtree -Pcp ${CLONEDIR} | bzip2 -9 > root.dist.bz2
-#mkdir -p ${CLONEDIR}/dist
-#mv root.dist.bz2 ${CLONEDIR}/dist/
-
 mtree -Pcp ${BASEDIR}/usr/home  > ${CLONEDIR}/dist/home.dist
 
 # Creates etc/fstab to avoid messages about missing it
-#echo "/dev/iso9660/`echo ${GHOSTBSD_LABEL} | tr '[:lower:]' '[:upper:]'` / cd9660 ro 0 0" > ${CLONEDIR}/etc/fstab
-#echo "proc /proc procfs rw 0 0" >> ${CLONEDIR}/etc/fstab
-#echo "linproc /compat/linux/proc linprocfs rw 0 0" >> ${CLONEDIR}/etc/fstab
 if [ ! -e ${CLONEDIR}/etc/fstab ] ; then
     touch ${CLONEDIR}/etc/fstab
 fi
@@ -49,25 +42,38 @@ if [ $? -ne 0 ] ; then
 	exit 1
 fi
 
+make_manifest()
+{
+cat > ${BASEDIR}/mnt/manifest.sh << "EOF"
+#!/bin/sh 
+# builds iso manifest
+cd /mnt
+pkg info > manifest
+rm manifest.sh
+EOF
+
+
+chrootcmd="chroot ${BASEDIR} sh /mnt/manifest.sh"
+$chrootcmd
+
+if [ ! -d /usr/obj/${ARCH}/${PACK_PROFILE} ]; then
+    mkdir -p /usr/obj/${ARCH}/${PACK_PROFILE}
+fi
+mv -f ${BASEDIR}/mnt/manifest /usr/obj/${ARCH}/${PACK_PROFILE}/$(echo ${ISOPATH} | cut -d / -f6).manifest
+}
+
 echo "### ISO created ###"
 
-# Make mdsums and sha256 for iso
-
-cd /usr/obj
-md5 `echo ${ISOPATH}|cut -d / -f4` >> /usr/obj/CHECKSUM   
-sha256 `echo ${ISOPATH}| cut -d / -f4` >> /usr/obj/CECKSUM
+# Make md5 and sha256 for iso
+make_checksums()
+{
+cd /usr/obj/${ARCH}/${PACK_PROFILE}
+md5 `echo ${ISOPATH}|cut -d / -f6`  >> /usr/obj/${ARCH}/${PACK_PROFILE}/$(echo ${ISOPATH}|cut -d / -f6).md5
+sha256 `echo ${ISOPATH}| cut -d / -f6` >> /usr/obj/${ARCH}/${PACK_PROFILE}/$(echo ${ISOPATH}|cut -d / -f6).sha256
 cd -
+}
 
-# Preserve log files from /usr/obj${CURDIR} to /usr/obj${CURDIR}_${ARCH}
-mkdir -p /usr/obj${CURDIR}_${ARCH}  
-ls /usr/obj${CURDIR}/.*_* > ${BASEDIR}/tocopy
-
-while read f ; do
-  cp -f $f /usr/obj${CURDIR}_${ARCH}/  
-done < ${BASEDIR}/tocopy
-mv /usr/obj${CURDIR}_${ARCH}/.tmp_iso /usr/obj${CURDIR}_${ARCH}/.done_iso 
-rm -f ${BASEDIR}/tocopy
-
-ls -lh ${ISOPATH}
+make_manifest
+make_checksums
 
 cd ${LOCALDIR}

@@ -13,8 +13,13 @@ fi
 
 curdir=`pwd`
 
-PACK_PROFILE=cinnamon
-
+PACK_PROFILE=gnome
 export PACK_PROFILE
+
+ARCH=amd64
+export ARCH
+
+MAKEOBJDIRPREFIX=/usr/obj/gblogs/$ARCH/$PACK_PROFILE
+export MAKEOBJDIRPREFIX
 
 cd $curdir && cd .. && make iso

@@ -13,8 +13,10 @@ fi
 
 curdir=`pwd`
 
-PACK_PROFILE=gnome
-
+PACK_PROFILE=xfce
 export PACK_PROFILE
 
-cd $curdir && cd .. && make iso
+ARCH=amd64
+export ARCH
+
+cd $curdir && cd .. && make cleandir

@@ -33,7 +33,6 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
-
 # Cloning file system function. 
 clonefs()
 {

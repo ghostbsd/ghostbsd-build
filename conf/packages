@@ -47,7 +47,7 @@ gnome-mplayer
 xfburn
 cheese
 gstreamer-plugins-neon
-pulsaudio
+pulseaudio
 libreoffice
 dejavu
 fonts-indic
@@ -175,9 +175,70 @@ xh-hunspell
 yi-hunspell
 zu-hunspell
 shotwell
-cups-pk-helper
-dconf-editor
-gnome-keyring
-mate
-mate-screensaver
-plank
+    alacarte
+    baobab
+    cracklib-runtime
+    cups-pk-helper
+    dconf-editor
+    dconf-tools
+    eog
+    evince
+    file-roller
+    gcalctool
+    gconf-editor
+    gdm3
+    geary
+    gedit
+    gengetopt
+    gkbd-capplet
+    gnome-backgrounds
+    gnome-bluetooth
+    gnome-control-center
+    gnome-dictionary
+    gnome-disk-utility
+      five-or-more
+      four-in-a-row
+      gnome-chess 
+      gnome-nibbles
+      gnome-robots
+      gnome-sudoku
+      gnome-mines
+      gnome-tetravex
+      gnome-klotski
+      tali
+      iagno
+      lightsoff
+      gnome-mahjongg
+      quadrapassel
+      swell-foop
+      aisleriot
+      gnome-hearts
+    gnome-keyring
+    gnome-logs
+    gnome-media
+    gnome-online-accounts
+    gnome-photos
+    gnome-screenshot
+    gnome-search-tool
+    gnome-session
+    gnome-shell
+    gnome-shell-extensions
+    gnome-sushi
+    gnome-system-log
+    gnome-terminal
+    gnome-tweak-tool
+    gnome-user-guide
+    gnome-user-share
+    gucharmap
+    hamster-applet
+    libcanberra-pulse
+    libmtp-runtime
+    libpam-gnome-keyring
+    libxml2-utils
+    mpg321
+    nautilus
+    shared-mime-info
+    tracker-gui
+    transmission-gtk
+    vinagre
+    vino
