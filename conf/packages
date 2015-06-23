@@ -175,70 +175,30 @@ xh-hunspell
 yi-hunspell
 zu-hunspell
 shotwell
-    alacarte
-    baobab
-    cracklib-runtime
-    cups-pk-helper
+    cinnamon
+    cinnamon-l10n
     dconf-editor
     dconf-tools
+    dconf-service
+    desktop-file-utils
     eog
     evince
-    file-roller
-    gcalctool
-    gconf-editor
-    gdm3
-    geary
-    gedit
-    gengetopt
-    gkbd-capplet
-    gnome-backgrounds
-    gnome-bluetooth
-    gnome-control-center
-    gnome-dictionary
-    gnome-disk-utility
-      five-or-more
-      four-in-a-row
-      gnome-chess 
-      gnome-nibbles
-      gnome-robots
-      gnome-sudoku
-      gnome-mines
-      gnome-tetravex
-      gnome-klotski
-      tali
-      iagno
-      lightsoff
-      gnome-mahjongg
-      quadrapassel
-      swell-foop
-      aisleriot
-      gnome-hearts
+    gconf2
+    gir1.2-gtksource-3.0
+    glib-networking
+    gnome-desktop3-data
     gnome-keyring
-    gnome-logs
+    gnome-menus
     gnome-media
-    gnome-online-accounts
-    gnome-photos
-    gnome-screenshot
-    gnome-search-tool
-    gnome-session
-    gnome-shell
-    gnome-shell-extensions
-    gnome-sushi
-    gnome-system-log
     gnome-terminal
-    gnome-tweak-tool
-    gnome-user-guide
-    gnome-user-share
-    gucharmap
-    hamster-applet
-    libcanberra-pulse
-    libmtp-runtime
+    guake
+    firefox
+    gnome-calculator
+    libglib2.0
     libpam-gnome-keyring
-    libxml2-utils
-    mpg321
-    nautilus
+    medit
+    muffin
+    nemo
+    nemo-fileroller
+    p7zip-full
     shared-mime-info
-    tracker-gui
-    transmission-gtk
-    vinagre
-    vino

@@ -6,6 +6,7 @@ packages = """
 ssft
 ghostbsd-bug-report
 ghostbsd-irc
+inxi
 """
 
 settings="""
