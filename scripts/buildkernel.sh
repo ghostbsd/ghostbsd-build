@@ -15,6 +15,15 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
+fetch_kernel()
+{
+echo "#### Fetching kernel for ${ARCH} architecture ####" | tee -a ${LOGFILE}
+ cd $BASEDIR
+ fetch ftp://ftp.freebsd.org/pub/FreeBSD/releases/${ARCH}/${FBSDRELEASE}/kernel.txz
+}
+
+build_kernel()
+{
 echo "#### Building kernel for ${ARCH} architecture ####"
 
 if [ -n "${NO_BUILDKERNEL:-}" ]; then
@@ -45,5 +54,14 @@ unset EXTRA
 
 makeargs="${MAKEOPT:-} ${MAKEJ_KERNEL:-} __MAKE_CONF=${MAKE_CONF} TARGET_ARCH=${ARCH} SRCCONF=${SRC_CONF}"
 (env $MAKE_ENV script -aq $LOGFILE make $makeargs buildkernel || print_error;) | grep '^>>>'
+}
 
+if [ -n "${FETCH_FREEBSD:-}" ]; then
+    fetch_kernel
+else
+    build_kernel
+fi
+
+set -e
 cd $LOCALDIR
+

@@ -15,6 +15,8 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
+install_built_world()
+{
 echo "#### Installing world for ${ARCH} architecture ####"
 
 # Set MAKE_CONF variable if it's not already set.
@@ -26,8 +28,6 @@ if [ -z "${MAKE_CONF:-}" ]; then
     fi
 fi
 
-mkdir -p ${BASEDIR}
-
 cd ${SRCDIR}
 
 makeargs="${MAKEOPT:-} ${MAKEJ_WORLD:-} __MAKE_CONF=${MAKE_CONF} TARGET_ARCH=${ARCH} DESTDIR=${BASEDIR} SRCCONF=${SRC_CONF}"
@@ -36,8 +36,31 @@ makeargs="${MAKEOPT:-} ${MAKEJ_WORLD:-} __MAKE_CONF=${MAKE_CONF} TARGET_ARCH=${A
 makeargs="${MAKEOPT:-} __MAKE_CONF=${MAKE_CONF} TARGET_ARCH=${ARCH} DESTDIR=${BASEDIR} SRCCONF=${SRC_CONF}"
 set +e
 (env $MAKE_ENV script -aq $LOGFILE make ${makeargs:-} distribution || print_error;) | grep '^>>>'
+}
+
+install_fetched_freebsd()
+{
+echo "#### Installing world for ${ARCH} architecture ####"
+if [ "${ARCH}" = "amd64" ]; then
+    for files in base lib32 ; do
+        cd $BASEDIR
+        tar -yxf ${files}.txz -C ./
+        rm -f ${files}.txz
+    done
+else 
+    for files in base ; do
+        cd $BASEDIR
+        tar -yxf ${files}.txz -C ./
+        rm -f ${files}.txz
+    done
+fi
+}
+
+if [ -n "${FETCH_FREEBSD:-}" ]; then
+    install_fetched_freebsd
+else
+    install_built_world
+fi
+
 set -e
 cd $LOCALDIR
-
-
-

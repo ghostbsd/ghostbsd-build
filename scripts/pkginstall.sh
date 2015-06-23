@@ -79,6 +79,7 @@ portsnap extract -p ${BASEDIR}/usr/ports
 cat > ${BASEDIR}/mnt/addpkg.sh << "EOF"
 #!/bin/sh 
 
+#/bin/sh /etc/rc.d/ldconfig start
 # builds pkg from ports to avoid Y/N question
 cd /usr/ports/ports-mgmt/pkg
 make deinstall

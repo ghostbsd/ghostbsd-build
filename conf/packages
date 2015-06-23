@@ -29,6 +29,9 @@ zsh
 webcamd
 wmctrl
 guake
+gksu
+mesa-demos
+zenity
 spideroak
 qt5
 cups
