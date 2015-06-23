@@ -20,3 +20,6 @@ ARCH=i386
 export ARCH
 
 cd $curdir && cd .. && make cleandir
+
+MAKEOBJDIRPREFIX=/usr/obj/gblogs/${ARCH}/${PACK_PROFILE}
+rm -Rf $(find $MAKEOBJDIRPREFIX -type d -name ghostbsd-build)
