@@ -148,7 +148,7 @@ rm -f ${BASEDIR}/etc/resolv.conf
 rm -f ${BASEDIR}/fbsdupdate.conf
 }
 
-if [ -n "${FETCH_FREEBSD:-}" ]; then
+if [ -n "${FETCH_FREEBSDKERNEL:-}" ]; then
     install_fetched_kernel
     #update_freebsd
 else

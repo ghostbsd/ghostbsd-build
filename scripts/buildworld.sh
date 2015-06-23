@@ -38,6 +38,8 @@ cd $SRCDIR
 unset EXTRA
 
 makeargs="${MAKEOPT:-} ${MAKEJ_WORLD:-} __MAKE_CONF=${MAKE_CONF} TARGET_ARCH=${ARCH} SRCCONF=${SRC_CONF}"
+echo $makeargs
+sleep 10
 (env $MAKE_ENV script -aq $LOGFILE make ${makeargs:-} buildworld || print_error;) | grep '^>>>'
 }
 
@@ -59,7 +61,7 @@ fi
 
 mkdir -p ${BASEDIR}
 
-if [ -n "${FETCH_FREEBSD:-}" ]; then
+if [ -n "${FETCH_FREEBSDBASE:-}" ]; then
     fetch_freebsd
 else
     build_world

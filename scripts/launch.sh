@@ -58,7 +58,7 @@ fi
 MAKE_ENV=${MAKE_ENV:-}
 
 if [ ! -z ${MAKEOBJDIRPREFIX:-} ]; then
-    MAKE_ENV="$MAKE_ENV MAKEOBJDIRPREFIX=${MAKEOBJDIRPREFIX}"
+    MAKE_ENV="$MAKE_ENV MAKEOBJDIRPREFIX=/usr/obj/mk"
 fi
 
 report_error() {

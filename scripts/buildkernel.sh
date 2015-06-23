@@ -53,10 +53,12 @@ cd $SRCDIR
 unset EXTRA
 
 makeargs="${MAKEOPT:-} ${MAKEJ_KERNEL:-} __MAKE_CONF=${MAKE_CONF} TARGET_ARCH=${ARCH} SRCCONF=${SRC_CONF}"
+echo "kernel $makeargs"
+sleep 10
 (env $MAKE_ENV script -aq $LOGFILE make $makeargs buildkernel || print_error;) | grep '^>>>'
 }
 
-if [ -n "${FETCH_FREEBSD:-}" ]; then
+if [ -n "${FETCH_FREEBSDKERNEL:-}" ]; then
     fetch_kernel
 else
     build_kernel

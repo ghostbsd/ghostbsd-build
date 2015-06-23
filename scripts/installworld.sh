@@ -56,7 +56,7 @@ else
 fi
 }
 
-if [ -n "${FETCH_FREEBSD:-}" ]; then
+if [ -n "${FETCH_FREEBSDBASE:-}" ]; then
     install_fetched_freebsd
 else
     install_built_world
