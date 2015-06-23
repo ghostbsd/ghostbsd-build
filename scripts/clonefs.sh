@@ -33,6 +33,12 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
+for dirs in union uzip ; do
+    if [ ! -d ${CLONEDIR}/dist/${dirs} ]; then
+        mkdir -p ${CLONEDIR}/dist/${dirs}
+    fi
+done
+
 # Cloning file system function. 
 clonefs()
 {
@@ -55,13 +61,6 @@ uniondirs_prepare()
 echo "### Preparing union dirs"
 echo "### Preparing union dirs" >> ${LOGFILE} 2>&1
 echo ${UNION_DIRS} >> ${LOGFILE} 2>&1
-
-
-for dirs in union uzip ; do
-    if [ ! -d ${CLONEDIR}/dist/${dirs} ]; then
-        mkdir -p ${CLONEDIR}/dist/${dirs}
-    fi
-done
 
 if [ ! -d "${CLONEDIR}/cdmnt-install" ] ; then
   mkdir -p ${CLONEDIR}/cdmnt-install
@@ -100,7 +99,6 @@ mount_ufs()
 {
 echo "### Making and mounting device for compressing filesystem using $MD_BACKEND"
 echo "### Making and mounting device for compressing filesystem using $MD_BACKEND" >> ${LOGFILE} 2>&1
-
 
 UFSFILE=${CLONEDIR}/dist/uzip/usrimg
 MOUNTPOINT=${CLONEDIR}/usr

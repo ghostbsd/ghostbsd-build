@@ -42,13 +42,13 @@ install_fetched_freebsd()
 {
 echo "#### Installing world for ${ARCH} architecture ####"
 if [ "${ARCH}" = "amd64" ]; then
-    for files in base lib32 ; do
+    for files in ${AMD64_COMPONENTS} ; do
         cd $BASEDIR
         tar -yxf ${files}.txz -C ./
         rm -f ${files}.txz
     done
 else 
-    for files in base ; do
+    for files in ${I386_COMPONENTS} ; do
         cd $BASEDIR
         tar -yxf ${files}.txz -C ./
         rm -f ${files}.txz
