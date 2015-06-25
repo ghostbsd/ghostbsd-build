@@ -58,15 +58,17 @@ if [ -f ${BASEDIR}/usr/local/etc/repos/GhostBSD.conf ]; then
 fi
 
 #mounts ${BASEDIR}/var/run because it's needed when building ports in chroot
-if [ -z "$(mount | grep ${BASEDIR}/var/run)" ]; then
-    mount_nullfs /var/run ${BASEDIR}/var/run
+if ! $USE_JAILS; then
+    if [ -z "$(mount | grep ${BASEDIR}/var/run)" ]; then
+        mount_nullfs /var/run ${BASEDIR}/var/run
+    fi
 fi
+cp /etc/resolv.conf ${BASEDIR}/etc/resolv.conf
 
 PLOGFILE=".log_pkginstall"
 echo "Installing packages listed in ${PKGFILE}"
 
 # cp resolv.conf for fetching packages
-cp /etc/resolv.conf ${BASEDIR}/etc
 cp $PKGFILE ${BASEDIR}/mnt
 
 sed -i '' 's@signature_type: "fingerprints"@#signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
@@ -108,12 +110,14 @@ EOF
 chrootcmd="chroot ${BASEDIR} sh /mnt/addpkg.sh"
 $chrootcmd
 
-rm ${BASEDIR}/etc/resolv.conf
 
 sed -i '' 's@#signature_type: "fingerprints"@signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 
 mv ${BASEDIR}/mnt/${PLOGFILE} ${MAKEOBJDIRPREFIX}/${LOCALDIR}
 
-if [ -n "$(mount | grep ${BASEDIR}/var/run)" ]; then
-    umount ${BASEDIR}/var/run
+if ! ${USE_JAILS} ; then
+    if [ -n "$(mount | grep ${BASEDIR}/var/run)" ]; then
+        umount ${BASEDIR}/var/run
+    fi
 fi
+rm ${BASEDIR}/etc/resolv.conf

@@ -10,6 +10,8 @@ freedesktop-sound-theme
 fuse
 fusefs-ntfs
 fusefs-ext4fs
+# gawk needed by inxi
+gawk
 git
 grub2
 grub2-efi

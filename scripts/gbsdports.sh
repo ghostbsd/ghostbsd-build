@@ -49,9 +49,12 @@ if [ -f ${LOCALDIR}/conf/package ] ; then
   rm -f ${LOCALDIR}/packages/depends
 fi
 
-if [ -z "$(mount | grep ${BASEDIR}/var/run)" ]; then
-    mount_nullfs /var/run ${BASEDIR}/var/run
+if ! ${USE_JAILS} ; then
+    if [ -z "$(mount | grep ${BASEDIR}/var/run)" ]; then
+        mount_nullfs /var/run ${BASEDIR}/var/run
+    fi
 fi
+cp -af /etc/resolv.conf ${BASEDIR}/etc
 
 # Compiling ghostbsd ports
 if [ -d ${BASEDIR}/ports ]; then
@@ -88,7 +91,6 @@ EOF
 
 # build ghostbsd ports 
 cp -af ${PKGFILE} ${BASEDIR}/mnt
-cp -af /etc/resolv.conf ${BASEDIR}/etc
 
 cat > ${BASEDIR}/mnt/portsbuild.sh << "EOF"
 #!/bin/sh 
@@ -148,8 +150,6 @@ done < $pkgfile
 
 rm /mnt/portsadded.sh
 rm $pkgfile
-rm /etc/resolv.conf
-
 EOF
 
 chrootcmd="chroot ${BASEDIR} sh /mnt/portsadded.sh"
@@ -163,7 +163,10 @@ rm -f ${BASEDIR}/usr/local/etc/pkg/repos/GhostBSD.conf
 # save logfile where should be
 mv ${BASEDIR}/mnt/${PLOGFILE} ${MAKEOBJDIRPREFIX}/${LOCALDIR}
 
-# umount /var/run
-if [ -n "$(mount | grep ${BASEDIR}/var/run)" ]; then
-    umount ${BASEDIR}/var/run
+# umount /var/run if not using jails
+if ! ${USE_JAILS} ; then
+    if [ -n "$(mount | grep ${BASEDIR}/var/run)" ]; then
+        umount ${BASEDIR}/var/run
+    fi
 fi
+rm ${BASEDIR}/etc/resolv.conf

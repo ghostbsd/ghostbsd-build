@@ -2,4 +2,4 @@
 .git/
 usr/*
 var/cache/pkg/*
-
+var/log/*

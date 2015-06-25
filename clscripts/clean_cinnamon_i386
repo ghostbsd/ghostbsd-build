@@ -19,7 +19,16 @@ export PACK_PROFILE
 ARCH=i386
 export ARCH
 
+stop_jail()
+{
+jail_name=${PACK_PROFILE}${ARCH}
+jailrun=$(jls | grep $jail_name | awk '{print $3}'| cut -d . -f2)
+if [ -n $jailrun ]; then
+    service jail onestop $jail_name
+fi
+}
+stop_jail
 cd $curdir && cd .. && make cleandir
 
 MAKEOBJDIRPREFIX=/usr/obj/gblogs/${ARCH}/${PACK_PROFILE}
-rm -Rf $(find $MAKEOBJDIRPREFIX -type d -name ghostbsd-build)
+rm -Rf $(find $MAKEOBJDIRPREFIX -type d -name $(pwd | rev | cut -d / -f 2,2 | rev))

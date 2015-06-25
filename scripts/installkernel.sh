@@ -15,6 +15,8 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
+jail_name=${PACK_PROFILE}${ARCH}
+
 install_built_kernel()
 {
 echo "#### Installing kernel for ${ARCH} architecture ####"
@@ -150,7 +152,9 @@ rm -f ${BASEDIR}/fbsdupdate.conf
 
 if [ -n "${FETCH_FREEBSDKERNEL:-}" ]; then
     install_fetched_kernel
-    #update_freebsd
+     #if $JAIL_RESTART ; then
+        #update_freebsd
+     #fi
 else
     install_built_kernel
 fi

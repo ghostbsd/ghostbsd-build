@@ -63,8 +63,8 @@ for dirs in union uzip ; do
     fi
 done
 
-if [ ! -d "${CLONEDIR}/cdmnt-install" ] ; then
-  mkdir -p ${CLONEDIR}/cdmnt-install
+if [ ! -d "${CLONEDIR}/dist/cdmnt" ] ; then
+  mkdir -p ${CLONEDIR}/dist/cdmnt
 fi
 
 if [ -f "${CLONEDIR}/dist/uniondirs" ] ; then

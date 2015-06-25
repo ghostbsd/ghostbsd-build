@@ -20,12 +20,20 @@ if [ -z "${EXTRA:-}" ]; then
     return
 fi
 
+jail_name=${PACK_PROFILE}${ARCH}
+
 echo "#### Running plugins ####"
 
-for plugin in ${EXTRA}; do
+if ! ${USE_JAILS} ; then
     if [ -z "$(mount | grep ${BASEDIR}/var/run)" ]; then
         mount_nullfs /var/run ${BASEDIR}/var/run
     fi
+fi
+
+# copy to jail resolv.conf
+cp -af /etc/resolv.conf ${BASEDIR}/etc/resolv.conf
+
+for plugin in ${EXTRA}; do
     echo "-> ${plugin}"
     if [ -f "${LOCALDIR}/extra/${ARCH}/${plugin}.sh" ]; then
 	. ${LOCALDIR}/extra/${ARCH}/${plugin}.sh
@@ -39,8 +47,16 @@ for plugin in ${EXTRA}; do
     if [ -d ${BASEDIR}/usr/ports/Mk ] ; then
         rm -Rf ${BASEDIR}/usr/ports/*
     fi
+done
+
+if ! ${USE_JAILS}; then
     if [ -n "$(mount | grep ${BASEDIR}/var/run)" ]; then
         umount ${BASEDIR}/var/run
     fi
-done
+else
+    service jail onestop $jail_name
+fi
+
+# removes from jail resolv.conf
+rm -f ${BASEDIR}/etc/resolv.conf
 

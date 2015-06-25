@@ -15,6 +15,8 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
+jail_name=${PACK_PROFILE}${ARCH}
+
 install_built_world()
 {
 echo "#### Installing world for ${ARCH} architecture ####"
@@ -56,10 +58,72 @@ else
 fi
 }
 
+jail_add()
+{
+cat >> /etc/jail.conf << EOF
+${PACK_PROFILE}${ARCH} {
+path = ${BASEDIR};
+mount.devfs;
+host.hostname = www.${PACK_PROFILE}${ARCH}.org;
+ip4.addr=${NEXT_IP};
+interface=${NETIF};
+exec.start = "/bin/sh /etc/rc";
+exec.stop = "/bin/sh /etc/rc.shutdown";
+}
+EOF
+}
+
+jail_list_add()
+{
+get_jail=$(grep $jail_name /etc/jail.conf| grep -v host.hostname |cut -d \  -f1 )
+isalready=false
+
+if [ -n $get_jail ] ; then
+    for ijail in $get_jail; do
+        if [ "$ijail" = "$jail_name" ]; then 
+            isalready=true
+        fi
+    done
+fi
+
+if [ "$isalready" = "false" -o -z $get_jail ]  ;then
+   jail_add
+else
+    echo "jail already exists and won't be added"
+    break
+fi
+}
+
+inc_ip()
+{
+touch /etc/jail.conf
+LAST_IP=$(grep ip4.addr /etc/jail.conf | tail -n 1 | cut -d = -f2 | cut -d \; -f1)
+LAST_SEQ=$(grep ip4.addr /etc/jail.conf | tail -n 1 | cut -d = -f2 | cut -d \; -f1 | cut -d . -f4)
+if [ -z $LAST_IP ]; then
+   NEXT_IP=$START_IP
+else
+IP=`expr $LAST_SEQ + 1 `
+FLAST_SEQ=$(grep ip4.addr /etc/jail.conf | tail -n 1 | cut -d = -f2 | cut -d \; -f1 | cut -d . -f1,2,3)
+NEXT_IP=$FLAST_SEQ.$IP
+fi
+}
+
 if [ -n "${FETCH_FREEBSDBASE:-}" ]; then
     install_fetched_freebsd
 else
     install_built_world
+fi
+
+if [ ! -d ${BASEDIR}/usr/local/etc/default ]; then
+    mkdir -p ${BASEDIR}/usr/local/etc/default
+    echo "${DISTRO}_FLAVOUR=${PACK_PROFILE}" > ${BASEDIR}/usr/local/etc/default/distro
+    echo "${DISTRO}_VERSION=${VERSION}" >> ${BASEDIR}/usr/local/etc/default/distro
+fi
+
+if ${USE_JAILS}; then
+    inc_ip
+    jail_list_add
+    service jail onestart $jail_name
 fi
 
 set -e
