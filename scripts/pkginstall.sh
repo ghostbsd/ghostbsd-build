@@ -15,38 +15,38 @@ if [ -z "${LOGFILE:-}" ]; then
   exit 1
 fi
 
-PKGFILE=${PKGFILE:-${LOCALDIR}/conf/packages};
+PKGFILE=${PKGFILE:-${LOCALDIR}/conf/${PACK_PROFILE}-packages};
 
-if [ ! -f ${PKGFILE} ]; then
-  return
-fi
-
+#if [ ! -f ${PKGFILE} ]; then
+ # return
+#fi
+touch ${PKGFILE}
 
 # Search main file package for include dependecies
 # and build an depends file ( depends )
-awk '/^deps/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} | grep -v '"""' | grep -v '#' > ${LOCALDIR}/packages/depends
+awk '/^deps/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} | grep -v '"""' | grep -v '#' > ${LOCALDIR}/packages/${PACK_PROFILE}-depends
 
 # If exist an old .packages file removes it
-if [ -f ${LOCALDIR}/conf/packages ] ; then
-  rm -f ${LOCALDIR}/conf/packages
+if [ -f ${LOCALDIR}/conf/${PACK_PROFILE}-packages ] ; then
+  rm -f ${LOCALDIR}/conf/${PACK_PROFILE}-packages
 fi
 
 # Reads packages from packages profile
-awk '/^packages/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} > ${LOCALDIR}/conf/package
+awk '/^packages/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} > ${LOCALDIR}/conf/${PACK_PROFILE}-package
 
 # Reads depends file and search for packages entries in each file from depends
 # list, then append all packages found in packages file
 while read pkgs ; do
-awk '/^packages/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> ${LOCALDIR}/conf/package
-done < ${LOCALDIR}/packages/depends 
+awk '/^packages/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> ${LOCALDIR}/conf/${PACK_PROFILE}-package
+done < ${LOCALDIR}/packages/${PACK_PROFILE}-depends 
 
 # Removes """ and # from temporary package file
-cat ${LOCALDIR}/conf/package | grep -v '"""' | grep -v '#' > ${LOCALDIR}/conf/packages
+cat ${LOCALDIR}/conf/${PACK_PROFILE}-package | grep -v '"""' | grep -v '#' > ${LOCALDIR}/conf/${PACK_PROFILE}-packages
 
 # Removes temporary/leftover files
-if [ -f ${LOCALDIR}/conf/package ] ; then
-  rm -f ${LOCALDIR}/conf/package
-  rm -f ${LOCALDIR}/packages/depends
+if [ -f ${LOCALDIR}/conf/${PACK_PROFILE}-package ] ; then
+  rm -f ${LOCALDIR}/conf/${PACK_PROFILE}-package
+  rm -f ${LOCALDIR}/packages/${PACK_PROFILE}-depends
 fi
 
 for left_files in ports ghostbsd pcbsd gbi ; do
@@ -81,7 +81,9 @@ portsnap extract -p ${BASEDIR}/usr/ports
 cat > ${BASEDIR}/mnt/addpkg.sh << "EOF"
 #!/bin/sh 
 
-#/bin/sh /etc/rc.d/ldconfig start
+FORCE_PKG_REGISTER=true
+export FORCE_PKG_REGISTER
+
 # builds pkg from ports to avoid Y/N question
 cd /usr/ports/ports-mgmt/pkg
 make deinstall
@@ -91,7 +93,7 @@ make install
 # pkg install part
 cd /mnt
 PLOGFILE=".log_pkginstall"
-pkgfile="packages"
+pkgfile="${PACK_PROFILE}-packages"
 pkgaddcmd="pkg install -y "
 
 while read pkgc; do
