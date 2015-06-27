@@ -7,7 +7,6 @@ packages="""
 dpkg
 fish
 freedesktop-sound-theme
-fuse
 fusefs-ntfs
 fusefs-ext4fs
 # gawk needed by inxi
