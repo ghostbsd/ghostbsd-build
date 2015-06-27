@@ -79,7 +79,7 @@ gbsdports: .done_portsinstall
 .done_portsinstall: .done_pkginstall
 	@-rm -f ${CANONICALOBJDIR}/.tmp_portsinstall
 	@touch ${CANONICALOBJDIR}/.tmp_portsinstall
-	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} gbsdports ${CANONICALOBJDIR}/.tmp_ghostbports
+	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} gbsdports ${CANONICALOBJDIR}/.tmp_portsinstall
 	@mv ${CANONICALOBJDIR}/.tmp_portsinstall ${CANONICALOBJDIR}/.done_portsinstall
 
 extra:	.done_extra

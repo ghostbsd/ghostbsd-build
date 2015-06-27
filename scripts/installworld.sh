@@ -17,6 +17,42 @@ fi
 
 jail_name=${PACK_PROFILE}${ARCH}
 
+mkmd_device()
+{
+UFSFILE=${BASEDIR}/dist/uzip/usrimg
+MOUNTPOINT=${BASEDIR}/usr
+FSSIZE=$(echo "${USR_SIZE}*1024^2" | bc | cut -d . -f1)
+
+for dirs in union uzip cdmnt ; do
+    if [ ! -d ${BASEDIR}/dist/${dirs} ]; then
+        mkdir -p ${BASEDIR}/dist/${dirs}
+    fi
+done
+
+for dir in  ${UNION_DIRS}; do
+  echo ${dir} >> ${BASEDIR}/dist/uniondirs
+done
+
+if [ ! -d ${BASEDIR}/compat/linux/proc ]; then
+    mkdir -p ${BASEDIR}/compat/linux/proc
+fi
+
+if [ "${MD_BACKEND}" = "file" ] 
+    then
+        dd if=/dev/zero of=${UFSFILE} bs=1k count=1 seek=$((${FSSIZE} - 1))
+        DEVICE=$(mdconfig -a -t vnode -f ${UFSFILE})
+    else
+        DEVICE=$(mdconfig -a -t malloc -s ${FSSIZE}k)
+        dd if=/dev/zero of=/dev/${DEVICE} bs=1k count=1 seek=$((${FSSIZE} - 1))
+fi
+
+echo ${DEVICE} > ${BASEDIR}/mddevice
+
+newfs -o space /dev/${DEVICE} 
+mkdir -p ${MOUNTPOINT}
+mount -o noatime /dev/${DEVICE} ${MOUNTPOINT}
+}
+
 install_built_world()
 {
 echo "#### Installing world for ${ARCH} architecture ####"
@@ -107,6 +143,9 @@ FLAST_SEQ=$(grep ip4.addr /etc/jail.conf | tail -n 1 | cut -d = -f2 | cut -d \; 
 NEXT_IP=$FLAST_SEQ.$IP
 fi
 }
+
+# makes initial memory device to install over it
+mkmd_device
 
 if [ -n "${FETCH_FREEBSDBASE:-}" ]; then
     install_fetched_freebsd

@@ -75,7 +75,7 @@ sed -i '' 's@signature_type: "fingerprints"@#signature_type: "fingerprints"@g' $
 
 # prepares ports tree
 portsnap fetch
-portsnap extract -p ${BASEDIR}/usr/ports
+portsnap extract -p ${BASEDIR}/dist/ports
 
 # prepares addpkg.sh script to add packages under chroot
 cat > ${BASEDIR}/mnt/addpkg.sh << "EOF"
@@ -85,8 +85,8 @@ FORCE_PKG_REGISTER=true
 export FORCE_PKG_REGISTER
 
 # builds pkg from ports to avoid Y/N question
+ln -sf /dist/ports /usr/ports
 cd /usr/ports/ports-mgmt/pkg
-make deinstall
 make
 make install
 

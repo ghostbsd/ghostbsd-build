@@ -18,22 +18,18 @@ fi
 GHOSTBSD_LABEL=${GHOSTBSD_LABEL:-"GhostBSD"}
 
 echo "#### Building bootable ISO image for ${ARCH} ####"
-
-echo "Saving mtree structure..."
-mtree -Pcp ${BASEDIR}/usr/home  > ${CLONEDIR}/dist/home.dist
-
 # Creates etc/fstab to avoid messages about missing it
-if [ ! -e ${CLONEDIR}/etc/fstab ] ; then
-    touch ${CLONEDIR}/etc/fstab
+if [ ! -e ${BASEDIR}/etc/fstab ] ; then
+    touch ${BASEDIR}/etc/fstab
 fi
 
-cd ${CLONEDIR} && tar -cpzf ${CLONEDIR}/dist/etc.tgz etc
+cd ${BASEDIR} && tar -cpzf ${BASEDIR}/dist/etc.tgz etc
 
 make_standard_iso()
 {
 echo "### Running makefs to create ISO ###"
-bootable="-o bootimage=i386;${CLONEDIR}/boot/cdboot -o no-emul-boot"
-makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${ISOPATH} ${CLONEDIR}
+bootable="-o bootimage=i386;${BASEDIR}/boot/cdboot -o no-emul-boot"
+makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${ISOPATH} ${BASEDIR}
 }
 
 make_grub_iso()
@@ -41,31 +37,11 @@ make_grub_iso()
 # Reference for hybrid DVD/USB image
 # Use GRUB to create the hybrid DVD/USB image
 echo "Creating ISO..."
-grub-mkrescue -o ${ISOPATH} ${CLONEDIR} -- -volid ${GHOSTBSD_LABEL}
+grub-mkrescue -o ${ISOPATH} ${BASEDIR} -- -volid ${GHOSTBSD_LABEL}
 if [ $? -ne 0 ] ; then
 	echo "Failed running grub-mkrescue"
 	exit 1
 fi
-}
-
-make_manifest()
-{
-cat > ${BASEDIR}/mnt/manifest.sh << "EOF"
-#!/bin/sh 
-# builds iso manifest
-cd /mnt
-pkg info > manifest
-rm manifest.sh
-EOF
-
-
-chrootcmd="chroot ${BASEDIR} sh /mnt/manifest.sh"
-$chrootcmd
-
-if [ ! -d /usr/obj/${ARCH}/${PACK_PROFILE} ]; then
-    mkdir -p /usr/obj/${ARCH}/${PACK_PROFILE}
-fi
-mv -f ${BASEDIR}/mnt/manifest /usr/obj/${ARCH}/${PACK_PROFILE}/$(echo ${ISOPATH} | cut -d / -f6).manifest
 }
 
 echo "### ISO created ###"
@@ -79,8 +55,8 @@ sha256 `echo ${ISOPATH}| cut -d / -f6` >> /usr/obj/${ARCH}/${PACK_PROFILE}/$(ech
 cd -
 }
 
-make_manifest
 make_grub_iso
 make_checksums
 
+set -e
 cd ${LOCALDIR}

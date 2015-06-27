@@ -30,8 +30,3 @@ if [ -d "${CLONEDIR}" ]; then
     chflags -R noschg ${CLONEDIR}
     rm -rf ${CLONEDIR}
 fi
-
-if [ -d "${TCLONEDIR}" ]; then
-    chflags -R noschg ${TCLONEDIR}
-    rm -rf ${TCLONEDIR}
-fi

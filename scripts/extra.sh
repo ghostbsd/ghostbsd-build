@@ -30,6 +30,7 @@ if ! ${USE_JAILS} ; then
     fi
 fi
 
+
 # copy to jail resolv.conf
 cp -af /etc/resolv.conf ${BASEDIR}/etc/resolv.conf
 
@@ -44,10 +45,13 @@ for plugin in ${EXTRA}; do
 	echo "or ${LOCALDIR}/extra/, skipping"
 	sleep 3
     fi
-    if [ -d ${BASEDIR}/usr/ports/Mk ] ; then
-        rm -Rf ${BASEDIR}/usr/ports/*
-    fi
 done
+
+if [ -d ${BASEDIR}/dist/ports/Mk ] ; then
+    rm -f ${BASEDIR}/usr/ports
+    mkdir -p ${BASEDIR}/usr/ports
+    rm -Rf ${BASEDIR}/dist/ports
+fi
 
 if ! ${USE_JAILS}; then
     if [ -n "$(mount | grep ${BASEDIR}/var/run)" ]; then
