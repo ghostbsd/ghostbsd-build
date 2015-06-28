@@ -130,6 +130,15 @@ else
 fi
 }
 
+netconfig()
+{
+last_seq=$(ifconfig | grep "status: active" -IB3| head -n1 | awk '{print $2}' | cut -d . -f4)
+flast_seq=$(ifconfig | grep "status: active" -IB3| head -n1 | awk '{print $2}' | cut -d . -f1,2,3)
+START_IP=${flast_seq}.$(expr $last_seq + $INCREMENT )
+# NETIF should be your's already configured network card
+NETIF=$(ifconfig | grep "status: active" -IB6| head -n1 | cut -d : -f1)
+}
+
 inc_ip()
 {
 touch /etc/jail.conf
@@ -160,6 +169,7 @@ if [ ! -d ${BASEDIR}/usr/local/etc/default ]; then
 fi
 
 if ${USE_JAILS}; then
+    netconfig
     inc_ip
     jail_list_add
     service jail onestart $jail_name
