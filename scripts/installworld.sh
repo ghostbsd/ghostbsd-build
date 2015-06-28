@@ -132,11 +132,11 @@ fi
 
 netconfig()
 {
-last_seq=$(ifconfig | grep "status: active" -IB3| head -n1 | awk '{print $2}' | cut -d . -f4)
-flast_seq=$(ifconfig | grep "status: active" -IB3| head -n1 | awk '{print $2}' | cut -d . -f1,2,3)
+flast_seq=$(netstat -rn | grep default| awk '{ print $2 }'| cut -d . -f1,2,3)
+last_seq=$(ifconfig | grep ${flast_seq} | cut -d . -f4 | awk '{print $1}')
 START_IP=${flast_seq}.$(expr $last_seq + $INCREMENT )
 # NETIF should be your's already configured network card
-NETIF=$(ifconfig | grep "status: active" -IB6| head -n1 | cut -d : -f1)
+NETIF=$(netstat -rn |grep default | awk '{ print $4 }')
 }
 
 inc_ip()
