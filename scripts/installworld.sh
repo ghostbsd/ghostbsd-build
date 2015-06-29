@@ -23,7 +23,7 @@ UFSFILE=${BASEDIR}/dist/uzip/usrimg
 MOUNTPOINT=${BASEDIR}/usr
 FSSIZE=$(echo "${USR_SIZE}*1024^2" | bc | cut -d . -f1)
 
-for dirs in union uzip cdmnt ; do
+for dirs in union uzip ${CDMNT} ; do
     if [ ! -d ${BASEDIR}/dist/${dirs} ]; then
         mkdir -p ${BASEDIR}/dist/${dirs}
     fi
