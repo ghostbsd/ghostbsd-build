@@ -23,10 +23,12 @@ export ARCH
 
 stop_dev()
 {
+DEVICE=$(cat ${BASEDIR}/mddevice)
 if [ -f "${BASEDIR}/mddevice" ]; then
-    DEVICE=$(cat ${BASEDIR}/mddevice)
-    umount -f /dev/${DEVICE}
-    mdconfig -d -u ${DEVICE}
+    if
+        umount -f /dev/${DEVICE}
+        mdconfig -d -u ${DEVICE}
+    fi
 fi
 }
 
@@ -43,4 +45,4 @@ stop_dev
 cd $curdir && cd .. && make cleandir
 
 MAKEOBJDIRPREFIX=/usr/obj/gblogs/${ARCH}/${PACK_PROFILE}
-rm -Rf $(find $MAKEOBJDIRPREFIX -type d -name $(pwd | rev | cut -d / -f 2,2 | rev))
+rm -Rf $(find $MAKEOBJDIRPREFIX -type d -name $(pwd | rev | cut -d / -f 2,2 | rev))if [ -c "/dev/${DEVICE}" ]; then
