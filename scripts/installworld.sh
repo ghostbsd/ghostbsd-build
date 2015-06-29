@@ -132,9 +132,39 @@ fi
 
 netconfig()
 {
-flast_seq=$(netstat -rn | grep default| awk '{ print $2 }'| cut -d . -f1,2,3)
-last_seq=$(ifconfig | grep ${flast_seq} | cut -d . -f4 | awk '{print $1}')
-START_IP=${flast_seq}.$(expr $last_seq + $INCREMENT )
+if [ -z "${START_IP}" ]; then
+    # try autoconfiguration
+    flast_seq=$(netstat -rn | grep default| awk '{ print $2 }'| cut -d . -f1,2,3)
+    last_seq=$(ifconfig | grep ${flast_seq} | cut -d . -f4 |head -n1| awk '{print $1}')
+    if [ $(expr $last_seq + $INCREMENT ) -le 254 ];then
+        TRY_IP=${flast_seq}.$(expr $last_seq + $INCREMENT )
+    else
+        echo "Invalid jail IP. Please defile START_IP in ghostbsd.defaults.conf.
+Jail's IP should be between ${flast_seq}.1 and ${flast_seq}.254.
+Please restart build after using clscripts/clean_${PACK_PROFILE}_${ARCH}."
+    exit 1
+    fi
+
+    IFALREADY=$(ifconfig | grep $TRY_IP | awk '{print $2}')
+    if [ -z "${IFALREADY}" ]; then
+        START_IP=${TRY_IP}
+    else
+        echo "Jail IP error. Jail's IP is already taken. Please change
+INCREMENT value in ghostbsd.defaults.conf to have an valid IP
+and restart build after using clscripts/clean_${PACK_PROFILE}_${ARCH}."
+        exit 1
+    fi
+else
+    IFALREADY=$(ifconfig | grep $START_IP | awk '{print $2}')
+    if [ -z "${IFALREADY}" ]; then
+        START_IP=${START_IP}
+    else
+        echo "Jail IP error. Jail's IP is already taken. Please change
+START_IP value in ghostbsd.defaults.conf to have an valid IP
+and restart build after using clscripts/clean_${PACK_PROFILE}_${ARCH}."
+        exit 1
+    fi
+fi
 # NETIF should be your's already configured network card
 NETIF=$(netstat -rn |grep default | awk '{ print $4 }')
 }
