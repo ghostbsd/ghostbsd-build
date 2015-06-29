@@ -23,11 +23,15 @@ UFSFILE=${BASEDIR}/dist/uzip/usrimg
 MOUNTPOINT=${BASEDIR}/usr
 FSSIZE=$(echo "${USR_SIZE}*1024^2" | bc | cut -d . -f1)
 
-for dirs in union uzip ${CDMNT} ; do
+for dirs in union uzip ; do
     if [ ! -d ${BASEDIR}/dist/${dirs} ]; then
         mkdir -p ${BASEDIR}/dist/${dirs}
     fi
 done
+
+if [ ! -d ${BASEDIR}/cdmnt-install ]; then
+    mkdir -p ${BASEDIR}/cdmnt-install
+fi
 
 for dir in  ${UNION_DIRS}; do
   echo ${dir} >> ${BASEDIR}/dist/uniondirs
