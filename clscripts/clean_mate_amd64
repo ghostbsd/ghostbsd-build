@@ -25,7 +25,7 @@ stop_dev()
 {
 DEVICE=$(cat ${BASEDIR}/mddevice)
 if [ -f "${BASEDIR}/mddevice" ]; then
-    if
+    if [ -c "/dev/${DEVICE}" ]; then
         umount -f /dev/${DEVICE}
         mdconfig -d -u ${DEVICE}
     fi
