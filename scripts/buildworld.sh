@@ -15,6 +15,8 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
+build_world()
+{
 echo "#### Building world for ${ARCH} architecture ####"
 
 if [ -n "${NO_BUILDWORLD:-}" ]; then
@@ -36,6 +38,34 @@ cd $SRCDIR
 unset EXTRA
 
 makeargs="${MAKEOPT:-} ${MAKEJ_WORLD:-} __MAKE_CONF=${MAKE_CONF} TARGET_ARCH=${ARCH} SRCCONF=${SRC_CONF}"
+echo $makeargs
+sleep 10
 (env $MAKE_ENV script -aq $LOGFILE make ${makeargs:-} buildworld || print_error;) | grep '^>>>'
+}
 
+fetch_freebsd()
+{
+echo "#### Fetching world for ${ARCH} architecture ####" | tee -a ${LOGFILE}
+if [ "${ARCH}" = "amd64" ]; then
+    for files in base lib32 ; do
+        cd $BASEDIR
+        fetch ftp://ftp.freebsd.org/pub/FreeBSD/releases/${ARCH}/${FBSDRELEASE}/${files}.txz
+    done
+else
+    for files in base ; do
+        cd $BASEDIR
+        fetch ftp://ftp.freebsd.org/pub/FreeBSD/releases/${ARCH}/${FBSDRELEASE}/${files}.txz
+    done
+fi
+}
+
+mkdir -p ${BASEDIR}
+
+if [ -n "${FETCH_FREEBSDBASE:-}" ]; then
+    fetch_freebsd
+else
+    build_world
+fi
+
+set -e
 cd $LOCALDIR

@@ -68,8 +68,6 @@ installkernel: .done_installkernel
 	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} installkernel ${CANONICALOBJDIR}/.tmp_installkernel
 	@mv ${CANONICALOBJDIR}/.tmp_installkernel ${CANONICALOBJDIR}/.done_installkernel
 
-
-
 pkginstall: .done_pkginstall
 .done_pkginstall: .done_installworld
 	@-rm -f ${CANONICALOBJDIR}/.tmp_pkginstall
@@ -77,18 +75,11 @@ pkginstall: .done_pkginstall
 	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} pkginstall ${CANONICALOBJDIR}/.tmp_pkginstall
 	@mv ${CANONICALOBJDIR}/.tmp_pkginstall ${CANONICALOBJDIR}/.done_pkginstall
 
-portsbuild: .done_portsbuild
-.done_portsbuild: .done_pkginstall
-	@-rm -f ${CANONICALOBJDIR}/.tmp_portsbuild
-	@touch ${CANONICALOBJDIR}/.tmp_portsbuild
-	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} portsbuild ${CANONICALOBJDIR}/.tmp_portsbuild
-	@mv ${CANONICALOBJDIR}/.tmp_portsbuild ${CANONICALOBJDIR}/.done_portsbuild
-
-portsinstall: .done_portsinstall
-.done_portsinstall: .done_portsbuild
+gbsdports: .done_portsinstall
+.done_portsinstall: .done_pkginstall
 	@-rm -f ${CANONICALOBJDIR}/.tmp_portsinstall
 	@touch ${CANONICALOBJDIR}/.tmp_portsinstall
-	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} portsinstall ${CANONICALOBJDIR}/.tmp_portsinstall
+	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} gbsdports ${CANONICALOBJDIR}/.tmp_portsinstall
 	@mv ${CANONICALOBJDIR}/.tmp_portsinstall ${CANONICALOBJDIR}/.done_portsinstall
 
 extra:	.done_extra

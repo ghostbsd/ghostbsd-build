@@ -23,7 +23,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# $Id: clonefs.sh,v 1.12 Monday, June 02 2014 Eric Turgeon $
+# $Id: clonefs.sh,v 1.13 Saturday, June 20 2015 Ovidiu Angelescu $
 
 set -e -u
 
@@ -33,109 +33,90 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
+DEVICE=`cat ${BASEDIR}/mddevice`
 
-# Cloning file system function. 
-clonefs()
+make_manifest()
 {
-# Copying file system without /usr and /var/cache/pkg
-echo "### Preparing filesystem hierarchy using $MD_BACKEND backend."
-mkdir -p ${CLONEDIR}
-rsync -avzH --exclude-from='conf/clonefs_exclusion' ${BASEDIR}/ ${CLONEDIR} >> ${LOGFILE} 2>&1
+echo "### Make iso manifest."
+echo "### Make iso manifest." >> ${LOGFILE} 2>&1
+cat > ${BASEDIR}/mnt/manifest.sh << "EOF"
+#!/bin/sh 
+# builds iso manifest
+cd /mnt
+pkg info > manifest
+rm manifest.sh
+EOF
 
-# Making the directory for linprocfs.
-if [ ! -d ${CLONEDIR}/compat/linux/proc ]; then
-  mkdir -p ${CLONEDIR}/compat/linux/proc
+chrootcmd="chroot ${BASEDIR} sh /mnt/manifest.sh"
+$chrootcmd
+
+if [ ! -d /usr/obj/${ARCH}/${PACK_PROFILE} ]; then
+    mkdir -p /usr/obj/${ARCH}/${PACK_PROFILE}
 fi
-
-# Copying /usr in the clonedir. 
-rsync -avzH --exclude '.svn' ${BASEDIR}/usr/ ${CLONEDIR}/usr >> ${LOGFILE} 2>&1
+mv -f ${BASEDIR}/mnt/manifest /usr/obj/${ARCH}/${PACK_PROFILE}/$(echo ${ISOPATH} | cut -d / -f6).manifest
 }
 
 uniondirs_prepare()
 {
-echo "### Preparing union dirs"
-echo "### Preparing union dirs" >> ${LOGFILE} 2>&1
-echo ${UNION_DIRS} >> ${LOGFILE} 2>&1
-
-if [ ! -d ${CLONEDIR}/dist ]; then
-    mkdir -p ${CLONEDIR}/dist ${CLONEDIR}/dist/uzip ${CLONEDIR}/dist/union ${CLONEDIR}/cdmnt-install
-fi
-
-if [ -f "${CLONEDIR}/dist/uniondirs" ] ; then
-  rm ${CLONEDIR}/dist/uniondirs
-fi
-
-for dir in  ${UNION_DIRS}; do
-  echo ${dir} >> ${CLONEDIR}/dist/uniondirs
-  cd ${CLONEDIR} && tar -cpzf ${CLONEDIR}/dist/mfs.tgz ./${UNION_DIRS}
+echo "### Prepare for compression build environment"
+echo "### Prepare for compression build environment" >> ${LOGFILE} 2>&1
+for files in unionfs uzip ; do
+    if [ -f ${BASEDIR}/etc/rc.d/$files ] ; then
+        chmod 555 ${BASEDIR}/etc/rc.d/$files
+    fi
 done
-
-if [ -f ${CLONEDIR}/etc/rc.d/uzip ] ; then
-  chmod 555 ${CLONEDIR}/etc/rc.d/uzip
-fi
-
-if [ -f ${CLONEDIR}/etc/rc.d/unionfs ] ; then
-  chmod 555 ${CLONEDIR}/etc/rc.d/unionfs
-fi
-
-# Removes duplicates after archived them
-for i in $(echo "${UNION_DIRS}" | grep -v boot); do
-rm -Rf ${CLONEDIR}/$i/*
-done
+# clean packages cache, tmp and var/log 
+rm -f  ${BASEDIR}/var/cache/pkg/*
+rm -Rf ${BASEDIR}/tmp/*
+rm -Rf ${BASEDIR}/var/log/*
+# makes usr/src/sys dir because of cosmetical reason
+mkdir -p ${BASEDIR}/usr/src/sys
 }
 
 compress_fs()
 {
-echo "### Compressing filesystem using ${MD_BACKEND} backend."
+echo "### Compressing filesystem using $MD_BACKEND"
+echo "### Compressing filesystem using $MD_BACKEND" >> ${LOGFILE} 2>&1
 if [ "${MD_BACKEND}" = "file" ] ; then
-  mkuzip -v -o ${CLONEDIR}/dist/uzip/usr.uzip -s 65536 ${CLONEDIR}/dist/uzip/usrimg >> ${LOGFILE} 2>&1
-  rm -f ${CLONEDIR}/dist/uzip/usrimg
+  mkuzip -v -o ${BASEDIR}/dist/uzip/usr.uzip -s 65536 ${BASEDIR}/dist/uzip/usrimg >> ${LOGFILE} 2>&1
+  rm -f ${BASEDIR}/dist/uzip/usrimg
 else
-  mkuzip -v -o ${CLONEDIR}/dist/uzip/usr.uzip  -s 65536 /dev/${DEVICE} >> ${LOGFILE} 2>&1
+  mkuzip -v -o ${BASEDIR}/dist/uzip/usr.uzip  -s 65536 /dev/${DEVICE} >> ${LOGFILE} 2>&1
 fi
 }
 
 mount_ufs()
 {
-echo "### Making and mounting device for compressing filesystem using $MD_BACKEND"
-echo "### Making and mounting device for compressing filesystem using $MD_BACKEND" >> ${LOGFILE} 2>&1
-mkdir -p ${CLONEDIR}/dist/uzip
-UFSFILE=${CLONEDIR}/dist/uzip/usrimg
-MOUNTPOINT=${CLONEDIR}/usr
-DIRSIZE=$(($(du -kd 0 -I ".svn" ${BASEDIR}/usr | cut -f 1)))
-FSSIZE=$(($DIRSIZE + ($DIRSIZE/5)))
+DIRSIZE=$(($(du -kd 0 ${BASEDIR}/usr | cut -f 1)))
+echo "${PACK_PROFILE}${ARCH}_${BDATE}_mdsize=$(($DIRSIZE + ($DIRSIZE/40)))" > ${BASEDIR}/dist/mdsize
 
-if [ "${MD_BACKEND}" = "file" ] 
-    then
-        dd if=/dev/zero of=${UFSFILE} bs=1k count=1 seek=$((${FSSIZE} - 1))
-        DEVICE=$(mdconfig -a -t vnode -f ${UFSFILE})
-    else
-        DEVICE=$(mdconfig -a -t malloc -s ${FSSIZE}k)
-        dd if=/dev/zero of=/dev/${DEVICE} bs=1k count=1 seek=$((${FSSIZE} - 1))
-fi
-
-newfs -o space /dev/${DEVICE} 
-mkdir -p ${MOUNTPOINT}
-mount -o noatime /dev/${DEVICE} ${MOUNTPOINT}
-
-clonefs
-
+MOUNTPOINT=${BASEDIR}/usr
+umount -f ${MOUNTPOINT}
 uniondirs_prepare
 
-umount -f ${MOUNTPOINT}
-
-DEVICE_NO=`echo ${DEVICE} | cut -d 'd' -f2`
-
 if [ "${MD_BACKEND}" = "file" ] 
     then
-        mdconfig -d -u ${DEVICE_NO}
+        mdconfig -d -u ${DEVICE}
         compress_fs
     else
         compress_fs
-        mdconfig -d -u ${DEVICE_NO}
+        mdconfig -d -u ${DEVICE}
 fi
+rm -f ${BASEDIR}/mddevice
 echo "### Done filesystem compress"
 echo "### Done filesystem compress" >> ${LOGFILE} 2>&1
 }
 
+make_mtree()
+{
+echo "Saving mtree structure..."
+echo "Saving mtree structure..." >> ${LOGFILE} 2>&1
+mtree -Pcp ${BASEDIR}/usr/home  > ${BASEDIR}/dist/home.dist
+}
+
+make_mtree
+make_manifest
 mount_ufs
+
+set -e
+cd ${LOCALDIR}

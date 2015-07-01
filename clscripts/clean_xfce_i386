@@ -1,0 +1,48 @@
+#!/bin/sh
+#
+# Wrapper to include configuration variables and invoke correct scripts
+#
+# $FreeBSD$
+
+set -e -u
+
+if [ "`id -u`" != "0" ]; then
+    echo "Sorry, this must be done as root."
+    exit 1
+fi
+
+curdir=`pwd`
+
+PACK_PROFILE=xfce
+export PACK_PROFILE
+
+ARCH=i386
+export ARCH
+
+. ./../conf/ghostbsd.defaults.conf
+
+stop_dev()
+{
+if [ -f "${BASEDIR}/mddevice" ]; then
+    DEVICE=$(cat ${BASEDIR}/mddevice)
+    if [ -c "/dev/${DEVICE}" ]; then
+        umount -f /dev/${DEVICE}
+        mdconfig -d -u ${DEVICE}
+    fi
+fi
+}
+
+stop_jail()
+{
+jail_name=${PACK_PROFILE}${ARCH}
+jailrun=$(jls | grep $jail_name | awk '{print $3}'| cut -d . -f2)
+if [ -n $jailrun ]; then
+    service jail onestop $jail_name
+fi
+}
+stop_jail
+stop_dev
+cd $curdir && cd .. && make cleandir
+
+MAKEOBJDIRPREFIX=/usr/obj/gblogs/${ARCH}/${PACK_PROFILE}
+rm -Rf $(find $MAKEOBJDIRPREFIX -type d -name $(pwd | rev | cut -d / -f 2,2 | rev))
