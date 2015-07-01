@@ -100,21 +100,21 @@ chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
 rm -rf ${BASEDIR}/update-station
 
-# installing Networkmgr
-if [ ! -d ${BASEDIR}/networkmgr ]; then
-  echo "# Downloading netwokmgr from GitHub #"
-  git clone https://github.com/GhostBSD/networkmgr.git ${BASEDIR}/networkmgr >/dev/null 2>&1
-fi
+# # installing Networkmgr
+# if [ ! -d ${BASEDIR}/networkmgr ]; then
+#   echo "# Downloading netwokmgr from GitHub #"
+#   git clone https://github.com/GhostBSD/networkmgr.git ${BASEDIR}/networkmgr >/dev/null 2>&1
+# fi
 
-cat > ${BASEDIR}/config.sh << 'EOF'
-#!/bin/sh
-cd /networkmgr
-make install
-EOF
+# cat > ${BASEDIR}/config.sh << 'EOF'
+# #!/bin/sh
+# cd /networkmgr
+# make install
+# EOF
 
-chroot ${BASEDIR} sh /config.sh
-rm -f ${BASEDIR}/config.sh
-rm -rf ${BASEDIR}/networkmgr
+# chroot ${BASEDIR} sh /config.sh
+# rm -f ${BASEDIR}/config.sh
+# rm -rf ${BASEDIR}/networkmgr
 
 # installing Station Tweak 
 if [ ! -d ${BASEDIR}/station-tweak ]; then
