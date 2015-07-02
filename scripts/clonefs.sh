@@ -88,7 +88,7 @@ fi
 mount_ufs()
 {
 DIRSIZE=$(($(du -kd 0 ${BASEDIR}/usr | cut -f 1)))
-echo "${PACK_PROFILE}${ARCH}_${BDATE}_mdsize=$(($DIRSIZE + ($DIRSIZE/40)))" > ${BASEDIR}/dist/mdsize
+echo "${PACK_PROFILE}${ARCH}_${BDATE}_mdsize=$(($DIRSIZE + ($DIRSIZE/10)))" > ${BASEDIR}/dist/mdsize
 
 MOUNTPOINT=${BASEDIR}/usr
 umount -f ${MOUNTPOINT}
