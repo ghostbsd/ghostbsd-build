@@ -45,4 +45,4 @@ stop_dev
 cd $curdir && cd .. && make cleandir
 
 MAKEOBJDIRPREFIX=/usr/obj/gblogs/${ARCH}/${PACK_PROFILE}
-rm -Rf $(find $MAKEOBJDIRPREFIX -type d -name $(pwd | rev | cut -d / -f 2,2 | rev))if [ -c "/dev/${DEVICE}" ]; then
+rm -Rf $(find $MAKEOBJDIRPREFIX -type d -name $(pwd | rev | cut -d / -f 2,2 | rev))
