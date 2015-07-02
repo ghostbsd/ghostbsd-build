@@ -65,6 +65,7 @@ fi
 
 echo "# Downloading ghostbsd ports from GitHub #"
 git clone https://github.com/GhostBSD/ports.git ${BASEDIR}/ports >/dev/null 2>&1
+cp -Rf $BASEDIR/ports/ $BASEDIR/dist/ports
 
 # build ghostbsd ports 
 cp -af ${PKGFILE} ${BASEDIR}/mnt
