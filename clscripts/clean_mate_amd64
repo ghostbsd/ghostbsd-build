@@ -23,8 +23,8 @@ export ARCH
 
 stop_dev()
 {
-DEVICE=$(cat ${BASEDIR}/mddevice)
 if [ -f "${BASEDIR}/mddevice" ]; then
+	DEVICE=$(cat ${BASEDIR}/mddevice)
     if [ -c "/dev/${DEVICE}" ]; then
         umount -f /dev/${DEVICE}
         mdconfig -d -u ${DEVICE}
