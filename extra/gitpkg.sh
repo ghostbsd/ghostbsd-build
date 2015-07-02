@@ -16,7 +16,7 @@ fi
 # Installing pc-sysinstall and ghostbsd installer
 if [ ! -d ${BASEDIR}/pcbsd ]; then
   echo "Downloading pcbsd tools from GitHub"
-  git clone https://github.com/angelescuo/pcbsd.git ${BASEDIR}/pcbsd >/dev/null 2>&1
+  git clone https://github.com/GhostBSD/pcbsd.git ${BASEDIR}/pcbsd >/dev/null 2>&1
 fi
 
 if [ ! -d ${BASEDIR}/gbi ]; then
