@@ -29,8 +29,8 @@ for dirs in union uzip ; do
     fi
 done
 
-if [ ! -d ${BASEDIR}/cdmnt-install ]; then
-    mkdir -p ${BASEDIR}/cdmnt-install
+if [ ! -d ${BASEDIR}${CDMNT} ]; then
+    mkdir -p ${BASEDIR}${CDMNT}
 fi
 
 for dir in  ${UNION_DIRS}; do
