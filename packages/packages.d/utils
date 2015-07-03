@@ -11,6 +11,8 @@ fusefs-ntfs
 fusefs-ext4fs
 # gawk needed by inxi
 gawk
+# gmake needed by network manager
+gmake 
 git
 grub2
 grub2-efi
