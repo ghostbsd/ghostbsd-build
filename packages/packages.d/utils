@@ -14,7 +14,7 @@ gawk
 # gmake needed by network manager
 gmake 
 git
-grub2
+grub2-pcbsd
 grub2-efi
 nano
 ntfs-3g

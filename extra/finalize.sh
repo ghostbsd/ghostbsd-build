@@ -68,6 +68,6 @@ done
 
 remove_desktop_entries
 clean_desktop_files
-rm_fbsd_pcsysinstall
+# rm_fbsd_pcsysinstall
 cursor_theme
 dm_enable

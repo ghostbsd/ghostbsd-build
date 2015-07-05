@@ -37,22 +37,24 @@ EOF
 
 chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
-
 # installing PCDM
 cat > ${BASEDIR}/config.sh << 'EOF'
 #!/bin/sh
+echo "installing libpcbsd"
 cd /pcbsd/src-qt5/libpcbsd
 /usr/local/lib/qt5/bin/qmake *.pro
-make
-make install
+make >/dev/null 2>&1
+make install >/dev/null 2>&1
+echo "installing pcbsd-i18n-qt5"
 cd /pcbsd/build-files/ports-overlay/misc/pcbsd-i18n-qt5
 /usr/local/lib/qt5/bin/qmake *.pro
-make
-make install
+make >/dev/null 2>&1
+make install >/dev/null 2>&1
+echo "installing PCDM"
 cd /pcbsd/src-qt5/PCDM
 /usr/local/lib/qt5/bin/qmake *.pro
-make
-make install
+make> /dev/null 2>&1
+make install >/dev/null 2>&1
 EOF
 
 echo "Downloading i18n archive.."
