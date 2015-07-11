@@ -1,6 +1,6 @@
 #!/bin/sh
 #####################################################################
-# Copyright (c) 2012, Eric Turgeon. All rights reserved.
+# Copyright (c) 2012, GhostBSD. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -14,7 +14,7 @@
 #    disclaimer in the documentation and/or other materials provided
 #    with the distribution.
 #
-# 3. Neither then name of  Eric Turgeon nor the names of its
+# 3. Neither then name of  GhostBSD nor the names of its
 #    contributors maybe used to endorse or promote products derived
 #    from this software without specific prior written permission.
 #
@@ -32,59 +32,34 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #####################################################################
 
-CONF=${CONF:-conf/ghostbsd.defaults.conf}
-# Start whit i386.
-sed -i '' 's@ARCH="amd64"@ARCH="i386"@' ${CONF}
+# Building MATE i386.
+cd clscripts
+sh clean_mate_i386
+cd ..
+cd mkscripts
+sh make_mate_i386_iso
+cd ..
 
-# Build for LXDE i386.
-#sed -i '' 's@PACK_PROFILE=${PACK_PROFILE:-"mate"}@PACK_PROFILE=${PACK_PROFILE:-"lxde"}@' ${CONF}
-#sed -i '' 's@PACK_PROFILE=${PACK_PROFILE:-"openbox"}@PACK_PROFILE=${PACK_PROFILE:-"lxde"}@' ${CONF}
-#sed -i '' 's@PACK_PROFILE=${PACK_PROFILE:-"xfce4"}@PACK_PROFILE=${PACK_PROFILE:-"lxde"}@' ${CONF}
-make clean cleandir
-make
-#make img
+# Building MATE amd64
+cd clscripts
+sh clean_mate_amd64
+cd ..
+cd mkscripts
+sh make_mate_amd64_iso
+cd ..
 
-# Build for Mate i386.
-#sed -i '' 's@PACK_PROFILE=${PACK_PROFILE:-"lxde"}@PACK_PROFILE=${PACK_PROFILE:-"mate"}@' ${CONF}
-#make clean cleandir
-#make
-#make img
+# Building XFCE i386
+cd clscripts
+sh clean_xfce_i386
+cd ..
+cd mkscripts
+sh make_xfce_i386_iso
+cd ..
 
-# Build for Xfce4 i386.
-#sed -i '' 's@PACK_PROFILE=${PACK_PROFILE:-"mate"}@PACK_PROFILE=${PACK_PROFILE:-"xfce4"}@' ${CONF}
-#make clean cleandir
-#make
-#make img
-
-# Build for Openbox i386.
-#sed -i '' 's@PACK_PROFILE=${PACK_PROFILE:-"xfce4"}@PACK_PROFILE=${PACK_PROFILE:-"openbox"}@' ${CONF}
-#make clean cleandir
-#make
-#make img
-
-# Change to amd64.
-sed -i '' 's@ARCH="i386"@ARCH="amd64"@' ${CONF}
-
-# Build for Lxde amd64.
-#sed -i '' 's@PACK_PROFILE=${PACK_PROFILE:-"openbox"}@PACK_PROFILE=${PACK_PROFILE:-"lxde"}@' ${CONF}
-make clean cleandir
-make
-#make img
-make clean cleandir
-# Build for Mate amd64.
-#sed -i '' 's@PACK_PROFILE=${PACK_PROFILE:-"lxde"}@PACK_PROFILE=${PACK_PROFILE:-"mate"}@' ${CONF}
-#make clean cleandir
-#make
-#make img
-
-# Build for Xfce4 amd64.
-#sed -i '' 's@PACK_PROFILE=${PACK_PROFILE:-"mate"}@PACK_PROFILE=${PACK_PROFILE:-"xfce4"}@' ${CONF}
-#make clean cleandir
-#make
-#make img
-
-# Build for Openbox amd64.
-#sed -i '' 's@PACK_PROFILE=${PACK_PROFILE:-"xfce4"}@PACK_PROFILE=${PACK_PROFILE:-"openbox"}@' ${CONF}
-#make clean cleandir
-#make
-#make img
+# Building XFCE amd64
+cd clscripts
+sh clean_xfce_amd64
+cd ..
+cd mkscripts
+sh make_xfce_amd64_iso
+cd ..
