@@ -75,8 +75,15 @@ pkginstall: .done_pkginstall
 	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} pkginstall ${CANONICALOBJDIR}/.tmp_pkginstall
 	@mv ${CANONICALOBJDIR}/.tmp_pkginstall ${CANONICALOBJDIR}/.done_pkginstall
 
+installports: .done_fbsdportsinstall
+.done_fbsdportsinstall: .done_pkginstall
+	@-rm -f ${CANONICALOBJDIR}/.tmp_fbsdportsinstall
+	@touch ${CANONICALOBJDIR}/.tmp_fbsdportsinstall
+	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} installports ${CANONICALOBJDIR}/.tmp_fbsdportsinstall
+	@mv ${CANONICALOBJDIR}/.tmp_fbsdportsinstall ${CANONICALOBJDIR}/.done_fbsdportsinstall
+
 gbsdports: .done_portsinstall
-.done_portsinstall: .done_pkginstall
+.done_portsinstall: .done_fbsdportsinstall
 	@-rm -f ${CANONICALOBJDIR}/.tmp_portsinstall
 	@touch ${CANONICALOBJDIR}/.tmp_portsinstall
 	@sh ${.CURDIR}/scripts/launch.sh ${.CURDIR} gbsdports ${CANONICALOBJDIR}/.tmp_portsinstall
