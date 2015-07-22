@@ -1,0 +1,35 @@
+description="""
+Basic utilities
+"""
+deps="""
+"""
+packages="""
+dpkg
+#fish
+freedesktop-sound-theme
+#fusefs-ntfs
+#fusefs-ext4fs
+# gawk needed by inxi
+gawk
+# gmake needed by network manager
+gmake 
+#git
+grub2-pcbsd
+grub2-efi
+#nano
+#ntfs-3g
+#ksh93
+#mc
+portupgrade
+py27-gobject
+py27-webkitgtk
+py27-pexpect
+py27-distutils-extra
+rsync
+sudo
+#vim
+#xorriso
+#zsh
+#webcamd
+wmctrl
+"""
