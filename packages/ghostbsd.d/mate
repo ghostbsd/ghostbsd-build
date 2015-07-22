@@ -5,6 +5,7 @@ GhostBSD mate settings
 packages = """
 mate-installed-settings
 mate-live-settings
+station-tweak
 """
 
 settings="""
