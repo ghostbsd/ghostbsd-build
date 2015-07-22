@@ -1,0 +1,127 @@
+xorg
+virtualbox-ose-additions
+cursor-dmz-theme
+setxkbmap
+xrandr
+dpkg
+fish
+freedesktop-sound-theme
+fusefs-ntfs
+fusefs-ext4fs
+gawk
+gmake 
+git
+grub2-pcbsd
+grub2-efi
+nano
+ntfs-3g
+ksh93
+mc
+portupgrade
+py27-gobject
+py27-webkitgtk
+py27-pexpect
+py27-distutils-extra
+rsync
+sudo
+vim
+xorriso
+zsh
+webcamd
+wmctrl
+guake
+mesa-demos
+zenity
+qt5-core
+qt5-qmake
+qt5-network
+qt5-widgets
+qt5-buildtools
+qt5-x11extras
+cups
+cups-smb-backend
+system-config-printer
+foomatic-db
+foomatic-db-engine
+foomatic-db-hpijs
+pidgin
+transmission
+firefox
+thunderbird
+hexchat
+exaile
+gnome-mplayer
+xfburn
+cheese
+gstreamer-plugins-neon
+pulseaudio
+libreoffice
+shotwell
+    xfce
+    compton
+    cups-pk-helper
+    desktop-file-utils
+    evince-gtk
+    gcalctool
+    gconf2
+    gnome-keyring
+    gpicview
+    gtk2-engines-xfce
+    libnotify-bin
+    libpam-gnome-keyring
+    libtumbler-1-0
+    mousepad
+    mpg321
+    orage
+    ristretto
+    shared-mime-info
+    thunar
+    thunar-archive-plugin
+    thunar-data
+    thunar-media-tags-plugin
+    thunar-volman
+    trayer
+    tumbler
+    xarchiver
+    xbitmaps
+    xfburn
+    xfce
+    xfce4-artwork
+    xfce4-battery-plugin
+    xfce4-clipman-plugin
+    xfce4-cpufreq-plugin
+    xfce4-cpugraph-plugin
+    xfce4-datetime-plugin
+    xfce4-dev-tools
+    xfce4-dict
+    xfce4-diskperf-plugin
+    xfce4-fsguard-plugin
+    xfce4-genmon-plugin
+    xfce4-mailwatch-plugin
+    xfce4-mixer
+    xfce4-mount-plugin
+    xfce4-netload-plugin
+    xfce4-notifyd
+    xfce4-notes-plugin
+    xfce4-panel
+    xfce4-places-plugin
+    xfce4-power-manager-plugins
+    xfce4-quicklauncher-plugin
+    xfce4-terminal
+    xfce4-screenshooter
+    xfce4-screenshooter-plugin
+    xfce4-sensors-plugin
+    xfce4-session
+    xfce4-smartbookmark-plugin
+    xfce4-soundmenu-plugin
+    xfce4-systemload-plugin
+    xfce4-taskmanager
+    xfce4-timer-plugin
+    xfce4-verve-plugin
+    xfce4-volumed
+    xfce4-wavelan-plugin
+    xfce4-weather-plugin
+    xfce4-xkb-plugin
+    xfdesktop4
+    xfwm4
+    xfwm4-themes

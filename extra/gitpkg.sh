@@ -58,7 +58,7 @@ make install >/dev/null 2>&1
 EOF
 
 echo "Downloading i18n archive.."
-fetch -o /tmp/.pcbsd-i18n.txz http://www.pcbsd.org/i18n/pcbsd-i18n.txz
+fetch -o /tmp/.pcbsd-i18n.txz http://www.pcbsd.org/i18n/pcbsd-i18n.txz >/dev/null 2>&1
 echo "Extracting i18n files.."
 mkdir -p ${BASEDIR}/usr/local/share/pcbsd/i18n
 tar xvf /tmp/.pcbsd-i18n.txz -C ${BASEDIR}/usr/local/share/pcbsd/i18n 2>/dev/null >/dev/null
@@ -79,7 +79,7 @@ fi
 cat > ${BASEDIR}/config.sh << 'EOF'
 #!/bin/sh
 cd /operator
-make install
+make install >/dev/null 2>&1
 EOF
 
 chroot ${BASEDIR} sh /config.sh
@@ -102,24 +102,9 @@ chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
 rm -rf ${BASEDIR}/update-station
 
-# # installing Networkmgr
-# if [ ! -d ${BASEDIR}/networkmgr ]; then
-#   echo "# Downloading netwokmgr from GitHub #"
-#   git clone https://github.com/GhostBSD/networkmgr.git ${BASEDIR}/networkmgr >/dev/null 2>&1
-# fi
+# installing Station Tweak
 
-# cat > ${BASEDIR}/config.sh << 'EOF'
-# #!/bin/sh
-# cd /networkmgr
-# make install
-# EOF
-
-# chroot ${BASEDIR} sh /config.sh
-# rm -f ${BASEDIR}/config.sh
-# rm -rf ${BASEDIR}/networkmgr
-
-# installing Station Tweak 
-if [ ! -d ${BASEDIR}/station-tweak ]; then
+if [ ! -d ${BASEDIR}/station-tweak ] ; then
   echo "# Downloading station-tweak from GitHub #"
   git clone https://github.com/GhostBSD/station-tweak.git ${BASEDIR}/station-tweak >/dev/null 2>&1
 fi
@@ -136,3 +121,4 @@ cp ${BASEDIR}/station-tweak/station-tweak ${BASEDIR}/usr/local/bin/station-tweak
 chmod +x ${BASEDIR}/usr/local/bin/station-tweak
 rm -f ${BASEDIR}/config.sh
 rm -rf ${BASEDIR}/station-tweak
+
