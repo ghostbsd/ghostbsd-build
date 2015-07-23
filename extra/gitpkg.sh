@@ -101,24 +101,3 @@ EOF
 chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
 rm -rf ${BASEDIR}/update-station
-
-# installing Station Tweak
-
-if [ ! -d ${BASEDIR}/station-tweak ] ; then
-  echo "# Downloading station-tweak from GitHub #"
-  git clone https://github.com/GhostBSD/station-tweak.git ${BASEDIR}/station-tweak >/dev/null 2>&1
-fi
-
-cat > ${BASEDIR}/config.sh << 'EOF'
-#!/bin/sh
-cd /station-tweak
-python setup.py build
-python setup.py install
-EOF
-
-chroot ${BASEDIR} sh /config.sh
-cp ${BASEDIR}/station-tweak/station-tweak ${BASEDIR}/usr/local/bin/station-tweak
-chmod +x ${BASEDIR}/usr/local/bin/station-tweak
-rm -f ${BASEDIR}/config.sh
-rm -rf ${BASEDIR}/station-tweak
-
