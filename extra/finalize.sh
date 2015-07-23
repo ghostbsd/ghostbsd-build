@@ -68,7 +68,7 @@ done
 
 default_ghostbsd_rc_conf()
 {
-  ${BASEDIR}/etc/rc.conf ${BASEDIR}/etc/rc.conf.ghostbsd
+  cp  ${BASEDIR}/etc/rc.conf ${BASEDIR}/etc/rc.conf.ghostbsd
 }
 
 remove_desktop_entries
