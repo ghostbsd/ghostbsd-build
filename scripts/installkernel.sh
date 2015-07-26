@@ -59,7 +59,7 @@ install_fetched_kernel()
 {
 echo "#### Installing kernel for ${ARCH} architecture ####" | tee -a ${LOGFILE}
 cd $BASEDIR
-tar -yxf kernel.txz -C ./
+tar -yxf kernel.txz -C ./ --exclude=\*\.symbols
 rm -f kernel.txz
 }
 
