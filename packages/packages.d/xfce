@@ -19,6 +19,7 @@ packages = """
     mousepad
     mpg321
     orage
+    plank
     ristretto
     shared-mime-info
     thunar
