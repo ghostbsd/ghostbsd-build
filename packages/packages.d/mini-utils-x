@@ -5,7 +5,7 @@ deps="""
 """
 packages="""
 #guake
-#gksu 
+gksu 
 # mesa-demos for inxi 
 mesa-demos
 # zenity for ghostbsd-irc
