@@ -19,6 +19,15 @@ export PACK_PROFILE
 ARCH=i386
 export ARCH
 
+USR_SIZE=5.6
+export USR_SIZE
+
+INSTALL_PORTS=${INSTALL_PORTS:-"audio/faac audio/lame"}
+export INSTALL_PORTS
+
+EXTRA="gitpkg adduser dm finalize"
+export EXTRA
+
 MAKEOBJDIRPREFIX=/usr/obj/gblogs/${ARCH}/${PACK_PROFILE}
 export MAKEOBJDIRPREFIX
 
