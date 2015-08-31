@@ -2,7 +2,7 @@ desc = """
         Font packages.
 """
 
-# packages="""
+packages="""
 dejavu
 fonts-indic
 # af-aspell
