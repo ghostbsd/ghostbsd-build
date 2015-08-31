@@ -12,7 +12,7 @@ print
 internet
 sound-video
 office
-#font
+font
 graphic
 gnome
 """

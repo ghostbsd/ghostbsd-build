@@ -23,53 +23,45 @@ if [ ! -d ${BASEDIR}/pcbsd ]; then
    rm ${BASEDIR}/master.zip
 fi
 
-if [ ! -d ${BASEDIR}/gbi ]; then
-  echo "Downloading gbi from GitHub"
-  git clone https://github.com/GhostBSD/gbi.git ${BASEDIR}/gbi >/dev/null 2>&1
-fi
-
-
 cat > ${BASEDIR}/config.sh << 'EOF'
 #!/bin/sh
 echo "installing pc-syinstall"
 cd /pcbsd/src-sh/pcbsd-utils/pc-sysinstall
 sh install.sh >/dev/null 2>&1
-echo "installing gbi"
-cd /gbi
-sh install.sh >/dev/null 2>&1
 EOF
 
 chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
-# installing PCDM
-cat > ${BASEDIR}/config.sh << 'EOF'
-#!/bin/sh
-echo "installing libpcbsd"
-cd /pcbsd/src-qt5/libpcbsd
-/usr/local/lib/qt5/bin/qmake *.pro
-make >/dev/null 2>&1
-make install >/dev/null 2>&1
-echo "installing pcbsd-i18n-qt5"
-cd /pcbsd/build-files/ports-overlay/misc/pcbsd-i18n-qt5
-/usr/local/lib/qt5/bin/qmake *.pro
-make >/dev/null 2>&1
-make install >/dev/null 2>&1
-echo "installing PCDM"
-cd /pcbsd/src-qt5/PCDM
-/usr/local/lib/qt5/bin/qmake *.pro
-make> /dev/null 2>&1
-make install >/dev/null 2>&1
-EOF
 
-echo "Downloading i18n archive.."
-fetch -o /tmp/.pcbsd-i18n.txz http://www.pcbsd.org/i18n/pcbsd-i18n.txz >/dev/null 2>&1
-echo "Extracting i18n files.."
-mkdir -p ${BASEDIR}/usr/local/share/pcbsd/i18n
-tar xvf /tmp/.pcbsd-i18n.txz -C ${BASEDIR}/usr/local/share/pcbsd/i18n 2>/dev/null >/dev/null
-rm /tmp/.pcbsd-i18n.txz
+# # installing PCDM
+# cat > ${BASEDIR}/config.sh << 'EOF'
+# #!/bin/sh
+# echo "installing libpcbsd"
+# cd /pcbsd/src-qt5/libpcbsd
+# /usr/local/lib/qt5/bin/qmake *.pro
+# make >/dev/null 2>&1
+# make install >/dev/null 2>&1
+# echo "installing pcbsd-i18n-qt5"
+# cd /pcbsd/build-files/ports-overlay/misc/pcbsd-i18n-qt5
+# /usr/local/lib/qt5/bin/qmake *.pro
+# make >/dev/null 2>&1
+# make install >/dev/null 2>&1
+# echo "installing PCDM"
+# cd /pcbsd/src-qt5/PCDM
+# /usr/local/lib/qt5/bin/qmake *.pro
+# make> /dev/null 2>&1
+# make install >/dev/null 2>&1
+# EOF
 
-chroot ${BASEDIR} sh /config.sh
-rm -f ${BASEDIR}/config.sh
+# echo "Downloading i18n archive.."
+# fetch -o /tmp/.pcbsd-i18n.txz http://www.pcbsd.org/i18n/pcbsd-i18n.txz >/dev/null 2>&1
+# echo "Extracting i18n files.."
+# mkdir -p ${BASEDIR}/usr/local/share/pcbsd/i18n
+# tar xvf /tmp/.pcbsd-i18n.txz -C ${BASEDIR}/usr/local/share/pcbsd/i18n 2>/dev/null >/dev/null
+# rm /tmp/.pcbsd-i18n.txz
+
+# chroot ${BASEDIR} sh /config.sh
+# rm -f ${BASEDIR}/config.sh
 
 rm -rf ${BASEDIR}/pcbsd
 rm -rf ${BASEDIR}/gbi
