@@ -68,3 +68,5 @@ AutomaticLoginEnable=True
 if [ "${PACK_PROFILE}" != "gnome" ] ; then
 	rm ${BASEDIR}/usr/local/share/xsessions/gnome.desktop
 fi
+
+sed -i '' 's@#pcdm_enable="YES"@gdm_enable="YES"@g' ${BASEDIR}/etc/rc.conf

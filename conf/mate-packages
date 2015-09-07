@@ -52,6 +52,10 @@ cheese
 gstreamer-plugins-neon
 pulseaudio
 libreoffice
+dejavu
+fonts-indic
+en-aspell
+en-hunspell
 shotwell
 cups-pk-helper
 dconf-editor
