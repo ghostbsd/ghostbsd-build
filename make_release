@@ -33,13 +33,12 @@
 #####################################################################
 
 # Building MATE i386.
-
-  cd clscripts
-  sh clean_mate_i386
-  cd ..
-  cd mkscripts
-  sh make_mate_i386_iso
-  cd ..
+cd clscripts
+sh clean_mate_i386
+cd ..
+cd mkscripts
+sh make_mate_i386_iso
+cd ..
 
 # Building MATE amd64
 cd clscripts

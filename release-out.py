@@ -49,7 +49,7 @@ password = getpass("SourceForge Password: ")
 
 
 
-if path.isdir('/usr/obj/i386/matew'):
+if path.isdir('/usr/obj/i386/mate'):
     matei386 = Popen('cd /usr/obj/i386/mate && ls GhostBSD*i386*', stdout=PIPE, shell=True)
     for line in matei386.stdout.readlines():
         foo = pexpect.spawn(

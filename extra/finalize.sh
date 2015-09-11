@@ -89,4 +89,4 @@ clean_desktop_files
 cursor_theme
 # dm_enable
 default_ghostbsd_rc_conf
-unmounting_media_ghosbtsd
+# unmounting_media_ghosbtsd
