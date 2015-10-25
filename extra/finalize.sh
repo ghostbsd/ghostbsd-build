@@ -71,22 +71,10 @@ default_ghostbsd_rc_conf()
   cp  ${BASEDIR}/etc/rc.conf ${BASEDIR}/etc/rc.conf.ghostbsd
 }
 
-# this is just temporary.
-unmounting_media_ghosbtsd()
-{
-  printf "[Desktop Entry]
-Name=Unmout GhostBSD Disk
-Comment=Unmout GhostBSD Disk
-Exec=sudo umount /media/GhostBSD
-Terminal=false
-Type=Application
-NoDisplay=true" > ${BASEDIR}/usr/local/etc/xdg/autostart/umountghostbsd.desktop
-}
-
 remove_desktop_entries
 clean_desktop_files
 # rm_fbsd_pcsysinstall
 cursor_theme
 # dm_enable
 default_ghostbsd_rc_conf
-# unmounting_media_ghosbtsd
+
