@@ -23,13 +23,15 @@ export ARCH
 
 stop_dev()
 {
-if [ -f "${BASEDIR}/mddevice" ]; then
-    DEVICE=$(cat ${BASEDIR}/mddevice)
-    if [ -c "/dev/${DEVICE}" ]; then
-        umount -f /dev/${DEVICE}
-        mdconfig -d -u ${DEVICE}
+for i in mddevice pdevice ; do
+    if [ -f "${BASEDIR}/$i" ]; then
+        DEVICE=$(cat ${BASEDIR}/$i)
+        if [ -c "/dev/${DEVICE}" ]; then
+            umount -f /dev/${DEVICE}
+            mdconfig -d -u ${DEVICE}
+        fi
     fi
-fi
+done
 }
 
 stop_jail()

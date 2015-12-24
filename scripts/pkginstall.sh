@@ -73,6 +73,15 @@ cp $PKGFILE ${BASEDIR}/mnt
 
 sed -i '' 's@signature_type: "fingerprints"@#signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 
+# prepares ports file backend an mounts it over /dist/ports
+PSIZE=$(echo "${PORTS_SIZE}*1024^2" | bc | cut -d . -f1)
+dd if=/dev/zero of=${BASEDIR}/ports.ufs bs=1k count=1 seek=$((${PSIZE} - 1))
+PDEVICE=$(mdconfig -a -t vnode -f ${BASEDIR}/ports.ufs)
+echo $PDEVICE >${BASEDIR}/pdevice
+newfs -o space /dev/$PDEVICE
+mkdir -p ${BASEDIR}/dist/ports
+mount -o noatime /dev/$PDEVICE  ${BASEDIR}/dist/ports
+
 # prepares ports tree
 portsnap fetch
 portsnap extract -p ${BASEDIR}/dist/ports
