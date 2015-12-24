@@ -48,7 +48,6 @@ packages = """
       gnome-hearts
     gnome-keyring
     gnome-logs
-    gnome-media
     gnome-online-accounts
     gnome-photos
     gnome-screenshot
