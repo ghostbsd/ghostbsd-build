@@ -23,7 +23,7 @@ cd $BASEDIR
 if [ "$(freebsd-version | cut -d '-' -f2 )" = "RELEASE" ] ; then
     fetch ftp://ftp.freebsd.org/pub/FreeBSD/releases/${ARCH}/${FBSDVERSION}-RELEASE/kernel.txz
 else
-    fetch ftp://ftp.freebsd.org/pub/FreeBSD/snaphots/${ARCH}/${FBSDVERSION}-CURRENT/kernel.txz
+    fetch ftp://ftp.freebsd.org/pub/FreeBSD/snapshots/${ARCH}/${FBSDVERSION}-CURRENT/kernel.txz
 fi
 }
 
