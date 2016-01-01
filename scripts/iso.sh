@@ -15,8 +15,6 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
-GHOSTBSD_LABEL=${GHOSTBSD_LABEL:-"GhostBSD"}
-
 echo "#### Building bootable ISO image for ${ARCH} ####"
 # Creates etc/fstab to avoid messages about missing it
 if [ ! -e ${BASEDIR}/etc/fstab ] ; then
@@ -27,6 +25,8 @@ cd ${BASEDIR} && tar -cpzf ${BASEDIR}/dist/etc.tgz etc
 
 make_standard_iso()
 {
+GHOSTBSD_LABEL=GHOSTBSD
+echo "/dev/iso9660/$GHOSTBSD_LABEL / cd9660 ro 0 0" > ${BASEDIR}/etc/fstab 
 echo "### Running makefs to create ISO ###"
 bootable="-o bootimage=i386;${BASEDIR}/boot/cdboot -o no-emul-boot"
 makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${ISOPATH} ${BASEDIR}
@@ -55,6 +55,7 @@ sha256 `echo ${ISOPATH}| cut -d / -f6` >> /usr/obj/${ARCH}/${PACK_PROFILE}/$(ech
 cd -
 }
 
+#make_standard_iso
 make_grub_iso
 make_checksums
 
