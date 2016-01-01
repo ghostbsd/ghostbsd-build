@@ -22,12 +22,12 @@ GHOSTBSD_LABEL=${GHOSTBSD_LABEL:-"GhostBSD"}
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 export PATH
 
-echo "/dev/ufs/${GHOSTBSD_LABEL} / ufs ro,noatime 1 1" > ${CLONEDIR}/etc/fstab
-echo "proc /proc procfs rw 0 0" >> ${CLONEDIR}/etc/fstab 
-echo "linproc /compat/linux/proc linprocfs rw 0 0" >> ${CLONEDIR}/etc/fstab
-cd ${CLONEDIR} && tar -cpzf ${CLONEDIR}/dist/etc.tgz etc
+echo "/dev/ufs/${GHOSTBSD_LABEL} / ufs ro,noatime 1 1" > ${BASEDIR}/etc/fstab
+echo "proc /proc procfs rw 0 0" >> ${BASEDIR}/etc/fstab 
+echo "linproc /compat/linux/proc linprocfs rw 0 0" >> ${BASEDIR}/etc/fstab
+cd ${BASEDIR} && tar -cpzf ${BASEDIR}/dist/etc.tgz etc
 
-makefs -B little -o label=${GHOSTBSD_LABEL} ${IMGPATH} ${CLONEDIR}
+makefs -B little -o label=${GHOSTBSD_LABEL} ${IMGPATH} ${BASEDIR}
 if [ $? -ne 0 ]; then
   echo "makefs failed"
   exit 1
@@ -40,7 +40,7 @@ if [ $? -ne 0 ]; then
 fi
 
 gpart create -s BSD ${unit}
-gpart bootcode -b ${CLONEDIR}/boot/boot ${unit}
+gpart bootcode -b ${BASEDIR}/boot/boot ${unit}
 gpart add -t freebsd-ufs ${unit}
 mdconfig -d -u ${unit}
 
