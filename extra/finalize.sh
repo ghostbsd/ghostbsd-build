@@ -32,8 +32,10 @@ cursor_theme()
   if [ -e ${BASEDIR}/usr/local/lib/X11/icons/default ] ; then
     rm ${BASEDIR}/usr/local/lib/X11/icons/default 
   fi
+  if [ -e ${BASEDIR}/usr/local/lib/X11/icons ] ; then
   cd ${BASEDIR}/usr/local/lib/X11/icons
   ln -sf $CURSOR_THEME default
+  fi
   cd -
 }
 
@@ -56,8 +58,8 @@ clean_desktop_files()
 {
 # Remove Gnome and Mate from ShowOnly in *.desktop
 # needed for update-station
-GhostBSD=`ls ${BASEDIR}/usr/local/share/applications/ | grep -v libreoffice | grep -v kde4 | grep -v screensavers` 
-for desktop in $GhostBSD; do
+DesktopBSD=`ls ${BASEDIR}/usr/local/share/applications/ | grep -v libreoffice | grep -v kde4 | grep -v screensavers` 
+for desktop in $DesktopBSD; do
   sed -i "" -e 's/OnlyShowIn=Gnome;//g' ${BASEDIR}/usr/local/share/applications/$desktop
   sed -i "" -e 's/OnlyShowIn=MATE;//g' ${BASEDIR}/usr/local/share/applications/$desktop
   sed -i "" -e 's/GNOME;//g' ${BASEDIR}/usr/local/share/applications/$desktop
