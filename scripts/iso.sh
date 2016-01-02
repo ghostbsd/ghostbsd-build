@@ -15,7 +15,6 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
-GHOSTBSD_LABEL=`echo $GHOSTBSD_LABEL | tr '[:lower:]' '[:upper:]'`
 
 echo "#### Building bootable ISO image for ${ARCH} ####"
 # Creates etc/fstab to avoid messages about missing it
@@ -23,12 +22,13 @@ if [ ! -e ${BASEDIR}/etc/fstab ] ; then
     touch ${BASEDIR}/etc/fstab
 fi
 
-echo "/dev/iso9660/$GHOSTBSD_LABEL / cd9660 ro 0 0" > $BASEDIR/etc/fstab
 
 cd ${BASEDIR} && tar -cpzf ${BASEDIR}/dist/etc.tgz etc
 
 make_standard_iso()
 {
+GHOSTBSD_LABEL=`echo $GHOSTBSD_LABEL | tr '[:lower:]' '[:upper:]'`
+echo "/dev/iso9660/$GHOSTBSD_LABEL / cd9660 ro 0 0" > $BASEDIR/etc/fstab
 echo "### Running makefs to create ISO ###"
 bootable="-o bootimage=i386;${BASEDIR}/boot/cdboot -o no-emul-boot"
 makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${ISOPATH} ${BASEDIR}
@@ -48,6 +48,8 @@ fi
 
 make_standard_uefi_iso()
 {
+GHOSTBSD_LABEL=`echo $GHOSTBSD_LABEL | tr '[:lower:]' '[:upper:]'`
+echo "/dev/iso9660/$GHOSTBSD_LABEL / cd9660 ro 0 0" > $BASEDIR/etc/fstab
 # Make EFI system partition (should be done with makefs in the future)
 dd if=/dev/zero of=efiboot.img bs=4k count=100
 device=`mdconfig -a -t vnode -f efiboot.img`
