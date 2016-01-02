@@ -20,7 +20,7 @@ export PATH
 
 GHOSTBSD_LABEL=`echo $GHOSTBSD_LABEL | tr '[:lower:]' '[:upper:]'`
 
-mk_bios_img()
+make_bios_img()
 {
 echo "/dev/ufs/${GHOSTBSD_LABEL} / ufs ro,noatime 1 1" > ${BASEDIR}/etc/fstab
 echo "proc /proc procfs rw 0 0" >> ${BASEDIR}/etc/fstab 
@@ -46,7 +46,7 @@ mdconfig -d -u ${unit}
 echo "Memstick img done"
 }
 
-mk_uefi_img()
+make_uefi_img()
 {
 echo "/dev/ufs/${GHOSTBSD_LABEL} / ufs ro,noatime 1 1" > ${BASEDIR}/etc/fstab
 echo "proc /proc procfs rw 0 0" >> ${BASEDIR}/etc/fstab 
@@ -77,10 +77,10 @@ fi
 cd -
 }
 
-mk_bios_img
+make_bios_img
 
 if [ "${ARCH}" = "amd64" ]; then
-    mk_uefi_img
+    make_uefi_img
 fi
 
 make_checksums
