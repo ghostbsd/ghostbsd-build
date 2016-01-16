@@ -43,9 +43,11 @@ fi
 
 if [ "${MD_BACKEND}" = "file" ] 
     then
+        FSSIZE=$(echo "${BACKEND_SIZE}*1024^2" | bc | cut -d . -f1)
         dd if=/dev/zero of=${UFSFILE} bs=1k count=1 seek=$((${FSSIZE} - 1))
         DEVICE=$(mdconfig -a -t vnode -f ${UFSFILE})
     else
+        FSSIZE=$(echo "${USR_SIZE}*1024^2" | bc | cut -d . -f1)
         DEVICE=$(mdconfig -a -t malloc -s ${FSSIZE}k)
         dd if=/dev/zero of=/dev/${DEVICE} bs=1k count=1 seek=$((${FSSIZE} - 1))
 fi
@@ -105,8 +107,6 @@ ${PACK_PROFILE}${ARCH} {
 path = ${BASEDIR};
 mount.devfs;
 host.hostname = www.${PACK_PROFILE}${ARCH}.org;
-ip4.addr=${NEXT_IP};
-interface=${NETIF};
 exec.start = "/bin/sh /etc/rc";
 exec.stop = "/bin/sh /etc/rc.shutdown";
 }
@@ -134,58 +134,6 @@ else
 fi
 }
 
-netconfig()
-{
-if [ -z "${START_IP}" ]; then
-    # try autoconfiguration
-    flast_seq=$(netstat -rn | grep default| awk '{ print $2 }'| cut -d . -f1,2,3)
-    last_seq=$(ifconfig | grep ${flast_seq} | cut -d . -f4 |head -n1| awk '{print $1}')
-    if [ $(expr $last_seq + $INCREMENT ) -le 254 ];then
-        TRY_IP=${flast_seq}.$(expr $last_seq + $INCREMENT )
-    else
-        echo "Invalid jail IP. Please defile START_IP in ghostbsd.defaults.conf.
-Jail's IP should be between ${flast_seq}.1 and ${flast_seq}.254.
-Please restart build after using clscripts/clean_${PACK_PROFILE}_${ARCH}."
-    exit 1
-    fi
-
-    IFALREADY=$(ifconfig | grep $TRY_IP | awk '{print $2}')
-    if [ -z "${IFALREADY}" ]; then
-        START_IP=${TRY_IP}
-    else
-        echo "Jail IP error. Jail's IP is already taken. Please change
-INCREMENT value in ghostbsd.defaults.conf to have an valid IP
-and restart build after using clscripts/clean_${PACK_PROFILE}_${ARCH}."
-        exit 1
-    fi
-else
-    IFALREADY=$(ifconfig | grep $START_IP | awk '{print $2}')
-    if [ -z "${IFALREADY}" ]; then
-        START_IP=${START_IP}
-    else
-        echo "Jail IP error. Jail's IP is already taken. Please change
-START_IP value in ghostbsd.defaults.conf to have an valid IP
-and restart build after using clscripts/clean_${PACK_PROFILE}_${ARCH}."
-        exit 1
-    fi
-fi
-# NETIF should be your's already configured network card
-NETIF=$(netstat -rn |grep default | awk '{ print $4 }')
-}
-
-inc_ip()
-{
-touch /etc/jail.conf
-LAST_IP=$(grep ip4.addr /etc/jail.conf | tail -n 1 | cut -d = -f2 | cut -d \; -f1)
-LAST_SEQ=$(grep ip4.addr /etc/jail.conf | tail -n 1 | cut -d = -f2 | cut -d \; -f1 | cut -d . -f4)
-if [ -z $LAST_IP ]; then
-   NEXT_IP=$START_IP
-else
-IP=`expr $LAST_SEQ + 1 `
-FLAST_SEQ=$(grep ip4.addr /etc/jail.conf | tail -n 1 | cut -d = -f2 | cut -d \; -f1 | cut -d . -f1,2,3)
-NEXT_IP=$FLAST_SEQ.$IP
-fi
-}
 
 # makes initial memory device to install over it
 mkmd_device
@@ -203,8 +151,6 @@ if [ ! -d ${BASEDIR}/usr/local/etc/default ]; then
 fi
 
 if ${USE_JAILS}; then
-    netconfig
-    inc_ip
     jail_list_add
     service jail onestart $jail_name
 fi

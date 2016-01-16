@@ -25,8 +25,3 @@ if [ -d "${BASEDIR}" ]; then
     chflags -R noschg ${BASEDIR}
     rm -rf ${BASEDIR}
 fi
-
-if [ -d "${CLONEDIR}" ]; then
-    chflags -R noschg ${CLONEDIR}
-    rm -rf ${CLONEDIR}
-fi

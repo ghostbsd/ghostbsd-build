@@ -50,7 +50,15 @@ done
 if [ -d ${BASEDIR}/dist/ports/Mk ] ; then
     rm -f ${BASEDIR}/usr/ports
     mkdir -p ${BASEDIR}/usr/ports
-    rm -Rf ${BASEDIR}/dist/ports
+    if [ -f "${BASEDIR}/pdevice" ]; then
+        PDEVICE=$(cat ${BASEDIR}/pdevice)
+        if [ -c "/dev/${PDEVICE}" ]; then
+            umount -f /dev/${PDEVICE}
+            mdconfig -d -u ${PDEVICE}
+        fi
+    fi
+    rm -f ${BASEDIR}/ports.ufs
+    rm -f ${BASEDIR}/pdevice
 fi
 
 if ! ${USE_JAILS}; then

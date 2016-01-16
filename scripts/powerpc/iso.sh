@@ -35,13 +35,13 @@ fi
 
 
 echo "Saving mtree structure..."
-mtree -Pcp ${CLONEDIR} | bzip2 -9 > root.dist.bz2
-mkdir -p ${CLONEDIR}/dist
-mv root.dist.bz2 ${CLONEDIR}/dist/
+mtree -Pcp ${BASEDIR} | bzip2 -9 > root.dist.bz2
+mkdir -p ${BASEDIR}/dist
+mv root.dist.bz2 ${BASEDIR}/dist/
 
-echo "/dev/iso9660/${GHOSTBSD_LABEL} / cd9660 rw 0 0" > ${CLONEDIR}/etc/fstab
+echo "/dev/iso9660/${GHOSTBSD_LABEL} / cd9660 rw 0 0" > ${BASEDIR}/etc/fstab
 
-cd ${CLONEDIR}
+cd ${BASEDIR}
 cp ${SRCDIR}/release/powerpc/boot.tbxi boot
 
 echo "Running mkisofs..."
