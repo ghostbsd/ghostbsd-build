@@ -51,6 +51,7 @@ gnome-mplayer
 xfburn
 cheese
 gstreamer-plugins-neon
+gstreamer-plugins-soup
 pulseaudio
 libreoffice
 dejavu

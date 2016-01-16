@@ -9,7 +9,7 @@ ghostbsd-installed-common-settings
 ghostbsd-live-common-settings
 ghostbsd-mate-themes
 ghostbsd-wallpapers
-gbi
+#gbi
 """
 
 settings="""

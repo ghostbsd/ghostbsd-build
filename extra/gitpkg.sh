@@ -17,10 +17,10 @@ fi
 if [ ! -d ${BASEDIR}/pcbsd ]; then
   echo "Downloading pcbsd tools from GitHub"
 #  git clone https://github.com/GhostBSD/pcbsd.git ${BASEDIR}/pcbsd >/dev/null 2>&1
-   fetch https://github.com/GhostBSD/pcbsd/archive/master.zip -o ${BASEDIR}/master.zip >/dev/null 2>&1
-   unzip ${BASEDIR}/master.zip -d ${BASEDIR} >/dev/null 2>&1
-   mv ${BASEDIR}/pcbsd-master ${BASEDIR}/pcbsd
-   rm ${BASEDIR}/master.zip
+  fetch https://github.com/GhostBSD/pcbsd/archive/master.zip -o ${BASEDIR}/master.zip >/dev/null 2>&1
+  unzip ${BASEDIR}/master.zip -d ${BASEDIR} >/dev/null 2>&1
+  mv ${BASEDIR}/pcbsd-master ${BASEDIR}/pcbsd
+  rm ${BASEDIR}/master.zip
 fi
 
 cat > ${BASEDIR}/config.sh << 'EOF'
@@ -32,6 +32,25 @@ EOF
 
 chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
+
+if [ ! -d ${BASEDIR}/gbi ]; then
+  echo "Downloading GBI from GitHub"
+  fetch https://github.com/GhostBSD/gbi/archive/master.zip -o ${BASEDIR}/master.zip >/dev/null 2>&1
+  unzip ${BASEDIR}/master.zip -d ${BASEDIR} >/dev/null 2>&1
+  mv ${BASEDIR}/gbi-master ${BASEDIR}/gbi
+  rm ${BASEDIR}/master.zip
+fi
+
+cat > ${BASEDIR}/config.sh << 'EOF'
+#!/bin/sh
+echo "installing gbi"
+cd /gbi
+python setup.py install >/dev/null 2>&1
+EOF
+
+chroot ${BASEDIR} sh /config.sh
+rm -f ${BASEDIR}/config.sh
+
 
 # # installing PCDM
 # cat > ${BASEDIR}/config.sh << 'EOF'
