@@ -1,7 +1,7 @@
 ghostbsd-build
 ==============
 ## Introduction
-GhostBSD build toolkit is directly derivated from FreeSBIE toolkit, but most of the code changed.The ghostbsd-build is been designed to allow developers to building both, i386 and amd64 architectures on amd64 architectures. The ghostbsd-build to can build GhostBSD on FreeBSD, PCBSD and GhostBSD.
+GhostBSD build toolkit is directly derived from FreeSBIE toolkit, but most of the code changed.The ghostbsd-build is been designed to allow developers to building both, i386 and amd64 architectures on amd64 architectures. The ghostbsd-build to can build GhostBSD on FreeBSD, PCBSD and GhostBSD.
 ## Installing ghostbsd-build
 First, you need to install git as root user using su or sudo.
 ```
@@ -29,14 +29,18 @@ rebuild your kernel and world every time unless you’ve committed significant c
 Now that the whole configuration is done, all you need to push the button:
 
    cd ghostbsd-build/mkscripts
+   
+Now you will need to execute one of the following scripts in this directory.  To build mate for amd64:
+
+   ./make_mate_amd64_iso
 
 This will build the whole system and the .iso image. To build the USB .img, you will 
-additionally want to issue the below commands:
+additionally want to issue the following commands:
 
-
+   cd ghostbsd-build/scripts
    make img
 
-Now all we need to do is clean up after building (remember you can only build back after 
-issuing the below commands):
+Now all we need to do is clean up after building.  The example below shows the script to clean for Mate on AMD64.  (remember you can only rebuild after issuing the following commands):
 
-   sudo make clean cleandir
+   cd ghostbsd-build/clscripts
+   clean_mate_amd64
