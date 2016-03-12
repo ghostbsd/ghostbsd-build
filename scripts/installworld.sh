@@ -116,9 +116,19 @@ EOF
 jail_list_add()
 {
 get_jail=$(grep $jail_name /etc/jail.conf| grep -v host.hostname |cut -d \  -f1 )
+jail_dir=$(grep $jail_name /etc/jail.conf | grep path | cut -d / -f 3,3)
 isalready=false
+ispath=false
 
-if [ -n $get_jail ] ; then
+if [ -n $jail_dir ] ; then
+    for djail in $jail_dir; do
+        if [ "/usr/$djail" = "$BASEDIR" ]; then 
+            ispath=true
+        fi
+    done
+fi
+
+if [ -n $get_jail -a "$ispath" = "true" ] ; then
     for ijail in $get_jail; do
         if [ "$ijail" = "$jail_name" ]; then 
             isalready=true
