@@ -110,7 +110,7 @@ fi
 cat > ${BASEDIR}/config.sh << 'EOF'
 #!/bin/sh
 cd /update-station
-make install
+python setup.py install >/dev/null 2>&1
 EOF
 
 chroot ${BASEDIR} sh /config.sh
