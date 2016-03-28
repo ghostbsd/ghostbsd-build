@@ -8,6 +8,8 @@ ghostbsd-bug-report
 ghostbsd-irc
 inxi
 networkmgr
+fbsdupdatecheck
+fbsdpkgupdate
 """
 
 settings="""
