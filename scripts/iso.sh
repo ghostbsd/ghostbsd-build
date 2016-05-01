@@ -87,11 +87,10 @@ cd -
 }
 
 
-#make_standard_iso
 make_grub_iso
-if [ "${ARCH}" = "amd64" ]; then
-    make_standard_uefi_iso
-fi
+#if [ "${ARCH}" = "amd64" ]; then
+#    make_standard_uefi_iso
+#fi
 make_checksums
 
 

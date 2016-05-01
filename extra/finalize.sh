@@ -25,6 +25,11 @@ remove_desktop_entries()
   done
 }
 
+localtime_folder()
+{
+ mkdir -p /etc/localtime
+}
+
 cursor_theme()
 {
 # Set cursor theme instead of default from xorg
@@ -79,4 +84,6 @@ clean_desktop_files
 cursor_theme
 # dm_enable
 default_ghostbsd_rc_conf
+localtime_folder
+
 
