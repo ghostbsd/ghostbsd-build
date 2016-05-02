@@ -27,7 +27,7 @@ remove_desktop_entries()
 
 localtime_folder()
 {
- mkdir -p /etc/localtime
+ mkdir -fp /etc/localtime
 }
 
 cursor_theme()
