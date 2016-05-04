@@ -27,7 +27,9 @@ remove_desktop_entries()
 
 localtime_folder()
 {
- mkdir -fp /etc/localtime
+  if [ ! -e ${BASEDIR}/etc/localtime ]; then
+    mkdir -p ${BASEDIR}/etc/localtime
+  fi
 }
 
 cursor_theme()
@@ -78,6 +80,12 @@ default_ghostbsd_rc_conf()
   cp  ${BASEDIR}/etc/rc.conf ${BASEDIR}/etc/rc.conf.ghostbsd
 }
 
+set_sudoers()
+{
+  sed -i "" -e 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/g' ${BASEDIR}/usr/local/etc/sudoers
+  sed -i "" -e 's/# %sudo	ALL=(ALL) ALL/%sudo	ALL=(ALL) ALL/g' ${BASEDIR}/usr/local/etc/sudoers
+}
+
 remove_desktop_entries
 clean_desktop_files
 # rm_fbsd_pcsysinstall
@@ -85,5 +93,5 @@ cursor_theme
 # dm_enable
 default_ghostbsd_rc_conf
 localtime_folder
-
+set_sudoers
 
