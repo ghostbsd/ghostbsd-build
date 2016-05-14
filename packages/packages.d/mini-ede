@@ -1,0 +1,21 @@
+desc = """
+    GhostBSD Mini desktop
+"""
+
+packages = """
+#    compton
+    desktop-file-utils
+#    gconf2
+#    gnome-keyring
+#    gtk2-engines-xfce
+    libnotify-bin
+#    libpam-gnome-keyring
+#    libtumbler-1-0
+#    mousepad
+#    shared-mime-info
+#    trayer
+#    tumbler
+#    # squeeze
+#    xarchiver
+#    xbitmaps
+"""

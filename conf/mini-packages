@@ -1,0 +1,60 @@
+xorg
+cursor-dmz-theme
+setxkbmap
+xrandr
+dpkg
+freedesktop-sound-theme
+gawk
+gmake 
+grub2-pcbsd
+grub2-efi
+portupgrade
+py27-gobject
+py27-webkitgtk
+py27-pexpect
+py27-distutils-extra
+rsync
+sudo
+wmctrl
+gksu 
+mesa-demos
+zenity
+slim
+    xfce
+    compton
+    desktop-file-utils
+    gconf2
+    gnome-keyring
+    gtk2-engines-xfce
+    libnotify-bin
+    libpam-gnome-keyring
+    libtumbler-1-0
+    mousepad
+    shared-mime-info
+    thunar
+    thunar-data
+    thunar-volman
+    trayer
+    tumbler
+    xarchiver
+    xbitmaps
+    xfce
+    xfce4-artwork
+    xfce4-battery-plugin
+    xfce4-datetime-plugin
+    xfce4-dev-tools
+    xfce4-mixer
+    xfce4-mount-plugin
+    xfce4-notifyd
+    xfce4-panel
+    xfce4-quicklauncher-plugin
+    xfce4-terminal
+    xfce4-screenshooter
+    xfce4-screenshooter-plugin
+    xfce4-session
+    xfce4-soundmenu-plugin
+    xfce4-taskmanager
+    xfce4-verve-plugin
+    xfce4-volumed
+    xfce4-wavelan-plugin
+    xfce4-xkb-plugin

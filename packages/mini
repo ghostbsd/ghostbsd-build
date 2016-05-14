@@ -7,14 +7,16 @@ deps = """
 mini-xserver
 mini-utils
 mini-utils-x
-dm
+mini-dm
 #print
 #internet
 #sound-video
 #office
 #font
 #graphic
-xfce
+mini-xfce
+#mini-ede
+#mini-icewm
 """
 packages = """
 """

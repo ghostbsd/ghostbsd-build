@@ -1,0 +1,35 @@
+desc = """
+    GhostBSD Mini desktop
+"""
+
+packages = """
+    icewm
+#    compton
+#    cups-pk-helper
+    desktop-file-utils
+#    evince-gtk
+#    gcalctool
+#    gconf2
+#    gnome-keyring
+#    gpicview
+#    gtk2-engines-xfce
+    libnotify-bin
+#    libpam-gnome-keyring
+#    libtumbler-1-0
+#    mousepad
+#    mpg321
+#    orage
+#    ristretto
+    shared-mime-info
+#    thunar
+#    thunar-archive-plugin
+#    thunar-data
+#    thunar-media-tags-plugin
+#    thunar-volman
+#    trayer
+#    tumbler
+    # squeeze
+#    xarchiver
+    xbitmaps
+#    xfburn
+"""

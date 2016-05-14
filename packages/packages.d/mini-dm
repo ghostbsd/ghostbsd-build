@@ -1,0 +1,19 @@
+desc = """
+Display Manager
+"""
+
+packages = """
+#qt5-core
+#qt5-qmake
+#qt5-network
+#qt5-widgets
+#qt5-buildtools
+#qt5-x11extras
+#gdm
+slim
+#ede
+"""
+
+settings="""
+mini-dm
+"""
