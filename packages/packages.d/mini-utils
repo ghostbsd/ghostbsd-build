@@ -22,6 +22,7 @@ grub2-efi
 #mc
 portupgrade
 py27-gobject
+py27-gobject3
 py27-webkitgtk
 py27-pexpect
 py27-distutils-extra
