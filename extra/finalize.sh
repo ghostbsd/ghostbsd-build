@@ -83,7 +83,7 @@ default_ghostbsd_rc_conf()
 set_sudoers()
 {
   sed -i "" -e 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/g' ${BASEDIR}/usr/local/etc/sudoers
-  sed -i "" -e 's/# %sudo	ALL=(ALL) ALL/%sudo	ALL=(ALL) ALL/g' ${BASEDIR}/usr/local/etc/sudoers
+  sed -i "" -e 's/# %sudo/%sudo/g' ${BASEDIR}/usr/local/etc/sudoers
 }
 
 remove_desktop_entries
