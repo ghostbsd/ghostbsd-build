@@ -51,7 +51,7 @@ make_standard_uefi_iso()
 GHOSTBSD_LABEL=`echo $GHOSTBSD_LABEL | tr '[:lower:]' '[:upper:]'`
 echo "/dev/iso9660/$GHOSTBSD_LABEL / cd9660 ro 0 0" > $BASEDIR/etc/fstab
 # Make EFI system partition (should be done with makefs in the future)
-dd if=/dev/zero of=efiboot.img bs=4k count=100
+dd if=/dev/zero of=efiboot.img bs=4k count=150
 device=`mdconfig -a -t vnode -f efiboot.img`
 newfs_msdos -F 12 -m 0xf8 /dev/$device
 mkdir efi
