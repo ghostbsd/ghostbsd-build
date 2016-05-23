@@ -39,6 +39,7 @@ cd ..
 cd mkscripts
 sh make_mate_i386_iso
 cd ..
+sh clean_mate_i386
 
 # Building MATE amd64
 cd clscripts
@@ -47,19 +48,23 @@ cd ..
 cd mkscripts
 sh make_mate_amd64_iso
 cd ..
-
+sh clean_mate_amd64
+`
 # # Building XFCE i386
-# cd clscripts
-# sh clean_xfce_i386
-# cd ..
-# cd mkscripts
-# sh make_xfce_i386_iso
-# cd ..
+cd clscripts
+sh clean_xfce_i386
+cd ..
+cd mkscripts
+sh make_xfce_i386_iso
+cd ..
+sh clean_xfce_i386
 
 # # Building XFCE amd64
-# cd clscripts
-# sh clean_xfce_amd64
-# cd ..
-# cd mkscripts
-# sh make_xfce_amd64_iso
-# cd ..
+cd clscripts
+sh clean_xfce_amd64
+cd ..
+cd mkscripts
+sh make_xfce_amd64_iso
+cd ..
+sh clean_xfce_amd64
+
