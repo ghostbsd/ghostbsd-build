@@ -25,7 +25,7 @@ fi
 
 cd ${BASEDIR} && tar -cpzf ${BASEDIR}/dist/etc.tgz etc
 
-make_standard_iso()
+make_makefs_iso()
 {
 GHOSTBSD_LABEL=`echo $GHOSTBSD_LABEL | tr '[:lower:]' '[:upper:]'`
 echo "/dev/iso9660/$GHOSTBSD_LABEL / cd9660 ro 0 0" > $BASEDIR/etc/fstab
@@ -34,19 +34,6 @@ bootable="-o bootimage=i386;${BASEDIR}/boot/cdboot -o no-emul-boot"
 makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${ISOPATH} ${BASEDIR}
 }
 
-make_grub_iso()
-{
-# Reference for hybrid DVD/USB image
-# Use GRUB to create the hybrid DVD/USB image
-echo "Creating ISO..."
-grub-mkrescue -o ${ISOPATH} ${BASEDIR} -- -volid ${GHOSTBSD_LABEL}
-if [ $? -ne 0 ] ; then
-	echo "Failed running grub-mkrescue"
-	exit 1
-fi
-}
-
-make_standard_uefi_iso()
 {
 GHOSTBSD_LABEL=`echo $GHOSTBSD_LABEL | tr '[:lower:]' '[:upper:]'`
 echo "/dev/iso9660/$GHOSTBSD_LABEL / cd9660 ro 0 0" > $BASEDIR/etc/fstab
@@ -70,6 +57,43 @@ rm -f efiboot.img
 echo "uefi iso done"
 }
 
+make_grub_iso()
+{
+# Reference for hybrid DVD/USB image
+# Use GRUB to create the hybrid DVD/USB image
+echo "Creating ISO..."
+grub-mkrescue -o ${ISOPATH} ${BASEDIR} -- -volid ${GHOSTBSD_LABEL}
+if [ $? -ne 0 ] ; then
+	echo "Failed running grub-mkrescue"
+	exit 1
+fi
+}
+
+
+make_grub_uefi_iso()
+{
+GHOSTBSD_LABEL=`echo $GHOSTBSD_LABEL | tr '[:lower:]' '[:upper:]'`
+echo "/dev/iso9660/$GHOSTBSD_LABEL / cd9660 ro 0 0" > $BASEDIR/etc/fstab
+# Make EFI system partition (should be done with makefs in the future)
+dd if=/dev/zero of=efiboot.img bs=4k count=150
+device=`mdconfig -a -t vnode -f efiboot.img`
+newfs_msdos -F 12 -m 0xf8 /dev/$device
+mkdir efi
+mount -t msdosfs /dev/$device efi
+mkdir -p efi/efi/boot
+cp ${BASEDIR}/boot/loader.efi efi/efi/boot/bootx64.efi
+umount efi
+rmdir efi
+mdconfig -d -u $device
+
+echo $UEFI_ISOPATH
+echo " making uefi iso"
+bootable="-o bootimage=i386;efiboot.img -o no-emul-boot"
+grub-mkrescue -o ${UEFI_ISOPATH} ${BASEDIR} -- -volid ${GHOSTBSD_LABEL}
+rm -f efiboot.img
+echo "uefi iso done"
+}
+
 echo "### ISO created ###"
 
 # Make md5 and sha256 for iso
@@ -88,9 +112,9 @@ cd -
 
 
 make_grub_iso
-#if [ "${ARCH}" = "amd64" ]; then
-#    make_standard_uefi_iso
-#fi
+if [ "${ARCH}" = "amd64" ]; then
+  make_grub_uefi_iso    
+fi
 make_checksums
 
 
