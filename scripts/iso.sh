@@ -34,6 +34,7 @@ bootable="-o bootimage=i386;${BASEDIR}/boot/cdboot -o no-emul-boot"
 makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${ISOPATH} ${BASEDIR}
 }
 
+make_makefs_uefi_iso()
 {
 GHOSTBSD_LABEL=`echo $GHOSTBSD_LABEL | tr '[:lower:]' '[:upper:]'`
 echo "/dev/iso9660/$GHOSTBSD_LABEL / cd9660 ro 0 0" > $BASEDIR/etc/fstab
