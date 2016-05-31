@@ -104,18 +104,18 @@ cd /usr/obj/${ARCH}/${PACK_PROFILE}
 md5 `echo ${ISOPATH}|cut -d / -f6`  >> /usr/obj/${ARCH}/${PACK_PROFILE}/$(echo ${ISOPATH}|cut -d / -f6).md5
 sha256 `echo ${ISOPATH}| cut -d / -f6` >> /usr/obj/${ARCH}/${PACK_PROFILE}/$(echo ${ISOPATH}|cut -d / -f6).sha256
 
-if [ "$ARCH" = "amd64" ]; then
-    md5 `echo ${UEFI_ISOPATH}|cut -d / -f6`  >> /usr/obj/${ARCH}/${PACK_PROFILE}/$(echo ${UEFI_ISOPATH}|cut -d / -f6).md5
-    sha256 `echo ${UEFI_ISOPATH}| cut -d / -f6` >> /usr/obj/${ARCH}/${PACK_PROFILE}/$(echo ${UEFI_ISOPATH}|cut -d / -f6).sha256
-fi
+#if [ "$ARCH" = "amd64" ]; then
+#    md5 `echo ${UEFI_ISOPATH}|cut -d / -f6`  >> /usr/obj/${ARCH}/${PACK_PROFILE}/$(echo ${UEFI_ISOPATH}|cut -d / -f6).md5
+#    sha256 `echo ${UEFI_ISOPATH}| cut -d / -f6` >> /usr/obj/${ARCH}/${PACK_PROFILE}/$(echo ${UEFI_ISOPATH}|cut -d / -f6).sha256
+#fi
 cd -
 }
 
 
 make_grub_iso
-if [ "${ARCH}" = "amd64" ]; then
-  make_grub_uefi_iso    
-fi
+#if [ "${ARCH}" = "amd64" ]; then
+#  make_grub_uefi_iso    
+#fi
 make_checksums
 
 
