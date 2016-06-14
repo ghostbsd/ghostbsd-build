@@ -6,9 +6,9 @@ deps="""
 packages="""
 cups
 cups-smb-backend
+cups-filters
 system-config-printer
 foomatic-db
 foomatic-db-engine
 foomatic-db-hpijs
-foomatic-filters
 """
