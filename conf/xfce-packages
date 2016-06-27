@@ -36,11 +36,11 @@ octopkg
 gdm
 cups
 cups-smb-backend
+cups-filters
 system-config-printer
 foomatic-db
 foomatic-db-engine
 foomatic-db-hpijs
-foomatic-filters
 pidgin
 transmission
 firefox-i18n

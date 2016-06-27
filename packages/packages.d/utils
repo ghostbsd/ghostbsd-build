@@ -9,15 +9,15 @@ fish
 freedesktop-sound-theme
 fusefs-ntfs
 fusefs-ext4fs
+fusefs-simple-mtpfs
 # gawk needed by inxi
 gawk
-# gmake needed by network manager
-gmake 
 git
 grub2-pcbsd
 grub2-efi
 nano
 ntfs-3g
+e2fsprogs
 ksh93
 mc
 portupgrade
@@ -32,4 +32,5 @@ xorriso
 zsh
 webcamd
 wmctrl
+xdg-user-dirs
 """
