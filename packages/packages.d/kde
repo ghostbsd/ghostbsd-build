@@ -1,0 +1,8 @@
+desc = """
+KDE desktop environment
+"""
+
+packages = """
+#kde4
+"""
+

@@ -1,0 +1,11 @@
+desc = """
+KDE Display Manager
+"""
+
+packages = """
+kdm
+"""
+
+settings="""
+kdm
+"""
