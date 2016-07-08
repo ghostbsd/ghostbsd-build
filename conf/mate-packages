@@ -8,13 +8,14 @@ fish
 freedesktop-sound-theme
 fusefs-ntfs
 fusefs-ext4fs
+fusefs-simple-mtpfs
 gawk
-gmake 
 git
 grub2-pcbsd
 grub2-efi
 nano
 ntfs-3g
+e2fsprogs
 ksh93
 mc
 portupgrade
@@ -29,6 +30,7 @@ xorriso
 zsh
 webcamd
 wmctrl
+xdg-user-dirs
 gksu 
 mesa-demos
 zenity
