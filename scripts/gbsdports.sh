@@ -19,7 +19,7 @@ if [ ! -f "/usr/local/bin/git" ]; then
   exit 1
 fi
 
-PKGFILE=${PKGFILE:-${LOCALDIR}/conf/${PACK_PROFILE}-ghostbsd};
+PKGFILE=${PKGFILE:-/tmp/${PACK_PROFILE}-ghostbsd};
 
 #if [ ! -f ${PKGFILE} ]; then
  # return
@@ -28,26 +28,26 @@ touch ${PKGFILE}
 
 # Search main file package for include dependecies
 # and build an depends file ( depends )
-awk '/^ghostbsd_deps/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} | grep -v '"""' | grep -v '#' > ${LOCALDIR}/packages/${PACK_PROFILE}-gdepends
+awk '/^ghostbsd_deps/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-gdepends
 
 # If exist an old .packages file removes it
-if [ -f ${LOCALDIR}/conf/${PACK_PROFILE}-ghostbsd ] ; then
-  rm -f ${LOCALDIR}/conf/${PACK_PROFILE}-ghostbsd
+if [ -f /tmp/${PACK_PROFILE}-ghostbsd ] ; then
+  rm -f /tmp/${PACK_PROFILE}-ghostbsd
 fi
 
 # Reads depends file and search for packages entries in each file from depends
 # list, then append all packages found in ghostbsd file
 while read pkgs ; do
-awk '/^packages/,/^"""/' ${LOCALDIR}/packages/ghostbsd.d/$pkgs  >> ${LOCALDIR}/conf/${PACK_PROFILE}-gpackage
-done < ${LOCALDIR}/packages/${PACK_PROFILE}-gdepends
+awk '/^packages/,/^"""/' ${LOCALDIR}/packages/ghostbsd.d/$pkgs  >> /tmp/${PACK_PROFILE}-gpackage
+done < /tmp/${PACK_PROFILE}-gdepends
 
 # Removes """ and # from temporary package file
-cat ${LOCALDIR}/conf/${PACK_PROFILE}-gpackage | grep -v '"""' | grep -v '#' > ${LOCALDIR}/conf/${PACK_PROFILE}-ghostbsd
+cat /tmp/${PACK_PROFILE}-gpackage | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-ghostbsd
 
 # Removes temporary files
-if [ -f ${LOCALDIR}/conf/${PACK_PROFILE}-gpackage ] ; then
-  rm -f ${LOCALDIR}/conf/${PACK_PROFILE}-gpackage
-  rm -f ${LOCALDIR}/packages/${PACK_PROFILE}-gdepends
+if [ -f /tmp/${PACK_PROFILE}-gpackage ] ; then
+  rm -f /tmp/${PACK_PROFILE}-gpackage
+  rm -f /tmp/${PACK_PROFILE}-gdepends
 fi
 
 if ! ${USE_JAILS} ; then
