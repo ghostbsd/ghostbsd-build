@@ -15,7 +15,7 @@ if [ -z "${LOGFILE:-}" ]; then
   exit 1
 fi
 
-PKGFILE=${PKGFILE:-${LOCALDIR}/conf/${PACK_PROFILE}-packages};
+PKGFILE=${PKGFILE:-/tmp/${PACK_PROFILE}-packages};
 
 #if [ ! -f ${PKGFILE} ]; then
  # return
@@ -24,29 +24,29 @@ touch ${PKGFILE}
 
 # Search main file package for include dependecies
 # and build an depends file ( depends )
-awk '/^deps/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} | grep -v '"""' | grep -v '#' > ${LOCALDIR}/packages/${PACK_PROFILE}-depends
+awk '/^deps/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-depends
 
 # If exist an old .packages file removes it
-if [ -f ${LOCALDIR}/conf/${PACK_PROFILE}-packages ] ; then
-  rm -f ${LOCALDIR}/conf/${PACK_PROFILE}-packages
+if [ -f /tmp/${PACK_PROFILE}-packages ] ; then
+  rm -f /tmp/${PACK_PROFILE}-packages
 fi
 
 # Reads packages from packages profile
-awk '/^packages/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} > ${LOCALDIR}/conf/${PACK_PROFILE}-package
+awk '/^packages/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} > /tmp/${PACK_PROFILE}-package
 
 # Reads depends file and search for packages entries in each file from depends
 # list, then append all packages found in packages file
 while read pkgs ; do
-awk '/^packages/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> ${LOCALDIR}/conf/${PACK_PROFILE}-package
-done < ${LOCALDIR}/packages/${PACK_PROFILE}-depends 
+awk '/^packages/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-package
+done < /tmp/${PACK_PROFILE}-depends 
 
 # Removes """ and # from temporary package file
-cat ${LOCALDIR}/conf/${PACK_PROFILE}-package | grep -v '"""' | grep -v '#' > ${LOCALDIR}/conf/${PACK_PROFILE}-packages
+cat /tmp/${PACK_PROFILE}-package | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-packages
 
 # Removes temporary/leftover files
-if [ -f ${LOCALDIR}/conf/${PACK_PROFILE}-package ] ; then
-  rm -f ${LOCALDIR}/conf/${PACK_PROFILE}-package
-  rm -f ${LOCALDIR}/packages/${PACK_PROFILE}-depends
+if [ -f /tmp/${PACK_PROFILE}-package ] ; then
+  rm -f /tmp/${PACK_PROFILE}-package
+  rm -f /tmp/${PACK_PROFILE}-depends
 fi
 
 for left_files in ports ghostbsd pcbsd gbi ; do

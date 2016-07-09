@@ -15,7 +15,7 @@ fi
 
 # Installing pc-sysinstall and ghostbsd installer
 
-if [ ! -d ${BASEDIR}/pcbsd ]; then
+if [ ! -d ${BASEDIR}/pc-sysinstall ]; then
   echo "Downloading pcbsd tools from GitHub"
   git clone https://github.com/GhostBSD/pc-sysinstall.git ${BASEDIR}/pc-sysinstall >/dev/null 2>&1
 fi
@@ -79,7 +79,7 @@ rm -f ${BASEDIR}/config.sh
 # chroot ${BASEDIR} sh /config.sh
 # rm -f ${BASEDIR}/config.sh
 
-rm -rf ${BASEDIR}/pcbsd
+rm -rf ${BASEDIR}/pc-sysinstall
 rm -rf ${BASEDIR}/gbi
 
 # installing operator

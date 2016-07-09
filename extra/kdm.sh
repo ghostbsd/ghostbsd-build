@@ -23,8 +23,4 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
-if [ "${PACK_PROFILE}" != "gnome" ] ; then
-	rm -f ${BASEDIR}/usr/local/share/xsessions/gnome.desktop
-fi
-
-sed -i '' 's@#pcdm_enable="YES"@kdm_enable="YES"@g' ${BASEDIR}/etc/rc.conf
+sed -i '' 's@#gdm_enable="YES"@kdm_enable="YES"@g' ${BASEDIR}/etc/rc.conf
