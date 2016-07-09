@@ -113,14 +113,16 @@ pkgaddcmd="pkg install -y "
 
 while read pkgc; do
     if [ -n "${pkgc}" ] ; then
-    echo "Installing package $pkgc"
-    echo "Running $pkgaddcmd ${pkgc}" >> ${PLOGFILE} 2>&1
-    $pkgaddcmd $pkgc >> ${PLOGFILE} 2>&1
-    if [ $? -ne 0 ] ; then
-        echo "$pkgc not found in repos" >> ${PLOGFILE} 2>&1
-        echo "$pkgc not found in repos"
-        exit 1
-    fi
+    	echo "Installing package $pkgc"
+    	echo "Running $pkgaddcmd ${pkgc}" >> ${PLOGFILE} 2>&1
+    	$pkgaddcmd $pkgc >> ${PLOGFILE} 2>&1
+    	if [ $? -ne 0 ] ; then
+        	echo "$pkgc not found in repos" >> ${PLOGFILE} 2>&1
+        	echo "$pkgc not found in repos"
+		if [ $pkgc != "grub2-efi" ] ; then
+        		exit 1
+		fi
+    	fi
     fi
 done < $pkgfile
 
