@@ -8,15 +8,16 @@ dpkg
 fish
 freedesktop-sound-theme
 fusefs-ntfs
-fusefs-ext4fs
+fusefs-ext4fuse
 fusefs-simple-mtpfs
 # gawk needed by inxi
 gawk
 git
 grub2-pcbsd
+# this available only on amd64, not on i386 repo
 grub2-efi
 nano
-ntfs-3g
+ntfsprogs
 e2fsprogs
 ksh93
 mc
@@ -24,7 +25,8 @@ portupgrade
 py27-gobject
 py27-webkitgtk
 py27-pexpect
-py27-distutils-extra
+# missing from freebsd repo
+# py27-distutils-extra
 rsync
 sudo
 vim

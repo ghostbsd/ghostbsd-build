@@ -14,7 +14,7 @@ packages = """
     # new 3.12 apps: empathy, polari (todo: siduction settings), gnome-boxes, gnome-logs, gnome-photos, gnome-sushi, geary
     evince
     file-roller
-    gcalctool
+    #gcalctool
     gconf-editor
     gdm3
     geary
@@ -65,7 +65,6 @@ packages = """
     hamster-applet
     libcanberra-pulse
     libmtp-runtime
-    libpam-gnome-keyring
     libxml2-utils
     mpg321
     nautilus

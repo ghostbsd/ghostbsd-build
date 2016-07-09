@@ -7,14 +7,12 @@ packages = """
     desktop-file-utils
 #    gconf2
 #    gnome-keyring
-#    gtk2-engines-xfce
-    libnotify-bin
-#    libpam-gnome-keyring
-#    libtumbler-1-0
+#    gtk-xfce-engine
+    libnotify
 #    mousepad
 #    shared-mime-info
 #    trayer
-#    tumbler
+#    xfce4-tumbler
 #    # squeeze
 #    xarchiver
 #    xbitmaps

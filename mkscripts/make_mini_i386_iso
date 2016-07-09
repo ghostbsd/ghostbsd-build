@@ -22,8 +22,8 @@ export ARCH
 USR_SIZE=5.6
 export USR_SIZE
 
-INSTALL_PORTS=${INSTALL_PORTS:-"audio/faac audio/lame"}
-export INSTALL_PORTS
+#INSTALL_PORTS=${INSTALL_PORTS:-"audio/faac audio/lame"}
+#export INSTALL_PORTS
 
 EXTRA="mini-gitpkg adduser mini-dm mini-finalize"
 export EXTRA

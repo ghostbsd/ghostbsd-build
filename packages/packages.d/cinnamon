@@ -21,7 +21,6 @@ packages = """
     firefox
     gnome-calculator
     libglib2.0
-    libpam-gnome-keyring
     medit
     muffin
     nemo

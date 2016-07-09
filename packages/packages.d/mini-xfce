@@ -7,15 +7,13 @@ packages = """
     compton
 #    cups-pk-helper
     desktop-file-utils
-#    evince-gtk
-#    gcalctool
+#    evince-lite
+#    gcalctool # non existent
     gconf2
     gnome-keyring
 #    gpicview
-    gtk2-engines-xfce
-    libnotify-bin
-    libpam-gnome-keyring
-    libtumbler-1-0
+    gtk-xfce-engine
+    libnotify
     mousepad
 #    mpg321
 #    orage
@@ -23,24 +21,23 @@ packages = """
     shared-mime-info
     thunar
 #    thunar-archive-plugin
-    thunar-data
+#    thunar-data
 #    thunar-media-tags-plugin
-    thunar-volman
+#    thunar-volman
     trayer
-    tumbler
+    xfce4-tumbler
     # squeeze
     xarchiver
     xbitmaps
 #    xfburn
     xfce
-    xfce4-artwork
     xfce4-battery-plugin
 #    xfce4-clipman-plugin
-#    xfce4-cpufreq-plugin
+#    xfce4-bsdcpufreq-plugin
 #    xfce4-cpugraph-plugin
     xfce4-datetime-plugin
     xfce4-dev-tools
-#    xfce4-dict
+#    xfce4-dict-plugin
 #    xfce4-diskperf-plugin
 #    xfce4-fsguard-plugin
 #    xfce4-genmon-plugin
@@ -51,16 +48,12 @@ packages = """
     xfce4-notifyd
 #    xfce4-notes-plugin
     xfce4-panel
-#    xfce4-places-plugin
-#    xfce4-power-manager-plugins
+#    xfce4-power-manager
     xfce4-quicklauncher-plugin
     xfce4-terminal
-    xfce4-screenshooter
     xfce4-screenshooter-plugin
-#    xfce4-sensors-plugin
     xfce4-session
 #    xfce4-smartbookmark-plugin
-    xfce4-soundmenu-plugin
 #    xfce4-systemload-plugin
     xfce4-taskmanager
 #    xfce4-timer-plugin
@@ -69,8 +62,5 @@ packages = """
     xfce4-wavelan-plugin
 #    xfce4-weather-plugin
     xfce4-xkb-plugin
-#    xfdesktop4
     # xfprint4
-#    xfwm4
-#    xfwm4-themes
 """
