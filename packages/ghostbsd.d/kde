@@ -3,8 +3,8 @@ GhostBSD KDE settings
 """
 
 packages = """
-kde-installed-settings
-kde-live-settings
+#kde-installed-settings
+#kde-live-settings
 """
 
 settings="""
