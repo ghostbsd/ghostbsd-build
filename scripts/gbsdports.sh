@@ -86,7 +86,7 @@ while read pkgc; do
         echo "Building and installing port $pkgc"
         # builds ghostbsd ports in chroot
         for port in $(find /ports/ -type d -depth 2 -name ${pkgc})  ; do
-        cd $port
+        cd /usr/ports/$port
         make >> /mnt/${PLOGFILE} 2>&1 
         make install >> /mnt/${PLOGFILE} 2>&1 
         done
