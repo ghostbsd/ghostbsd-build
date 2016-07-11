@@ -3,6 +3,7 @@ GhostBSD xfce settings
 """
 
 packages = """
+ghostbsd-slim-theme
 xfce-installed-settings
 xfce-live-settings
 """

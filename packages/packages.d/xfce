@@ -20,6 +20,7 @@ packages = """
     plank
     ristretto
     shared-mime-info
+    slim
     thunar
 #    thunar-archive-plugin
 #    thunar-data

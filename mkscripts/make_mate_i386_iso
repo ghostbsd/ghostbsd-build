@@ -22,10 +22,10 @@ export ARCH
 USR_SIZE=6.0
 export USR_SIZE
 
-INSTALL_PORTS=${INSTALL_PORTS:-"audio/faac audio/lame"}
+INSTALL_PORTS=${INSTALL_PORTS:-"audio/lame"}
 export INSTALL_PORTS
 
-EXTRA="gitpkg adduser dm finalize"
+EXTRA="gitpkg adduser finalize"
 export EXTRA
 
 MAKEOBJDIRPREFIX=/usr/obj/gblogs/${ARCH}/${PACK_PROFILE}

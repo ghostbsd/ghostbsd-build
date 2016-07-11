@@ -9,6 +9,7 @@ gnome-keyring
 mate
 mate-screensaver
 plank
+slim
 """
 
 settings="""

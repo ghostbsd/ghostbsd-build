@@ -3,6 +3,7 @@ desc = """
 """
 packages="""
 exaile
+faac
 gnome-mplayer
 xfburn
 cheese

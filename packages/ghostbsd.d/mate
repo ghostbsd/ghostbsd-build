@@ -3,6 +3,7 @@ GhostBSD mate settings
 """
 
 packages = """
+ghostbsd-slim-theme
 mate-installed-settings
 mate-live-settings
 station-tweak
