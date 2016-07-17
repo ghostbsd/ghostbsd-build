@@ -1,0 +1,10 @@
+desc = """
+GhostBSD qt flavours common settings
+"""
+
+packages = """
+ghostbsd-wallpapers-new
+"""
+
+settings="""
+"""

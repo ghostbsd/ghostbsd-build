@@ -1,10 +1,7 @@
 desc = """
-	Internet tool
+Internet common tools
 """
 packages="""
-pidgin
-transmission
 firefox-i18n
 thunderbird-i18n
-hexchat
 """

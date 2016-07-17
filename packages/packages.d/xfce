@@ -15,7 +15,6 @@ packages = """
     gtk-xfce-engine
     libnotify
     mousepad
-    mpg321
     orage
     plank
     ristretto

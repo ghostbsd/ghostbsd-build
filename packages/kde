@@ -1,4 +1,3 @@
-
 desc = """
 KDE desktop environment.
 """
@@ -12,8 +11,8 @@ internet
 sound-video
 office
 font
-graphic
 kde
+qt-common
 """
 packages = """
 """
@@ -21,5 +20,6 @@ ghostbsd_deps="""
 ports
 kde
 common
+qt-gcommon
 """
 

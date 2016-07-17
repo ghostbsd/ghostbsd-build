@@ -1,0 +1,18 @@
+desc = """
+Qt based packages
+"""
+
+packages = """
+# from/for multimedia
+k3b
+kaffeine
+# for from developers
+kdiff3
+krusader
+# for ghostbsd-irc
+konversation
+# for accessing scanner
+ksaneplugin
+# for torrents
+ktorrent
+"""

@@ -12,7 +12,7 @@ internet
 sound-video
 office
 font
-graphic
+gtk-common
 mate
 """
 packages = """

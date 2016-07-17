@@ -1,0 +1,11 @@
+desc = """
+GhostBSD gtk flavours common settings
+"""
+
+packages = """
+ghostbsd-mate-themes
+ghostbsd-wallpapers
+"""
+
+settings="""
+"""

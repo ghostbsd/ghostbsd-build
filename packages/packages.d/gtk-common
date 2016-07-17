@@ -1,0 +1,18 @@
+desc = """
+GTK common packages for GTK flavours
+"""
+
+packages = """
+gksu
+# from graphic section
+#gimp
+shotwell
+# from sound-video
+exaile
+gnome-mplayer
+xfburn
+cheese
+# from internet
+hexchat
+pidgin
+"""

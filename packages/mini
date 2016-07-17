@@ -4,6 +4,7 @@ Base desktop environment.
 """
 
 deps = """
+gtk-common
 mini-xserver
 mini-utils
 mini-utils-x
@@ -24,5 +25,6 @@ ghostbsd_deps="""
 ports
 xfce
 common
+gtk-gcommon
 """
 

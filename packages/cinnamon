@@ -7,13 +7,12 @@ deps = """
 xserver
 utils
 utils-x
-dm
 print
 internet
 sound-video
 office
 font
-graphic
+gtk-common
 cinnamon
 """
 packages = """
@@ -22,5 +21,6 @@ ghostbsd_deps="""
 ports
 cinnamon
 common
+gtk-gcommon
 """
 

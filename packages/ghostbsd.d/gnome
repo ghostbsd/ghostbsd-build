@@ -3,6 +3,7 @@ GhostBSD gnome settings
 """
 
 packages = """
+#ghostbsd-gdm-theme
 gnome-installed-settings
 gnome-live-settings
 """

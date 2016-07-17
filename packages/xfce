@@ -12,7 +12,7 @@ internet
 sound-video
 office
 font
-graphic
+gtk-common
 xfce
 """
 packages = """
@@ -21,5 +21,6 @@ ghostbsd_deps="""
 ports
 xfce
 common
+gtk-gcommon
 """
 

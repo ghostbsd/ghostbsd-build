@@ -11,6 +11,7 @@ packages = """
     eog
     evince
     gconf2
+    gdm
     gir1.2-gtksource-3.0
     glib-networking
     gnome-desktop3-data

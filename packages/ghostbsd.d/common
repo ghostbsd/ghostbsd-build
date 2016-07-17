@@ -7,8 +7,6 @@ ghostbsd-grub2-settings
 ghostbsd-icons
 ghostbsd-installed-common-settings
 ghostbsd-live-common-settings
-ghostbsd-mate-themes
-ghostbsd-wallpapers
 #gbi
 update-station
 """

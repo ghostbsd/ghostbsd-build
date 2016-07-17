@@ -2,12 +2,9 @@ desc = """
 	Sound and Video.
 """
 packages="""
-exaile
 faac
-gnome-mplayer
-xfburn
-cheese
 gstreamer-plugins-neon
 gstreamer-plugins-soup
+mpg321
 pulseaudio
 """
