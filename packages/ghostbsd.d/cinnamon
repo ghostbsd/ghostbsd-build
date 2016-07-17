@@ -5,7 +5,7 @@ GhostBSD cinnamon settings
 packages = """
 cinnamon-installed-settings
 cinnamon-live-settings
-#ghostbsd-gdm-theme
+ghostbsd-gdm-theme
 """
 
 settings="""
