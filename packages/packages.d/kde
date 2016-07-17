@@ -23,5 +23,13 @@ kdeutils
 polkit-kde
 #pam_kde
 smb4k-kde4
+virtuoso
 """
 
+# please add below
+# packages that needs aditional settings
+# such as needed kernel modules , rc.conf enable ...
+
+settings = """
+virtuoso
+"""

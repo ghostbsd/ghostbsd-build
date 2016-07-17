@@ -38,3 +38,7 @@ webcamd
 wmctrl
 xdg-user-dirs
 """
+
+settings = """
+webcamd
+"""

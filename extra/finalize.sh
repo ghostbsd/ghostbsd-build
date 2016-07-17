@@ -79,6 +79,69 @@ set_sudoers()
   sed -i "" -e 's/# %sudo/%sudo/g' ${BASEDIR}/usr/local/etc/sudoers
 }
 
+config_packages()
+{
+pkgfile="${PACK_PROFILE}-settings"
+CPLOGFILE="${BASEDIR}/mnt/.log_copypkgconfig"
+PLOGFILE=".log_pkgconfig"
+
+cp /tmp/${pkgfile}  ${BASEDIR}/mnt/
+
+# copy config scripts for needed packages
+while read pkgc; do
+    if [ -n "${pkgc}" ] ; then
+        if [ -f "${LOCALDIR}/packages/packages.cfg/$pkgc.sh" ]; then
+        cp -af ${LOCALDIR}/packages/packages.cfg/$pkgc.sh ${BASEDIR}/mnt/
+        if [ $? -ne 0 ] ; then
+            echo "$pkgc.sh configuration file not found" >> ${CPLOGFILE} 2>&1
+            echo "$pkgc.sh configuration file not found"
+            exit 1
+        else
+            echo "$pkgc.sh configuration file found" >> ${CPLOGFILE} 2>&1
+            echo "$pkgc.sh configuration file found"
+        fi
+        fi
+    fi    
+done < /tmp/${pkgfile}
+
+# config packages in chroot
+cat > ${BASEDIR}/mnt/configpkg.sh << "EOF"
+#!/bin/sh 
+
+# pkg config part
+cd /mnt
+PLOGFILE=".log_pkgconfig"
+pkgfile="${PACK_PROFILE}-settings"
+
+# run config scripts for needed packages
+while read pkgc; do
+    if [ -n "${pkgc}" ] ; then
+        /bin/sh /mnt/${pkgc}.sh
+        if [ $? -ne 0 ] ; then
+            echo "$pkgc configuration failed" >> ${PLOGFILE} 2>&1
+            echo "$pkgc configuration failed"
+            exit 1
+        else 
+            echo "$pkgc configuration done" >> ${PLOGFILE} 2>&1
+            echo "$pkgc configuration done"
+            rm /mnt/${pkgc}.sh
+        fi
+    fi
+done < $pkgfile
+
+rm configpkg.sh
+rm $pkgfile
+EOF
+
+# run configpkg.sh in chroot to add packages
+chrootcmd="chroot ${BASEDIR} sh /mnt/configpkg.sh"
+$chrootcmd
+
+# save logs 
+mv ${BASEDIR}/mnt/${PLOGFILE} ${MAKEOBJDIRPREFIX}/${LOCALDIR}
+mv ${CPLOGFILE} ${MAKEOBJDIRPREFIX}/${LOCALDIR}
+}
+
 remove_desktop_entries
 clean_desktop_files
 # rm_fbsd_pcsysinstall
@@ -86,4 +149,6 @@ cursor_theme
 # dm_enable
 default_ghostbsd_rc_conf
 set_sudoers
+config_packages
+
 

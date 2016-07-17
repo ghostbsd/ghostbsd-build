@@ -4,6 +4,7 @@ GhostBSD KDE settings
 
 packages = """
 ghostbsd-kdm-theme
+ghostbsd-splash-theme
 kde-installed-settings
 kde-live-settings
 """

@@ -43,10 +43,20 @@ done < /tmp/${PACK_PROFILE}-depends
 # Removes """ and # from temporary package file
 cat /tmp/${PACK_PROFILE}-package | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-packages
 
+# Reads depends file and search for settings entries in each file from depends
+# list, then append all packages found in packages file
+while read pkgs ; do
+awk '/^settings/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-setting
+done < /tmp/${PACK_PROFILE}-depends 
+
+# Removes """ and # from temporary package file
+cat /tmp/${PACK_PROFILE}-setting | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-settings
+
 # Removes temporary/leftover files
 if [ -f /tmp/${PACK_PROFILE}-package ] ; then
   rm -f /tmp/${PACK_PROFILE}-package
   rm -f /tmp/${PACK_PROFILE}-depends
+  rm -f /tmp/${PACK_PROFILE}-setting
 fi
 
 for left_files in ports ghostbsd pcbsd gbi ; do
