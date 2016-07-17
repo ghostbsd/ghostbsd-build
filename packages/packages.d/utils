@@ -4,6 +4,8 @@ Basic utilities
 deps="""
 """
 packages="""
+# bash is needed for inxi
+bash 
 dpkg
 fish
 freedesktop-sound-theme
