@@ -41,4 +41,6 @@ xdg-user-dirs
 
 settings = """
 webcamd
+bash
+fusefs-ntfs
 """
