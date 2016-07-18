@@ -75,5 +75,5 @@ remove_desktop_entries
 clean_desktop_files
 # rm_fbsd_pcsysinstall
 cursor_theme
-dm_enable
+#dm_enable
 default_ghostbsd_rc_conf

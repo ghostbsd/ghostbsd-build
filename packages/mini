@@ -4,7 +4,7 @@ Base desktop environment.
 """
 
 deps = """
-gtk-common
+#gtk-common
 mini-xserver
 mini-utils
 mini-utils-x

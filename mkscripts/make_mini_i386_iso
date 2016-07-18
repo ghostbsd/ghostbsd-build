@@ -25,7 +25,7 @@ export USR_SIZE
 INSTALL_PORTS=${INSTALL_PORTS:-""}
 export INSTALL_PORTS
 
-EXTRA="mini-gitpkg adduser mini-finalize"
+EXTRA="gitpkg adduser finalize"
 export EXTRA
 
 MAKEOBJDIRPREFIX=/usr/obj/gblogs/${ARCH}/${PACK_PROFILE}

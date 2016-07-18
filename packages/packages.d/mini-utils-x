@@ -4,6 +4,7 @@ Xorg basic utilities
 deps="""
 """
 packages="""
+gksu
 # mesa-demos for inxi 
 mesa-demos
 # zenity for ghostbsd-irc
