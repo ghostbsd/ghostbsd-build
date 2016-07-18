@@ -15,7 +15,9 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
-jail_name=${PACK_PROFILE}${ARCH}
+#jail_name=${PACK_PROFILE}${ARCH}
+JAILFS=$(echo ${BASEDIR} | cut -d / -f 3,3)
+jail_name=${JAILFS}${PACK_PROFILE}${ARCH}
 
 mkmd_device()
 {
@@ -103,10 +105,10 @@ fi
 jail_add()
 {
 cat >> /etc/jail.conf << EOF
-${PACK_PROFILE}${ARCH} {
+${jail_name}{
 path = ${BASEDIR};
 mount.devfs;
-host.hostname = www.${PACK_PROFILE}${ARCH}.org;
+host.hostname = www.${jail_name}.org;
 exec.start = "/bin/sh /etc/rc";
 exec.stop = "/bin/sh /etc/rc.shutdown";
 }
@@ -115,35 +117,18 @@ EOF
 
 jail_list_add()
 {
-get_jail=$(grep $jail_name /etc/jail.conf| grep -v host.hostname |cut -d \  -f1 )
-jail_dir=$(grep $jail_name /etc/jail.conf | grep path | cut -d / -f 3,3)
-isalready=false
-ispath=false
-
-if [ -n $jail_dir ] ; then
-    for djail in $jail_dir; do
-        if [ "/usr/$djail" = "$BASEDIR" ]; then 
-            ispath=true
-        fi
-    done
+if [ ! -f /etc/jail.conf ] ; then
+    touch /etc/jail.conf
 fi
 
-if [ -n $get_jail -a "$ispath" = "true" ] ; then
-    for ijail in $get_jail; do
-        if [ "$ijail" = "$jail_name" ]; then 
-            isalready=true
-        fi
-    done
-fi
-
-if [ "$isalready" = "false" -o -z $get_jail ]  ;then
-   jail_add
+set +e 
+grep ^"${jail_name}" /etc/jail.conf
+if [ $? -ne  0 ] ; then
+    jail_add
 else
     echo "jail already exists and won't be added"
-    break
 fi
 }
-
 
 # makes initial memory device to install over it
 mkmd_device

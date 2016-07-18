@@ -9,7 +9,7 @@ utils-x
 print
 internet
 sound-video
-office
+#office
 font
 kde
 qt-common

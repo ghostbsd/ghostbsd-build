@@ -31,6 +31,7 @@ if [ -f /tmp/${PACK_PROFILE}-packages ] ; then
   rm -f /tmp/${PACK_PROFILE}-packages
 fi
 
+set +e
 # Reads packages from packages profile
 awk '/^packages/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} > /tmp/${PACK_PROFILE}-package
 
@@ -47,17 +48,26 @@ cat /tmp/${PACK_PROFILE}-package | grep -v '"""' | grep -v '#' > /tmp/${PACK_PRO
 # list, then append all packages found in packages file
 while read pkgs ; do
 awk '/^settings/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-setting
-done < /tmp/${PACK_PROFILE}-depends 
+done < /tmp/${PACK_PROFILE}-depends
 
 # Removes """ and # from temporary package file
+set +e
+cat /tmp/${PACK_PROFILE}-setting | grep -v '"""' | grep -v '#'
+if [ $? -ne 0 ] ; then
+    echo "No packages to configure found."
+else 
 cat /tmp/${PACK_PROFILE}-setting | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-settings
+fi
 
+set -e
 # Removes temporary/leftover files
 if [ -f /tmp/${PACK_PROFILE}-package ] ; then
   rm -f /tmp/${PACK_PROFILE}-package
   rm -f /tmp/${PACK_PROFILE}-depends
   rm -f /tmp/${PACK_PROFILE}-setting
 fi
+
+set -e
 
 for left_files in ports ghostbsd pcbsd gbi ; do
     rm -Rf ${BASEDIR}/${left_files}
@@ -143,7 +153,6 @@ EOF
 # run addpkg.sh in chroot to add packages
 chrootcmd="chroot ${BASEDIR} sh /mnt/addpkg.sh"
 $chrootcmd
-
 
 sed -i '' 's@#signature_type: "fingerprints"@signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 

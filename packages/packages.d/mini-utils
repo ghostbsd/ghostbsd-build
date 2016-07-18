@@ -37,3 +37,6 @@ sudo
 #webcamd
 wmctrl
 """
+
+settings = """
+"""

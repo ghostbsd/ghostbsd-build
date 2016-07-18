@@ -85,6 +85,8 @@ pkgfile="${PACK_PROFILE}-settings"
 CPLOGFILE="${BASEDIR}/mnt/.log_copypkgconfig"
 PLOGFILE=".log_pkgconfig"
 
+if [ -f /tmp/${pkgfile} ] ; then
+
 cp /tmp/${pkgfile}  ${BASEDIR}/mnt/
 
 # copy config scripts for needed packages
@@ -103,6 +105,7 @@ while read pkgc; do
         fi
     fi    
 done < /tmp/${pkgfile}
+
 
 # config packages in chroot
 cat > ${BASEDIR}/mnt/configpkg.sh << "EOF"
@@ -140,6 +143,7 @@ $chrootcmd
 # save logs 
 mv ${BASEDIR}/mnt/${PLOGFILE} ${MAKEOBJDIRPREFIX}/${LOCALDIR}
 mv ${CPLOGFILE} ${MAKEOBJDIRPREFIX}/${LOCALDIR}
+fi
 }
 
 remove_desktop_entries
@@ -150,5 +154,3 @@ cursor_theme
 default_ghostbsd_rc_conf
 set_sudoers
 config_packages
-
-

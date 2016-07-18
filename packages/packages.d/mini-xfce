@@ -23,6 +23,7 @@ packages = """
 #    thunar-data
 #    thunar-media-tags-plugin
 #    thunar-volman
+    slim
     trayer
     xfce4-tumbler
     # squeeze
@@ -62,4 +63,7 @@ packages = """
 #    xfce4-weather-plugin
     xfce4-xkb-plugin
     # xfprint4
+"""
+
+settings = """
 """
