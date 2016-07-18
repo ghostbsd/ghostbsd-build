@@ -3,29 +3,21 @@ desc = """
 """
 packages = """
     cinnamon
-    cinnamon-l10n
     dconf-editor
-    dconf-tools
-    dconf-service
     desktop-file-utils
     eog
     evince
     gconf2
     gdm
-    gir1.2-gtksource-3.0
     glib-networking
-    gnome-desktop3-data
     gnome-keyring
     gnome-menus
     gnome-terminal
     guake
     firefox
     gnome-calculator
-    libglib2.0
     medit
     muffin
     nemo
-    nemo-fileroller
-    p7zip-full
     shared-mime-info
 """
