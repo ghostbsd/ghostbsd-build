@@ -3,15 +3,10 @@ desc = """
 """
 
 packages = """
-    alacarte
     baobab
-    # needed by gnome-controlcenter to change password.
-    cracklib-runtime
     cups-pk-helper
     dconf-editor
-    dconf-tools
     eog
-    # new 3.12 apps: empathy, polari (todo: siduction settings), gnome-boxes, gnome-logs, gnome-photos, gnome-sushi, geary
     evince
     file-roller
     #gcalctool
@@ -20,12 +15,9 @@ packages = """
     geary
     gedit
     gengetopt
-    gkbd-capplet
     gnome-backgrounds
-    gnome-bluetooth
     gnome-control-center
     gnome-dictionary
-    gnome-disk-utility
     # metapackage gnome-games depends: 
       five-or-more
       four-in-a-row
@@ -42,12 +34,8 @@ packages = """
       gnome-mahjongg
       quadrapassel
       swell-foop
-      # recommends:
       aisleriot
-      # suggests:
-      gnome-hearts
     gnome-keyring
-    gnome-logs
     gnome-online-accounts
     gnome-photos
     gnome-screenshot
@@ -55,20 +43,13 @@ packages = """
     gnome-session
     gnome-shell
     gnome-shell-extensions
-    gnome-sushi
     gnome-system-log
     gnome-terminal
     gnome-tweak-tool
-    gnome-user-guide
     gnome-user-share
     gucharmap
-    hamster-applet
-    libcanberra-pulse
-    libmtp-runtime
-    libxml2-utils
     nautilus
     shared-mime-info
-    tracker-gui
     transmission-gtk
     vinagre
     vino
