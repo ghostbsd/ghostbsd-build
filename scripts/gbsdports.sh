@@ -19,6 +19,7 @@ if [ ! -f "/usr/local/bin/git" ]; then
   exit 1
 fi
 
+
 PKGFILE=${PKGFILE:-/tmp/${PACK_PROFILE}-ghostbsd};
 
 #if [ ! -f ${PKGFILE} ]; then
@@ -26,6 +27,8 @@ PKGFILE=${PKGFILE:-/tmp/${PACK_PROFILE}-ghostbsd};
 #fi
 touch ${PKGFILE}
 
+build_ports_list()
+{
 # Search main file package for include dependecies
 # and build an depends file ( depends )
 awk '/^ghostbsd_deps/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-gdepends
@@ -49,24 +52,85 @@ if [ -f /tmp/${PACK_PROFILE}-gpackage ] ; then
   rm -f /tmp/${PACK_PROFILE}-gpackage
   rm -f /tmp/${PACK_PROFILE}-gdepends
 fi
+}
 
-if ! ${USE_JAILS} ; then
-    if [ -z "$(mount | grep ${BASEDIR}/var/run)" ]; then
-        mount_nullfs /var/run ${BASEDIR}/var/run
-    fi
+
+build_ports_depends()
+{
+PKGFILED=/tmp/${PACK_PROFILE}-ghostbsd-deps
+
+if [ -f ${PKGFILED} ]; then
+    rm -f $PKGFILED
 fi
-cp -af /etc/resolv.conf ${BASEDIR}/etc
 
-# Compiling ghostbsd ports
-if [ -d ${BASEDIR}/ports ]; then
-  rm -Rf ${BASEDIR}/ports
+### Add ghostbsd ports depends to $PKGFILE
+
+if [ -d $BASEDIR/ports ]; then
+    rm -Rf $BASEDIR/ports
 fi
-#mkdir -p ${BASEDIR}/usr/ports
 
+if [ ! -f "/usr/local/bin/git" ]; then
+  echo "Install Git to fetch pkg from GitHub"
+  exit 1
+fi
 echo "# Downloading ghostbsd ports from GitHub #"
-git clone https://github.com/GhostBSD/ports.git ${BASEDIR}/ports >/dev/null 2>&1
+git clone https://github.com/ghostbsd/ports.git ${BASEDIR}/ports   >/dev/null 2>&1
 cp -Rf $BASEDIR/ports/ $BASEDIR/dist/ports
 
+echo "Building ports depends."
+rm -Rf  ${BASEDIR}/dist/ports/.git
+
+while read gport ; do
+    for port in $(find ${BASEDIR}/ports/ -type d -depth 2 -name $gport )  ; do
+        cd $port
+        cat Makefile| grep DEPENDS |sed -e 's/kde4/kde/g'| tr '\' ' '| grep PORTSDIR |cut -d : -f 2| cut -d / -f 3 >> ${PKGFILED}
+    done
+done < $PKGFILE
+}
+
+install_ports_depends()
+{
+PKGFILED=/tmp/${PACK_PROFILE}-ghostbsd-deps
+export PKGFILED
+
+# cp ports depends file for fetching ports depends
+cp $PKGFILED ${BASEDIR}/mnt
+
+# prepares addpkg.sh script to add packages under chroot
+PLOGFILED="$BASEDIR/mnt/.log_dpkginstall"
+
+cat > ${BASEDIR}/mnt/addpkg.sh << "EOF"
+#!/bin/sh 
+
+# pkg install part
+cd /mnt
+PLOGFILED=".log_dpkginstall"
+pkgfile="${PACK_PROFILE}-ghostbsd-deps"
+pkgaddcmd="pkg install -y"
+
+while read pkgc; do
+    if [ -n "${pkgc}" ] ; then
+    echo "Installing package $pkgc"
+    echo "Running $pkgaddcmd ${pkgc}" >> ${PLOGFILED} 2>&1
+    $pkgaddcmd $pkgc >> ${PLOGFILED} 2>&1
+    fi
+done < $pkgfile
+
+rm addpkg.sh
+rm $pkgfile
+EOF
+
+# run addpkg.sh in chroot to add packages
+chrootcmd="chroot ${BASEDIR} sh /mnt/addpkg.sh"
+$chrootcmd
+
+mv ${PLOGFILED} ${MAKEOBJDIRPREFIX}/${LOCALDIR}
+
+rm -f ${BASEDIR}/mnt/*
+}
+
+build_ports()
+{
 # build ghostbsd ports 
 cp -af ${PKGFILE} ${BASEDIR}/mnt
 PLOGFILE=".log_portsinstall"
@@ -107,6 +171,19 @@ rm -Rf ${BASEDIR}/ports
 
 # save logfile where should be
 mv ${BASEDIR}/mnt/${PLOGFILE} ${MAKEOBJDIRPREFIX}/${LOCALDIR}
+}
+
+if ! ${USE_JAILS} ; then
+    if [ -z "$(mount | grep ${BASEDIR}/var/run)" ]; then
+        mount_nullfs /var/run ${BASEDIR}/var/run
+    fi
+fi
+cp -af /etc/resolv.conf ${BASEDIR}/etc
+
+build_ports_list
+build_ports_depends
+install_ports_depends
+build_ports
 
 # umount /var/run if not using jails
 if ! ${USE_JAILS} ; then
