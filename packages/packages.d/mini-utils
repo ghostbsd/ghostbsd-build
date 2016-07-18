@@ -11,8 +11,6 @@ dpkg
 freedesktop-sound-theme
 #fusefs-ntfs
 #fusefs-ext4fuse
-# gawk needed by inxi
-gawk
 # gmake needed by network manager
 gmake 
 #git
@@ -39,4 +37,5 @@ wmctrl
 """
 
 settings = """
+bash
 """
