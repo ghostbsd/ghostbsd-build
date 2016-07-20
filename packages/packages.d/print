@@ -12,3 +12,7 @@ foomatic-db
 foomatic-db-engine
 foomatic-db-hpijs
 """
+
+settings = """
+cups
+"""

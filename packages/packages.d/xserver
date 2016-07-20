@@ -10,3 +10,7 @@ cursor-dmz-theme
 setxkbmap
 xrandr
 """
+
+settings = """
+virtualbox-ose-additions
+"""
