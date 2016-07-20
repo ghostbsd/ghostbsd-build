@@ -21,6 +21,7 @@ fi
 
 
 PKGFILE=${PKGFILE:-/tmp/${PACK_PROFILE}-ghostbsd};
+PKGFILED=/tmp/${PACK_PROFILE}-ghostbsd-deps
 
 #if [ ! -f ${PKGFILE} ]; then
  # return
@@ -83,7 +84,7 @@ rm -Rf  ${BASEDIR}/dist/ports/.git
 while read gport ; do
     for port in $(find ${BASEDIR}/ports/ -type d -depth 2 -name $gport )  ; do
         cd $port
-        cat Makefile| grep DEPENDS |sed -e 's/kde4/kde/g'| tr '\' ' '| grep PORTSDIR |cut -d : -f 2| cut -d / -f 3 >> ${PKGFILED}
+        cat Makefile| grep DEPENDS |sed -e 's/kde4/kde/g'|sed -e 's/glib2.0/libglib2.0/g'| tr '\' ' '| grep PORTSDIR |cut -d : -f 2| cut -d / -f 3 >> ${PKGFILED}
     done
 done < $PKGFILE
 }
@@ -182,7 +183,9 @@ cp -af /etc/resolv.conf ${BASEDIR}/etc
 
 build_ports_list
 build_ports_depends
-install_ports_depends
+if [ -s ${PKGFILED} ]; then
+    install_ports_depends
+fi
 build_ports
 
 # umount /var/run if not using jails

@@ -20,7 +20,8 @@ if [ -z "${EXTRA:-}" ]; then
     return
 fi
 
-jail_name=${PACK_PROFILE}${ARCH}
+JAILFS=$(echo ${BASEDIR} | cut -d / -f 3,3)
+jail_name=${JAILFS}${PACK_PROFILE}${ARCH}
 
 echo "#### Running plugins ####"
 
