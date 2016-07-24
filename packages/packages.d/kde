@@ -23,6 +23,10 @@ kdeutils
 polkit-kde
 #pam_kde
 smb4k-kde4
+"""
+
+# packages for a specific $ARCH
+amd64 = """
 virtuoso
 """
 

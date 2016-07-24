@@ -15,7 +15,6 @@ freedesktop-sound-theme
 gmake 
 #git
 grub2-pcbsd
-grub2-efi
 #nano
 #ntfsprogs
 #ksh93
@@ -34,6 +33,10 @@ sudo
 #zsh
 #webcamd
 wmctrl
+"""
+
+amd64 = """
+grub2-efi
 """
 
 settings = """
