@@ -12,5 +12,4 @@ xrandr
 """
 
 settings = """
-virtualbox-ose-additions
 """
