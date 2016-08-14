@@ -1,6 +1,6 @@
 
 desc = """
-Mate desktop environment.
+Cinnamon desktop environment.
 """
 
 deps = """

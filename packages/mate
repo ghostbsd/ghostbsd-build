@@ -17,10 +17,6 @@ mate
 """
 packages = """
 """
-
-settings = """
-mate
-"""
 ghostbsd_deps="""
 ports
 mate

@@ -57,6 +57,9 @@ awk '/^'${ARCH}'/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> /tmp/${PACK_
 done < /tmp/${PACK_PROFILE}-depends 
 
 # Removes """ and # from temporary package file
+cat /tmp/${PACK_PROFILE}-package | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-packages
+
+# Removes """ and # from temporary package file
 set +e
 cat /tmp/${PACK_PROFILE}-setting | grep -v '"""' | grep -v '#'
 if [ $? -ne 0 ] ; then
@@ -171,3 +174,4 @@ if ! ${USE_JAILS} ; then
 fi
 
 rm ${BASEDIR}/etc/resolv.conf
+
