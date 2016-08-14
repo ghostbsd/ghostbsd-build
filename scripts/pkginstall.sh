@@ -148,9 +148,6 @@ while read pkgc; do
     	if [ $? -ne 0 ] ; then
         	echo "$pkgc not found in repos" >> ${PLOGFILE} 2>&1
         	echo "$pkgc not found in repos"
-		if [ $pkgc != "grub2-efi" ] ; then
-        		exit 1
-		fi
     	fi
     fi
 done < $pkgfile
