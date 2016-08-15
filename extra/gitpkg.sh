@@ -30,23 +30,23 @@ EOF
 chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
 
-if [ ! -d ${BASEDIR}/gbi ]; then
-  echo "Downloading GBI from GitHub"
-  fetch https://github.com/GhostBSD/gbi/archive/master.zip -o ${BASEDIR}/master.zip >/dev/null 2>&1
-  unzip ${BASEDIR}/master.zip -d ${BASEDIR} >/dev/null 2>&1
-  mv ${BASEDIR}/gbi-master ${BASEDIR}/gbi
-  rm ${BASEDIR}/master.zip
-fi
+#if [ ! -d ${BASEDIR}/gbi ]; then
+#  echo "Downloading GBI from GitHub"
+#  fetch https://github.com/GhostBSD/gbi/archive/master.zip -o ${BASEDIR}/master.zip >/dev/null 2>&1
+#  unzip ${BASEDIR}/master.zip -d ${BASEDIR} >/dev/null 2>&1
+#  mv ${BASEDIR}/gbi-master ${BASEDIR}/gbi
+#  rm ${BASEDIR}/master.zip
+#fi
 
-cat > ${BASEDIR}/config.sh << 'EOF'
-#!/bin/sh
-echo "installing gbi"
-cd /gbi
-python setup.py install >/dev/null 2>&1
-EOF
+#cat > ${BASEDIR}/config.sh << 'EOF'
+##!/bin/sh
+#echo "installing gbi"
+#cd /gbi
+#python setup.py install >/dev/null 2>&1
+#EOF
 
-chroot ${BASEDIR} sh /config.sh
-rm -f ${BASEDIR}/config.sh
+#chroot ${BASEDIR} sh /config.sh
+#rm -f ${BASEDIR}/config.sh
 
 
 # # installing PCDM
