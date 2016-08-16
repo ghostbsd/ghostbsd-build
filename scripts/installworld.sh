@@ -143,6 +143,7 @@ if [ ! -d ${BASEDIR}/usr/local/etc/default ]; then
     mkdir -p ${BASEDIR}/usr/local/etc/default
     echo "${DISTRO}_FLAVOUR=${PACK_PROFILE}" > ${BASEDIR}/usr/local/etc/default/distro
     echo "${DISTRO}_VERSION=${VERSION}" >> ${BASEDIR}/usr/local/etc/default/distro
+    echo "DISTRO_LIVEUSER=${GHOSTBSD_USER}" >> ${BASEDIR}/usr/local/etc/default/distro
 fi
 
 if ${USE_JAILS}; then
