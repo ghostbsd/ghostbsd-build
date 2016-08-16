@@ -16,7 +16,6 @@ gmake
 #git
 grub2-pcbsd
 #nano
-#ntfsprogs
 #ksh93
 #mc
 portupgrade
