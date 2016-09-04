@@ -19,11 +19,11 @@ fetch_kernel()
 {
 echo "#### Fetching kernel for ${ARCH} architecture ####" | tee -a ${LOGFILE}
 cd $BASEDIR
-    
-if [ "$(freebsd-version | cut -d '-' -f2 )" = "RELEASE" ] ; then
-    fetch ftp://ftp.freebsd.org/pub/FreeBSD/releases/${ARCH}/${FBSDVERSION}-RELEASE/kernel.txz
+
+if [ "${FBSDRELEASE}" != "CURRENT" ] ; then
+    fetch ftp://ftp.freebsd.org/pub/FreeBSD/releases/${ARCH}/${FBSDVERSION}-${FBSDRELEASE}/kernel.txz
 else
-    fetch ftp://ftp.freebsd.org/pub/FreeBSD/snapshots/${ARCH}/${FBSDVERSION}-CURRENT/kernel.txz
+    fetch ftp://ftp.freebsd.org/pub/FreeBSD/snapshots/${ARCH}/${FBSDVERSION}-${FBSDRELEASE}/kernel.txz
 fi
 }
 

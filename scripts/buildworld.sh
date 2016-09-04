@@ -49,19 +49,19 @@ echo "#### Fetching world for ${ARCH} architecture ####" | tee -a ${LOGFILE}
 if [ "${ARCH}" = "amd64" ]; then
     for files in base lib32 ; do
         cd $BASEDIR
-        if [ "$(freebsd-version | cut -d '-' -f2)" = "RELEASE" ]; then
-            fetch ftp://ftp.freebsd.org/pub/FreeBSD/releases/${ARCH}/${FBSDVERSION}-RELEASE/${files}.txz
-        else 
-            fetch ftp://ftp.freebsd.org/pub/FreeBSD/snapshots/${ARCH}/${FBSDVERSION}-CURRENT/${files}.txz
+        if [ "${FBSDRELEASE}" != "CURRENT" ] ; then
+            fetch ftp://ftp.freebsd.org/pub/FreeBSD/releases/${ARCH}/${FBSDVERSION}-${FBSDRELEASE}/${files}.txz
+        else
+            fetch ftp://ftp.freebsd.org/pub/FreeBSD/snapshots/${ARCH}/${FBSDVERSION}-${FBSDRELEASE}/${files}.txz
         fi
     done
 else
     for files in base ; do
         cd $BASEDIR
-        if [ "$(freebsd-version | cut -d '-' -f2)" = "RELEASE" ]; then
-            fetch ftp://ftp.freebsd.org/pub/FreeBSD/releases/${ARCH}/${FBSDVERSION}-RELEASE/${files}.txz
-        else 
-            fetch ftp://ftp.freebsd.org/pub/FreeBSD/snapshots/${ARCH}/${FBSDVERSION}-CURRENT/${files}.txz
+        if [ "${FBSDRELEASE}" != "CURRENT" ] ; then
+            fetch ftp://ftp.freebsd.org/pub/FreeBSD/releases/${ARCH}/${FBSDVERSION}-${FBSDRELEASE}/${files}.txz
+        else
+            fetch ftp://ftp.freebsd.org/pub/FreeBSD/snapshots/${ARCH}/${FBSDVERSION}-${FBSDRELEASE}/${files}.txz
         fi
     done
 fi
