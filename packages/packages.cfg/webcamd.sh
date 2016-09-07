@@ -11,15 +11,15 @@ pw groupmod webcamd -m ${DISTRO_LIVEUSER}
 echo 'webcamd_enable="YES"' >> /etc/rc.conf
 
 # load cuse4bsd from loader.conf
-grep -q "cuse4bsd_load" /boot/loader.conf
+grep -q "cuse_load" /boot/loader.conf
 if [ $? -ne 0 ]; then
-    echo 'cuse4bsd_load="YES"' >> /boot/loader.conf
+    echo 'cuse_load="YES"' >> /boot/loader.conf
 fi
 
 # load cuse4bsd from grub.cfg
-grep -q "cuse4bsd" /boot/grub/grub.cfg
+grep -q "cuse" /boot/grub/grub.cfg
 if [ $? -ne 0 ]; then
 sed -i '' '/set kFreeBSD.kern.vty=vt/a\
-\  kfreebsd_module_elf /boot/modules/cuse4bsd.ko\
+\  kfreebsd_module_elf /boot/modules/cuse.ko\
 ' /boot/grub/grub.cfg
 fi

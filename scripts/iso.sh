@@ -71,30 +71,6 @@ fi
 }
 
 
-make_grub_uefi_iso()
-{
-GHOSTBSD_LABEL=`echo $GHOSTBSD_LABEL | tr '[:lower:]' '[:upper:]'`
-echo "/dev/iso9660/$GHOSTBSD_LABEL / cd9660 ro 0 0" > $BASEDIR/etc/fstab
-# Make EFI system partition (should be done with makefs in the future)
-dd if=/dev/zero of=efiboot.img bs=4k count=150
-device=`mdconfig -a -t vnode -f efiboot.img`
-newfs_msdos -F 12 -m 0xf8 /dev/$device
-mkdir efi
-mount -t msdosfs /dev/$device efi
-mkdir -p efi/efi/boot
-cp ${BASEDIR}/boot/loader.efi efi/efi/boot/bootx64.efi
-umount efi
-rmdir efi
-mdconfig -d -u $device
-
-echo $UEFI_ISOPATH
-echo " making uefi iso"
-bootable="-o bootimage=i386;efiboot.img -o no-emul-boot"
-grub-mkrescue -o ${UEFI_ISOPATH} ${BASEDIR} -- -volid ${GHOSTBSD_LABEL}
-rm -f efiboot.img
-echo "uefi iso done"
-}
-
 echo "### ISO created ###"
 
 # Make md5 and sha256 for iso
@@ -113,9 +89,11 @@ cd -
 
 
 make_grub_iso
-#if [ "${ARCH}" = "amd64" ]; then
-#  make_grub_uefi_iso    
-#fi
+# if [ "${ARCH}" = "amd64" ]; then
+#   make_makefs_uefi_iso
+# else
+#   make_makefs_iso()
+# fi
 make_checksums
 
 

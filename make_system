@@ -8,7 +8,7 @@ linproc /compat/linux/proc linprocfs rw 0 0' >> /etc/fstab
   mount linproc
   mount proc
   # Adding gnome, hald, dbus and linux to the /etc/rc.conf.
-  printf '#gdm_enable="YES" 
+  printf 'slim_enable="YES" 
 hald_enable="YES"
 dbus_enable="YES"
 linux_enable="YES"' >> /etc/rc.conf
