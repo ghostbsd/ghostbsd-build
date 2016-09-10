@@ -45,23 +45,20 @@ sleep 10
 
 fetch_freebsd()
 {
+mkdir -p /$CACHEDIR
 echo "#### Fetching world for ${ARCH} architecture ####" | tee -a ${LOGFILE}
 if [ "${ARCH}" = "amd64" ]; then
-    for files in base lib32 ; do
-        cd $BASEDIR
-        if [ "${FBSDRELEASE}" != "CURRENT" ] ; then
-            fetch ftp://ftp.freebsd.org/pub/FreeBSD/releases/${ARCH}/${FBSDVERSION}-${FBSDRELEASE}/${files}.txz
-        else
-            fetch ftp://ftp.freebsd.org/pub/FreeBSD/snapshots/${ARCH}/${FBSDVERSION}-${FBSDRELEASE}/${files}.txz
+    for files in $AMD64_COMPONENTS ; do
+        if [ ! -f $CACHEDIR/$files.txz ]; then
+            cd $CACHEDIR
+            fetch ${FETCH_LOCATION}/${files}.txz
         fi
     done
 else
-    for files in base ; do
-        cd $BASEDIR
-        if [ "${FBSDRELEASE}" != "CURRENT" ] ; then
-            fetch ftp://ftp.freebsd.org/pub/FreeBSD/releases/${ARCH}/${FBSDVERSION}-${FBSDRELEASE}/${files}.txz
-        else
-            fetch ftp://ftp.freebsd.org/pub/FreeBSD/snapshots/${ARCH}/${FBSDVERSION}-${FBSDRELEASE}/${files}.txz
+    for files in $I386_COMPONENTS ; do
+        if [ ! -f $CACHEDIR/$files.txz ]; then
+            cd $CACHEDIR
+            fetch ${FETCH_LOCATION}/${files}.txz
         fi
     done
 fi

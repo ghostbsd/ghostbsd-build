@@ -58,9 +58,9 @@ makeargs="${MAKEOPT:-} ${MAKEJ_KERNEL:-} __MAKE_CONF=${MAKE_CONF} TARGET_ARCH=${
 install_fetched_kernel()
 {
 echo "#### Installing kernel for ${ARCH} architecture ####" | tee -a ${LOGFILE}
-cd $BASEDIR
-tar -yxf kernel.txz -C ./ --exclude=\*\.symbols
-rm -f kernel.txz
+cd ${CACHEDIR}
+tar -yxf kernel.txz -C ${BASEDIR} --exclude=\*\.symbols
+#rm -f kernel.txz
 }
 
 update_freebsd()

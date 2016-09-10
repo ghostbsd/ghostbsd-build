@@ -16,17 +16,19 @@
 # If you are in doubt as to the purpose or necessity of a line, check first
 # in NOTES.
 #
-# $FreeBSD: releng/10.1/sys/amd64/conf/GENERIC 272313 2014-09-30 16:55:19Z bz $
+# $FreeBSD: releng/11.0/sys/amd64/conf/GENERIC 302410 2016-07-08 00:22:14Z gjb $
 
 cpu		HAMMER
 ident		GENERIC
 
+makeoptions	DEBUG=-g		# Build kernel with gdb(1) debug symbols
 makeoptions	WITH_CTF=1		# Run ctfconvert(1) for DTrace support
 
 options 	SCHED_ULE		# ULE scheduler
 options 	PREEMPTION		# Enable kernel thread preemption
 options 	INET			# InterNETworking
 options 	INET6			# IPv6 communications protocols
+options 	IPSEC			# IP (v4/v6) security
 options 	TCP_OFFLOAD		# TCP offload
 options 	SCTP			# Stream Control Transmission Protocol
 options 	FFS			# Berkeley Fast Filesystem
@@ -36,8 +38,8 @@ options 	UFS_DIRHASH		# Improve performance on big directories
 options 	UFS_GJOURNAL		# Enable gjournal-based UFS journaling
 options 	QUOTA			# Enable disk quotas for UFS
 options 	MD_ROOT			# MD is a potential root device
-options 	NFSCL			# New Network Filesystem Client
-options 	NFSD			# New Network Filesystem Server
+options 	NFSCL			# Network Filesystem Client
+options 	NFSD			# Network Filesystem Server
 options 	NFSLOCKD		# Network Lock Manager
 options 	NFS_ROOT		# NFS usable as /, requires NFSCL
 options 	MSDOSFS			# MSDOS Filesystem
@@ -52,6 +54,8 @@ options 	COMPAT_FREEBSD4		# Compatible with FreeBSD4
 options 	COMPAT_FREEBSD5		# Compatible with FreeBSD5
 options 	COMPAT_FREEBSD6		# Compatible with FreeBSD6
 options 	COMPAT_FREEBSD7		# Compatible with FreeBSD7
+options 	COMPAT_FREEBSD9		# Compatible with FreeBSD9
+options 	COMPAT_FREEBSD10	# Compatible with FreeBSD10
 options 	SCSI_DELAY=5000		# Delay (in ms) before probing SCSI
 options 	KTRACE			# ktrace(1) support
 options 	STACK			# stack(9) support
@@ -65,12 +69,14 @@ options 	HWPMC_HOOKS		# Necessary kernel hooks for hwpmc(4)
 options 	AUDIT			# Security event auditing
 options 	CAPABILITY_MODE		# Capsicum capability mode
 options 	CAPABILITIES		# Capsicum capabilities
-options 	PROCDESC		# Support for process descriptors
 options 	MAC			# TrustedBSD MAC Framework
 options 	KDTRACE_FRAME		# Ensure frames are compiled in
 options 	KDTRACE_HOOKS		# Kernel DTrace hooks
 options 	DDB_CTF			# Kernel ELF linker loads CTF data
 options 	INCLUDE_CONFIG_FILE	# Include this file in kernel
+options 	RACCT			# Resource accounting framework
+options 	RACCT_DEFAULT_TO_DISABLED # Set kern.racct.enable=0 by default
+options 	RCTL			# Resource limits
 
 # Debugging support.  Always need this:
 options 	KDB			# Enable kernel debugger support.
@@ -78,6 +84,7 @@ options 	KDB_TRACE		# Print a stack trace for a panic.
 
 # Make an SMP-capable kernel by default
 options 	SMP			# Symmetric MultiProcessor Kernel
+options 	DEVICE_NUMA		# I/O Device Affinity
 
 # CPU frequency control
 device		cpufreq
@@ -86,6 +93,8 @@ device		cpufreq
 device		acpi
 options 	ACPI_DMAR
 device		pci
+options 	PCI_HP			# PCI-Express native HotPlug
+options		PCI_IOV			# PCI SR-IOV support
 
 # Floppy drives
 device		fdc
@@ -93,7 +102,6 @@ device		fdc
 # ATA controllers
 device		ahci			# AHCI-compatible SATA controllers
 device		ata			# Legacy ATA/SATA controllers
-options 	ATA_STATIC_ID		# Static device numbering
 device		mvs			# Marvell 88SX50XX/88SX60XX/88SX70XX/SoC SATA
 device		siis			# SiliconImage SiI3124/SiI3132/SiI3531 SATA
 
@@ -134,8 +142,6 @@ device		ses			# Enclosure Services (SES and SAF-TE)
 # RAID controllers interfaced to the SCSI subsystem
 device		amr			# AMI MegaRAID
 device		arcmsr			# Areca SATA II RAID
-#XXX it is not 64-bit clean, -scottl
-#device		asr			# DPT SmartRAID V, VI and Adaptec SCSI RAID
 device		ciss			# Compaq Smart RAID 5*
 device		dpt			# DPT Smartcache III, IV - See NOTES for options
 device		hptmv			# Highpoint RocketRAID 182x
@@ -156,9 +162,14 @@ device		ida			# Compaq Smart RAID
 device		mfi			# LSI MegaRAID SAS
 device		mlx			# Mylex DAC960 family
 device		mrsas			# LSI/Avago MegaRAID SAS/SATA, 6Gb/s and 12Gb/s
+device		pmspcv			# PMC-Sierra SAS/SATA Controller driver
 #XXX pointer/int warnings
 #device		pst			# Promise Supertrak SX6000
 device		twe			# 3ware ATA RAID
+
+# NVM Express (NVMe) support
+device		nvme			# base NVMe driver
+device		nvd			# expose NVMe namespaces as disks, depends on nvme
 
 # atkbdc0 controls both the keyboard and the PS/2 mouse
 device		atkbdc			# AT keyboard controller
@@ -206,7 +217,8 @@ device		bxe			# Broadcom NetXtreme II BCM5771X/BCM578XX 10GbE
 device		de			# DEC/Intel DC21x4x (``Tulip'')
 device		em			# Intel PRO/1000 Gigabit Ethernet Family
 device		igb			# Intel PRO/1000 PCIE Server Gigabit Family
-device		ixgbe			# Intel PRO/10GbE PCIE Ethernet Family
+device		ix			# Intel PRO/10GbE PCIE PF Ethernet
+device		ixv			# Intel PRO/10GbE PCIE VF Ethernet
 device		ixl			# Intel XL710 40Gbe PCIE Ethernet
 device		ixlv			# Intel XL710 40Gbe VF PCIE Ethernet
 device		le			# AMD Am7900 LANCE and Am79C9xx PCnet
@@ -235,7 +247,6 @@ device		lge			# Level 1 LXT1001 gigabit Ethernet
 device		msk			# Marvell/SysKonnect Yukon II Gigabit Ethernet
 device		nfe			# nVidia nForce MCP on-board Ethernet
 device		nge			# NatSemi DP83820 gigabit Ethernet
-#device		nve			# nVidia nForce MCP on-board Ethernet Networking
 device		pcn			# AMD Am79C97x PCI 10/100 (precedence over 'le')
 device		re			# RealTek 8139C+/8169/8169S/8110S
 device		rl			# RealTek 8129/8139
@@ -251,16 +262,6 @@ device		vge			# VIA VT612x gigabit Ethernet
 device		vr			# VIA Rhine, Rhine II
 device		wb			# Winbond W89C840F
 device		xl			# 3Com 3c90x (``Boomerang'', ``Cyclone'')
-
-# ISA Ethernet NICs.  pccard NICs included.
-device		cs			# Crystal Semiconductor CS89x0 NIC
-# 'device ed' requires 'device miibus'
-device		ed			# NE[12]000, SMC Ultra, 3c503, DS8390 cards
-device		ex			# Intel EtherExpress Pro/10 and Pro/10+
-device		ep			# Etherlink III based cards
-device		fe			# Fujitsu MB8696x based cards
-device		sn			# SMC's 9000 series of Ethernet chips
-device		xe			# Xircom pccard Ethernet
 
 # Wireless NIC cards
 device		wlan			# 802.11 support
@@ -300,7 +301,6 @@ device		vlan			# 802.1Q VLAN support
 device		tun			# Packet tunnel.
 device		md			# Memory "disks"
 device		gif			# IPv6 and IPv4 tunneling
-device		faith			# IPv6-to-IPv4 relaying (translation)
 device		firmware		# firmware assist module
 
 # The `bpf' device enables the Berkeley Packet Filter.
@@ -341,7 +341,7 @@ device		virtio_blk		# VirtIO Block device
 device		virtio_scsi		# VirtIO SCSI device
 device		virtio_balloon		# VirtIO Memory Balloon device
 
-# HyperV drivers
+# HyperV drivers and enhancement support
 device		hyperv			# HyperV drivers 
 
 # Xen HVM Guest Optimizations
@@ -351,3 +351,9 @@ device		xenpci			# Xen HVM Hypervisor services driver
 
 # VMware support
 device		vmx			# VMware VMXNET3 Ethernet
+
+# Netmap provides direct access to TX/RX rings on supported NICs
+device		netmap			# netmap(4) support
+
+# The crypto framework is required by IPSEC
+device		crypto			# Required by IPSEC

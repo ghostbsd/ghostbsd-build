@@ -48,9 +48,7 @@ for plugin in ${EXTRA}; do
     fi
 done
 
-if [ -d ${BASEDIR}/dist/ports/Mk ] ; then
-    rm -f ${BASEDIR}/usr/ports
-    mkdir -p ${BASEDIR}/usr/ports
+if [ -d ${BASEDIR}/usr/ports/Mk ] ; then
     if [ -f "${BASEDIR}/pdevice" ]; then
         PDEVICE=$(cat ${BASEDIR}/pdevice)
         if [ -c "/dev/${PDEVICE}" ]; then
