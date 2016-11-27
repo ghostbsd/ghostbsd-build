@@ -4,9 +4,6 @@ if [ -f /usr/local/etc/default/distro ] ; then
 . /usr/local/etc/default/distro
 fi
 
-# add to webcamd group desktopbsd user
-pw groupmod webcamd -m ${DISTRO_LIVEUSER}
-
 # enable webcamd in rc.conf
 echo 'webcamd_enable="YES"' >> /etc/rc.conf
 

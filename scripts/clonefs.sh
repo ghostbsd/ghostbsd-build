@@ -40,7 +40,7 @@ make_manifest()
 echo "### Make iso manifest."
 echo "### Make iso manifest." >> ${LOGFILE} 2>&1
 cat > ${BASEDIR}/mnt/manifest.sh << "EOF"
-#!/bin/sh 
+#!/bin/sh
 # builds iso manifest
 cd /mnt
 pkg info > manifest
@@ -65,7 +65,7 @@ for files in unionfs uzip ; do
         chmod 555 ${BASEDIR}/etc/rc.d/$files
     fi
 done
-# clean packages cache, tmp and var/log 
+# clean packages cache, tmp and var/log
 rm -f  ${BASEDIR}/var/cache/pkg/*
 rm -Rf ${BASEDIR}/tmp/*
 rm -Rf ${BASEDIR}/var/log/*
@@ -94,7 +94,7 @@ MOUNTPOINT=${BASEDIR}/usr
 umount -f ${MOUNTPOINT}
 uniondirs_prepare
 
-if [ "${MD_BACKEND}" = "file" ] 
+if [ "${MD_BACKEND}" = "file" ]
     then
         mdconfig -d -u ${DEVICE}
         compress_fs
@@ -114,7 +114,7 @@ echo "Saving mtree structure..." >> ${LOGFILE} 2>&1
 mtree -Pcp ${BASEDIR}/usr/home  > ${BASEDIR}/dist/home.dist
 }
 
-make_mtree
+#make_mtree
 make_manifest
 mount_ufs
 
