@@ -5,7 +5,7 @@ deps="""
 """
 packages="""
 # bash is needed for inxi
-bash 
+bash
 dpkg
 fish
 freedesktop-sound-theme
@@ -32,6 +32,7 @@ sudo
 vim
 xorriso
 zsh
+cuse4bsd-kmod
 webcamd
 wmctrl
 xdg-user-dirs

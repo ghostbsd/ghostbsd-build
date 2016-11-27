@@ -5,7 +5,15 @@ deps="""
 """
 packages="""
 xorg
+xf86-video-vmware
+xf86-input-vmmouse
+open-vm-tools
 virtualbox-ose-additions
+open-vm-tools
+xf86-video-scfb
+xf86-input-synaptics
+xf86-input-wacom
+xf86-input-joystick
 cursor-dmz-theme
 setxkbmap
 xrandr
