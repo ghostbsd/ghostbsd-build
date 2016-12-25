@@ -64,4 +64,6 @@ packages = """
     xfce4-weather-plugin
     xfce4-xkb-plugin
     # xfprint4
+    xfce4-volumed-pulse
+    xfce4-pulseaudio-plugin
 """
