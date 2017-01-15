@@ -7,4 +7,5 @@ gstreamer-plugins-neon
 gstreamer-plugins-soup
 mpg321
 pulseaudio
+pavucontrol
 """
