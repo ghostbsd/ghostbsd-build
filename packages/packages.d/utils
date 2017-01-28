@@ -44,7 +44,6 @@ grub2-efi
 """
 
 settings = """
-webcamd
 bash
 fusefs-ntfs
 """

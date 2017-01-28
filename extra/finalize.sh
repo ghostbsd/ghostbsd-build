@@ -132,6 +132,12 @@ fi
 
 }
 
+set_doas()
+{
+  echo "permit persist :wheel" >> ${BASEDIR}/usr/local/etc/doas.conf
+  echo "permit nopass keepenv root" >> ${BASEDIR}/usr/local/etc/doas.conf
+}
+
 #remove_desktop_entries
 clean_desktop_files
 # rm_fbsd_pcsysinstall
@@ -139,5 +145,6 @@ cursor_theme
 # dm_enable
 default_ghostbsd_rc_conf
 set_sudoers
+set_doas
 config_packages
 root_dot_xinitrc
