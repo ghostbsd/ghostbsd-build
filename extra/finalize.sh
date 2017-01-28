@@ -134,7 +134,7 @@ fi
 
 set_doas()
 {
-  echo "permit persist :wheel" >> ${BASEDIR}/usr/local/etc/doas.conf
+  echo "permit :wheel" >> ${BASEDIR}/usr/local/etc/doas.conf
   echo "permit nopass keepenv root" >> ${BASEDIR}/usr/local/etc/doas.conf
 }
 
