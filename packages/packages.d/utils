@@ -29,6 +29,7 @@ py27-pexpect
 # py27-distutils-extra
 rsync
 sudo
+doas
 vim
 xorriso
 zsh
