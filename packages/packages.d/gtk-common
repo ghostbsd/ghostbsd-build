@@ -15,4 +15,7 @@ cheese
 # from internet
 hexchat
 pidgin
+gtk-murrine-engine
+gtk3-unico-engine
+gdk-pixbuf2
 """

@@ -126,7 +126,8 @@ root_dot_xinitrc()
 {
 if [ "${PACK_PROFILE}" == "mate" ] ; then
   echo "mate-session" > ${BASEDIR}/root/.xinitrc
-elif [ "${PACK_PROFILE}" == "xfce"] ; then
+elif [ "${PACK_PROFILE}" == "xfce" ] ; then
+  echo "startxfce4"
   echo "startxfce4" > ${BASEDIR}/root/.xinitrc
 fi
 

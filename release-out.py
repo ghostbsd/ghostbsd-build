@@ -33,55 +33,59 @@
 #####################################################################
 
 import pexpect
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, call
 from getpass import getpass
 from os import path
 i386 = "/usr/obj/i386"
 amd64 = "/usr/obj/amd64"
-release = '11.0'
-server = "frs.sourceforge.net"
+release = "PREALPHA4"
+version = '11.0'
+vrpath = version + "-" + release
+i386path = "/usr/local/www/ftp/pub/GhostBSD/releases/i386/ISO-IMAGES/" + vrpath + "/"
+amd64path = "/usr/local/www/ftp/pub/GhostBSD/releases/amd64/ISO-IMAGES/" + vrpath + "/"
+server = "ghostbsd.org"
 # Get username
-user = raw_input("SourceForge username: ")
+user = "root"
+
+host = user + "@" + server
+# user = raw_input("SourceForge username: ")
 # Get username
-password = getpass("SourceForge Password: ")
+password = getpass("Enter passphrase: ")
+
+call("ssh " + host + " 'mkdir -p " + i386path + "'", shell=True)
+call("ssh " + host + " 'mkdir -p " + amd64path + "'", shell=True)
 
 
 if path.isdir('/usr/obj/i386/mate'):
-    matei386 = Popen('cd /usr/obj/i386/mate && ls GhostBSD%s*i386*' % release, stdout=PIPE, shell=True)
+    matei386 = Popen('cd /usr/obj/i386/mate && ls GhostBSD%s*i386*' % version,
+                     stdout=PIPE, shell=True)
     for line in matei386.stdout.readlines():
-        foo = pexpect.spawn(
-        'scp /usr/obj/i386/mate/%s %s@%s:/home/frs/project/g/gh/ghostbsdproject/release/i386/10.3/mate/%s'
-        % (line.strip(), user, server, line.strip()))
-        foo.expect('Password:')
+        foo = pexpect.spawn('scp /usr/obj/i386/mate/' + line.strip() + ' ' + host + ":" + i386path + line.strip())
+        foo.expect('Enter passphrase')
         foo.sendline(password)
         foo.interact()
 
 if path.isdir('/usr/obj/amd64/mate'):
-    mateamd64 = Popen('cd /usr/obj/amd64/mate && ls GhostBSD%s*amd64*' % release, stdout=PIPE, shell=True)
+    mateamd64 = Popen('cd /usr/obj/amd64/mate && ls GhostBSD%s*amd64*' % version, stdout=PIPE, shell=True)
     for line in mateamd64.stdout.readlines():
-        foo = pexpect.spawn(
-        'scp /usr/obj/amd64/mate/%s %s@%s:/home/frs/project/g/gh/ghostbsdproject/release/amd64/10.3/mate/%s'
-        % (line.strip(), user, server, line.strip()))
-        foo.expect('Password:')
+        foo = pexpect.spawn('scp /usr/obj/amd64/mate/' + line.strip() + ' ' + host + ":" + amd64path + line.strip())
+        foo.expect('Enter passphrase')
         foo.sendline(password)
         foo.interact()
 
 if path.isdir('/usr/obj/i386/xfce'):
-    xfcei386 = Popen('cd /usr/obj/i386/xfce && ls GhostBSD%s*i386*' % release, stdout=PIPE, shell=True)
+    xfcei386 = Popen('cd /usr/obj/i386/xfce && ls GhostBSD%s*i386*' % version,
+                     stdout=PIPE, shell=True)
     for line in xfcei386.stdout.readlines():
-        foo = pexpect.spawn(
-        'scp /usr/obj/i386/xfce/%s %s@%s:/home/frs/project/g/gh/ghostbsdproject/release/i386/10.3/xfce/%s'
-        % (line.strip(), user, server, line.strip()))
-        foo.expect('Password:')
+        foo = pexpect.spawn('scp /usr/obj/i386/xfce/' + line.strip() + ' ' + host + ":" + i386path + line.strip())
+        foo.expect('Enter passphrase')
         foo.sendline(password)
         foo.interact()
 
 if path.isdir('/usr/obj/amd64/xfce'):
-    xfceamd64 = Popen('cd /usr/obj/amd64/xfce && ls GhostBSD%s*i386*' % release, stdout=PIPE, shell=True)
+    xfceamd64 = Popen('cd /usr/obj/amd64/xfce && ls GhostBSD%s*amd64*' % version, stdout=PIPE, shell=True)
     for line in xfceamd64.stdout.readlines():
-        foo = pexpect.spawn(
-        'scp /usr/obj/amd64/xfce/%s %s@%s:/home/frs/project/g/gh/ghostbsdproject/release/amd64/10.3/xfce/%s'
-        % (line.strip(), user, server, line.strip()))
-        foo.expect('Password:')
+        foo = pexpect.spawn('scp /usr/obj/amd64/xfce/' + line.strip() + ' ' + host + ":" + amd64path + line.strip())
+        foo.expect('Enter passphrase')
         foo.sendline(password)
         foo.interact()
