@@ -127,7 +127,6 @@ root_dot_xinitrc()
 if [ "${PACK_PROFILE}" == "mate" ] ; then
   echo "mate-session" > ${BASEDIR}/root/.xinitrc
 elif [ "${PACK_PROFILE}" == "xfce" ] ; then
-  echo "startxfce4"
   echo "startxfce4" > ${BASEDIR}/root/.xinitrc
 fi
 
@@ -135,8 +134,12 @@ fi
 
 set_doas()
 {
-  echo "permit :wheel" >> ${BASEDIR}/usr/local/etc/doas.conf
-  echo "permit nopass keepenv root" >> ${BASEDIR}/usr/local/etc/doas.conf
+  sed -i "" '1 i\
+  permit nopass keepenv root\
+  ' ${BASEDIR}/usr/local/etc/doas.conf
+  sed -i "" '1 i\
+  permit :wheel\
+  ' ${BASEDIR}/usr/local/etc/doas.conf
 }
 
 #remove_desktop_entries
