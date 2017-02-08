@@ -36,9 +36,25 @@ import pexpect
 from subprocess import Popen, PIPE, call
 from getpass import getpass
 from os import path
+from sys import argv
+import getopt
+
+
+try:
+    myopts, args = getopt.getopt(argv[1:], "r:v:")
+except getopt.GetoptError as e:
+    print (str(e))
+    print("Usage: %s -r release -v version" % argv[0])
+    exit()
+
+for output, arg in myopts:
+    if output == '-r':
+        release = arg
+    elif output == '-v':
+        version = arg
+
 i386 = "/usr/obj/i386"
 amd64 = "/usr/obj/amd64"
-release = "PREALPHA4"
 version = '11.0'
 vrpath = version + "-" + release
 i386path = "/usr/local/www/ftp/pub/GhostBSD/releases/i386/ISO-IMAGES/" + vrpath + "/"

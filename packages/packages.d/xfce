@@ -66,4 +66,5 @@ packages = """
     # xfprint4
     xfce4-volumed-pulse
     xfce4-pulseaudio-plugin
+    xfce4-whiskermenu-plugin
 """
