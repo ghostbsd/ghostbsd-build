@@ -39,7 +39,7 @@ awk '/^packages/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} > /tmp/${PACK_PROF
 # list, then append all packages found in packages file
 while read pkgs ; do
 awk '/^packages/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-package
-done < /tmp/${PACK_PROFILE}-depends 
+done < /tmp/${PACK_PROFILE}-depends
 
 # Removes """ and # from temporary package file
 cat /tmp/${PACK_PROFILE}-package | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-packages
@@ -54,7 +54,7 @@ done < /tmp/${PACK_PROFILE}-depends
 # lost, then append all packages found in packages file
 while read pkgs ; do
 awk '/^'${ARCH}'/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-package
-done < /tmp/${PACK_PROFILE}-depends 
+done < /tmp/${PACK_PROFILE}-depends
 
 # Removes """ and # from temporary package file
 cat /tmp/${PACK_PROFILE}-package | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-packages
@@ -64,7 +64,7 @@ set +e
 cat /tmp/${PACK_PROFILE}-setting | grep -v '"""' | grep -v '#'
 if [ $? -ne 0 ] ; then
     echo "No packages to configure found."
-else 
+else
 cat /tmp/${PACK_PROFILE}-setting | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-settings
 fi
 
@@ -124,15 +124,15 @@ filled=$(ls ${PACKCACHEDIR})
 if [ -z "$filled" ] ; then
 # prepares addpkg.sh script to add packages under chroot
 cat > ${BASEDIR}/mnt/addpkg.sh << "EOF"
-#!/bin/sh 
+#!/bin/sh
 
 FORCE_PKG_REGISTER=true
 export FORCE_PKG_REGISTER
 
 #ln -sf /dist/ports /usr/ports
 
-# pkg bootstrap with env 
-env ASSUME_ALWAYS_YES=YES pkg bootstrap 
+# pkg bootstrap with env
+env ASSUME_ALWAYS_YES=YES pkg bootstrap
 
 # pkg install part
 cd /mnt
@@ -149,14 +149,15 @@ while read pkgc; do
     	    BATCH=yes $pkgaddcmd $pkgc >> ${PLOGFILE} 2>&1
     	else
     	    $pkgaddcmd $pkgc >> ${PLOGFILE} 2>&1
-    	fi    
+    	fi
     	if [ $? -ne 0 ] ; then
         	echo "$pkgc not found in repos" >> ${PLOGFILE} 2>&1
         	echo "$pkgc not found in repos"
         	exit 1
     	fi
     	# prevent removal of pkglist files
-    	pkg lock -q -y $pkgc
+    	# this end up to not being able to update.
+        # pkg lock -q -y $pkgc
     fi
 done < $pkgfile
 
@@ -180,18 +181,18 @@ chrootcmd="chroot ${BASEDIR} sh /mnt/addpkg.sh"
 $chrootcmd
 
 rsync -aI ${BASEDIR}/var/cache/pkg/*.txz  ${PACKCACHEDIR}/
-else 
+else
 rsync -aI ${PACKCACHEDIR}/*txz  ${BASEDIR}/var/cache/pkg/
 cat > ${BASEDIR}/mnt/addpkg.sh << "EOF"
-#!/bin/sh 
+#!/bin/sh
 
 FORCE_PKG_REGISTER=true
 export FORCE_PKG_REGISTER
 
 #ln -sf /dist/ports /usr/ports
 
-# pkg bootstrap with env 
-env ASSUME_ALWAYS_YES=YES pkg bootstrap 
+# pkg bootstrap with env
+env ASSUME_ALWAYS_YES=YES pkg bootstrap
 
 # pkg install part
 cd /mnt
@@ -208,14 +209,15 @@ while read pkgc; do
     	    BATCH=yes $pkgaddcmd $pkgc >> ${PLOGFILE} 2>&1
     	else
     	    $pkgaddcmd $pkgc >> ${PLOGFILE} 2>&1
-    	fi    
+    	fi
     	if [ $? -ne 0 ] ; then
         	echo "$pkgc not found in repos" >> ${PLOGFILE} 2>&1
         	echo "$pkgc not found in repos"
         	exit 1
     	fi
     	# prevent removal of pkglist files
-    	pkg lock -q -y $pkgc
+        # this end up to not being able to update.
+    	#pkg lock -q -y $pkgc
     fi
 done < $pkgfile
 
