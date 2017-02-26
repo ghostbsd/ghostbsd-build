@@ -124,11 +124,13 @@ fi
 
 root_dot_xinitrc()
 {
-if [ "${PACK_PROFILE}" == "mate" ] ; then
-  echo "mate-session" > ${BASEDIR}/root/.xinitrc
-elif [ "${PACK_PROFILE}" == "xfce" ] ; then
-  echo "startxfce4" > ${BASEDIR}/root/.xinitrc
-fi
+echo 'slim_enable="YES"' >> ${BASEDIR}/etc/rc.conf
+echo 'exec $1' > ${BASEDIR}/root/.xinitrc
+# if [ "${PACK_PROFILE}" == "mate" ] ; then
+#  echo "exec ck-launch-session mate-session" > ${BASEDIR}/root/.xinitrc
+# elif [ "${PACK_PROFILE}" == "xfce" ] ; then
+#  echo "exec ck-launch-session startxfce4" > ${BASEDIR}/root/.xinitrc
+# fi
 
 }
 

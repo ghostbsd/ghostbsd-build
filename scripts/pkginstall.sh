@@ -102,6 +102,8 @@ cp $PKGFILE ${BASEDIR}/mnt
 
 sed -i '' 's@signature_type: "fingerprints"@#signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 
+#sed -i '' 's@url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly"@url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
+
 if [ ! -d ${BASEDIR}/usr/ports ]; then
     # prepares ports file backend an mounts it over /dist/ports
     PSIZE=$(echo "${PORTS_SIZE}*1024^2" | bc | cut -d . -f1)

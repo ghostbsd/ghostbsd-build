@@ -7,7 +7,7 @@ packages="""
 cups
 cups-smb-backend
 cups-filters
-system-config-printer
+gnome-cups-manager
 foomatic-db
 foomatic-db-engine
 foomatic-db-hpijs

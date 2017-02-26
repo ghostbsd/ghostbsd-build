@@ -4,12 +4,15 @@ description="""
 deps="""
 """
 packages="""
-xorg
+xorg-minimal
+xorg-drivers
+xorg-fonts
+nvidia-driver
+nvidia-xconfig
 xf86-video-vmware
 xf86-input-vmmouse
 open-vm-tools
 virtualbox-ose-additions
-open-vm-tools
 xf86-video-scfb
 xf86-input-synaptics
 xf86-input-wacom
