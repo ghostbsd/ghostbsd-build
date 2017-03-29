@@ -7,7 +7,7 @@
 # $FreeBSD$
 # $Id: installports.sh,v 1.5 2015/08/19 18:28:56 convbsd Exp $
 #
-# Install ports listed in the INSTALL_PORTS variable 
+# Install ports listed in the INSTALL_PORTS variable
 # in the usual category/portname
 # form, e.g.: x11/nvidia-driver audio/emu10kx ...
 
@@ -36,11 +36,11 @@ if [ ! -z "${INSTALL_PORTS}" ]; then
 		cat ${MAKE_CONF} > ${tmpmakeconf}
 		envvars="${envvars} __MAKE_CONF=${tmpmakeconf#$BASEDIR}"
 	fi
-	
+
 	for i in ${INSTALL_PORTS}; do
 		echo "Compiling ${i}"
 		(script -aq ${LOGFILE} chroot ${BASEDIR} make -C /usr/ports/${i} \
-			${envvars} clean install clean;) | grep '^===>'
+			${envvars} clean reinstall clean;) | grep '^===>'
 	done
 fi
 

@@ -101,7 +101,7 @@ cp $PKGFILED ${BASEDIR}/mnt
 PLOGFILED="$BASEDIR/mnt/.log_dpkginstall"
 
 cat > ${BASEDIR}/mnt/addpkg.sh << "EOF"
-#!/bin/sh 
+#!/bin/sh
 
 # pkg install part
 cd /mnt
@@ -132,12 +132,12 @@ rm -f ${BASEDIR}/mnt/*
 
 build_ports()
 {
-# build ghostbsd ports 
+# build ghostbsd ports
 cp -af ${PKGFILE} ${BASEDIR}/mnt
 PLOGFILE=".log_portsinstall"
 
 cat > ${BASEDIR}/mnt/portsbuild.sh << "EOF"
-#!/bin/sh 
+#!/bin/sh
 
 pkgfile="${PACK_PROFILE}-ghostbsd"
 FORCE_PKG_REGISTER=true
@@ -152,8 +152,13 @@ while read pkgc; do
         # builds ghostbsd ports in chroot
         for port in $(find /ports/ -type d -depth 2 -name ${pkgc})  ; do
         cd /usr$port
-        make >> /mnt/${PLOGFILE} 2>&1 
-        make install >> /mnt/${PLOGFILE} 2>&1 
+        # make >> /mnt/${PLOGFILE} 2>&1
+        make reinstall clean >> /mnt/${PLOGFILE} 2>&1
+        if [ $? -ne 0 ] ; then
+            echo "Port $pkgc failed" >> ${PLOGFILE} 2>&1
+            echo "Port $pkgc failed"
+            exit 1
+        fi
         done
     fi
 done < $pkgfile
@@ -164,7 +169,7 @@ rm -f /mnt/$pkgfile
 EOF
 
 
-# Build and install ghostbsd ports in chroot 
+# Build and install ghostbsd ports in chroot
 chrootcmd="chroot ${BASEDIR} sh /mnt/portsbuild.sh"
 $chrootcmd
 

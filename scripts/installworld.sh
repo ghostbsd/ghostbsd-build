@@ -43,7 +43,7 @@ if [ ! -d ${BASEDIR}/compat/linux/proc ]; then
     mkdir -p ${BASEDIR}/compat/linux/proc
 fi
 
-if [ "${MD_BACKEND}" = "file" ] 
+if [ "${MD_BACKEND}" = "file" ]
     then
         FSSIZE=$(echo "${BACKEND_SIZE}*1024^2" | bc | cut -d . -f1)
         dd if=/dev/zero of=${UFSFILE} bs=1k count=1 seek=$((${FSSIZE} - 1))
@@ -56,7 +56,7 @@ fi
 
 echo ${DEVICE} > ${BASEDIR}/mddevice
 
-newfs -o space /dev/${DEVICE} 
+newfs -o space /dev/${DEVICE}
 mkdir -p ${MOUNTPOINT}
 mount -o noatime /dev/${DEVICE} ${MOUNTPOINT}
 }
@@ -93,7 +93,7 @@ if [ "${ARCH}" = "amd64" ]; then
         tar -yxf ${files}.txz -C $BASEDIR
         #rm -f ${files}.txz
     done
-else 
+else
     for files in ${I386_COMPONENTS} ; do
         cd $CACHEDIR
         tar -yxf ${files}.txz -C $BASEDIR
@@ -121,7 +121,7 @@ if [ ! -f /etc/jail.conf ] ; then
     touch /etc/jail.conf
 fi
 
-set +e 
+set +e
 grep ^"${jail_name}" /etc/jail.conf
 if [ $? -ne  0 ] ; then
     jail_add

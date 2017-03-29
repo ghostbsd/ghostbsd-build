@@ -1,0 +1,37 @@
+#!/bin/sh
+#
+# $GhostBSD$
+# $Id: uzip,v 1.4 Saturday, June 20 2015 12:18 Angelescu Ovidiu Exp $
+#
+
+# PROVIDE: gbsdcheats
+# BEFORE: growfs
+# KEYWORD: nojail
+
+. /etc/rc.subr
+
+name="cheatcodes"
+start_cmd="cheatcodes_start"
+stop_cmd="cheatcodes_stop"
+
+cheatcodes_start() {
+echo "cheatcodes start"
+# Single user boot stuff
+kenv boot_single > /dev/null 2>&1
+if [ $? -eq 0 ] ; then
+   echo "Starting emergency shell."
+   echo "Type exit to resume boot"
+    PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
+    HOME=/root
+    TERM=${TERM:-xterm}
+    export TERM
+    /bin/sh
+fi
+}
+
+cheatcodes_stop() {
+ echo "cheatcodes stop"
+}
+
+load_rc_config $name
+run_rc_command "$1"
