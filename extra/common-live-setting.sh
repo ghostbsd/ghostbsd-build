@@ -9,13 +9,13 @@ if [ -z "${LOGFILE:-}" ] ; then
 fi
 
 mkdir ${BASELOCALDIR}/share/ghostbsd
-cp -R common-live-setting ${BASELOCALDIR}/share/ghostbsd
+cp -R extra/common-live-settings ${BASELOCALDIR}/share/ghostbsd
 
 
 backup_freebsd()
 {
   # backup files from etc
-  for tocopy in $(ls common-live-settings/base/override/etc/rc.d) ; do
+  for tocopy in $(ls ${BASELOCALDIR}/share/ghostbsd/common-live-settings/base/override/etc/rc.d) ; do
     if [ -f ${BASEDIR}/etc/rc.d/$tocopy ]; then
       cp -af ${BASEDIR}/etc/rc.d/$tocopy ${BASELOCALDIR}/share/ghostbsd/common-live-settings/base/backup/etc/rc.d/
     fi

@@ -20,10 +20,10 @@ slim_setup()
 
 case "${PACK_PROFILE}" in
   mate)
-    slim
+    slim_setup
     ;;
   xfce)
-    slim
+    slim_setup
     ;;
   *)
     ;;
