@@ -37,6 +37,8 @@ cuse4bsd-kmod
 webcamd
 wmctrl
 xdg-user-dirs
+ssft
+inxi
 """
 
 amd64 = """
