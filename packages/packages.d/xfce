@@ -19,7 +19,7 @@ packages = """
     plank
     ristretto
     shared-mime-info
-    slim
+    lightdm
     thunar
 #    thunar-archive-plugin
 #    thunar-data
@@ -67,4 +67,6 @@ packages = """
     xfce4-volumed-pulse
     xfce4-pulseaudio-plugin
     xfce4-whiskermenu-plugin
+    xfce-installed-settings
+    xfce-live-settings
 """

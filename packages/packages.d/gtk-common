@@ -10,7 +10,7 @@ shotwell
 # from sound-video
 exaile
 gnome-mplayer
-#xfburn
+xfburn
 cheese
 # from internet
 hexchat
@@ -18,4 +18,6 @@ pidgin
 gtk-murrine-engine
 gtk3-unico-engine
 gdk-pixbuf2
+ghostbsd-mate-themes
+ghostbsd-wallpapers
 """

@@ -23,6 +23,10 @@ kdeutils
 polkit-kde
 #pam_kde
 smb4k-kde4
+ghostbsd-kdm-theme
+ghostbsd-ksplash-theme
+kde-installed-settings
+kde-live-settings
 """
 
 # packages for a specific $ARCH

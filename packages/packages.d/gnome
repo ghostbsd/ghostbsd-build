@@ -53,5 +53,8 @@ packages = """
     transmission-gtk
     vinagre
     vino
+    ghostbsd-gdm-theme
+    gnome-installed-settings
+    gnome-live-settings
 """
 
