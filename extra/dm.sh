@@ -18,12 +18,30 @@ slim_setup()
   fi
 }
 
+lightdm_setup()
+
+{
+  if [ -f ${BASEDIR}/usr/local/etc/lightdm/lightdm.conf ] ; then
+    sed -i "" '/#exit-on-failure=false/a\
+    autologin-user=ghostbsd\
+    autologin-user-timeout=0\
+    ' ${BASEDIR}/usr/local/etc/lightdm/lightdm.conf
+  fi
+
+  if [ -f ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf ] ; then
+    echo "background=/usr/local/share/backgrounds/ghostbsd/White-Tree's-Empire.jpg" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+    echo "user-background=true" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+    echo "theme-name=Ambiance-Blackout-Flat-Aqua" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+    echo "icon-theme-name=Vivacious-Colors-Full-Dark" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+  fi
+}
+
 case "${PACK_PROFILE}" in
   mate)
-    slim_setup
+    lightdm_setup
     ;;
   xfce)
-    slim_setup
+    lightdm_setup
     ;;
   *)
     ;;
