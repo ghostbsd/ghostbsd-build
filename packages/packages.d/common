@@ -6,7 +6,6 @@ packages = """
 ghostbsd-grub2-settings
 ghostbsd-icons
 ghostbsd-installed-common-settings
-ghostbsd-live-common-settings
 gbi
 update-station
 """
