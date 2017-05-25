@@ -100,23 +100,19 @@ echo "Installing packages listed in ${PKGFILE}"
 # cp resolv.conf for fetching packages
 cp $PKGFILE ${BASEDIR}/mnt
 
-sed -i '' 's@signature_type: "fingerprints"@#signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
+#sed -i '' 's@signature_type: "fingerprints"@#signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 
 #sed -i '' 's@url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly"@url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 
-# if [ ! -d ${BASEDIR}/usr/ports ]; then
-#     # prepares ports file backend an mounts it over /dist/ports
-#     PSIZE=$(echo "${PORTS_SIZE}*1024^2" | bc | cut -d . -f1)
-#     dd if=/dev/zero of=${BASEDIR}/ports.ufs bs=1k count=1 seek=$((${PSIZE} - 1))
-#     PDEVICE=$(mdconfig -o async -o cluster -S 4096 -a -t vnode -f ${BASEDIR}/ports.ufs)
-#     echo $PDEVICE >${BASEDIR}/pdevice
-#     newfs -o space /dev/$PDEVICE
-#     mkdir -p ${BASEDIR}/usr/ports
-#     mount -o noatime /dev/$PDEVICE  ${BASEDIR}/usr/ports
-#     # prepares ports tree
-#     portsnap fetch
-#     portsnap extract -p ${BASEDIR}/usr/ports
-# fi
+echo "FreeBSD: { enabled: no }" > /usr/local/etc/pkg/repos/FreeBSD.conf
+
+cat > ${BASEDIR}/etc/pkg/GhostBSD.conf << "EOF"
+GhostBSD: {
+  url: "http://pkg.GhostBSD.org/GhostBSD-11/amd64/test",
+  enabled: yes
+}
+
+EOF
 
 mkdir -p ${PACKCACHEDIR}
 mkdir -p ${BASEDIR}/var/cache/pkg

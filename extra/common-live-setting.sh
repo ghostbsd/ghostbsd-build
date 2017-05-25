@@ -8,7 +8,7 @@ if [ -z "${LOGFILE:-}" ] ; then
   exit 1
 fi
 
-mkdir ${BASELOCALDIR}/share/ghostbsd
+mkdir -p ${BASELOCALDIR}/share/ghostbsd
 cp -R extra/common-live-settings ${BASELOCALDIR}/share/ghostbsd
 
 
