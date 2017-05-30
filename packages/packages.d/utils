@@ -23,7 +23,6 @@ ksh93
 mc
 portupgrade
 py27-gobject
-py27-webkitgtk
 py27-pexpect
 # missing from freebsd repo
 # py27-distutils-extra

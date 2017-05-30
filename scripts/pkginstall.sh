@@ -7,7 +7,8 @@
 # $GhostBSD$
 # $Id: pkginstall.sh,v 2.01 Tuesday, October 21 2014 Eric Exp $
 
-set -e -u
+# set -e -u
+set -u
 
 if [ -z "${LOGFILE:-}" ]; then
   echo "This script can't run standalone."
@@ -63,8 +64,7 @@ cat /tmp/${PACK_PROFILE}-package | grep -v '"""' | grep -v '#' > /tmp/${PACK_PRO
 set +e
 cat /tmp/${PACK_PROFILE}-setting | grep -v '"""' | grep -v '#'
 if [ $? -ne 0 ] ; then
-    echo "No packages to configure found."
-else
+  else
 cat /tmp/${PACK_PROFILE}-setting | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-settings
 fi
 
@@ -79,18 +79,18 @@ fi
 set -e
 
 for left_files in ports ghostbsd pcbsd gbi ; do
-    rm -Rf ${BASEDIR}/${left_files}
+  rm -Rf ${BASEDIR}/${left_files}
 done
 
 if [ -f ${BASEDIR}/usr/local/etc/repos/GhostBSD.conf ]; then
-    rm -f  ${BASEDIR}/usr/local/etc/repos/GhostBSD.conf
+  rm -f  ${BASEDIR}/usr/local/etc/repos/GhostBSD.conf
 fi
 
 #mounts ${BASEDIR}/var/run because it's needed when building ports in chroot
 if ! $USE_JAILS; then
-    if [ -z "$(mount | grep ${BASEDIR}/var/run)" ]; then
-        mount_nullfs /var/run ${BASEDIR}/var/run
-    fi
+  if [ -z "$(mount | grep ${BASEDIR}/var/run)" ]; then
+    mount_nullfs /var/run ${BASEDIR}/var/run
+  fi
 fi
 cp /etc/resolv.conf ${BASEDIR}/etc/resolv.conf
 
@@ -104,15 +104,18 @@ cp $PKGFILE ${BASEDIR}/mnt
 
 #sed -i '' 's@url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly"@url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
 
-echo "FreeBSD: { enabled: no }" > /usr/local/etc/pkg/repos/FreeBSD.conf
+if [ ! -d "${BASEDIR}/usr/local/etc/pkg/repos" ] ; then
+  mkdir -p ${BASEDIR}/usr/local/etc/pkg/repos
+fi
 
-cat > ${BASEDIR}/etc/pkg/GhostBSD.conf << "EOF"
-GhostBSD: {
-  url: "http://pkg.GhostBSD.org/GhostBSD-11/amd64/test",
+echo "FreeBSD: { enabled: no }" > ${BASEDIR}/usr/local/etc/pkg/repos/FreeBSD.conf
+
+printf "GhostBSD: {
+  url: \"http://pkg.GhostBSD.org/GhostBSD-11/${ARCH}/test\",
   enabled: yes
 }
+" > ${BASEDIR}/etc/pkg/GhostBSD.conf
 
-EOF
 
 mkdir -p ${PACKCACHEDIR}
 mkdir -p ${BASEDIR}/var/cache/pkg
@@ -139,33 +142,33 @@ pkgfile="${PACK_PROFILE}-packages"
 pkgaddcmd="pkg install -y "
 
 while read pkgc; do
-    if [ -n "${pkgc}" ] ; then
-    	echo "Installing package $pkgc"
-    	echo "Running $pkgaddcmd ${pkgc}" >> ${PLOGFILE} 2>&1
-        pkg unlock -q -y $pkgc
-    	if [ "${pkgc}" = "bsdstats" ] ; then
-    	    BATCH=yes $pkgaddcmd $pkgc >> ${PLOGFILE} 2>&1
-    	else
-    	    $pkgaddcmd $pkgc >> ${PLOGFILE} 2>&1
-    	fi
-    	if [ $? -ne 0 ] ; then
-        	echo "$pkgc not found in repos" >> ${PLOGFILE} 2>&1
-        	echo "$pkgc not found in repos"
-        	exit 1
-    	fi
-    	# prevent removal of pkglist files
-    	# this end up to not being able to update.
-        # pkg lock -q -y $pkgc
+  if [ -n "${pkgc}" ] ; then
+    echo "Installing package $pkgc"
+    echo "Running $pkgaddcmd ${pkgc}" >> ${PLOGFILE} 2>&1
+    pkg unlock -q -y $pkgc
+    if [ "${pkgc}" = "bsdstats" ] ; then
+      BATCH=yes $pkgaddcmd $pkgc >> ${PLOGFILE} 2>&1
+    else
+      $pkgaddcmd $pkgc >> ${PLOGFILE} 2>&1
     fi
+    if [ $? -ne 0 ] ; then
+      echo "$pkgc not found in repos" >> ${PLOGFILE} 2>&1
+      echo "$pkgc not found in repos"
+      exit 1
+    fi
+    # prevent removal of pkglist files
+    # this end up to not being able to update.
+    # pkg lock -q -y $pkgc
+  fi
 done < $pkgfile
 
-    # deactivate  bsdstats_enable from rc.conf
-    if [ -f /etc/rc.conf ] ; then
-        grep -q "bsdstats_enable" /etc/rc.conf
-        if [ $? -eq 0 ] ; then
-            sed -i '' "/bsdstats_enable*/d" /etc/rc.conf
-        fi
-    fi
+# deactivate  bsdstats_enable from rc.conf
+if [ -f /etc/rc.conf ] ; then
+  grep -q "bsdstats_enable" /etc/rc.conf
+  if [ $? -eq 0 ] ; then
+    sed -i '' "/bsdstats_enable*/d" /etc/rc.conf
+  fi
+fi
 rm addpkg.sh
 rm $pkgfile
 # clean cachedir
@@ -199,33 +202,33 @@ pkgfile="${PACK_PROFILE}-packages"
 pkgaddcmd="pkg install -y "
 
 while read pkgc; do
-    if [ -n "${pkgc}" ] ; then
-    	echo "Installing package $pkgc"
-    	echo "Running $pkgaddcmd ${pkgc}" >> ${PLOGFILE} 2>&1
-        pkg unlock -q -y $pkgc
-    	if [ "${pkgc}" = "bsdstats" ] ; then
-    	    BATCH=yes $pkgaddcmd $pkgc >> ${PLOGFILE} 2>&1
-    	else
-    	    $pkgaddcmd $pkgc >> ${PLOGFILE} 2>&1
-    	fi
-    	if [ $? -ne 0 ] ; then
-        	echo "$pkgc not found in repos" >> ${PLOGFILE} 2>&1
-        	echo "$pkgc not found in repos"
-        	exit 1
-    	fi
-    	# prevent removal of pkglist files
-        # this end up to not being able to update.
-    	#pkg lock -q -y $pkgc
+  if [ -n "${pkgc}" ] ; then
+    echo "Installing package $pkgc"
+    echo "Running $pkgaddcmd ${pkgc}" >> ${PLOGFILE} 2>&1
+    pkg unlock -q -y $pkgc
+    if [ "${pkgc}" = "bsdstats" ] ; then
+      BATCH=yes $pkgaddcmd $pkgc >> ${PLOGFILE} 2>&1
+    else
+    $pkgaddcmd $pkgc >> ${PLOGFILE} 2>&1
     fi
+    if [ $? -ne 0 ] ; then
+      echo "$pkgc not found in repos" >> ${PLOGFILE} 2>&1
+      echo "$pkgc not found in repos"
+      exit 1
+    fi
+    # prevent removal of pkglist files
+    # this end up to not being able to update.
+    #pkg lock -q -y $pkgc
+  fi
 done < $pkgfile
 
-    # deactivate  bsdstats_enable from rc.conf
-    if [ -f /etc/rc.conf ] ; then
-        grep -q "bsdstats_enable" /etc/rc.conf
-        if [ $? -eq 0 ] ; then
-            sed -i '' "/bsdstats_enable*/d" /etc/rc.conf
-        fi
-    fi
+# deactivate  bsdstats_enable from rc.conf
+if [ -f /etc/rc.conf ] ; then
+  grep -q "bsdstats_enable" /etc/rc.conf
+  if [ $? -eq 0 ] ; then
+    sed -i '' "/bsdstats_enable*/d" /etc/rc.conf
+  fi
+fi
 rm addpkg.sh
 rm $pkgfile
 # clean cachedir
