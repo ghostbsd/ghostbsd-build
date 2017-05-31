@@ -9,7 +9,7 @@ xorg-drivers
 xorg-fonts
 xf86-video-vmware
 xf86-input-vmmouse
-open-vm-tools
+# open-vm-tools
 virtualbox-ose-additions
 xf86-video-scfb
 xf86-input-synaptics

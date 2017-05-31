@@ -25,7 +25,7 @@ export USR_SIZE
 INSTALL_PORTS=${INSTALL_PORTS:-"audio/lame"}
 export INSTALL_PORTS
 
-EXTRA="common-live-setting adduser gitpkg dm finalize"
+EXTRA="common-live-setting common-base-setting adduser gitpkg dm finalize"
 export EXTRA
 
 MAKEOBJDIRPREFIX=/usr/obj/gblogs/${ARCH}/${PACK_PROFILE}
