@@ -2,7 +2,7 @@
 
 base_overrides()
 {
-    cp -af extra/common-base-setting/override/* ${BASEDIR}/
+    cp -Rf extra/common-base-setting/override/* ${BASEDIR}/
 }
 
 
