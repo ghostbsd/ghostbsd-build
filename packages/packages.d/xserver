@@ -7,6 +7,9 @@ packages="""
 xorg-minimal
 xorg-drivers
 xorg-fonts
+xf86-video-intel
+xf86-video-ati
+xf86-video-nv
 xf86-video-vmware
 xf86-input-vmmouse
 # open-vm-tools

@@ -127,22 +127,35 @@ dot_xinitrc()
 
 if [ "${PACK_PROFILE}" == "mate" ] ; then
   echo "exec ck-launch-session mate-session" > ${BASEDIR}/usr/home/ghostbsd/.xinitrc
+  echo "exec ck-launch-session mate-session" > ${BASEDIR}/root/.xinitrc
 elif [ "${PACK_PROFILE}" == "xfce" ] ; then
   echo "exec ck-launch-session startxfce4" > ${BASEDIR}/usr/home/ghostbsd/.xinitrc
+  echo "exec ck-launch-session startxfce4" > ${BASEDIR}/root/.xinitrc
 fi
 
 }
 
 set_doas()
 {
-  if [ -f ${BASEDIR}/usr/local/etc/doas.conf ] ; then
-    sed -i "" '1 i\
-    permit nopass keepenv root\
-    ' ${BASEDIR}/usr/local/etc/doas.conf
-    sed -i "" '1 i\
-    permit :wheel\
-    ' ${BASEDIR}/usr/local/etc/doas.conf
-  fi
+  printf "permit nopass keepenv root\
+permit :wheel
+permit nopass keepenv :wheel cmd netcardmgr
+permit nopass keepenv :wheel cmd detect-nics
+permit nopass keepenv :wheel cmd detect-wifi
+permit nopass keepenv :wheel cmd ifconfig
+permit nopass keepenv :wheel cmd service
+permit nopass keepenv :wheel cmd wpa_supplicant
+permit nopass keepenv :wheel cmd fbsdupdatecheck
+permit nopass keepenv :wheel cmd fbsdpkgupdate
+permit nopass keepenv :wheel cmd pkg args upgrade -y
+permit nopass keepenv :wheel cmd pkg args upgrade -Fy
+permit nopass keepenv :wheel cmd pkg args lock
+permit nopass keepenv :wheel cmd pkg args unlock
+permit nopass keepenv :wheel cmd mkdir args -p /var/db/update-station/
+permit nopass keepenv :wheel cmd chmod args -R 665 /var/db/update-station/
+permit nopass keepenv :wheel cmd sh args /usr/local/lib/update-station/cleandesktop.sh
+permit nopass keepenv :wheel cmd shutdown args -r now
+" > ${BASEDIR}/usr/local/etc/doas.conf
 }
 
 #remove_desktop_entries
