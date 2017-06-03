@@ -15,6 +15,7 @@ patch_etc_files()
   cat extra/common-base-setting/patches/etc/rc.conf.extra >> ${BASEDIR}/etc/rc.conf
   cat extra/common-base-setting/patches/etc/devd.conf.extra >> ${BASEDIR}/etc/devd.conf
   cat extra/common-base-setting/patches/etc/sysctl.conf.extra >> ${BASEDIR}/etc/sysctl.conf
+  cat extra/common-base-setting/patches/etc/fstab.extra >> ${BASEDIR}/etc/fstab
 }
 
 packages_settings()

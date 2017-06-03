@@ -24,3 +24,5 @@ kld_list="geom_mirror geom_journal geom_eli linux fuse ext2fs cuse"
 
 # Configs from installed packages
 webcamd_enable="YES"
+vboxguest_enable="YES"
+vboxservice_enable="YES"

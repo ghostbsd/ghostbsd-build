@@ -45,6 +45,7 @@ clean_desktop_files()
 
 default_ghostbsd_rc_conf()
 {
+  rm ${BASEDIR}/etc/rc.d/virtualbox
   cp  ${BASEDIR}/etc/rc.conf ${BASEDIR}/etc/rc.conf.ghostbsd
 }
 
@@ -137,7 +138,7 @@ fi
 
 set_doas()
 {
-  printf "permit nopass keepenv root\
+  printf "permit nopass keepenv root
 permit :wheel
 permit nopass keepenv :wheel cmd netcardmgr
 permit nopass keepenv :wheel cmd detect-nics

@@ -21,19 +21,19 @@ slim_setup()
 lightdm_setup()
 
 {
-  if [ -f ${BASEDIR}/usr/local/etc/lightdm/lightdm.conf ] ; then
-    sed -i "" '/#exit-on-failure=false/a\
-autologin-user=ghostbsd\
-autologin-user-timeout=0\
-' ${BASEDIR}/usr/local/etc/lightdm/lightdm.conf
-  fi
+#  if [ -f ${BASEDIR}/usr/local/etc/lightdm/lightdm.conf ] ; then
+#    sed -i "" '/#exit-on-failure=false/a\
+#autologin-user=ghostbsd\
+#autologin-user-timeout=0\
+#' ${BASEDIR}/usr/local/etc/lightdm/lightdm.conf
+#  fi
 
-  if [ -f ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf ] ; then
-    #echo "background=/usr/local/share/backgrounds/ghostbsd/White-Trees-Empire.jpg" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
-    #echo "user-background=true" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
-    #echo "theme-name=Ambiance-Blackout-Flat-Aqua" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
-    #echo "icon-theme-name=Vivacious-Colors-Full-Dark" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
-  fi
+#  if [ -f ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf ] ; then
+#    #echo "background=/usr/local/share/backgrounds/ghostbsd/White-Trees-Empire.jpg" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+#    #echo "user-background=true" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+#    #echo "theme-name=Ambiance-Blackout-Flat-Aqua" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+#    #echo "icon-theme-name=Vivacious-Colors-Full-Dark" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+#  fi
   echo 'lightdm_enable="YES"' >> ${BASEDIR}/etc/rc.conf
 }
 
