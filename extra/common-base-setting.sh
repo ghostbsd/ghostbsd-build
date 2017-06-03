@@ -2,7 +2,7 @@
 
 base_overrides()
 {
-    cp -Rf extra/common-base-setting/override/* ${BASEDIR}/
+  cp -R extra/common-base-setting/override/* ${BASEDIR}/
 }
 
 
@@ -26,7 +26,7 @@ packages_settings()
 }
 
 # copy files from override to FreeBSD base system
-freebsd_overrides
+base_overrides
 # patch files from etc
 patch_etc_files
 # apply packages settings

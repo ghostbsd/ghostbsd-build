@@ -34,6 +34,7 @@ lightdm_setup()
     echo "theme-name=Ambiance-Blackout-Flat-Aqua" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
     echo "icon-theme-name=Vivacious-Colors-Full-Dark" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
   fi
+  echo 'lightdm_enable="YES"' >> ${BASEDIR}/etc/rc.conf
 }
 
 case "${PACK_PROFILE}" in

@@ -121,17 +121,15 @@ mv ${CPLOGFILE} ${MAKEOBJDIRPREFIX}/${LOCALDIR}
 fi
 }
 
-root_dot_xinitrc()
+dot_xinitrc()
 {
-echo 'slim_enable="YES"' >> ${BASEDIR}/etc/rc.conf
-echo 'exec $1' > ${BASEDIR}/root/.xinitrc
 #echo 'exec $1' > ${BASEDIR}/ghostbsd/.xinitrc
 
-# if [ "${PACK_PROFILE}" == "mate" ] ; then
-#  echo "exec ck-launch-session mate-session" > ${BASEDIR}/root/.xinitrc
-# elif [ "${PACK_PROFILE}" == "xfce" ] ; then
-#  echo "exec ck-launch-session startxfce4" > ${BASEDIR}/root/.xinitrc
-# fi
+if [ "${PACK_PROFILE}" == "mate" ] ; then
+  echo "exec ck-launch-session mate-session" > ${BASEDIR}/usr/home/ghostbsd/.xinitrc
+elif [ "${PACK_PROFILE}" == "xfce" ] ; then
+  echo "exec ck-launch-session startxfce4" > ${BASEDIR}/usr/home/ghostbsd/.xinitrc
+fi
 
 }
 
@@ -156,4 +154,4 @@ default_ghostbsd_rc_conf
 set_sudoers
 set_doas
 config_packages
-root_dot_xinitrc
+dot_xinitrc
