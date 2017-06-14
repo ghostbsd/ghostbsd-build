@@ -12,15 +12,10 @@ internet
 sound-video
 office
 font
+common
 gtk-common
 mate
 """
 packages = """
-"""
-ghostbsd_deps="""
-ports
-mate
-common
-gtk-gcommon
 """
 

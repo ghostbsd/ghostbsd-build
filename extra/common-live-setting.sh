@@ -34,6 +34,13 @@ copy_files_in()
     cp -af ${BASEDIR}/usr/local/share/ghostbsd/common-live-settings/etc/* ${BASEDIR}/etc
 }
 
+setup_root_boot()
+{
+sed -i "" 's|ttyv0	"/usr/libexec/getty Pc"		xterm	on  secure|ttyv0	"/usr/libexec/getty root"		xterm	on  secure|g' ${BASEDIR}/etc/ttys
+echo "sh sysconfig.sh" >> ${BASEDIR}/root/.login
+}
+
 backup_freebsd
 freebsd_overrides
 copy_files_in
+setup_root_boot

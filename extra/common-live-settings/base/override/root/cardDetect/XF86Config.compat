@@ -1,0 +1,78 @@
+# Generic PC-BSD 1024x768 VESA xorg.conf file
+
+Section "ServerLayout"
+	Identifier     "XFree86 Configured"
+	Screen      0  "Screen0" 0 0
+EndSection
+
+Section "Files"
+	ModulePath   "/usr/local/lib/modules"
+	ModulePath   "/usr/local/lib/xorg/modules"
+	FontPath     "/usr/local/share/fonts/cyrillic/"
+	FontPath     "/usr/local/share/fonts/TrueType/"
+	FontPath     "/usr/local/share/fonts/illinoy/"
+	FontPath     "/usr/local/share/fonts/webfonts/"
+	FontPath     "/usr/local/share/fonts/misc/"
+	FontPath     "/usr/local/share/fonts/TTF/"
+	FontPath     "/usr/local/share/fonts/Speedo/"
+	FontPath     "/usr/local/share/fonts/Type1/"
+	FontPath     "/usr/local/share/fonts/CID/"
+	FontPath     "/usr/local/share/fonts/75dpi/"
+        FontPath     "/usr/local/share/fonts/100dpi/"
+	FontPath     "/usr/local/share/fonts/dejavu/"
+	FontPath     "/usr/local/share/fonts/cyrillic/"
+	FontPath     "/usr/local/share/fonts/hebrew/"
+	FontPath     "/usr/local/share/fonts/vietnamese/"
+	FontPath     "/usr/local/share/fonts/indic/"
+	FontPath     "/usr/local/share/fonts/fonts-indic/"
+	FontPath     "/usr/local/share/fonts/ae_fonts1/AAHS"
+	FontPath     "/usr/local/share/fonts/ae_fonts1/AGA"
+	FontPath     "/usr/local/share/fonts/ae_fonts1/FS"
+	FontPath     "/usr/local/share/fonts/ae_fonts1/Kasr"
+	FontPath     "/usr/local/share/fonts/ae_fonts1/MCS"
+	FontPath     "/usr/local/share/fonts/ae_fonts1/Shmookh"
+	FontPath     "/usr/local/share/fonts/local/"
+EndSection
+
+Section "Module"
+	Load  "extmod"
+	Load  "record"
+	Load  "dbe"
+	Load  "glx"
+        Load  "dri"
+        Load  "dri2"
+EndSection
+
+Section "Monitor"
+    Identifier     "Monitor0"
+    VendorName     "Generic Monitor"
+    ModelName      "Generic"
+
+    HorizSync    28.0 - 78.0
+    VertRefresh  50.0 - 76.0
+
+    # 1024x768i @ 43Hz (industry standard) hsync: 35.5kHz
+    ModeLine "1024x768"   44.9 1024 1032 1208 1264    768  768  776  817 +hsync +vsync Interlace
+    # 1024x768 @ 60Hz (VESA) hsync: 48.4kHz
+    ModeLine "1024x768"   65.0 1024 1048 1184 1344    768  771  777  806 -hsync -vsync
+    # 1024x768 @ 70Hz (VESA) hsync: 56.5kHz
+    ModeLine "1024x768"   75.0 1024 1048 1184 1328    768  771  777  806 -hsync -vsync
+
+
+EndSection
+
+Section "Screen"
+	Identifier "Screen0"
+	Device     "Card0"
+	Monitor    "Monitor0"
+	DefaultDepth 16
+	SubSection "Display"
+		Depth     16
+		Modes	"1024x768"
+	EndSubSection
+EndSection
+
+Section "Device"
+	Identifier	"Card0"
+	Driver		"vesa"
+EndSection

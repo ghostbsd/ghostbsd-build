@@ -16,10 +16,10 @@ slim_setup()
     ${BASEDIR}/usr/local/etc/slim.conf
     echo 'sessiondir       /usr/local/share/xsessions/' >> ${BASEDIR}/usr/local/etc/slim.conf
   fi
+  echo 'slim_enable="NO"' >> ${BASEDIR}/etc/rc.conf
 }
 
 lightdm_setup()
-
 {
 #  if [ -f ${BASEDIR}/usr/local/etc/lightdm/lightdm.conf ] ; then
 #    sed -i "" '/#exit-on-failure=false/a\
@@ -29,12 +29,12 @@ lightdm_setup()
 #  fi
 
 #  if [ -f ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf ] ; then
-#    #echo "background=/usr/local/share/backgrounds/ghostbsd/White-Trees-Empire.jpg" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
-#    #echo "user-background=true" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+#    echo "background=/usr/local/share/backgrounds/ghostbsd/White-Trees-Empire.jpg" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+#    echo "user-background=true" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
 #    #echo "theme-name=Ambiance-Blackout-Flat-Aqua" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
 #    #echo "icon-theme-name=Vivacious-Colors-Full-Dark" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
 #  fi
-  echo 'lightdm_enable="YES"' >> ${BASEDIR}/etc/rc.conf
+  echo 'lightdm_enable="NO"' >> ${BASEDIR}/etc/rc.conf
 }
 
 case "${PACK_PROFILE}" in

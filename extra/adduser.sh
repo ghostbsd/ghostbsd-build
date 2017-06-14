@@ -48,6 +48,7 @@ fi
 
 
 chroot ${BASEDIR} pw mod user ${GHOSTBSD_USER} -w none
-
+chroot ${BASEDIR} pw groupadd autologin
+chroot ${BASEDIR} pw groupmod autologin -M ${GHOSTBSD_USER}
 chroot ${BASEDIR} su ${GHOSTBSD_USER} -c /usr/local/share/ghostbsd/common-live-settings/config-live-settings
 

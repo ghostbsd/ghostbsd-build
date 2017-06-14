@@ -147,7 +147,7 @@ printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
 purge_live_settings
 set_sudoers
 #acpi_disable
-revert_slim
+#revert_slim
 revert_kdm
 revert_gdm
 fix_perms

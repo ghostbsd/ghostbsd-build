@@ -57,69 +57,19 @@ set_sudoers()
 
 config_packages()
 {
-pkgfile="${PACK_PROFILE}-settings"
-CPLOGFILE="${BASEDIR}/mnt/.log_copypkgconfig"
-PLOGFILE=".log_pkgconfig"
-
-if [ -f /tmp/${pkgfile} ] ; then
-
-cp /tmp/${pkgfile}  ${BASEDIR}/mnt/
-
-# copy config scripts for needed packages
-while read pkgc; do
-    if [ -n "${pkgc}" ] ; then
-        if [ -f "${LOCALDIR}/packages/packages.cfg/$pkgc.sh" ] ; then
-        cp -af ${LOCALDIR}/packages/packages.cfg/$pkgc.sh ${BASEDIR}/mnt/
-        if [ $? -ne 0 ] ; then
-            echo "$pkgc.sh configuration file not found" >> ${CPLOGFILE} 2>&1
-            echo "$pkgc.sh configuration file not found"
-            exit 1
-        else
-            echo "$pkgc.sh configuration file found" >> ${CPLOGFILE} 2>&1
-            echo "$pkgc.sh configuration file found"
-        fi
-        fi
-    fi
-done < /tmp/${pkgfile}
-
-
-# config packages in chroot
-cat > ${BASEDIR}/mnt/configpkg.sh << "EOF"
-#!/bin/sh
-
-# pkg config part
-cd /mnt
-PLOGFILE=".log_pkgconfig"
-pkgfile="${PACK_PROFILE}-settings"
-
-# run config scripts for needed packages
-while read pkgc; do
-    if [ -n "${pkgc}" ] ; then
-        /bin/sh /mnt/${pkgc}.sh
-        if [ $? -ne 0 ] ; then
-            echo "$pkgc configuration failed" >> ${PLOGFILE} 2>&1
-            echo "$pkgc configuration failed"
-            exit 1
-        else
-            echo "$pkgc configuration done" >> ${PLOGFILE} 2>&1
-            echo "$pkgc configuration done"
-            rm /mnt/${pkgc}.sh
-        fi
-    fi
-done < $pkgfile
-
-rm configpkg.sh
-rm $pkgfile
-EOF
-
-# run configpkg.sh in chroot to add packages
-chrootcmd="chroot ${BASEDIR} sh /mnt/configpkg.sh"
-$chrootcmd
-
-# save logs
-mv ${BASEDIR}/mnt/${PLOGFILE} ${MAKEOBJDIRPREFIX}/${LOCALDIR}
-mv ${CPLOGFILE} ${MAKEOBJDIRPREFIX}/${LOCALDIR}
-fi
+  if [ -e /usr/local/bin/ntfs-3g ]; then
+    ln -s /usr/local/bin/ntfs-3g /sbin/mount_ntfs
+  fi
+  if [ -e /usr/local/bin/ext4fuse ]; then
+    ln -s /usr/local/bin/ext4fuse /sbin/mount_ext4fs
+  fi
+  if [ -d /usr/local/lib/virtuoso ] ; then
+    # copy virtuoso config file
+    cp /usr/local/lib/virtuoso/db/virtuoso.ini.sample /usr/local/lib/virtuoso/db/virtuoso.ini
+    # enable virtuoso in rc.conf
+    echo 'virtuoso_enable="YES"' >> /etc/rc.conf
+    echo 'virtuoso_config="/usr/local/lib/virtuoso/db/virtuoso.ini"' >> /etc/rc.conf
+  fi
 }
 
 dot_xinitrc()
@@ -159,13 +109,37 @@ permit nopass keepenv :wheel cmd shutdown args -r now
 " > ${BASEDIR}/usr/local/etc/doas.conf
 }
 
-#remove_desktop_entries
+reinstall_LigthDM()
+{
+
+cat > ${BASEDIR}/mnt/addpkg.sh << "EOF"
+#!/bin/sh
+
+FORCE_PKG_REGISTER=true
+export FORCE_PKG_REGISTER
+
+# pkg bootstrap with env
+env ASSUME_ALWAYS_YES=YES pkg bootstrap
+
+# pkg install part
+pkgfile="${PACK_PROFILE}-packages"
+pkgaddcmd="pkg install -yf "
+
+$pkgaddcmd lightdm
+echo "lightdm installed"
+EOF
+
+# run addpkg.sh in chroot to add packages
+chrootcmd="chroot ${BASEDIR} sh /mnt/addpkg.sh"
+$chrootcmd
+
+
+}
 clean_desktop_files
-# rm_fbsd_pcsysinstall
 cursor_theme
-# dm_enable
 default_ghostbsd_rc_conf
 set_sudoers
 set_doas
 config_packages
 dot_xinitrc
+reinstall_LigthDM

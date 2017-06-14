@@ -107,14 +107,6 @@ echo "### Done filesystem compress"
 echo "### Done filesystem compress" >> ${LOGFILE} 2>&1
 }
 
-make_mtree()
-{
-echo "Saving mtree structure..."
-echo "Saving mtree structure..." >> ${LOGFILE} 2>&1
-mtree -Pcp ${BASEDIR}/usr/home  > ${BASEDIR}/dist/home.dist
-}
-
-#make_mtree
 make_manifest
 mount_ufs
 
