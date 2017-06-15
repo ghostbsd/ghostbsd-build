@@ -222,6 +222,25 @@ al.Pc:\
 	:al=root:tc=Pc
 
 #
+# autologin - automatically log in as ghostbsd
+#
+
+autologin|al.9600:\
+	:al=ghostbsd:tc=std.9600:
+al.19200:\
+	:al=ghostbsd:tc=std.19200:
+al.38400:\
+	:al=ghostbsd:tc=std.38400:
+al.57600:\
+	:al=ghostbsd:tc=std.57600:
+al.115200:\
+	:al=ghostbsd:tc=std.115200:
+al.230400:\
+	:al=ghostbsd:tc=std.230400:
+al.Pc:\
+	:al=ghostbsd:tc=Pc
+
+#
 # Entries for 3-wire serial terminals.  These don't supply carrier, so
 # clocal needs to be set, and crtscts needs to be unset.
 #

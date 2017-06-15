@@ -17,30 +17,33 @@ backup_freebsd()
   # backup files from etc
   for tocopy in $(ls ${BASELOCALDIR}/share/ghostbsd/common-live-settings/base/override/etc/rc.d) ; do
     if [ -f ${BASEDIR}/etc/rc.d/$tocopy ]; then
-      cp -af ${BASEDIR}/etc/rc.d/$tocopy ${BASELOCALDIR}/share/ghostbsd/common-live-settings/base/backup/etc/rc.d/
+      cp -Rf ${BASEDIR}/etc/rc.d/$tocopy ${BASELOCALDIR}/share/ghostbsd/common-live-settings/base/backup/etc/rc.d/
     fi
   done
 }
 
 freebsd_overrides()
 {
-  cp -af ${BASEDIR}/usr/local/share/ghostbsd/common-live-settings/base/override/* ${BASEDIR}/
+  cp -Rf ${BASEDIR}/usr/local/share/ghostbsd/common-live-settings/base/override/root/* ${BASEDIR}/
+  cp -Rf ${BASEDIR}/usr/local/share/ghostbsd/common-live-settings/base/override/etc/* ${BASEDIR}/
   # rebuild login database because one override was login.conf
   chroot ${BASEDIR} cap_mkdb /etc/login.conf
 }
 
 copy_files_in()
 {
-    cp -af ${BASEDIR}/usr/local/share/ghostbsd/common-live-settings/etc/* ${BASEDIR}/etc
+    cp -Rf ${BASEDIR}/usr/local/share/ghostbsd/common-live-settings/etc/* ${BASEDIR}/etc
 }
 
 setup_root_boot()
 {
 sed -i "" 's|ttyv0	"/usr/libexec/getty Pc"		xterm	on  secure|ttyv0	"/usr/libexec/getty root"		xterm	on  secure|g' ${BASEDIR}/etc/ttys
-echo "sh sysconfig.sh" >> ${BASEDIR}/root/.login
+echo "netcardmgr" >> ${BASEDIR}/root/.login
+echo "startx" >> ${BASEDIR}/root/.login
+# echo "sh sysconfig.sh" >> ${BASEDIR}/root/.login
 }
 
 backup_freebsd
 freebsd_overrides
 copy_files_in
-setup_root_boot
+# setup_root_boot
