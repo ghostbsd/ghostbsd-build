@@ -74,15 +74,16 @@ config_packages()
 
 dot_xinitrc()
 {
-#echo 'exec $1' > ${BASEDIR}/ghostbsd/.xinitrc
+echo 'exec $1' > ${BASEDIR}/home/ghostbsd/.xinitrc
+echo 'exec $1' > ${BASEDIR}/root/.xinitrc
 
-if [ "${PACK_PROFILE}" == "mate" ] ; then
-  echo "exec ck-launch-session mate-session" > ${BASEDIR}/usr/home/ghostbsd/.xinitrc
-  echo "exec ck-launch-session mate-session" > ${BASEDIR}/root/.xinitrc
-elif [ "${PACK_PROFILE}" == "xfce" ] ; then
-  echo "exec ck-launch-session startxfce4" > ${BASEDIR}/usr/home/ghostbsd/.xinitrc
-  echo "exec ck-launch-session startxfce4" > ${BASEDIR}/root/.xinitrc
-fi
+#if [ "${PACK_PROFILE}" == "mate" ] ; then
+#  echo "exec ck-launch-session mate-session" > ${BASEDIR}/usr/home/ghostbsd/.xinitrc
+#  echo "exec ck-launch-session mate-session" > ${BASEDIR}/root/.xinitrc
+#elif [ "${PACK_PROFILE}" == "xfce" ] ; then
+#  echo "exec ck-launch-session startxfce4" > ${BASEDIR}/usr/home/ghostbsd/.xinitrc
+#  echo "exec ck-launch-session startxfce4" > ${BASEDIR}/root/.xinitrc
+#fi
 
 }
 

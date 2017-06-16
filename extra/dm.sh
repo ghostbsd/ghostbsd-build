@@ -12,11 +12,11 @@ slim_setup()
 {
   if [ -f ${BASEDIR}/usr/local/etc/slim.conf ] ; then
     sed -i '' -e "s/#auto_login          no/auto_login          yes/g"\
-    -e  "s/#default_user        simone/default_user        root/g" \
+    -e  "s/#default_user        simone/default_user        ghostbsd/g" \
     ${BASEDIR}/usr/local/etc/slim.conf
     echo 'sessiondir       /usr/local/share/xsessions/' >> ${BASEDIR}/usr/local/etc/slim.conf
   fi
-  echo 'slim_enable="NO"' >> ${BASEDIR}/etc/rc.conf
+  echo 'slim_enable="YES"' >> ${BASEDIR}/etc/rc.conf
 }
 
 lightdm_setup()
@@ -39,7 +39,7 @@ lightdm_setup()
 
 case "${PACK_PROFILE}" in
   mate)
-    lightdm_setup
+    slim_setup
     ;;
   xfce)
     lightdm_setup
