@@ -19,7 +19,9 @@ packages = """
     plank
     ristretto
     shared-mime-info
-    lightdm
+    # lightdm
+    slim
+    ghostbsd-slim-theme
     thunar
 #    thunar-archive-plugin
 #    thunar-data

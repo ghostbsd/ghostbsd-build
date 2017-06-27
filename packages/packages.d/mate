@@ -15,6 +15,7 @@ plank
 #lightdm-gtk-greeter
 #lightdm
 slim
+ghostbsd-slim-theme
 """
 
 settings="""
