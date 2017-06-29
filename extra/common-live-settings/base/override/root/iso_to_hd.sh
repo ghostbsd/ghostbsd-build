@@ -47,7 +47,7 @@ revert_slim()
       echo 'exec $1' > /usr/home/$home/.xinitrc
     done
     sed -i '' -e "s/auto_login          yes/#auto_login          no/g"\
-    -e  "s/default_user        root/#default_user        none/g" \
+    -e  "s/default_user        ghostbsd/#default_user        none/g" \
     /usr/local/etc/slim.conf
   fi
 }
