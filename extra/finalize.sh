@@ -58,7 +58,9 @@ set_sudoers()
 config_packages()
 {
   if [ -e /usr/local/bin/ntfs-3g ]; then
-    ln -s /usr/local/bin/ntfs-3g /sbin/mount_ntfs
+    if [ ! -e /sbin/mount_ntfs ]; then
+      ln -s /usr/local/bin/ntfs-3g /sbin/mount_ntfs
+    fi
   fi
   if [ -e /usr/local/bin/ext4fuse ]; then
     ln -s /usr/local/bin/ext4fuse /sbin/mount_ext4fs
