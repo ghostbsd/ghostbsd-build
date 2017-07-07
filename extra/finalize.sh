@@ -63,7 +63,9 @@ config_packages()
     fi
   fi
   if [ -e /usr/local/bin/ext4fuse ]; then
-    ln -s /usr/local/bin/ext4fuse /sbin/mount_ext4fs
+    if [ ! -e /sbin/mount_ext4fs ]; then
+     ln -s /usr/local/bin/ext4fuse /sbin/mount_ext4fs
+    fi
   fi
   if [ -d /usr/local/lib/virtuoso ] ; then
     # copy virtuoso config file
