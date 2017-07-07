@@ -42,7 +42,8 @@ case "${PACK_PROFILE}" in
     slim_setup
     ;;
   xfce)
-    lightdm_setup
+    # lightdm_setup
+    slim_setup
     ;;
   *)
     ;;
