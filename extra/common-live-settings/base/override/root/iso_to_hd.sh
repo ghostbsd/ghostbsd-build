@@ -44,7 +44,7 @@ revert_slim()
     fi
     for home in `ls /usr/home`
     do
-      echo 'exec $1' > /usr/home/$home/.xinitrc
+      echo 'exec \$\1' > /usr/home/$home/.xinitrc
     done
     sed -i '' -e "s/auto_login          yes/#auto_login          no/g"\
     -e  "s/default_user        ghostbsd/#default_user        none/g" \
