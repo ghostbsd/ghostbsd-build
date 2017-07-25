@@ -24,15 +24,15 @@ backup_freebsd()
 
 freebsd_overrides()
 {
-  cp -Rf ${BASEDIR}/usr/local/share/ghostbsd/common-live-settings/base/override/root/* ${BASEDIR}/
-  cp -Rf ${BASEDIR}/usr/local/share/ghostbsd/common-live-settings/base/override/etc/* ${BASEDIR}/
+  cp -Rf ${BASEDIR}/usr/local/share/ghostbsd/common-live-settings/base/override/root/* ${BASEDIR}/root
+  cp -Rf ${BASEDIR}/usr/local/share/ghostbsd/common-live-settings/base/override/etc/* ${BASEDIR}/etc
   # rebuild login database because one override was login.conf
   chroot ${BASEDIR} cap_mkdb /etc/login.conf
 }
 
 copy_files_in()
 {
-    cp -Rf ${BASEDIR}/usr/local/share/ghostbsd/common-live-settings/etc/* ${BASEDIR}/etc
+  cp -Rf ${BASEDIR}/usr/local/share/ghostbsd/common-live-settings/etc/* ${BASEDIR}/etc
 }
 
 setup_root_boot()

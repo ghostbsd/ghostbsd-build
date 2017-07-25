@@ -16,7 +16,7 @@ pkg delete -y ghostbsd-live-common-settings
 
 clean_root_and_auto_login()
 {
-sed -i "" -e 's/root/Pc/g' /etc/ttys
+# sed -i "" -e 's/root/Pc/g' /etc/ttys
 rm -rf /root/cardDetect /root/functions.sh /root/sysconfig.sh /root/sysutil.sh /root/sysutil.sh /root/.login /root/Desktop/gbi.desktop
 echo 'exec $1'  > /root/.xinitrc
 }
@@ -44,7 +44,8 @@ revert_slim()
     fi
     for home in `ls /usr/home`
     do
-      echo 'exec \$\1' > /usr/home/$home/.xinitrc
+      echo 'exec $1' > /usr/home/$home/.xinitrc
+      chown $home:$home /usr/home/$home/.xinitrc
     done
     sed -i '' -e "s/auto_login          yes/#auto_login          no/g"\
     -e  "s/default_user        ghostbsd/#default_user        none/g" \
