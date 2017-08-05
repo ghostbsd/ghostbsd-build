@@ -91,6 +91,12 @@ if  [ $? -ne 0 ] ; then
 fi
 }
 
+remove_ghostbsd_user()
+{
+  pw userdel -n ghostbsd
+  rm -rf /home/ghostbsd
+}
+
 # Adding kern.vty=vt to 10_kfreebsd
 sed -i '' '/set kFreeBSD.vfs.root.mountfrom.options=rw/a\
 \       set kFreeBSD.kern.vty=vt\
@@ -153,4 +159,5 @@ revert_kdm
 revert_gdm
 fix_perms
 rem_virtualbox
+remove_ghostbsd_user
 clean_root_and_auto_login

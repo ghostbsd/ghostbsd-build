@@ -20,8 +20,6 @@ grub2-pcbsd
 nano
 e2fsprogs
 ksh93
-mc
-portupgrade
 py27-gobject
 py27-gobject3
 py27-pexpect
