@@ -18,10 +18,10 @@ packages = """
     gnome-backgrounds
     gnome-control-center
     gnome-dictionary
-    # metapackage gnome-games depends: 
+    # metapackage gnome-games depends:
       five-or-more
       four-in-a-row
-      gnome-chess 
+      gnome-chess
       gnome-nibbles
       gnome-robots
       gnome-sudoku
@@ -53,7 +53,6 @@ packages = """
     transmission-gtk
     vinagre
     vino
-    ghostbsd-gdm-theme
     gnome-installed-settings
     gnome-live-settings
 """
