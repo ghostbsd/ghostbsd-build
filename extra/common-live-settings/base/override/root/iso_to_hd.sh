@@ -85,7 +85,7 @@ chmod 1777 /tmp
 rem_virtualbox()
 {
 # Check if we are in virtualbox to enable vbox-guest-additions
-cat /tmp/.ifvbox | grep -q "True"
+cat /tmp/.ifvbox | grep -q "true"
 if  [ $? -ne 0 ] ; then
     pkg delete  -y virtualbox-ose-additions
 fi

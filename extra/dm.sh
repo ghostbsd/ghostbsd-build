@@ -37,6 +37,11 @@ lightdm_setup()
   echo 'lightdm_enable="NO"' >> ${BASEDIR}/etc/rc.conf
 }
 
+gdm()
+{
+  echo 'gdm_enable="YES"' >> ${BASEDIR}/etc/rc.conf
+}
+
 case "${PACK_PROFILE}" in
   mate)
     slim_setup
