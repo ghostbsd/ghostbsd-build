@@ -8,7 +8,7 @@ __FreeBSD__, __PC-BSD__ and __GhostBSD__.
 First, you need to install __git__ as root user using either su or sudo (or logging in directly as root). Also the packages __grub2-pcbsd__ 
 and __xorriso__ are required:
 ```
-pkg install git grub2-pcbsd xorriso
+pkg install git grub2-pcbsd xorriso rsync
 ```
 Second is to download the GhostBSD Build Toolkit.
 ```
