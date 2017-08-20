@@ -37,7 +37,7 @@ lightdm_setup()
   echo 'lightdm_enable="NO"' >> ${BASEDIR}/etc/rc.conf
 }
 
-gdm()
+gdm_setup()
 {
   echo 'gdm_enable="YES"' >> ${BASEDIR}/etc/rc.conf
 }
@@ -49,6 +49,9 @@ case "${PACK_PROFILE}" in
   xfce)
     # lightdm_setup
     slim_setup
+    ;;
+  gnome)
+    gdm_setup
     ;;
   *)
     ;;
