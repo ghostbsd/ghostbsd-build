@@ -1,3 +1,5 @@
 loader_brand="gbsd"
 loader_logo="gbsd"
+boot_mute="YES"
+hw.psm.synaptics_support="1"
 
