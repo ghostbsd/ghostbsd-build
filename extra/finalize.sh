@@ -147,6 +147,24 @@ echo "startx" >> ${BASEDIR}/usr/home/ghostbsd/.login
 # echo "sh sysconfig.sh" >> ${BASEDIR}/root/.login
 }
 
+vmware_supports()
+{
+printf 'Section "ServerFlags"
+Option "AutoAddDevices" "false"
+EndSection
+Section "InputDevice"
+Identifier "Mouse0"
+Driver "vmmouse"
+Option "Device" "/dev/sysmouse"
+EndSection' > ${BASEDIR}/usr/local/etc/X11/xorg.conf.d/vmware.conf
+
+printf 'vmware_guest_vmblock_enable="YES"
+vmware_guest_vmhgfs_enable="YES"
+vmware_guest_vmmemctl_enable="YES"
+vmware_guest_vmxnet_enable="YES"
+vmware_guestd_enable="YES"' > ${BASEDIR}/etc/rc.conf.d/vmware.conf
+}
+
 clean_desktop_files
 cursor_theme
 default_ghostbsd_rc_conf
