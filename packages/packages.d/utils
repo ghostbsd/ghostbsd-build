@@ -16,6 +16,8 @@ fusefs-simple-mtpfs
 gawk
 git
 grub2-pcbsd
+# beadm is needed to configure geli for grub2
+beadm
 # this available only on amd64, not on i386 repo
 nano
 e2fsprogs
