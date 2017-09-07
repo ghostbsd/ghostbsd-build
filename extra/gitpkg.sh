@@ -17,7 +17,7 @@ fi
 
 if [ ! -d ${BASEDIR}/pc-sysinstall ]; then
   echo "Downloading pcbsd tools from GitHub"
-  git clone https://github.com/GhostBSD/pc-sysinstall.git ${BASEDIR}/pc-sysinstall >/dev/null 2>&1
+  git clone https://github.com/trueos/pc-sysinstall.git ${BASEDIR}/pc-sysinstall >/dev/null 2>&1
 fi
 
 cat > ${BASEDIR}/config.sh << 'EOF'
@@ -29,6 +29,5 @@ EOF
 
 chroot ${BASEDIR} sh /config.sh
 rm -f ${BASEDIR}/config.sh
-
 rm -rf ${BASEDIR}/pc-sysinstall
 
