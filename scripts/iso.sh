@@ -79,23 +79,11 @@ make_checksums()
 cd /usr/obj/${ARCH}/${PACK_PROFILE}
 md5 `echo ${ISOPATH}|cut -d / -f6`  >> /usr/obj/${ARCH}/${PACK_PROFILE}/$(echo ${ISOPATH}|cut -d / -f6).md5
 sha256 `echo ${ISOPATH}| cut -d / -f6` >> /usr/obj/${ARCH}/${PACK_PROFILE}/$(echo ${ISOPATH}|cut -d / -f6).sha256
-
-#if [ "$ARCH" = "amd64" ]; then
-#    md5 `echo ${UEFI_ISOPATH}|cut -d / -f6`  >> /usr/obj/${ARCH}/${PACK_PROFILE}/$(echo ${UEFI_ISOPATH}|cut -d / -f6).md5
-#    sha256 `echo ${UEFI_ISOPATH}| cut -d / -f6` >> /usr/obj/${ARCH}/${PACK_PROFILE}/$(echo ${UEFI_ISOPATH}|cut -d / -f6).sha256
-#fi
 cd -
 }
 
-
 make_grub_iso
-# if [ "${ARCH}" = "amd64" ]; then
-#   make_makefs_uefi_iso
-# else
-#   make_makefs_iso()
-# fi
 make_checksums
-
 
 set -e
 cd ${LOCALDIR}
