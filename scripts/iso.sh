@@ -15,63 +15,30 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
-
 echo "#### Building bootable ISO image for ${ARCH} ####"
 # Creates etc/fstab to avoid messages about missing it
 if [ ! -e ${BASEDIR}/etc/fstab ] ; then
     touch ${BASEDIR}/etc/fstab
 fi
 
-
 cd ${BASEDIR} && tar -cpzf ${BASEDIR}/dist/etc.tgz etc
-
-make_makefs_iso()
-{
-GHOSTBSD_LABEL=`echo $GHOSTBSD_LABEL | tr '[:lower:]' '[:upper:]'`
-echo "/dev/iso9660/$GHOSTBSD_LABEL / cd9660 ro 0 0" > $BASEDIR/etc/fstab
-echo "### Running makefs to create ISO ###"
-bootable="-o bootimage=i386;${BASEDIR}/boot/cdboot -o no-emul-boot"
-makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${ISOPATH} ${BASEDIR}
-}
-
-make_makefs_uefi_iso()
-{
-GHOSTBSD_LABEL=`echo $GHOSTBSD_LABEL | tr '[:lower:]' '[:upper:]'`
-echo "/dev/iso9660/$GHOSTBSD_LABEL / cd9660 ro 0 0" > $BASEDIR/etc/fstab
-# Make EFI system partition (should be done with makefs in the future)
-dd if=/dev/zero of=efiboot.img bs=4k count=150
-device=`mdconfig -a -t vnode -f efiboot.img`
-newfs_msdos -F 12 -m 0xf8 /dev/$device
-mkdir efi
-mount -t msdosfs /dev/$device efi
-mkdir -p efi/efi/boot
-cp ${BASEDIR}/boot/loader.efi efi/efi/boot/bootx64.efi
-umount efi
-rmdir efi
-mdconfig -d -u $device
-
-echo $UEFI_ISOPATH
-echo " making uefi iso"
-bootable="-o bootimage=i386;efiboot.img -o no-emul-boot"
-makefs -t cd9660 $bootable -o rockridge -o label=${GHOSTBSD_LABEL} ${UEFI_ISOPATH} ${BASEDIR}
-rm -f efiboot.img
-echo "uefi iso done"
-}
 
 make_grub_iso()
 {
-# Reference for hybrid DVD/USB image
-# Use GRUB to create the hybrid DVD/USB image
-echo "Creating ISO..."
-grub-mkrescue -o ${ISOPATH} ${BASEDIR} -- -volid ${GHOSTBSD_LABEL}
-if [ $? -ne 0 ] ; then
-	echo "Failed running grub-mkrescue"
-	exit 1
-fi
+  # Use GRUB to create the hybrid DVD/USB image
+  echo "Creating ISO..."
+  cat << EOF >/tmp/xorriso
+ARGS=\`echo \$@ | sed 's|-hfsplus ||g'\`
+xorriso \$ARGS
+EOF
+  chmod 755 /tmp/xorriso
+  grub-mkrescue --xorriso=/tmp/xorriso -o ${ISOPATH} ${BASEDIR} -- -volid ${GHOSTBSD_LABEL}
+  if [ $? -ne 0 ] ; then
+    echo "Failed running grub-mkrescue"
+    exit 1
+  fi
+  echo "### ISO created ###"
 }
-
-
-echo "### ISO created ###"
 
 # Make md5 and sha256 for iso
 make_checksums()
