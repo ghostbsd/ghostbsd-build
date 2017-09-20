@@ -41,10 +41,12 @@ import getopt
 
 
 try:
-    myopts, args = getopt.getopt(argv[1:], "r:v:")
+    #myopts, args = getopt.getopt(argv[1:], "r:v:p:")
+    myopts, args = getopt.getopt(argv[1:], "p:")
 except getopt.GetoptError as e:
     print (str(e))
-    print("Usage: %s -r release -v version" % argv[0])
+    #print("Usage: %s -r release -v versioni -p passphrase" % argv[0])
+    print("Usage: %s -p passphrase" % argv[0])
     exit()
 
 for output, arg in myopts:
@@ -52,11 +54,13 @@ for output, arg in myopts:
         release = arg
     elif output == '-v':
         version = arg
+    elif output == '-r':
+        password = arg
 
 i386 = "/usr/obj/i386"
 amd64 = "/usr/obj/amd64"
-#version = '11.0'
-vrpath = version + "-" + release
+#vrpath = version + "-" + release
+vrpath -"latest"
 i386path = "/usr/local/www/ftp/pub/GhostBSD/releases/i386/ISO-IMAGES/" + vrpath + "/"
 amd64path = "/usr/local/www/ftp/pub/GhostBSD/releases/amd64/ISO-IMAGES/" + vrpath + "/"
 server = "ghostbsd.org"
@@ -64,13 +68,16 @@ server = "ghostbsd.org"
 user = "root"
 
 host = user + "@" + server
-# user = raw_input("SourceForge username: ")
-# Get username
-password = getpass("Enter passphrase: ")
 
-call("ssh " + host + " 'mkdir -p " + i386path + "'", shell=True)
-call("ssh " + host + " 'mkdir -p " + amd64path + "'", shell=True)
+foo = pexpect.spawn("ssh " + host + " 'mkdir -p " + i386path + "'")
+foo.expect('Enter passphrase')
+foo.sendline(password)
+foo.interact()
 
+foo = pexpect.spawn("ssh " + host + " 'mkdir -p " + amd64path + "'")
+foo.expect('Enter passphrase')
+foo.sendline(password)
+foo.interact()
 
 if path.isdir('/usr/obj/i386/mate'):
     matei386 = Popen('cd /usr/obj/i386/mate && ls GhostBSD%s*i386*' % version,
