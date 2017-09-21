@@ -60,7 +60,7 @@ for output, arg in myopts:
 i386 = "/usr/obj/i386"
 amd64 = "/usr/obj/amd64"
 #vrpath = version + "-" + release
-vrpath -"latest"
+vrpath = "latest"
 i386path = "/usr/local/www/ftp/pub/GhostBSD/releases/i386/ISO-IMAGES/" + vrpath + "/"
 amd64path = "/usr/local/www/ftp/pub/GhostBSD/releases/amd64/ISO-IMAGES/" + vrpath + "/"
 server = "ghostbsd.org"
