@@ -1,6 +1,6 @@
 
 desc = """
-Mate desktop environment.
+XFCE desktop environment.
 """
 
 deps = """
