@@ -54,7 +54,7 @@ for output, arg in myopts:
         release = arg
     elif output == '-v':
         version = arg
-    elif output == '-r':
+    elif output == '-p':
         password = arg
 
 i386 = "/usr/obj/i386"
