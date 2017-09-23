@@ -12,13 +12,12 @@ freedesktop-sound-theme
 #fusefs-ntfs
 #fusefs-ext4fuse
 # gmake needed by network manager
-gmake 
+gmake
 #git
 grub2-pcbsd
 #nano
 #ksh93
 #mc
-portupgrade
 py27-gobject
 py27-gobject3
 py27-webkitgtk

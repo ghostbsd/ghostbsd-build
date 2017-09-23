@@ -69,12 +69,12 @@ user = "root"
 
 host = user + "@" + server
 
-foo = pexpect.spawn("ssh " + host + " 'mkdir -p " + i386path + "'")
+foo = pexpect.spawn("ssh " + host + " 'rm " + i386path + "*'")
 foo.expect('Enter passphrase')
 foo.sendline(password)
 foo.interact()
 
-foo = pexpect.spawn("ssh " + host + " 'mkdir -p " + amd64path + "'")
+foo = pexpect.spawn("ssh " + host + " 'rm" + amd64path + "*'")
 foo.expect('Enter passphrase')
 foo.sendline(password)
 foo.interact()
