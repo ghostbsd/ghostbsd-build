@@ -111,7 +111,7 @@ fi
 echo "FreeBSD: { enabled: no }" > ${BASEDIR}/usr/local/etc/pkg/repos/FreeBSD.conf
 
 printf "GhostBSD: {
-  url: \"http://pkg.GhostBSD.org/GhostBSD-11/${ARCH}/test\",
+  url: \"http://pkg.GhostBSD.org/GhostBSD-11/${ARCH}/current\",
   enabled: yes
 }
 " > ${BASEDIR}/etc/pkg/GhostBSD.conf
