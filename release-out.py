@@ -74,7 +74,7 @@ foo.expect('Enter passphrase')
 foo.sendline(password)
 foo.interact()
 
-foo = pexpect.spawn("ssh " + host + " 'rm" + amd64path + "*'")
+foo = pexpect.spawn("ssh " + host + " 'rm " + amd64path + "*'")
 foo.expect('Enter passphrase')
 foo.sendline(password)
 foo.interact()
