@@ -135,6 +135,8 @@ export FORCE_PKG_REGISTER
 # pkg bootstrap with env
 env ASSUME_ALWAYS_YES=YES pkg bootstrap
 
+pkg update -f
+
 # pkg install part
 cd /mnt
 PLOGFILE=".log_pkginstall"
@@ -194,6 +196,8 @@ export FORCE_PKG_REGISTER
 
 # pkg bootstrap with env
 env ASSUME_ALWAYS_YES=YES pkg bootstrap
+
+pkg update -f
 
 # pkg install part
 cd /mnt
