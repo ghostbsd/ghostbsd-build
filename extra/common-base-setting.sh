@@ -18,12 +18,18 @@ patch_etc_files()
   cat extra/common-base-setting/patches/etc/fstab.extra >> ${BASEDIR}/etc/fstab
 }
 
+local_files()
+{
+  cp extra/common-base-setting/etc/grub.d/10_kghostbsd ${BASEDIR}/usr/local/etc/grub.d/10_kghostbsd
+  sed -i "" -e 's/"\/usr\/local\/sbin\/beadm"/"\/usr\/local\/etc\/grub.d\/10_kghostbsd"/g' ${BASEDIR}/usr/local/etc/grub.d/10_kfreebsd
+}
+
 packages_settings()
 {
-    #set htmlview alternative to firefox for cups
-    if [ -e ${BASEDIR}/usr/local/bin/firefox ] ; then
-        update-alternatives --altdir ${BASEDIR}/usr/local/etc/alternatives --install ${BASEDIR}/usr/local/bin/htmlview htmlview ${BASEDIR}/usr/local/bin/firefox 50
-    fi
+  #set htmlview alternative to firefox for cups
+  if [ -e ${BASEDIR}/usr/local/bin/firefox ] ; then
+    update-alternatives --altdir ${BASEDIR}/usr/local/etc/alternatives --install ${BASEDIR}/usr/local/bin/htmlview htmlview ${BASEDIR}/usr/local/bin/firefox 50
+  fi
 }
 
 # copy files from override to FreeBSD base system
