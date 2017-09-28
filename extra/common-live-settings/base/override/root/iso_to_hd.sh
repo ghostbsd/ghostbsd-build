@@ -9,16 +9,19 @@ fi
 
 purge_live_settings()
 {
-GBSDFLAVOUR=$(cat /usr/local/etc/default/distro | grep FLAVOUR | cut -d = -f2)
-pkg delete -y $GBSDFLAVOUR-live-settings
-pkg delete -y ghostbsd-live-common-settings
+  GBSDFLAVOUR=$(cat /usr/local/etc/default/distro | grep FLAVOUR | cut -d = -f2)
+  pkg delete -y $GBSDFLAVOUR-live-settings
+  pkg delete -y ghostbsd-live-common-settings
+  # Removing livecd hostname.
+  ( echo 'g/hostname="livecd"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
+  rm -f /usr/local/etc/xdg/autostart/umountghostbsd.desktop
 }
 
 clean_root_and_auto_login()
 {
-# sed -i "" -e 's/root/Pc/g' /etc/ttys
-rm -rf /root/cardDetect /root/functions.sh /root/sysconfig.sh /root/sysutil.sh /root/sysutil.sh /root/.login /root/Desktop/gbi.desktop
-echo 'exec $1'  > /root/.xinitrc
+  # sed -i "" -e 's/root/Pc/g' /etc/ttys
+  rm -rf /root/cardDetect /root/functions.sh /root/sysconfig.sh /root/sysutil.sh /root/sysutil.sh /root/.login /root/Desktop/gbi.desktop
+  echo 'exec $1'  > /root/.xinitrc
 }
 
 set_sudoers()
@@ -55,40 +58,40 @@ revert_slim()
 
 revert_kdm()
 {
-if [ -f /usr/local/share/config/kdm/kdmrc ]; then
+  if [ -f /usr/local/share/config/kdm/kdmrc ]; then
      sed -i '' -e "s/AutoLoginEnable=true/#AutoLoginEnable=true/g"\
      -e  "s/AutoLoginAgain=true/#AutoLoginAgain=true/g" \
      -e  "s/AutoLoginUser=ghostbsd/#AutoLoginUser=fred/g" \
      /usr/local/share/config/kdm/kdmrc
-fi
+  fi
 }
 
 revert_gdm()
 {
-if [ -f /usr/local/etc/gdm/custom.conf.sample ] ; then
-        cp -af /usr/local/etc/gdm/custom.conf.sample /usr/local/etc/gdm/custom.conf
-fi
+  if [ -f /usr/local/etc/gdm/custom.conf.sample ] ; then
+    cp -af /usr/local/etc/gdm/custom.conf.sample /usr/local/etc/gdm/custom.conf
+  fi
 }
 
 fix_perms()
 {
-# fix permissions for kdm
-if [ -d /usr/local/share/ghostbsd/kde-settings ]; then
+  # fix permissions for kdm
+  if [ -d /usr/local/share/ghostbsd/kde-settings ]; then
     chmod 755 /var/lib/kdm
-fi
+  fi
 
-# fix permissions for tmp dirs
-chmod 1777 /var/tmp
-chmod 1777 /tmp
+  # fix permissions for tmp dirs
+  chmod 1777 /var/tmp
+  chmod 1777 /tmp
 }
 
 rem_virtualbox()
 {
-# Check if we are in virtualbox to enable vbox-guest-additions
-cat /tmp/.ifvbox | grep -q "false"
-if  [ $? -ne 0 ] ; then
+  # Check if we are in virtualbox to enable vbox-guest-additions
+  cat /tmp/.ifvbox | grep -q "false"
+  if  [ $? -ne 0 ] ; then
     pkg delete  -y virtualbox-ose-additions
-fi
+  fi
 }
 
 remove_ghostbsd_user()
@@ -97,20 +100,8 @@ remove_ghostbsd_user()
   rm -rf /home/ghostbsd
 }
 
-# Adding kern.vty=vt to 10_kfreebsd
-sed -i '' '/set kFreeBSD.vfs.root.mountfrom.options=rw/a\
-\       set kFreeBSD.kern.vty=vt\
-\       set kFreeBSD.hw.psm.synaptics_support="1"\
-' /usr/local/etc/grub.d/10_kfreebsd
-
-# Replassing FreeBSD by GhostBSD
-sed -i '' 's/OS="FreeBSD"/OS="GhostBSD"/g' /usr/local/etc/grub.d/10_kfreebsd
-
-# Removing livecd hostname.
-( echo 'g/hostname="livecd"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
-
-rm -f /usr/local/etc/xdg/autostart/umountghostbsd.desktop
-
+PolicyKit_setting()
+{
 # Setup PolicyKit for mounting device.
 printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
 
@@ -150,6 +141,7 @@ printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
   </match>
 </config>
 ' > /usr/local/etc/PolicyKit/PolicyKit.conf
+}
 
 purge_live_settings
 set_sudoers
@@ -160,4 +152,5 @@ revert_gdm
 fix_perms
 rem_virtualbox
 remove_ghostbsd_user
-clean_root_and_auto_login
+#clean_root_and_auto_login
+PolicyKit_setting
