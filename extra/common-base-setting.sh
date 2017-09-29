@@ -21,8 +21,7 @@ patch_etc_files()
 local_files()
 {
   cp extra/common-base-setting/etc/grub.d/10_kghostbsd ${BASEDIR}/usr/local/etc/grub.d/10_kghostbsd
-  rm ${BASEDIR}/usr/local/etc/grub.d/10_kfreebsd
-  rm ${BASEDIR}/usr/local/etc/grub.d/10_ktrueos
+  sed -i "" -e 's/"\/usr\/local\/sbin\/beadm"/"\/usr\/local\/etc\/grub.d\/10_kghostbsd"/g' ${BASEDIR}/usr/local/etc/grub.d/10_kfreebsd
 }
 
 packages_settings()
@@ -39,4 +38,4 @@ base_overrides
 patch_etc_files
 # apply packages settings
 #packages_settings
-local_files
+
