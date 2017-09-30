@@ -179,7 +179,7 @@ while [ "x$list" != "x" ] ; do
   fi
 
   #Hack to fix grub-probe problem 
-  grep -Rq 'UFS' /tmp/.pc-sysinstall/part-info
+  cat /tmp/grub_fs | grep -q "ufs"
   if [ $? -eq 0 ] ; then
     GRUB_FS="ufs2"
   fi

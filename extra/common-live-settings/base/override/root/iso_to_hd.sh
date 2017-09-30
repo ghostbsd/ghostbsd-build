@@ -143,6 +143,16 @@ printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
 ' > /usr/local/etc/PolicyKit/PolicyKit.conf
 }
 
+grup_fs_file()
+{
+  grep -Rq "UFS" /tmp/.pc-sysinstall/part-file
+  if [ $? -eq 0 ] ; then
+    echo "ufs" > /tmp/grup_fs
+  else
+    echo "zfs" > /tmp/grup_fs
+  fi
+}
+
 purge_live_settings
 set_sudoers
 #acpi_disable
@@ -154,3 +164,4 @@ rem_virtualbox
 remove_ghostbsd_user
 #clean_root_and_auto_login
 PolicyKit_setting
+grub_fs_file
