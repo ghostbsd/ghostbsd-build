@@ -178,8 +178,8 @@ while [ "x$list" != "x" ] ; do
     devices_rel_dirname=`make_system_path_relative_to_its_root $devices_dirname`
   fi
 
-  #Hack to fix grub-probe problem 
-  cat /tmp/grub_fs | grep -q "ufs"
+  #Hack to fix grub-probe problem
+  cat /root/grub_fs | grep -q "ufs"
   if [ $? -eq 0 ] ; then
     GRUB_FS="ufs2"
   fi
@@ -203,7 +203,7 @@ while [ "x$list" != "x" ] ; do
 	  if [ "x${GRUB_DISTRIBUTOR}" = "xDebian" ] \
 	      && ! (cat /etc/fstab | awk '!/^[[:space:]]*#/ && $2=="/" { print $1; }' \
 	      | grep "${kfreebsd_fs}id/${GRUB_DEVICE_UUID}" > /dev/null); then
-	      kfreebsd_device=${GRUB_DEVICE} 
+	      kfreebsd_device=${GRUB_DEVICE}
 	  fi
 	  ;;
   esac
@@ -227,7 +227,7 @@ while [ "x$list" != "x" ] ; do
   if [ "x$is_top_level" = xtrue ] && [ "x${GRUB_DISABLE_SUBMENU}" != xy ]; then
       kfreebsd_entry "${OS}" "${version}" simple
       submenu_indentation="$grub_tab"
-    
+
       if [ -z "$boot_device_id" ]; then
 	  boot_device_id="$(grub_get_device_id "${GRUB_DEVICE}")"
       fi

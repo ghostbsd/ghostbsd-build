@@ -143,13 +143,13 @@ printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
 ' > /usr/local/etc/PolicyKit/PolicyKit.conf
 }
 
-grup_fs_file()
+grub_fs_file()
 {
   grep -Rq "UFS" /tmp/.pc-sysinstall/part-file
   if [ $? -eq 0 ] ; then
-    echo "ufs" > /tmp/grup_fs
+    echo "ufs" > /root/grup_fs
   else
-    echo "zfs" > /tmp/grup_fs
+    echo "zfs" > /root/grup_fs
   fi
 }
 
