@@ -164,4 +164,4 @@ rem_virtualbox
 remove_ghostbsd_user
 #clean_root_and_auto_login
 PolicyKit_setting
-grub_fs_file
+#grub_fs_file

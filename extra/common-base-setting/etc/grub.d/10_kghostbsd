@@ -178,11 +178,11 @@ while [ "x$list" != "x" ] ; do
     devices_rel_dirname=`make_system_path_relative_to_its_root $devices_dirname`
   fi
 
-  #Hack to fix grub-probe problem
-  cat /root/grub_fs | grep -q "ufs"
-  if [ $? -eq 0 ] ; then
-    GRUB_FS="ufs2"
-  fi
+#  #Hack to fix grub-probe problem
+#  cat /root/grub_fs | grep -q "ufs"
+#  if [ $? -eq 0 ] ; then
+#    GRUB_FS="ufs2"
+#  fi
   case ${GRUB_FS} in
     ufs1 | ufs2)	kfreebsd_fs=ufs ;;
     ext2)		kfreebsd_fs=ext2fs ;;
