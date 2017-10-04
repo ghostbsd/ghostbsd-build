@@ -50,7 +50,7 @@ if [ "${MD_BACKEND}" = "file" ]
         DEVICE=$(mdconfig -a -o async -t vnode -f ${UFSFILE})
     else
         FSSIZE=$(echo "${USR_SIZE}*1024^2" | bc | cut -d . -f1)
-        DEVICE=$(mdconfig -a -o async -t malloc -s ${FSSIZE}k)
+        DEVICE=$(mdconfig -a -t malloc -s ${FSSIZE}k)
         dd if=/dev/zero of=/dev/${DEVICE} bs=1k count=1 seek=$((${FSSIZE} - 1))
 fi
 
