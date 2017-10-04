@@ -115,6 +115,9 @@ echo "GhostBSD: {
   enabled: yes
 }
 " > ${BASEDIR}/etc/pkg/GhostBSD.conf
+sync
+sync
+sleep 9
 
 
 mkdir -p ${PACKCACHEDIR}
