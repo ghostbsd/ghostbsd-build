@@ -28,9 +28,7 @@ touch ${PKGFILE}
 awk '/^deps/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-depends
 
 # If exist an old .packages file removes it
-if [ -f /tmp/${PACK_PROFILE}-packages ] ; then
-  rm -f /tmp/${PACK_PROFILE}-packages
-fi
+rm -f /tmp/${PACK_PROFILE}-packages
 
 set +e
 # Reads packages from packages profile
@@ -64,17 +62,15 @@ cat /tmp/${PACK_PROFILE}-package | grep -v '"""' | grep -v '#' > /tmp/${PACK_PRO
 set +e
 cat /tmp/${PACK_PROFILE}-setting | grep -v '"""' | grep -v '#'
 if [ $? -ne 0 ] ; then
-  else
-cat /tmp/${PACK_PROFILE}-setting | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-settings
+else
+  cat /tmp/${PACK_PROFILE}-setting | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-settings
 fi
 
 set -e
 # Removes temporary/leftover files
-if [ -f /tmp/${PACK_PROFILE}-package ] ; then
-  rm -f /tmp/${PACK_PROFILE}-package
-  rm -f /tmp/${PACK_PROFILE}-depends
-  rm -f /tmp/${PACK_PROFILE}-setting
-fi
+rm -f /tmp/${PACK_PROFILE}-package
+rm -f /tmp/${PACK_PROFILE}-depends
+rm -f /tmp/${PACK_PROFILE}-setting
 
 set -e
 
@@ -82,9 +78,9 @@ for left_files in ports ghostbsd pcbsd gbi ; do
   rm -Rf ${BASEDIR}/${left_files}
 done
 
-if [ -f ${BASEDIR}/usr/local/etc/repos/GhostBSD.conf ]; then
+#if [ -f ${BASEDIR}/usr/local/etc/repos/GhostBSD.conf ]; then
   rm -f  ${BASEDIR}/usr/local/etc/repos/GhostBSD.conf
-fi
+#fi
 
 #mounts ${BASEDIR}/var/run because it's needed when building ports in chroot
 if ! $USE_JAILS; then
@@ -115,8 +111,6 @@ echo "GhostBSD: {
   enabled: yes
 }
 " > ${BASEDIR}/etc/pkg/GhostBSD.conf
-#ls -l ${BASEDIR}/etc/pkg/GhostBSD.conf
-
 
 mkdir -p ${PACKCACHEDIR}
 mkdir -p ${BASEDIR}/var/cache/pkg
@@ -135,7 +129,8 @@ export FORCE_PKG_REGISTER
 #ln -sf /dist/ports /usr/ports
 
 # pkg bootstrap with env
-env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
+PACKAGESITE="http://pkg.GhostBSD.org/GhostBSD-11/${ARCH}/current" ASSUME_ALWAYS_YES=YES /usr/sbin/pkg bootstrap -f
+
 
 # pkg install part
 cd /mnt
@@ -196,7 +191,7 @@ export FORCE_PKG_REGISTER
 #ln -sf /dist/ports /usr/ports
 
 # pkg bootstrap with env
-env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
+PACKAGESITE="http://pkg.GhostBSD.org/GhostBSD-11/${ARCH}/current" ASSUME_ALWAYS_YES=YES /usr/sbin/pkg bootstrap -f
 
 # pkg install part
 cd /mnt
