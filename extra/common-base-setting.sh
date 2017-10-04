@@ -26,9 +26,9 @@ local_files()
   sed -i '' '/set kFreeBSD.vfs.root.mountfrom.options=rw/a\
 \	set kFreeBSD.kern.vty=vt\
 \	set kFreeBSD.hw.psm.synaptics_support="1"\
-' /usr/local/etc/grub.d/10_kfreebsd
+' ${BASEDIR}/usr/local/etc/grub.d/10_kfreebsd
   # Replassing FreeBSD by GhostBSD
-  sed -i '' 's/"FreeBSD"/"GhostBSD"/g' /usr/local/etc/grub.d/10_kfreebsd
+  sed -i '' 's/"FreeBSD"/"GhostBSD"/g' ${BASEDIR}/usr/local/etc/grub.d/10_kfreebsd
 }
 
 packages_settings()
