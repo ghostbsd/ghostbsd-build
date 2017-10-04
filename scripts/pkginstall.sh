@@ -39,7 +39,7 @@ awk '/^packages/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} > /tmp/${PACK_PROF
 # Reads depends file and search for packages entries in each file from depends
 # list, then append all packages found in packages file
 while read pkgs ; do
-awk '/^packages/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-package
+  awk '/^packages/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-package
 done < /tmp/${PACK_PROFILE}-depends
 
 # Removes """ and # from temporary package file
@@ -48,13 +48,13 @@ cat /tmp/${PACK_PROFILE}-package | grep -v '"""' | grep -v '#' > /tmp/${PACK_PRO
 # Reads depends file and search for settings entries in each file from depends
 # list, then append all packages found in packages file
 while read pkgs ; do
-awk '/^settings/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-setting
+  awk '/^settings/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-setting
 done < /tmp/${PACK_PROFILE}-depends
 
 # search for $ARCH specific packages if an $ARCH section is found in each file from depends
 # lost, then append all packages found in packages file
 while read pkgs ; do
-awk '/^'${ARCH}'/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-package
+  awk '/^'${ARCH}'/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-package
 done < /tmp/${PACK_PROFILE}-depends
 
 # Removes """ and # from temporary package file
@@ -115,9 +115,7 @@ echo "GhostBSD: {
   enabled: yes
 }
 " > ${BASEDIR}/etc/pkg/GhostBSD.conf
-sync
-sync
-sleep 9
+#ls -l ${BASEDIR}/etc/pkg/GhostBSD.conf
 
 
 mkdir -p ${PACKCACHEDIR}
@@ -125,6 +123,7 @@ mkdir -p ${BASEDIR}/var/cache/pkg
 
 filled=$(ls ${PACKCACHEDIR})
 
+###################################################################### if ####
 if [ -z "$filled" ] ; then
 # prepares addpkg.sh script to add packages under chroot
 cat > ${BASEDIR}/mnt/addpkg.sh << "EOF"
@@ -185,6 +184,7 @@ chrootcmd="chroot ${BASEDIR} sh /mnt/addpkg.sh"
 $chrootcmd
 
 rsync -aI ${BASEDIR}/var/cache/pkg/*.txz  ${PACKCACHEDIR}/
+###################################################################### else ##
 else
 rsync -aI ${PACKCACHEDIR}/*txz  ${BASEDIR}/var/cache/pkg/
 cat > ${BASEDIR}/mnt/addpkg.sh << "EOF"
@@ -244,6 +244,7 @@ EOF
 chrootcmd="chroot ${BASEDIR} sh /mnt/addpkg.sh"
 $chrootcmd
 
+###################################################################### fi ####
 fi
 
 sed -i '' 's@#signature_type: "fingerprints"@signature_type: "fingerprints"@g' ${BASEDIR}/etc/pkg/FreeBSD.conf
