@@ -133,7 +133,7 @@ export FORCE_PKG_REGISTER
 #ln -sf /dist/ports /usr/ports
 
 # pkg bootstrap with env
-env ASSUME_ALWAYS_YES=YES pkg bootstrap
+env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
 
 # pkg install part
 cd /mnt
@@ -193,7 +193,7 @@ export FORCE_PKG_REGISTER
 #ln -sf /dist/ports /usr/ports
 
 # pkg bootstrap with env
-env ASSUME_ALWAYS_YES=YES pkg bootstrap
+env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
 
 # pkg install part
 cd /mnt
