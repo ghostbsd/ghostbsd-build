@@ -129,7 +129,7 @@ export FORCE_PKG_REGISTER
 #ln -sf /dist/ports /usr/ports
 
 # pkg bootstrap with env
-PACKAGESITE="http://pkg.GhostBSD.org/GhostBSD-11/${ARCH}/current" ASSUME_ALWAYS_YES=YES /usr/sbin/pkg bootstrap -f
+PACKAGESITE="http://pkg.GhostBSD.org/GhostBSD-11/${ARCH}/current" SIGNATURE_TYPE=none ASSUME_ALWAYS_YES=YES /usr/sbin/pkg bootstrap -f
 
 
 # pkg install part
@@ -191,7 +191,7 @@ export FORCE_PKG_REGISTER
 #ln -sf /dist/ports /usr/ports
 
 # pkg bootstrap with env
-PACKAGESITE="http://pkg.GhostBSD.org/GhostBSD-11/${ARCH}/current" ASSUME_ALWAYS_YES=YES /usr/sbin/pkg bootstrap -f
+PACKAGESITE="http://pkg.GhostBSD.org/GhostBSD-11/${ARCH}/current" SIGNATURE_TYPE=none ASSUME_ALWAYS_YES=YES /usr/sbin/pkg bootstrap -f
 
 # pkg install part
 cd /mnt
