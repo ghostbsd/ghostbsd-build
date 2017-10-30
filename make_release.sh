@@ -32,50 +32,35 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #####################################################################
 set -e
+
 rm -rf /usr/obj/i386/
 rm -rf /usr/obj/amd64/
 
-# Building MATE i386.
-cd clscripts
-sh clean_mate_i386
-cd ..
-cd mkscripts
-sh make_mate_i386_iso
-cd ..
-cd clscripts
-sh clean_mate_i386
-cd ..
+Build_MATE_amd64()
+{
+  cd clscripts
+  sh clean_mate_amd64
+  cd ..
+  cd mkscripts
+  sh make_mate_amd64_iso
+  cd ..
+  cd clscripts
+  sh clean_mate_amd64
+  cd ..
+}
 
-# Building MATE amd64
-cd clscripts
-sh clean_mate_amd64
-cd ..
-cd mkscripts
-sh make_mate_amd64_iso
-cd ..
-cd clscripts
-sh clean_mate_amd64
-cd ..
+Build_XFCE_amd64()
+{
+  cd clscripts
+  sh clean_xfce_amd64
+  cd ..
+  cd mkscripts
+  sh make_xfce_amd64_iso
+  cd ..
+  cd clscripts
+  sh clean_xfce_amd64
+  cd ..
+}
 
-# Building XFCE i386
-cd clscripts
-sh clean_xfce_i386
-cd ..
-cd mkscripts
-sh make_xfce_i386_iso
-cd ..
-cd clscripts
-sh clean_xfce_i386
-cd ..
-
-# Building XFCE amd64
-cd clscripts
-sh clean_xfce_amd64
-cd ..
-cd mkscripts
-sh make_xfce_amd64_iso
-cd ..
-cd clscripts
-sh clean_xfce_amd64
-cd ..
-
+Build_MATE_amd64
+Build_XFCE_amd64
