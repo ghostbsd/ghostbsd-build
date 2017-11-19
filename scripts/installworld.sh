@@ -16,8 +16,13 @@ if [ -z "${LOGFILE:-}" ]; then
 fi
 
 #jail_name=${PACK_PROFILE}${ARCH}
+# Fix due to bug in TrueOS https://github.com/trueos/trueos-core/issues/1501
 JAILFS=$(echo ${BASEDIR} | cut -d / -f 3,3)
-jail_name=${JAILFS}${PACK_PROFILE}${ARCH}
+if [ -d "/usr/local/share/trueos/" ] ; then
+    jail_name="ghostbsd"
+else
+    jail_name=${JAILFS}${PACK_PROFILE}${ARCH}
+fi
 
 mkmd_device()
 {
@@ -104,6 +109,18 @@ fi
 
 jail_add()
 {
+if [ -d "/usr/local/share/trueos" ] ; then
+touch /etc/conf.d/jail.$jail_name
+chmod +x /etc/conf.d/jail.$jail_name
+echo 'jail_'${jail_name}'_rootdir="'${BASEDIR}'"' >> /etc/conf.d/jail.$jail_name
+echo 'jail_'${jail_name}'_hostname="'${jail_name}'"' >> /etc/conf.d/jail.$jail_name
+echo 'jail_'${jail_name}'_devfs_enable="'YES'"' >> /etc/conf.d/jail.$jail_name
+if [ ! -f /etc/conf.d/jail ] ; then
+   touch /etc/conf.d/jail
+   chmod +x /etc/conf.d/jail
+fi
+sysrc -f /etc/conf.d/jail jail_list+=" ${jail_name}"
+else
 cat >> /etc/jail.conf << EOF
 ${jail_name}{
 path = ${BASEDIR};
@@ -113,16 +130,33 @@ exec.start = "/bin/sh /etc/rc";
 exec.stop = "/bin/sh /etc/rc.shutdown";
 }
 EOF
+fi
 }
 
 jail_list_add()
 {
-if [ ! -f /etc/jail.conf ] ; then
-    touch /etc/jail.conf
+if [ -d "/usr/local/share/trueos" ] ; then
+    if [ ! -f "/etc/conf.d/jail.${jail_name}" ] ; then
+        touch /etc/conf.d/jail.${jail_name}
+        chmod +x /etc/conf.d/jail.${jail_name}
+    if [ ! -f "/etc/init.d/jail.${jail_name}" ] ; then
+        ln -s /etc/init.d/jail /etc/init.d/jail.${jail_name}
+else
+    if [ ! -f /etc/jail.conf ] ; then
+        touch /etc/jail.conf
+            fi
+        fi
+    fi
+fi
+
+if [ -d "/usr/local/share/trueos/" ] ; then
+  export jail_conf="/etc/conf.d/jail"
+else
+  export jail_conf="/etc/jail.conf"
 fi
 
 set +e
-grep ^"${jail_name}" /etc/jail.conf
+grep ^"${jail_name}" ${jail_conf}
 if [ $? -ne  0 ] ; then
     jail_add
 else
@@ -149,7 +183,6 @@ fi
 if ${USE_JAILS}; then
     jail_list_add
     if [ -d "/usr/local/share/trueos" ] ; then
-        ln -s /etc/init.d/jail /etc/init.d/jail.$jail_name
         service jail.$jail_name start
     else   
         service jail onestart $jail_name
