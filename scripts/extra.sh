@@ -7,6 +7,9 @@
 # $FreeBSD$
 # $Id: extra.sh,v 1.2 2005/10/01 23:26:16 saturnero Exp $
 
+cwd="$(realpath "$0" | xargs dirname)"
+. $cwd/functions.sh
+
 set -e -u
 
 if [ -z "${LOGFILE:-}" ]; then
@@ -65,7 +68,7 @@ if ! ${USE_JAILS}; then
         umount ${BASEDIR}/var/run
     fi
 else
-    service jail onestop $jail_name
+    stop_jail
 fi
 
 # removes from jail resolv.conf
