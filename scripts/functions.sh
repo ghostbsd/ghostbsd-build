@@ -19,6 +19,10 @@ stop_jail()
   jail_name=${JAILFS}${PACK_PROFILE}${ARCH}
   jailrun=$(jls | grep $jail_name | awk '{print $3}'| cut -d . -f2)
   if [ -n $jailrun ]; then
-      service jail onestop $jail_name
+      if [ -d "/usr/local/share/trueos" ] ; then
+          service jail.$jail_name stop
+      else
+          service jail onestop $jail_name
+      fi
   fi
 }

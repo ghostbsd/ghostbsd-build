@@ -148,7 +148,12 @@ fi
 
 if ${USE_JAILS}; then
     jail_list_add
-    service jail onestart $jail_name
+    if [ -d "/usr/local/share/trueos" ] ; then
+        ln -s /etc/init.d/jail /etc/init.d/jail.$jail_name
+        service jail.$jail_name start
+    else   
+        service jail onestart $jail_name
+    fi
 fi
 
 set -e
