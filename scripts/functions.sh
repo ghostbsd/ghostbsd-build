@@ -20,7 +20,9 @@ stop_jail()
   jailrun=$(jls | grep $jail_name | awk '{print $3}'| cut -d . -f2)
   if [ -n $jailrun ]; then
       if [ -d "/usr/local/share/trueos" ] ; then
-          service jail.$jail_name stop
+          #service jail.$jail_name stop
+          # Adding workaround for TrueOS bug https://github.com/trueos/trueos-core/issues/1501
+          service jail.ghostbsd stop
       else
           service jail onestop $jail_name
       fi
