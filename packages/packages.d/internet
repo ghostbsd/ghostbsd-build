@@ -8,5 +8,5 @@ ghostbsd-bug-report
 ghostbsd-irc
 networkmgr
 fbsdupdatecheck
-fbsdpkgupdate
+#fbsdpkgupdate
 """
