@@ -159,6 +159,13 @@ while read pkgc; do
   fi
 done < $pkgfile
 
+# Enable services needed for desktop
+/sbin/rc-update add dbus default
+/sbin/rc-update add hald default
+/sbin/rc-update add moused default
+/sbin/rc-update add vboxguest default
+/sbin/rc-update add slim default
+
 # deactivate  bsdstats_enable from rc.conf
 if [ -f /etc/rc.conf ] ; then
   grep -q "bsdstats_enable" /etc/rc.conf
@@ -220,6 +227,13 @@ while read pkgc; do
     #pkg lock -q -y $pkgc
   fi
 done < $pkgfile
+
+# Enable services needed for desktop
+/sbin/rc-update add dbus default
+/sbin/rc-update add hald default
+/sbin/rc-update add moused default
+/sbin/rc-update add vboxguest default
+/sbin/rc-update add slim default
 
 # deactivate  bsdstats_enable from rc.conf
 if [ -f /etc/rc.conf ] ; then
