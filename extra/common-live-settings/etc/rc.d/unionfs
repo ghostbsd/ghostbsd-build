@@ -42,7 +42,6 @@ unionfs_start() {
     for files in shutdown poweroff mksnap_ffs ping ping6 ; do
         chmod 4554 /sbin/$files
     done
-    chmod 4554 /bin/rcp
 }
 
 load_rc_config $name
