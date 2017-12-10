@@ -29,7 +29,6 @@ unionfs_start() {
     done
     # make dirs for with theirs permissions under home
     mkdir -p /usr/home
-    mtree -PUer -q -p /dist/union/usr/home < /dist/home.dist > /dev/null 2>&1
     # make compat dir under /dist/union
     mkdir -p /dist/union/compat
 
