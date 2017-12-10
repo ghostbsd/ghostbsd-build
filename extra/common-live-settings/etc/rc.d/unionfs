@@ -29,7 +29,6 @@ unionfs_start() {
     done
     # make dirs for with theirs permissions under home
     mkdir -p /usr/home
-    mtree -PUer -q -p /dist/union/usr/home < /dist/home.dist > /dev/null 2>&1
     # make compat dir under /dist/union
     mkdir -p /dist/union/compat
 
@@ -42,7 +41,6 @@ unionfs_start() {
     for files in shutdown poweroff mksnap_ffs ping ping6 ; do
         chmod 4554 /sbin/$files
     done
-    chmod 4554 /bin/rcp
 }
 
 load_rc_config $name
