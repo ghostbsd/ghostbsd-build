@@ -107,7 +107,7 @@ fi
 echo "FreeBSD: { enabled: no }" > ${BASEDIR}/usr/local/etc/pkg/repos/FreeBSD.conf
 
 echo "GhostBSD: {
-  url: \"http://pkg.GhostBSD.org/GhostBSD-11/${ARCH}/current\",
+  url: \"http://pkg.cdn.trueos.org/unstable/amd64\",
   enabled: yes
 }
 " > ${BASEDIR}/etc/pkg/GhostBSD.conf
@@ -129,8 +129,8 @@ export FORCE_PKG_REGISTER
 #ln -sf /dist/ports /usr/ports
 
 # pkg bootstrap with env
-PACKAGESITE="http://pkg.GhostBSD.org/GhostBSD-11/${ARCH}/current" SIGNATURE_TYPE=none ASSUME_ALWAYS_YES=YES /usr/sbin/pkg bootstrap -f
-
+#PACKAGESITE="http://pkg.GhostBSD.org/GhostBSD-11/${ARCH}/current" SIGNATURE_TYPE=none ASSUME_ALWAYS_YES=YES /usr/sbin/pkg bootstrap -f
+PACKAGESITE="http://pkg.cdn.trueos.org/unstable/amd64" SIGNATURE_TYPE=none ASSUME_ALWAYS_YES=YES /usr/sbin/pkg bootstrap -f
 
 # pkg install part
 cd /mnt
@@ -191,7 +191,8 @@ export FORCE_PKG_REGISTER
 #ln -sf /dist/ports /usr/ports
 
 # pkg bootstrap with env
-PACKAGESITE="http://pkg.GhostBSD.org/GhostBSD-11/${ARCH}/current" SIGNATURE_TYPE=none ASSUME_ALWAYS_YES=YES /usr/sbin/pkg bootstrap -f
+#PACKAGESITE="http://pkg.GhostBSD.org/GhostBSD-11/${ARCH}/current" SIGNATURE_TYPE=none ASSUME_ALWAYS_YES=YES /usr/sbin/pkg bootstrap -f
+PACKAGESITE="http://pkg.cdn.trueos.org/unstable/amd64" SIGNATURE_TYPE=none ASSUME_ALWAYS_YES=YES /usr/sbin/pkg bootstrap -f
 
 # pkg install part
 cd /mnt
