@@ -21,10 +21,10 @@ if [ -f "/etc/rc.d/cheatcodes" ] ; then
   /etc/rc.d/cheatcodes onestart
   /etc/rc.d/uzip onestart
   /etc/rc.d/unionfs onestart
-  /etc/rc.d/mountcritlocal onestart
 fi
 
 /sbin/openrc sysinit || exit 1
+/etc/rc.d/mountcritlocal onestart
 /sbin/openrc boot || exit 1
 /sbin/openrc default || exit 1
 
