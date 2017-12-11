@@ -24,6 +24,13 @@ clean_root_and_auto_login()
   echo 'exec $1'  > /root/.xinitrc
 }
 
+clean_rc_scripts()
+{
+  rm /etc/rc.d/cheatcodes
+  rm /etc/rc.d/uzip
+  rm /etc/rc.d/unionfs
+}
+
 set_sudoers()
 {
   sed -i "" -e 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/g' /usr/local/etc/sudoers
@@ -163,5 +170,6 @@ fix_perms
 rem_virtualbox
 remove_ghostbsd_user
 #clean_root_and_auto_login
+clean_rc_scripts
 PolicyKit_setting
 #grub_fs_file
