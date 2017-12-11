@@ -159,6 +159,10 @@ while read pkgc; do
   fi
 done < $pkgfile
 
+# Fix for ZFS to work with mountcritlocal
+/sbin/rc-update delete zfs boot
+/sbin/rc-update add zfs sysinit
+
 # Enable services needed for desktop
 /sbin/rc-update add dbus default
 /sbin/rc-update add hald default
@@ -226,6 +230,10 @@ while read pkgc; do
     #pkg lock -q -y $pkgc
   fi
 done < $pkgfile
+
+# Fix for ZFS to work with mountcritlocal
+/sbin/rc-update delete zfs boot
+/sbin/rc-update add zfs sysinit
 
 # Enable services needed for desktop
 /sbin/rc-update add dbus default

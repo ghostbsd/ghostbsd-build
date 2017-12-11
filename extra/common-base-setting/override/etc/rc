@@ -25,6 +25,7 @@ fi
 
 /sbin/openrc sysinit || exit 1
 /etc/rc.d/mountcritlocal onestart
+/sbin/rc-update -u
 /sbin/openrc boot || exit 1
 /sbin/openrc default || exit 1
 
