@@ -165,6 +165,12 @@ vmware_guest_vmxnet_enable="YES"
 vmware_guestd_enable="YES"' > ${BASEDIR}/etc/rc.conf.d/vmware.conf
 }
 
+enable_sddm()
+{
+  chrootcmd="chroot ${BASEDIR} /sbin/rc-update add sddm default"
+  $chrootcmd
+}
+
 clean_desktop_files
 cursor_theme
 default_ghostbsd_rc_conf
@@ -174,3 +180,4 @@ config_packages
 dot_xinitrc
 # setup_ghostbsd_boot
 # reinstall_LigthDM
+enable_sddm

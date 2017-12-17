@@ -167,7 +167,6 @@ done < $pkgfile
 /sbin/rc-update add dbus default
 /sbin/rc-update add hald default
 /sbin/rc-update add moused default
-/sbin/rc-update add slim default
 
 # deactivate  bsdstats_enable from rc.conf
 if [ -f /etc/rc.conf ] ; then
@@ -239,7 +238,6 @@ done < $pkgfile
 /sbin/rc-update add dbus default
 /sbin/rc-update add hald default
 /sbin/rc-update add moused default
-/sbin/rc-update add slim default
 
 # deactivate  bsdstats_enable from rc.conf
 if [ -f /etc/rc.conf ] ; then

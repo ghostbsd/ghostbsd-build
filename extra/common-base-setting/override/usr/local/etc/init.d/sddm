@@ -1,0 +1,21 @@
+#!/sbin/openrc-run
+# OpenRC script for lightdm
+# Copyright 2017 by Ken Moore <ken@ixsystems.com>
+# Available under 2-clause BSD license
+# Written May 9th, 2017
+
+name="sddm"
+supervisor="supervise-daemon"
+command=/usr/local/bin/sddm
+command_args=""
+pidfile="/var/run/sddm.pid"
+
+depend(){
+	provide xlogin
+	keyword -login -shutdown
+	need localmount dbus moused
+}
+
+stop_post(){
+	killall sddm-helper
+}
