@@ -122,14 +122,6 @@ chrootcmd="chroot ${BASEDIR} sh /mnt/addpkg.sh"
 $chrootcmd
 }
 
-setup_ghostbsd_boot()
-{
-sed -i "" 's|ttyv0	"/usr/libexec/getty Pc"		xterm	on  secure|ttyv0	"/usr/libexec/getty ghostbsd"		xterm	on  secure|g' ${BASEDIR}/etc/ttys
-echo "netcardmgr" >> ${BASEDIR}/usr/home/ghostbsd/.login
-echo "startx" >> ${BASEDIR}/usr/home/ghostbsd/.login
-# echo "sh sysconfig.sh" >> ${BASEDIR}/root/.login
-}
-
 vmware_supports()
 {
 printf 'Section "ServerFlags"
@@ -148,11 +140,17 @@ vmware_guest_vmxnet_enable="YES"
 vmware_guestd_enable="YES"' > ${BASEDIR}/etc/rc.conf.d/vmware.conf
 }
 
+enable_sddm()
+{
+  chrootcmd="chroot ${BASEDIR} /sbin/rc-update add sddm default"
+  $chrootcmd
+}
+
 clean_desktop_files
 default_ghostbsd_rc_conf
 set_sudoers
 set_doas
 config_packages
 dot_xinitrc
-# setup_ghostbsd_boot
 # reinstall_LigthDM
+enable_sddm

@@ -136,7 +136,7 @@ PACKAGESITE="http://pkg.cdn.trueos.org/unstable/amd64" SIGNATURE_TYPE=none ASSUM
 cd /mnt
 PLOGFILE=".log_pkginstall"
 pkgfile="${PACK_PROFILE}-packages"
-pkgaddcmd="pkg install -y "
+pkgaddcmd="pkg -d install -y "
 
 while read pkgc; do
   if [ -n "${pkgc}" ] ; then
@@ -167,7 +167,6 @@ done < $pkgfile
 /sbin/rc-update add dbus default
 /sbin/rc-update add hald default
 /sbin/rc-update add moused default
-/sbin/rc-update add slim default
 
 # deactivate  bsdstats_enable from rc.conf
 if [ -f /etc/rc.conf ] ; then
@@ -208,7 +207,7 @@ PACKAGESITE="http://pkg.cdn.trueos.org/unstable/amd64" SIGNATURE_TYPE=none ASSUM
 cd /mnt
 PLOGFILE=".log_pkginstall"
 pkgfile="${PACK_PROFILE}-packages"
-pkgaddcmd="pkg install -y "
+pkgaddcmd="pkg -d install -y "
 
 while read pkgc; do
   if [ -n "${pkgc}" ] ; then
@@ -239,7 +238,6 @@ done < $pkgfile
 /sbin/rc-update add dbus default
 /sbin/rc-update add hald default
 /sbin/rc-update add moused default
-/sbin/rc-update add slim default
 
 # deactivate  bsdstats_enable from rc.conf
 if [ -f /etc/rc.conf ] ; then
