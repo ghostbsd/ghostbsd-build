@@ -34,7 +34,7 @@ lightdm_setup()
 #    #echo "theme-name=Ambiance-Blackout-Flat-Aqua" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
 #    #echo "icon-theme-name=Vivacious-Colors-Full-Dark" >> ${BASEDIR}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
 #  fi
-  echo 'lightdm_enable="NO"' >> ${BASEDIR}/etc/rc.conf
+  echo '#lightdm_enable="NO"' >> ${BASEDIR}/etc/rc.conf
 }
 
 gdm_setup()
@@ -44,11 +44,11 @@ gdm_setup()
 
 case "${PACK_PROFILE}" in
   mate)
-    slim_setup
+    lightdm_setup
     ;;
   xfce)
     # lightdm_setup
-    slim_setup
+    lightdm_setup
     ;;
   gnome)
     gdm_setup

@@ -12,10 +12,8 @@ mate-installed-settings
 mate-live-settings
 station-tweak
 plank
-#lightdm-gtk-greeter
-#lightdm
-slim
-ghostbsd-slim-theme
+lightdm
+lightdm-gtk-greeter
 """
 
 settings="""

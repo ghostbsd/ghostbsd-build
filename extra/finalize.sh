@@ -15,20 +15,6 @@ if [ -z "${LOGFILE:-}" ] ; then
   exit 1
 fi
 
-cursor_theme()
-{
-# Set cursor theme instead of default from xorg
-# to do with alternatives if possible from common installed settings
-  if [ -e ${BASEDIR}/usr/local/lib/X11/icons/default ] ; then
-    rm ${BASEDIR}/usr/local/lib/X11/icons/default
-  fi
-  if [ -e ${BASEDIR}/usr/local/lib/X11/icons ] ; then
-    cd ${BASEDIR}/usr/local/lib/X11/icons
-    ln -sf $CURSOR_THEME default
-  fi
-  cd -
-}
-
 clean_desktop_files()
 {
 # Remove Gnome and Mate from ShowOnly in *.desktop
@@ -78,17 +64,16 @@ config_packages()
 
 dot_xinitrc()
 {
-echo 'exec $1' > ${BASEDIR}/home/ghostbsd/.xinitrc
-echo 'exec $1' > ${BASEDIR}/root/.xinitrc
+#echo 'exec $1' > ${BASEDIR}/home/ghostbsd/.xinitrc
+#echo 'exec $1' > ${BASEDIR}/root/.xinitrc
 
-#if [ "${PACK_PROFILE}" == "mate" ] ; then
-#  echo "exec ck-launch-session mate-session" > ${BASEDIR}/usr/home/ghostbsd/.xinitrc
-#  echo "exec ck-launch-session mate-session" > ${BASEDIR}/root/.xinitrc
-#elif [ "${PACK_PROFILE}" == "xfce" ] ; then
-#  echo "exec ck-launch-session startxfce4" > ${BASEDIR}/usr/home/ghostbsd/.xinitrc
-#  echo "exec ck-launch-session startxfce4" > ${BASEDIR}/root/.xinitrc
-#fi
-
+if [ "${PACK_PROFILE}" == "mate" ] ; then
+  echo "exec ck-launch-session mate-session" > ${BASEDIR}/usr/home/ghostbsd/.xinitrc
+  echo "exec ck-launch-session mate-session" > ${BASEDIR}/root/.xinitrc
+elif [ "${PACK_PROFILE}" == "xfce" ] ; then
+  echo "exec ck-launch-session startxfce4" > ${BASEDIR}/usr/home/ghostbsd/.xinitrc
+  echo "exec ck-launch-session startxfce4" > ${BASEDIR}/root/.xinitrc
+fi
 }
 
 set_doas()
@@ -96,8 +81,6 @@ set_doas()
   printf "permit nopass keepenv root
 permit :wheel
 permit nopass keepenv :wheel cmd netcardmgr
-permit nopass keepenv :wheel cmd detect-nics
-permit nopass keepenv :wheel cmd detect-wifi
 permit nopass keepenv :wheel cmd ifconfig
 permit nopass keepenv :wheel cmd service
 permit nopass keepenv :wheel cmd wpa_supplicant
@@ -166,7 +149,6 @@ vmware_guestd_enable="YES"' > ${BASEDIR}/etc/rc.conf.d/vmware.conf
 }
 
 clean_desktop_files
-cursor_theme
 default_ghostbsd_rc_conf
 set_sudoers
 set_doas
