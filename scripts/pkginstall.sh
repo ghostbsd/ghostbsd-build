@@ -136,7 +136,7 @@ PACKAGESITE="http://pkg.cdn.trueos.org/unstable/amd64" SIGNATURE_TYPE=none ASSUM
 cd /mnt
 PLOGFILE=".log_pkginstall"
 pkgfile="${PACK_PROFILE}-packages"
-pkgaddcmd="pkg install -y "
+pkgaddcmd="pkg -d install -y "
 
 while read pkgc; do
   if [ -n "${pkgc}" ] ; then
@@ -208,7 +208,7 @@ PACKAGESITE="http://pkg.cdn.trueos.org/unstable/amd64" SIGNATURE_TYPE=none ASSUM
 cd /mnt
 PLOGFILE=".log_pkginstall"
 pkgfile="${PACK_PROFILE}-packages"
-pkgaddcmd="pkg install -y "
+pkgaddcmd="pkg -d install -y "
 
 while read pkgc; do
   if [ -n "${pkgc}" ] ; then
