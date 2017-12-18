@@ -47,12 +47,6 @@ GHOSTBSD_CONF=${GHOSTBSD_CONF:-./conf/ghostbsd.conf}
 
 [ -f ${GHOSTBSD_CONF} ] && . ${GHOSTBSD_CONF}
 
-# XXX set $ARCH and mandatory variables here.
-if [ -z ${ARCH} ] 
-then
-ARCH=${ARCH:-`uname -p`}
-fi
-
 # Some variables can be passed to make only as environment, not as parameters.
 # usage: env $MAKE_ENV make $makeargs
 MAKE_ENV=${MAKE_ENV:-}

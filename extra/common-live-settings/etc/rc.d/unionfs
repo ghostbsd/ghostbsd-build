@@ -27,8 +27,7 @@ unionfs_start() {
     for dirs in usr var ; do
         mtree -PUer -q -p /dist/union/${dirs} < /etc/mtree/BSD.${dirs}.dist > /dev/null 2>&1
     done
-    # make dirs for with theirs permissions under home
-    mkdir -p /usr/home
+
     # make compat dir under /dist/union
     mkdir -p /dist/union/compat
 
