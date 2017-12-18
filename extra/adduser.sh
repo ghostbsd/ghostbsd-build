@@ -26,12 +26,8 @@ else
 fi
 
 cd ${BASEDIR}
-ln -sf /usr/home /home
+  ln -sf /usr/home /home
 cd -
-
-#if [ ! -d ${BASEDIR}/home/${GHOSTBSD_USER} ]; then
-#    mkdir -p ${BASEDIR}/home/${GHOSTBSD_USER}
-#fi
 
 set +e
 grep -q ^${GHOSTBSD_USER}: ${BASEDIR}/etc/master.passwd
