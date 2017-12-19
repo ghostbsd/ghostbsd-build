@@ -22,9 +22,6 @@ export ARCH
 USR_SIZE=5.6
 export USR_SIZE
 
-INSTALL_PORTS=${INSTALL_PORTS:-"audio/lame"}
-export INSTALL_PORTS
-
 EXTRA="common-live-setting common-base-setting gitpkg adduser finalize"
 export EXTRA
 
