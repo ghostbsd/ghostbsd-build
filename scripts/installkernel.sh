@@ -41,7 +41,7 @@ fi
 mkdir -p ${BASEDIR}/boot
 cp ${SRCDIR}/sys/${ARCH}/conf/GENERIC.hints ${BASEDIR}/boot/device.hints
 echo hint.psm.0.flags=0x1000 >> ${BASEDIR}/boot/device.hints
- 
+
 cd ${SRCDIR}
 
 makeargs="${MAKEOPT:-} ${MAKEJ_KERNEL:-} __MAKE_CONF=${MAKE_CONF} TARGET_ARCH=${ARCH} DESTDIR=${BASEDIR} SRCCONF=${SRC_CONF}"
@@ -60,7 +60,6 @@ install_fetched_kernel()
 echo "#### Installing kernel for ${ARCH} architecture ####" | tee -a ${LOGFILE}
 cd ${CACHEDIR}
 tar -yxf kernel.txz -C ${BASEDIR} --exclude=\*\.symbols
-#rm -f kernel.txz
 }
 
 update_freebsd()
@@ -142,7 +141,7 @@ AllowDelete yes
 # BackupKernelDir /boot/kernel.old
 
 # When backing up a kernel also back up debug symbol files?
-# BackupKernelSymbolFiles no 
+# BackupKernelSymbolFiles no
 EOF
 
 freebsd-update  -b ${BASEDIR} -f ${BASEDIR}/fbsdupdate.conf --not-running-from-cron fetch install

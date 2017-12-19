@@ -24,15 +24,6 @@ if [ -n "${NO_BUILDWORLD:-}" ]; then
     return
 fi
 
-# Set MAKE_CONF variable if it's not already set.
-if [ -z "${MAKE_CONF:-}" ]; then
-    if [ -n "${MINIMAL:-}" ]; then
-	MAKE_CONF=${LOCALDIR}/conf/make.conf.minimal
-    else
-	MAKE_CONF=${LOCALDIR}/conf/make.conf
-    fi
-fi
-
 cd $SRCDIR
 
 unset EXTRA
