@@ -33,7 +33,8 @@ unionfs_start() {
 
     # mount uniondirs under /dist/union
     while read uniondir; do
-        mount_unionfs -o noatime -o copymode=transparent /dist/union/${uniondir} /${uniondir}
+        # mount_unionfs -o noatime -o copymode=transparent /dist/union/${uniondir} /${uniondir}
+        mount_unionfs /dist/union/${uniondir} /${uniondir}
     done < /dist/uniondirs
 
     # fix permissions for setuid files
