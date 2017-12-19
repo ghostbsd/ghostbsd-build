@@ -25,19 +25,19 @@ touch ${PKGFILE}
 
 # Search main file package for include dependecies
 # and build an depends file ( depends )
-awk '/^deps/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-depends
+awk '/^deps/,/^"""/' ${LOCALDIR}/conf/packages/${PACK_PROFILE} | grep -v '"""' | grep -v '#' > /tmp/${PACK_PROFILE}-depends
 
 # If exist an old .packages file removes it
 rm -f /tmp/${PACK_PROFILE}-packages
 
 set +e
 # Reads packages from packages profile
-awk '/^packages/,/^"""/' ${LOCALDIR}/packages/${PACK_PROFILE} > /tmp/${PACK_PROFILE}-package
+awk '/^packages/,/^"""/' ${LOCALDIR}/conf/packages/${PACK_PROFILE} > /tmp/${PACK_PROFILE}-package
 
 # Reads depends file and search for packages entries in each file from depends
 # list, then append all packages found in packages file
 while read pkgs ; do
-  awk '/^packages/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-package
+  awk '/^packages/,/^"""/' ${LOCALDIR}/conf/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-package
 done < /tmp/${PACK_PROFILE}-depends
 
 # Removes """ and # from temporary package file
@@ -46,13 +46,13 @@ cat /tmp/${PACK_PROFILE}-package | grep -v '"""' | grep -v '#' > /tmp/${PACK_PRO
 # Reads depends file and search for settings entries in each file from depends
 # list, then append all packages found in packages file
 while read pkgs ; do
-  awk '/^settings/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-setting
+  awk '/^settings/,/^"""/' ${LOCALDIR}/conf/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-setting
 done < /tmp/${PACK_PROFILE}-depends
 
 # search for $ARCH specific packages if an $ARCH section is found in each file from depends
 # lost, then append all packages found in packages file
 while read pkgs ; do
-  awk '/^'${ARCH}'/,/^"""/' ${LOCALDIR}/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-package
+  awk '/^'${ARCH}'/,/^"""/' ${LOCALDIR}/conf/packages/packages.d/$pkgs  >> /tmp/${PACK_PROFILE}-package
 done < /tmp/${PACK_PROFILE}-depends
 
 # Removes """ and # from temporary package file
