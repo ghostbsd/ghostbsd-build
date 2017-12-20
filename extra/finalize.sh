@@ -41,27 +41,6 @@ set_sudoers()
   sed -i "" -e 's/# %sudo/%sudo/g' ${BASEDIR}/usr/local/etc/sudoers
 }
 
-config_packages()
-{
-  if [ -e /usr/local/bin/ntfs-3g ]; then
-    if [ ! -e /sbin/mount_ntfs ]; then
-      ln -s /usr/local/bin/ntfs-3g /sbin/mount_ntfs
-    fi
-  fi
-  if [ -e /usr/local/bin/ext4fuse ]; then
-    if [ ! -e /sbin/mount_ext4fs ]; then
-     ln -s /usr/local/bin/ext4fuse /sbin/mount_ext4fs
-    fi
-  fi
-  if [ -d /usr/local/lib/virtuoso ] ; then
-    # copy virtuoso config file
-    cp /usr/local/lib/virtuoso/db/virtuoso.ini.sample /usr/local/lib/virtuoso/db/virtuoso.ini
-    # enable virtuoso in rc.conf
-    echo 'virtuoso_enable="YES"' >> /etc/rc.conf
-    echo 'virtuoso_config="/usr/local/lib/virtuoso/db/virtuoso.ini"' >> /etc/rc.conf
-  fi
-}
-
 dot_xinitrc()
 {
 #echo 'exec $1' > ${BASEDIR}/home/ghostbsd/.xinitrc
@@ -150,7 +129,6 @@ clean_desktop_files
 default_ghostbsd_rc_conf
 set_sudoers
 set_doas
-config_packages
 dot_xinitrc
 # reinstall_LigthDM
 enable_sddm

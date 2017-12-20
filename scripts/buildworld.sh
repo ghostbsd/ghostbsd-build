@@ -15,24 +15,6 @@ if [ -z "${LOGFILE:-}" ]; then
     exit 1
 fi
 
-build_world()
-{
-echo "#### Building world for ${ARCH} architecture ####"
-
-if [ -n "${NO_BUILDWORLD:-}" ]; then
-    echo "NO_BUILDWORLD set, skipping build" | tee -a ${LOGFILE}
-    return
-fi
-
-cd $SRCDIR
-
-unset EXTRA
-
-makeargs="${MAKEOPT:-} ${MAKEJ_WORLD:-} __MAKE_CONF=${MAKE_CONF} TARGET_ARCH=${ARCH} SRCCONF=${SRC_CONF}"
-echo $makeargs
-sleep 10
-(env $MAKE_ENV script -aq $LOGFILE make ${makeargs:-} buildworld || print_error;) | grep '^>>>'
-}
 
 fetch_freebsd()
 {
@@ -57,11 +39,7 @@ fi
 
 mkdir -p ${BASEDIR}
 
-if [ -n "${FETCH_FREEBSDBASE:-}" ]; then
-    fetch_freebsd
-else
-    build_world
-fi
+fetch_freebsd
 
 set -e
 cd $LOCALDIR

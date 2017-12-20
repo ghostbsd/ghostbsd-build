@@ -66,29 +66,6 @@ mkdir -p ${MOUNTPOINT}
 mount -o noatime /dev/${DEVICE} ${MOUNTPOINT}
 }
 
-install_built_world()
-{
-echo "#### Installing world for ${ARCH} architecture ####"
-
-# Set MAKE_CONF variable if it's not already set.
-if [ -z "${MAKE_CONF:-}" ]; then
-    if [ -n "${MINIMAL:-}" ]; then
-	MAKE_CONF=${LOCALDIR}/conf/make.conf.minimal
-    else
-	MAKE_CONF=${LOCALDIR}/conf/make.conf
-    fi
-fi
-
-cd ${SRCDIR}
-
-makeargs="${MAKEOPT:-} ${MAKEJ_WORLD:-} __MAKE_CONF=${MAKE_CONF} TARGET_ARCH=${ARCH} DESTDIR=${BASEDIR} SRCCONF=${SRC_CONF}"
-(env $MAKE_ENV script -aq $LOGFILE make ${makeargs:-} installworld || print_error;) | grep '^>>>'
-
-makeargs="${MAKEOPT:-} __MAKE_CONF=${MAKE_CONF} TARGET_ARCH=${ARCH} DESTDIR=${BASEDIR} SRCCONF=${SRC_CONF}"
-set +e
-(env $MAKE_ENV script -aq $LOGFILE make ${makeargs:-} distribution || print_error;) | grep '^>>>'
-}
-
 install_fetched_freebsd()
 {
 echo "#### Installing world for ${ARCH} architecture ####"
@@ -166,12 +143,7 @@ fi
 
 # makes initial memory device to install over it
 mkmd_device
-
-if [ -n "${FETCH_FREEBSDBASE:-}" ]; then
-    install_fetched_freebsd
-else
-    install_built_world
-fi
+install_fetched_freebsd
 
 if [ ! -d ${BASEDIR}/usr/local/etc/default ]; then
     mkdir -p ${BASEDIR}/usr/local/etc/default
@@ -184,7 +156,7 @@ if ${USE_JAILS}; then
     jail_list_add
     if [ -d "/usr/local/share/trueos" ] ; then
         service jail.$jail_name start
-    else   
+    else
         service jail onestart $jail_name
     fi
 fi
