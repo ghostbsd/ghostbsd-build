@@ -1,0 +1,18 @@
+description="""
+Print utilities/packages
+"""
+deps="""
+"""
+packages="""
+cups
+cups-smb-backend
+cups-filters
+gnome-cups-manager
+foomatic-db
+foomatic-db-engine
+foomatic-db-hpijs
+"""
+
+settings = """
+cups
+"""

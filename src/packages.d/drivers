@@ -1,0 +1,7 @@
+desc = """
+	drivers
+"""
+packages="""
+nvidia-driver
+nvidia-xconfig
+"""

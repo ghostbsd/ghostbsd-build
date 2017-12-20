@@ -1,0 +1,23 @@
+desc = """
+Mate desktop environment
+"""
+
+packages = """
+cups-pk-helper
+dconf-editor
+gnome-keyring
+mate
+mate-screensaver
+mate-installed-settings
+mate-live-settings
+station-tweak
+plank
+#lightdm-gtk-greeter
+#lightdm
+#slim
+#ghostbsd-slim-theme
+sddm
+"""
+
+settings="""
+"""

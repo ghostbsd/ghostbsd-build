@@ -1,0 +1,13 @@
+desc = """
+Internet common tools
+"""
+packages="""
+dhcpcd
+firefox-i18n
+thunderbird-i18n
+ghostbsd-bug-report
+ghostbsd-irc
+networkmgr
+fbsdupdatecheck
+fbsdpkgupdate
+"""
