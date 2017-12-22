@@ -55,9 +55,47 @@ ABI="FreeBSD:`uname -r | cut -d '.' -f 1`:`uname -m`"
   umount -f ${release}/packages
 }
 
+install_packages()
+{
+  echo "nameserver 8.8.8.8" > ${release}/etc/resolv.conf
+  pkg-static -c ${release} install -y xorg
+  pkg-static -c ${release} install -y lightdm
+  pkg-static -c ${release} install -y lightdm-gtk-greeter
+  pkg-static -c ${release} install -y mate
+  pkg-static -c ${release} install -y mate-installed-settings
+  pkg-static -c ${release} install -y gbi
+  rm ${release}/etc/resolv.conf
+}
+
+
 install_overlay()
 {
   cp -R ${cwd}/overlay/ ${release}
+}
+
+add_user()
+{
+GHOSTBSD_USER="ghostbsd"
+grep -q ^${GHOSTBSD_USER}: ${release}/etc/master.passwd
+
+if [ $? -ne 0 ]; then
+    chroot ${release} pw useradd ${GHOSTBSD_USER} \
+         -c "Live User" -d "/home/${GHOSTBSD_USER}" \
+        -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
+else
+    chroot ${release} pw usermod ${GHOSTBSD_USER} \
+        -c "Live User" -d "/home/${GHOSTBSD_USER}" \
+        -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
+fi
+}
+
+rc_update()
+{
+  chroot ${release} rc-update add moused boot
+  chroot ${release} rc-update add dbus default
+  chroot ${release} rc-update add hald default
+  chroot ${release} rc-update add lightdm default
+  chroot ${release} rc-update -u
 }
 
 uzip () {
