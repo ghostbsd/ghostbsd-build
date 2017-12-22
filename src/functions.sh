@@ -64,6 +64,7 @@ install_packages()
   pkg-static -c ${release} install -y mate
   pkg-static -c ${release} install -y mate-installed-settings
   pkg-static -c ${release} install -y gbi
+  pkg-static -c ${release} install -y pc-sysinstall
   rm ${release}/etc/resolv.conf
 }
 
