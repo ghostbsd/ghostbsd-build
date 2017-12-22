@@ -12,31 +12,23 @@ fi
 # Set the current working directory
 cwd="`realpath | sed 's|/scripts||g'`" ; export cwd
 
-create_workspace()
+workspace()
 {
   if [ ! -d "${livecd}" ] ; then
     mkdir ${livecd} ${base} ${packages}
   fi
-}
-
-clean_workspace()
-{
   chflags -R noschg ${livecd} >/dev/null 2>/dev/null
   rm -rf ${livecd} >/dev/null 2>/dev/null
 }
 
-fetch_base()
+base()
 {
   if [ ! -f "${base}/fbsd-distrib.txz" ] ; then
     cd ${base}
     fetch http://pkg.cdn.trueos.org/packages/master/amd64-base/fbsd-distrib.txz
     pkg fetch -r trueos-base -a -y -o ${base}
   fi
-}
-
-install_base()
-{
-ABI="FreeBSD:`uname -r | cut -d '.' -f 1`:`uname -m`"
+  ABI="FreeBSD:`uname -r | cut -d '.' -f 1`:`uname -m`"
   export ABI
   for mpnt in dev compat mnt proc root var/run
   do
@@ -55,7 +47,7 @@ ABI="FreeBSD:`uname -r | cut -d '.' -f 1`:`uname -m`"
   umount -f ${release}/packages
 }
 
-install_packages()
+packages()
 {
   echo "nameserver 8.8.8.8" > ${release}/etc/resolv.conf
   pkg-static -c ${release} install -y xorg
@@ -69,12 +61,12 @@ install_packages()
 }
 
 
-install_overlay()
+overlay()
 {
   cp -R ${cwd}/overlay/ ${release}
 }
 
-add_user()
+user()
 {
 GHOSTBSD_USER="ghostbsd"
 grep -q ^${GHOSTBSD_USER}: ${release}/etc/master.passwd
@@ -90,7 +82,7 @@ else
 fi
 }
 
-rc_update()
+rc()
 {
   chroot ${release} rc-update add moused boot
   chroot ${release} rc-update add dbus default
