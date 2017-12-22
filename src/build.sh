@@ -8,7 +8,8 @@
 #fetch_base
 #install_base
 #install_overlay
-uzip
-ramdisk
-boot
-make_iso
+#uzip
+#ramdisk
+#boot
+image
+#make_iso

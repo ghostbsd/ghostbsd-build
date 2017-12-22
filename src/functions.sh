@@ -94,6 +94,14 @@ boot () {
 	install -o root -g wheel -m 644 "loader.conf" "${cdroot}/boot/"
 }
 
+image() 
+{
+  cd "${cdroot}"
+  mkisofs -iso-level 4 -R -l -ldots -allow-lowercase -allow-multidot -V "GhostBSD" -o "/tmp/livecd/ghostbsd.iso" -no-emul-boot -b boot/cdboot .
+}
+
+		
+
 make_iso()
 {
   # Use GRUB to create the hybrid DVD/USB image
