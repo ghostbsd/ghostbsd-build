@@ -14,11 +14,13 @@ cwd="`realpath | sed 's|/scripts||g'`" ; export cwd
 
 workspace()
 {
+  if [ -d "${livecd}" ] ;then
+    chflags -R noschg ${livecd} >/dev/null 2>/dev/null
+    rm -rf ${livecd} >/dev/null 2>/dev/null
+  fi
   if [ ! -d "${livecd}" ] ; then
     mkdir ${livecd} ${base} ${packages}
   fi
-  chflags -R noschg ${livecd} >/dev/null 2>/dev/null
-  rm -rf ${livecd} >/dev/null 2>/dev/null
 }
 
 base()
