@@ -78,16 +78,8 @@ else
 fi
 }
 
-rc()
+uzip () 
 {
-  chroot ${release} rc-update add moused boot
-  chroot ${release} rc-update add dbus default
-  chroot ${release} rc-update add hald default
-  chroot ${release} rc-update add lightdm default
-  chroot ${release} rc-update -u
-}
-
-uzip () {
 	install -o root -g wheel -m 755 -d "${cdroot}"
 	mkdir "${cdroot}/data"
 	makefs "${cdroot}/data/system.ufs" "${release}"
@@ -95,7 +87,8 @@ uzip () {
 	rm -f "${cdroot}/data/system.ufs"
 }
 
-ramdisk () {
+ramdisk () 
+{
 	ramdisk_root="${cdroot}/data/ramdisk"
 	mkdir -p "${ramdisk_root}"
 	cd "${release}"
@@ -111,7 +104,8 @@ ramdisk () {
 	rm -rf "${ramdisk_root}"
 }
 
-boot () {
+boot () 
+{
 	cd "${release}"
 	tar -cf - --exclude boot/kernel boot | tar -xf - -C "${cdroot}"
 	for kfile in kernel geom_uzip.ko nullfs.ko tmpfs.ko unionfs.ko; do
@@ -125,23 +119,4 @@ image()
 {
   cd "${cdroot}"
   mkisofs -iso-level 4 -R -l -ldots -allow-lowercase -allow-multidot -V "GhostBSD" -o "/tmp/livecd/ghostbsd.iso" -no-emul-boot -b boot/cdboot .
-}
-
-		
-
-make_iso()
-{
-  # Use GRUB to create the hybrid DVD/USB image
-  echo "Creating ISO..."
-  cat << EOF >/tmp/xorriso
-ARGS=\`echo \$@ | sed 's|-hfsplus ||g'\`
-xorriso \$ARGS
-EOF
-  chmod 755 /tmp/xorriso
-  grub-mkrescue --xorriso=/tmp/xorriso -o ${livecd}/ghostbsd.iso ${cdroot} -- -volid ${vol}
-  if [ $? -ne 0 ] ; then
-    echo "Failed running grub-mkrescue"
-    exit 1
-  fi
-echo "### ISO created ###"
 }
