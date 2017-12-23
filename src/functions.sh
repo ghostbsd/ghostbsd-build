@@ -23,6 +23,11 @@ workspace()
   fi
 }
 
+repos()
+{
+  cp -R ${cwd}/repos/ ${release}
+}
+
 base()
 {
   cd ${base}
@@ -39,12 +44,6 @@ packages()
 {
   pkg-static -c ${release} install -y trueos-desktop 
   rm ${release}/etc/resolv.conf
-}
-
-
-repos()
-{
-  cp -R ${cwd}/repos/ ${release}
 }
 
 user()
