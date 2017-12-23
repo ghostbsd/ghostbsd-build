@@ -57,10 +57,6 @@ if [ $? -ne 0 ]; then
          -c "Live User" -d "/home/${GHOSTBSD_USER}" \
         -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
 else
-	ot@joe-desktop] /tmp/li
-	[root@joe-desktop] /tmp/li
-	[root@joe-desktop] /tmp/li
-	[root@joe-desktop] /tmp/li
     chroot ${release} pw usermod ${GHOSTBSD_USER} \
         -c "Live User" -d "/home/${GHOSTBSD_USER}" \
         -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
