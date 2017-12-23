@@ -25,41 +25,26 @@ workspace()
 
 base()
 {
-  if [ ! -f "${base}/fbsd-distrib.txz" ] ; then
-    cd ${base}
-    fetch http://pkg.cdn.trueos.org/packages/master/amd64-base/fbsd-distrib.txz
-    pkg fetch -r trueos-base -a -y -o ${base}
-  fi
-  ABI="FreeBSD:`uname -r | cut -d '.' -f 1`:`uname -m`"
-  export ABI
-  for mpnt in dev compat mnt proc root var/run
-  do
-    if [ ! -d "${release}/$mpnt" ] ; then
-      mkdir -p ${release}/$mpnt
-    fi
-  done
-  mkdir -p ${release}/packages
-  mount_nullfs ${base} ${release}/packages
-  tar -zxvf ${base}/fbsd-distrib.txz -C ${release} etc
-  for pkg in `ls ${release}/packages/FreeBSD-*`
-  do
-    inspkg=$(basename $pkg)
-    pkg -c ${release} add -f /packages/$inspkg
-  done
-  umount -f ${release}/packages
+  cd ${base}
+  fetch http://download.trueos.org/master/amd64/dist/base.txz
+  fetch http://download.trueos.org/master/amd64/dist/kernel.txz
+  tar -zxvf ${base}/base.txz -C ${release}
+  tar -zxvf ${base}/kernel.txz -C ${release}
+  cp /etc/resolv.conf ${release}/etc/resolv.conf
+  pkg-static -c ${release} update -r trueos-base
+  pkg-static -c ${release} install -y -g 'FreeBSD-*'
 }
 
 packages()
 {
-  echo "nameserver 8.8.8.8" > ${release}/etc/resolv.conf
   pkg-static -c ${release} install -y trueos-desktop 
   rm ${release}/etc/resolv.conf
 }
 
 
-overlay()
+repos()
 {
-  cp -R ${cwd}/overlay/ ${release}
+  cp -R ${cwd}/repos/ ${release}
 }
 
 user()
@@ -72,6 +57,10 @@ if [ $? -ne 0 ]; then
          -c "Live User" -d "/home/${GHOSTBSD_USER}" \
         -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
 else
+	ot@joe-desktop] /tmp/li
+	[root@joe-desktop] /tmp/li
+	[root@joe-desktop] /tmp/li
+	[root@joe-desktop] /tmp/li
     chroot ${release} pw usermod ${GHOSTBSD_USER} \
         -c "Live User" -d "/home/${GHOSTBSD_USER}" \
         -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none

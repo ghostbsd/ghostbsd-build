@@ -4,7 +4,7 @@
 . functions.sh
 
 workspace
-overlay
+repos
 base
 packages
 user
