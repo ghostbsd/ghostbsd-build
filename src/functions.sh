@@ -49,9 +49,8 @@ repos()
 
 user()
 {
-  GHOSTBSD_USER="ghostbsd"
-  chroot ${release} pw useradd ${GHOSTBSD_USER} \
-  -c "Live User" -d "/home/${GHOSTBSD_USER}" \
+  chroot ${release} pw useradd liveuser \
+  -c "Live User" -d "/home/liveuser" \
   -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
 }
 
