@@ -52,13 +52,7 @@ base()
 packages()
 {
   echo "nameserver 8.8.8.8" > ${release}/etc/resolv.conf
-  pkg-static -c ${release} install -y xorg
-  pkg-static -c ${release} install -y lightdm
-  pkg-static -c ${release} install -y lightdm-gtk-greeter
-  pkg-static -c ${release} install -y mate
-  pkg-static -c ${release} install -y mate-installed-settings
-  pkg-static -c ${release} install -y gbi
-  pkg-static -c ${release} install -y pc-sysinstall
+  pkg-static -c ${release} install -y trueos-desktop 
   rm ${release}/etc/resolv.conf
 }
 
