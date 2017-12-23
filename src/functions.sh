@@ -49,18 +49,10 @@ repos()
 
 user()
 {
-GHOSTBSD_USER="ghostbsd"
-grep -q ^${GHOSTBSD_USER}: ${release}/etc/master.passwd
-
-if [ $? -ne 0 ]; then
-    chroot ${release} pw useradd ${GHOSTBSD_USER} \
-         -c "Live User" -d "/home/${GHOSTBSD_USER}" \
-        -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
-else
-    chroot ${release} pw usermod ${GHOSTBSD_USER} \
-        -c "Live User" -d "/home/${GHOSTBSD_USER}" \
-        -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
-fi
+  GHOSTBSD_USER="ghostbsd"
+  chroot ${release} pw useradd ${GHOSTBSD_USER} \
+  -c "Live User" -d "/home/${GHOSTBSD_USER}" \
+  -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
 }
 
 uzip () 
