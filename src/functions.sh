@@ -2,9 +2,31 @@
 
 # Only run as superuser
 if [ "$(id -u)" != "0" ]; then
-   echo "This script must be run as root" 1>&2
-   exit 1
+  echo "This script must be run as root" 1>&2
+  exit 1
 fi
+
+# We must choose a desktop
+desktop=$1
+if [ -z "${desktop}" ] ; then
+  echo "You must specify a desktop!"
+  echo "Choices are lumina, mate, xfce"
+  echo "Usage: build.sh mate"
+fi
+
+case $desktop in
+     lumina) 
+            export desktop="lumina";;
+       mate) 
+            export desktop="mate";;
+       xfce) 
+            export desktop="xfce";;
+          *)
+            echo "${desktop} is not a supported desktop!"
+	    echo "Choices are lumina, mate, xfce"	
+	    echo "Usage: build.sh mate"
+	    exit 1
+esac
 
 # Source our config
 . build.cfg
@@ -43,16 +65,42 @@ base()
 packages()
 {
   cp /etc/resolv.conf ${release}/etc/resolv.conf
-  cat ${cwd}/packages/lumina | xargs pkg-static -c ${release} install -y
-  # cat ${cwd}/packages/mate | xargs pkg-static -c ${release} install -y
-  # cat ${cwd}/packages/xfce | xargs pkg-static -c ${release} install -y
+  case $desktop in
+  	lumina) 
+	       cat ${cwd}/packages/lumina | xargs pkg-static -c ${release} install -y ;;
+  	  mate)
+	       cat ${cwd}/packages/mate | xargs pkg-static -c ${release} install -y ;;
+  	  xfce) 
+	       cat ${cwd}/packages/xfce | xargs pkg-static -c ${release} install -y ;;
+  	     *) 
+	       exit 1
+  esac
   rm ${release}/etc/resolv.conf
 }
 
 rc()
 {
-  chroot ${release} /sbin/rc-update add trueos-video default
-  chroot ${release} /sbin/rc-update -u
+  case $desktop in
+  lumina)
+  	 chroot ${release} /sbin/rc-update add trueos-video default
+  	 chroot ${release} /sbin/rc-update -u ;;
+    mate)
+	 chroot ${release} /sbin/rc-update add moused boot
+	 chroot ${release} /sbin/rc-update add dbus default
+	 chroot ${release} /sbin/rc-update add hald default
+	 chroot ${release} /sbin/rc-update add lightdm default
+	 chroot ${release} /sbin/rc-update add trueos-video default
+         chroot ${release} /sbin/rc-update -u ;;	
+    xfce)
+  	 chroot ${release} /sbin/rc-update add moused boot
+	 chroot ${release} /sbin/rc-update add dbus default
+	 chroot ${release} /sbin/rc-update add hald default
+	 chroot ${release} /sbin/rc-update add lightdm default
+	 chroot ${release} /sbin/rc-update add trueos-video default
+	 chroot ${release} /sbin/rc-update -u ;;
+       *)
+	 exit 1
+  esac
 }
 
 user()
@@ -109,6 +157,9 @@ boot()
 	done
 	cd "${cwd}"
 	install -o root -g wheel -m 644 "loader.conf" "${cdroot}/boot/"
+	if [ ! -d "${cdroot}/boot/grub" ] ; then
+          mkdir ${cdroot}/boot/grub
+        fi
 	install -o root -g wheel -m 644 "grub.cfg" "${cdroot}/boot/grub/"
 }
 
