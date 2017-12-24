@@ -44,7 +44,8 @@ packages()
 {
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   cat ${cwd}/packages/lumina | xargs pkg-static -c ${release} install -y
-  cat ${cwd}/packages/mate | xargs pkg-static -c ${release} install -y 
+  # cat ${cwd}/packages/mate | xargs pkg-static -c ${release} install -y
+  # cat ${cwd}/packages/xfce | xargs pkg-static -c ${release} install -y
   rm ${release}/etc/resolv.conf
 }
 
