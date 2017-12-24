@@ -7,8 +7,9 @@ workspace
 repos
 base
 packages
-rc
 user
+xorg
+rc
 uzip
 ramdisk
 boot

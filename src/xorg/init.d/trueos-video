@@ -1,0 +1,10 @@
+#!/sbin/openrc-run
+
+name="trueos-video"
+command="/usr/local/bin/trueos-video"
+
+depend()
+{
+	provide trueos-video
+	before pcdm lightdm sddm slim
+}

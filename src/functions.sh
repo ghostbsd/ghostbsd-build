@@ -51,7 +51,8 @@ packages()
 
 rc()
 {
-  chroot ${release} /sbin/rc-update -u 
+  chroot ${release} /sbin/rc-update add trueos-video default
+  chroot ${release} /sbin/rc-update -u
 }
 
 user()
@@ -59,6 +60,18 @@ user()
   chroot ${release} pw useradd liveuser \
   -c "Live User" -d "/home/liveuser" \
   -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
+}
+
+xorg()
+{
+  install -o root -g wheel -m 755 "${cwd}/xorg/bin/trueos-video" "${release}/usr/local/bin/"
+  install -o root -g wheel -m 755 "${cwd}/xorg/init.d/trueos-video" "${release}/usr/local/etc/init.d/"
+  if [ ! -d "${release}/usr/local/etc/X11/cardDetect/" ] ; then
+    mkdir -p ${release}/usr/local/etc/X11/cardDetect
+  fi
+  install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.vesa" "${release}/usr/local/etc/X11/cardDetect/"
+  install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.scfb" "${release}/usr/local/etc/X11/cardDetect/"
+  install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.virtualbox" "${release}/usr/local/etc/X11/cardDetect/"
 }
 
 uzip() 
@@ -96,7 +109,7 @@ boot()
 	done
 	cd "${cwd}"
 	install -o root -g wheel -m 644 "loader.conf" "${cdroot}/boot/"
-	install -o root -g wheel -m 644 "grub.cfg" "${cdroot}/boot/grub"
+	install -o root -g wheel -m 644 "grub.cfg" "${cdroot}/boot/grub/"
 }
 
 image() 
