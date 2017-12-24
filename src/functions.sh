@@ -51,7 +51,7 @@ packages()
 rc()
 {
   chroot ${release} /sbin/rc-update -u 
-{
+}
 
 user()
 {
