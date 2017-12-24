@@ -101,7 +101,6 @@ mate-installed-settings
 mate-live-settings
 station-tweak
 plank
-sddm
 grub2-efi
 lightdm-gtk-greeter
 pkg
