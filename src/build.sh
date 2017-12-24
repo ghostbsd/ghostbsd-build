@@ -3,12 +3,12 @@
 # Source our functions
 . functions.sh
 
-#workspace
-#repos
-#base
+workspace
+repos
+base
 packages
 rc
-#user
+user
 uzip
 ramdisk
 boot
