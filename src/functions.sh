@@ -42,10 +42,16 @@ base()
 
 packages()
 {
-  pkg-static -c ${release} install -y trueos-desktop 
-  pkg-static -c ${release} install -y qterminal
+  cp /etc/resolv.conf ${release}/etc/resolv.conf
+  cat ${cwd}/packages/lumina | xargs pkg-static -c ${release} install -y
+  cat ${cwd}/packages/mate | xargs pkg-static -c ${release} install -y 
   rm ${release}/etc/resolv.conf
 }
+
+rc()
+{
+  chroot ${release} /sbin/rc-update -u 
+{
 
 user()
 {
@@ -54,7 +60,7 @@ user()
   -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
 }
 
-uzip () 
+uzip() 
 {
 	install -o root -g wheel -m 755 -d "${cdroot}"
 	mkdir "${cdroot}/data"
@@ -63,7 +69,7 @@ uzip ()
 	rm -f "${cdroot}/data/system.ufs"
 }
 
-ramdisk () 
+ramdisk() 
 {
 	ramdisk_root="${cdroot}/data/ramdisk"
 	mkdir -p "${ramdisk_root}"
@@ -80,7 +86,7 @@ ramdisk ()
 	rm -rf "${ramdisk_root}"
 }
 
-boot () 
+boot() 
 {
 	cd "${release}"
 	tar -cf - --exclude boot/kernel boot | tar -xf - -C "${cdroot}"

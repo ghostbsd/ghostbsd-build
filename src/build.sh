@@ -7,6 +7,7 @@ workspace
 repos
 base
 packages
+rc
 user
 uzip
 ramdisk
