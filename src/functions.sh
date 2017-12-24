@@ -89,10 +89,15 @@ boot ()
 	done
 	cd "${cwd}"
 	install -o root -g wheel -m 644 "loader.conf" "${cdroot}/boot/"
+	install -o root -g wheel -m 644 "grub.cfg" "${cdroot}/boot/grub"
 }
 
 image() 
 {
-  cd "${cdroot}"
-  mkisofs -iso-level 4 -R -l -ldots -allow-lowercase -allow-multidot -V "GhostBSD" -o "/tmp/livecd/ghostbsd.iso" -no-emul-boot -b boot/cdboot .
+  cat << EOF >/tmp/xorriso
+ARGS=\`echo \$@ | sed 's|-hfsplus ||g'\`
+xorriso \$ARGS
+EOF
+  chmod 755 /tmp/xorriso
+  grub-mkrescue --xorriso=/tmp/xorriso -o ${livecd}/ghostbsd.iso ${cdroot} -- -volid ${vol}
 }
