@@ -43,6 +43,7 @@ base()
 packages()
 {
   pkg-static -c ${release} install -y trueos-desktop 
+  pkg-static -c ${release} install -y qterminal
   rm ${release}/etc/resolv.conf
 }
 
