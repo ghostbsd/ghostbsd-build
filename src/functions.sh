@@ -75,6 +75,7 @@ packages()
   	     *) 
 	       exit 1
   esac
+  pkg-static -c ${release} clean -a -y
   rm ${release}/etc/resolv.conf
 }
 
