@@ -83,6 +83,7 @@ rc()
 {
   case $desktop in
   lumina)
+	 chroot ${release} /sbin/rc-update delete ipfw boot
   	 chroot ${release} /sbin/rc-update add trueos-video default
   	 chroot ${release} /sbin/rc-update -u ;;
     mate)
