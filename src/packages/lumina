@@ -1,3 +1,12 @@
 emulators/virtualbox-ose-additions
 ports-mgmt/pkg
 misc/trueos-desktop
+www/qupzilla-qt5
+mail/trojita
+multimedia/vlc
+graphics/phototonic
+misc/trueos-meta-hunspell
+x11/qterminal
+print/cups-pdf 
+print/cups-filters
+print/gutenprint
