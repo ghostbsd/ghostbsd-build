@@ -89,14 +89,14 @@ rc()
 	 chroot ${release} /sbin/rc-update add moused boot
 	 chroot ${release} /sbin/rc-update add dbus default
 	 chroot ${release} /sbin/rc-update add hald default
-	 chroot ${release} /sbin/rc-update add lightdm default
+	 chroot ${release} /sbin/rc-update add pcdm default
 	 chroot ${release} /sbin/rc-update add trueos-video default
          chroot ${release} /sbin/rc-update -u ;;	
     xfce)
   	 chroot ${release} /sbin/rc-update add moused boot
 	 chroot ${release} /sbin/rc-update add dbus default
 	 chroot ${release} /sbin/rc-update add hald default
-	 chroot ${release} /sbin/rc-update add lightdm default
+	 chroot ${release} /sbin/rc-update add pcdm default
 	 chroot ${release} /sbin/rc-update add trueos-video default
 	 chroot ${release} /sbin/rc-update -u ;;
        *)

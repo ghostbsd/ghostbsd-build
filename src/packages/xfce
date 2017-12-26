@@ -107,8 +107,6 @@ orage
 plank
 ristretto
 shared-mime-info
-lightdm
-lightdm-gtk-greeter 
 thunar
 trayer
 xfce4-tumbler
@@ -152,5 +150,5 @@ xfce4-whiskermenu-plugin
 xfce-installed-settings
 xfce-live-settings
 grub2-efi
+pcdm
 pkg
-lightdm-gtk-greeter
