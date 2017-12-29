@@ -17,17 +17,17 @@ fi
 vol=${desktop}
 
 case $desktop in
-     lumina) 
+     lumina)
             export desktop="lumina";;
-       mate) 
+       mate)
             export desktop="mate";;
-       xfce) 
+       xfce)
             export desktop="xfce";;
           *)
             echo "${desktop} is not a supported desktop!"
-	    echo "Choices are lumina, mate, xfce"	
-	    echo "Usage: build.sh mate"
-	    exit 1
+            echo "Choices are lumina, mate, xfce"
+            echo "Usage: build.sh mate"
+            exit 1
 esac
 
 # Source our config
@@ -68,16 +68,20 @@ packages()
 {
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   case $desktop in
-  	lumina) 
+  	lumina)
 	       cat ${cwd}/packages/lumina | xargs pkg-static -c ${release} install -y ;;
   	  mate)
 	       cat ${cwd}/packages/mate | xargs pkg-static -c ${release} install -y ;;
-  	  xfce) 
+  	  xfce)
 	       cat ${cwd}/packages/xfce | xargs pkg-static -c ${release} install -y ;;
-  	     *) 
+  	     *)
 	       exit 1
   esac
   pkg-static -c ${release} clean -a -y
+  # remove cache and logs
+  rm -f  ${BASEDIR}/var/cache/pkg/*
+  rm -Rf ${BASEDIR}/tmp/*
+  rm -Rf ${BASEDIR}/var/log/*
   rm ${release}/etc/resolv.conf
 }
 
@@ -85,25 +89,25 @@ rc()
 {
   case $desktop in
   lumina)
-	 chroot ${release} /sbin/rc-update delete ipfw boot
-  	 chroot ${release} /sbin/rc-update add trueos-video default
-  	 chroot ${release} /sbin/rc-update -u ;;
+        chroot ${release} /sbin/rc-update delete ipfw boot
+        chroot ${release} /sbin/rc-update add trueos-video default
+        chroot ${release} /sbin/rc-update -u ;;
     mate)
-	 chroot ${release} /sbin/rc-update add moused boot
-	 chroot ${release} /sbin/rc-update add dbus default
-	 chroot ${release} /sbin/rc-update add hald default
-	 chroot ${release} /sbin/rc-update add pcdm default
-	 chroot ${release} /sbin/rc-update add trueos-video default
-         chroot ${release} /sbin/rc-update -u ;;	
+        chroot ${release} /sbin/rc-update add moused boot
+        chroot ${release} /sbin/rc-update add dbus default
+        chroot ${release} /sbin/rc-update add hald default
+        chroot ${release} /sbin/rc-update add pcdm default
+        chroot ${release} /sbin/rc-update add trueos-video default
+        chroot ${release} /sbin/rc-update -u ;;
     xfce)
-  	 chroot ${release} /sbin/rc-update add moused boot
-	 chroot ${release} /sbin/rc-update add dbus default
-	 chroot ${release} /sbin/rc-update add hald default
-	 chroot ${release} /sbin/rc-update add pcdm default
-	 chroot ${release} /sbin/rc-update add trueos-video default
-	 chroot ${release} /sbin/rc-update -u ;;
+        chroot ${release} /sbin/rc-update add moused boot
+        chroot ${release} /sbin/rc-update add dbus default
+        chroot ${release} /sbin/rc-update add hald default
+        chroot ${release} /sbin/rc-update add pcdm default
+        chroot ${release} /sbin/rc-update add trueos-video default
+        chroot ${release} /sbin/rc-update -u ;;
        *)
-	 exit 1
+        exit 1
   esac
 }
 
@@ -126,16 +130,16 @@ xorg()
   install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.virtualbox" "${release}/usr/local/etc/X11/cardDetect/"
 }
 
-uzip() 
+uzip()
 {
   install -o root -g wheel -m 755 -d "${cdroot}"
   mkdir "${cdroot}/data"
   makefs "${cdroot}/data/system.ufs" "${release}"
-  mkuzip -o "${cdroot}/data/system.uzip" "${cdroot}/data/system.ufs"
+  mkuzip -o "${cdroot}/data/system.uzip" -s 65536 "${cdroot}/data/system.ufs"
   rm -f "${cdroot}/data/system.ufs"
 }
 
-ramdisk() 
+ramdisk()
 {
   ramdisk_root="${cdroot}/data/ramdisk"
   mkdir -p "${ramdisk_root}"
@@ -152,7 +156,7 @@ ramdisk()
   rm -rf "${ramdisk_root}"
 }
 
-boot() 
+boot()
 {
   cd "${release}"
   tar -cf - --exclude boot/kernel boot | tar -xf - -C "${cdroot}"
@@ -167,7 +171,7 @@ boot()
   install -o root -g wheel -m 644 "grub.cfg" "${cdroot}/boot/grub/"
 }
 
-image() 
+image()
 {
   cat << EOF >/tmp/xorriso
 ARGS=\`echo \$@ | sed 's|-hfsplus ||g'\`
