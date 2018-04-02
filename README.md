@@ -1,6 +1,6 @@
 ghostbsd-build
 ==============
-ghostbsd-buid is deprecated and replaced https://github.com/livebsd which all GhsotBSD effort is being merge into livebsd.
+ghostbsd-buid is deprecated and replaced https://github.com/livebsd/livbsd which all GhsotBSD effort is being merge into livebsd.
 
 ## Introduction
 The GhostBSD build toolkit is directly derived from the _FreeSBIE_ toolkit, but most of the code has been changed. Ghostbsd-build has been 
