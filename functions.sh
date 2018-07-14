@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
 
 cwd="`realpath | sed 's|/scripts||g'`"
-distro=$1
+systems=$1
 desktop=$2
 workdir="/usr/local"
-livecd="${workdir}/livebsd/${distro}"
+livecd="${workdir}/livebsd/${systems}"
 base="${livecd}/base"
 packages="${livecd}/packages"
 release="${livecd}/release"
@@ -18,39 +18,39 @@ fi
 
 display_usage()
 {
-  echo "You must specify a distro at minimum!"
+  echo "You must specify a systems at minimum!"
   echo "Possible choices are:"
-  ls ${cwd}/distro
+  ls ${cwd}/systems
   echo "Usage: ./livebsd.sh freebsd"
   exit 1
 }
 
-validate_distro()
+validate_systems()
 {
-  if [ ! -d "${cwd}/distro/${distro}" ] ; then
+  if [ ! -d "${cwd}/systems/${systems}" ] ; then
     display_usage
   fi
 }
 
 validate_desktop()
 {
-  if [ ! -f "${cwd}/distro/${distro}/packages/${desktop}" ] ; then
+  if [ ! -f "${cwd}/systems/${systems}/packages/${desktop}" ] ; then
     echo "Invalid choice specified"
     echo "Possible choices are:"
-    ls ${cwd}/distro/${distro}/packages
+    ls ${cwd}/systems/${systems}/packages
     exit 1
   fi
 }
 
-# We must choose a distro at minimum
-if [ -z "${distro}" ] ; then
-  echo "You must specify a distro!"
+# We must choose a systems at minimum
+if [ -z "${systems}" ] ; then
+  echo "You must specify a systems!"
   echo "Possible choices are:"
-  ls ${cwd}/distro
+  ls ${cwd}/systems
   echo "Usage: ./livebsd.sh freebsd"
   exit 1
 else
-  validate_distro
+  validate_systems
 fi
 
 # Validate package selection if chosen
@@ -60,9 +60,9 @@ fi
 
 # Set the volume name
 if [ -n "${desktop}" ] ; then
-  vol=${distro}-${desktop}
+  vol=${systems}-${desktop}
 else
-  vol=${distro}
+  vol=${systems}
 fi
 
 workspace()
@@ -77,72 +77,37 @@ workspace()
 
 base()
 {
-  case $distro in
-        trueos)
+  case $systems in
+    trueghost)
               if [ ! -f "${base}/base.txz" ] ; then
                 cd ${base}
-                fetch http://download.trueos.org/master/amd64/dist/base.txz
+                fetch http://pkg.trueos.org/iso/stable/base.txz
               fi
               if [ ! -f "${base}/kernel.txz" ] ; then
                 cd ${base}
-                fetch http://download.trueos.org/master/amd64/dist/kernel.txz
+                fetch http://pkg.trueos.org/iso/stable/kernel.txz
               fi
               if [ ! -f "${base}/lib32.txz" ] ; then
                 cd ${base}
-                fetch http://download.trueos.org/master/amd64/dist/lib32.txz
-              fi
-              cd ${base}
-              tar -zxvf base.txz -C ${release}
-              tar -zxvf kernel.txz -C ${release}
-              touch ${release}/etc/fstab;;
-     trueghost)
-              if [ ! -f "${base}/base.txz" ] ; then
-                cd ${base}
-                fetch http://pkg.trueos.org/iso/unstable/base.txz
-              fi
-              if [ ! -f "${base}/kernel.txz" ] ; then
-                cd ${base}
-                fetch http://pkg.trueos.org/iso/unstable/kernel.txz
-              fi
-              if [ ! -f "${base}/lib32.txz" ] ; then
-                cd ${base}
-                fetch http://pkg.trueos.org/iso/unstable/lib32.txz
+                fetch http://pkg.trueos.org/iso/stable/lib32.txz
               fi
               cd ${base}
               tar -zxvf base.txz -C ${release}
               tar -zxvf kernel.txz -C ${release}
               tar -zxvf lib32.txz -C ${release}
               touch ${release}/etc/fstab;;
-      ghostbsd)
+    freeghost)
               if [ ! -f "${base}/base.txz" ] ; then
                 cd ${base}
-                fetch http://ftp.freebsd.org/pub/FreeBSD/releases/amd64/11.1-RELEASE/base.txz
+                fetch http://ftp.freebsd.org/pub/FreeBSD/releases/amd64/11.2-RELEASE/base.txz
               fi
               if [ ! -f "${base}/kernel.txz" ] ; then
                 cd ${base}
-                fetch http://ftp.freebsd.org/pub/FreeBSD/releases/amd64/11.1-RELEASE/kernel.txz
+                fetch http://ftp.freebsd.org/pub/FreeBSD/releases/amd64/11.2-RELEASE/kernel.txz
               fi
               if [ ! -f "${base}/lib32.txz" ] ; then
                 cd ${base}
-                fetch http://ftp.freebsd.org/pub/FreeBSD/releases/amd64/11.1-RELEASE/lib32.txz
-              fi
-              cd ${base}
-              tar -zxvf base.txz -C ${release}
-              tar -zxvf kernel.txz -C ${release}
-              tar -zxvf lib32.txz -C ${release}
-              touch ${release}/etc/fstab;;
-       freebsd)
-              if [ ! -f "${base}/base.txz" ] ; then
-                cd ${base}
-                fetch http://ftp.freebsd.org/pub/FreeBSD/releases/amd64/11.1-RELEASE/base.txz
-              fi
-              if [ ! -f "${base}/kernel.txz" ] ; then
-                cd ${base}
-                fetch http://ftp.freebsd.org/pub/FreeBSD/releases/amd64/11.1-RELEASE/kernel.txz
-              fi
-              if [ ! -f "${base}/lib32.txz" ] ; then
-                cd ${base}
-                fetch http://ftp.freebsd.org/pub/FreeBSD/releases/amd64/11.1-RELEASE/lib32.txz
+                fetch http://ftp.freebsd.org/pub/FreeBSD/releases/amd64/11.2-RELEASE/lib32.txz
               fi
               cd ${base}
               tar -zxvf base.txz -C ${release}
@@ -156,13 +121,11 @@ base()
 
 packages()
 {
-  case $distro in
-      trueos)
-            cp -R ${cwd}/distro/trueos/repos/ ${release};;
-   trueghost)
-            cp -R ${cwd}/distro/trueghost/repos/ ${release};;
-    ghostbsd)
-            cp -R ${cwd}/distro/ghostbsd/repos/ ${release};;
+  case $systems in
+    trueghost)
+            cp -R ${cwd}/systems/trueghost/repos/ ${release};;
+    freeghost)
+            cp -R ${cwd}/systems/freeghost/repos/ ${release};;
     *)
       ;;
   esac
@@ -173,27 +136,25 @@ packages()
 
   case $desktop in
       gnome)
-          cat ${cwd}/distro/${distro}/packages/gnome | xargs pkg-static -c ${release} install -y ;;
+          cat ${cwd}/systems/${systems}/packages/gnome | xargs pkg-static -c ${release} install -y ;;
       kde)
-          cat ${cwd}/distro/${distro}/packages/kde | xargs pkg-static -c ${release} install -y ;;
+          cat ${cwd}/systems/${systems}/packages/kde | xargs pkg-static -c ${release} install -y ;;
       mate)
-          cat ${cwd}/distro/${distro}/packages/mate | xargs pkg-static -c ${release} install -y ;;
+          cat ${cwd}/systems/${systems}/packages/mate | xargs pkg-static -c ${release} install -y ;;
       lumina)
-          cat ${cwd}/distro/${distro}/packages/lumina | xargs pkg-static -c ${release} install -y ;;
+          cat ${cwd}/systems/${systems}/packages/lumina | xargs pkg-static -c ${release} install -y ;;
       xfce)
-          cat ${cwd}/distro/${distro}/packages/lumina | xargs pkg-static -c ${release} install -y ;;
+          cat ${cwd}/systems/${systems}/packages/lumina | xargs pkg-static -c ${release} install -y ;;
   esac
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
 
-  case $distro in
-      trueos)
-            cp -R ${cwd}/distro/trueos/repos/ ${release};;
-   trueghost)
-            cp -R ${cwd}/distro/trueghost/repos/ ${release};;
-    ghostbsd)
-            cp -R ${cwd}/distro/ghostbsd/repos/ ${release};;
+  case $systems in
+    trueghost)
+            cp -R ${cwd}/systems/trueghost/repos/ ${release};;
+    freeghost)
+            cp -R ${cwd}/systems/freeghost/repos/ ${release};;
     *)
       ;;
   esac
@@ -286,35 +247,35 @@ rc()
 
 user()
 {
-  if [ "$distro" != "ghostbsd" -o "$distro" != "trueghost" ]; then
+  if [ "$systems" != "freeghost" -o "$systems" != "trueghost" ]; then
     chroot ${release} echo freebsd | chroot ${release} pw mod user root -h 0
   fi
   chroot ${release} pw useradd liveuser \
   -c "Live User" -d "/home/liveuser" \
   -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
-  if [ $distro != "ghostbsd" -o $distro != "trueghost" ]; then
+  if [ $systems != "freeghost" -o $systems != "trueghost" ]; then
     chroot ${release} echo freebsd | chroot ${release} pw mod user liveuser -h 0
   fi
 }
 
 extra_config()
 {
-  case $distro in
+  case $systems in
     trueghost)
-        . ${cwd}/distro/trueghost/extra/common-live-setting.sh
-        . ${cwd}/distro/trueghost/extra/setuser.sh
-        . ${cwd}/distro/trueghost/extra/dm.sh
-        . ${cwd}/distro/trueghost/extra/gitpkg.sh
+        . ${cwd}/systems/trueghost/extra/common-live-setting.sh
+        . ${cwd}/systems/trueghost/extra/setuser.sh
+        . ${cwd}/systems/trueghost/extra/dm.sh
+        . ${cwd}/systems/trueghost/extra/gitpkg.sh
         create_share_ghostbsd
         setup_liveuser
         lightdm_setup
         git_pc_sysinstall
         ;;
-    ghostbsd)
-        . ${cwd}/distro/trueghost/extra/common-live-setting.sh
-        . ${cwd}/distro/ghostbsd/extra/setuser.sh
-        . ${cwd}/distro/ghostbsd/extra/dm.sh
-        . ${cwd}/distro/ghostbsd/extra/gitpkg.sh
+    freeghost)
+        . ${cwd}/systems/trueghost/extra/common-live-setting.sh
+        . ${cwd}/systems/freeghost/extra/setuser.sh
+        . ${cwd}/systems/freeghost/extra/dm.sh
+        . ${cwd}/systems/freeghost/extra/gitpkg.sh
         create_share_ghostbsd
         setup_liveuser
         lightdm_setup
