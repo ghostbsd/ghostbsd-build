@@ -33,18 +33,18 @@ Enter the directory for running the LiveCD creator:
 cd ghostbsd
 ```
 
-## FreeBSD base GhostBSD
-```
-./build freeghost
-./build freeghost mate
-./build freeghost xfce
-```
-
 ## TrueOS base GhostBSD
 ```
-./build trueghost
-./build trueghost mate
-./build trueghost xfce
+./build trueos
+./build trueos mate
+./build trueos xfce
+```
+
+## FreeBSD base GhostBSD
+```
+./build freebsd
+./build freebsd mate
+./build freebsd xfce
 ```
 
 ## Burn an image to cd:

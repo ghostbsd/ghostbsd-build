@@ -4,7 +4,7 @@ cwd="`realpath | sed 's|/scripts||g'`"
 systems=$1
 desktop=$2
 workdir="/usr/local"
-livecd="${workdir}/livebsd/${systems}"
+livecd="${workdir}/ghostbsd-build/${systems}"
 base="${livecd}/base"
 packages="${livecd}/packages"
 release="${livecd}/release"
@@ -60,9 +60,9 @@ fi
 
 # Set the volume name
 if [ -n "${desktop}" ] ; then
-  vol=${systems}-${desktop}
+  vol="GhostBSD-${desktop}"
 else
-  vol=${systems}
+  vol="GhostBSD"
 fi
 
 workspace()
@@ -78,7 +78,7 @@ workspace()
 base()
 {
   case $systems in
-    trueghost)
+    trueos)
               if [ ! -f "${base}/base.txz" ] ; then
                 cd ${base}
                 fetch http://pkg.trueos.org/iso/stable/base.txz
@@ -96,7 +96,7 @@ base()
               tar -zxvf kernel.txz -C ${release}
               tar -zxvf lib32.txz -C ${release}
               touch ${release}/etc/fstab;;
-    freeghost)
+    freebsd)
               if [ ! -f "${base}/base.txz" ] ; then
                 cd ${base}
                 fetch http://ftp.freebsd.org/pub/FreeBSD/releases/amd64/11.2-RELEASE/base.txz
@@ -122,10 +122,10 @@ base()
 packages()
 {
   case $systems in
-    trueghost)
-            cp -R ${cwd}/systems/trueghost/repos/ ${release};;
-    freeghost)
-            cp -R ${cwd}/systems/freeghost/repos/ ${release};;
+    trueos)
+            cp -R ${cwd}/systems/trueos/repos/ ${release};;
+    freebsd)
+            cp -R ${cwd}/systems/freebsd/repos/ ${release};;
     *)
       ;;
   esac
@@ -135,14 +135,8 @@ packages()
   mount_nullfs ${packages} ${release}/var/cache/pkg
 
   case $desktop in
-      gnome)
-          cat ${cwd}/systems/${systems}/packages/gnome | xargs pkg-static -c ${release} install -y ;;
-      kde)
-          cat ${cwd}/systems/${systems}/packages/kde | xargs pkg-static -c ${release} install -y ;;
       mate)
           cat ${cwd}/systems/${systems}/packages/mate | xargs pkg-static -c ${release} install -y ;;
-      lumina)
-          cat ${cwd}/systems/${systems}/packages/lumina | xargs pkg-static -c ${release} install -y ;;
       xfce)
           cat ${cwd}/systems/${systems}/packages/lumina | xargs pkg-static -c ${release} install -y ;;
   esac
@@ -151,10 +145,10 @@ packages()
   umount ${release}/var/cache/pkg
 
   case $systems in
-    trueghost)
-            cp -R ${cwd}/systems/trueghost/repos/ ${release};;
-    freeghost)
-            cp -R ${cwd}/systems/freeghost/repos/ ${release};;
+    trueos)
+            cp -R ${cwd}/systems/trueos/repos/ ${release};;
+    freebsd)
+            cp -R ${cwd}/systems/freebsd/repos/ ${release};;
     *)
       ;;
   esac
@@ -171,29 +165,11 @@ rc()
   chroot ${release} sysrc -f /etc/rc.conf sendmail_msp_queue_enable="NO"
 
   case $desktop in
-    gnome)
-         chroot ${release} sysrc -f /etc/rc.conf moused_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf dbus_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf hald_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf gdm_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf gnome_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf livecd_enable="YES" ;;
-    kde)
-         chroot ${release} sysrc -f /etc/rc.conf moused_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf dbus_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf hald_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf kdm4_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf livecd_enable="YES" ;;
     mate)
          chroot ${release} sysrc -f /etc/rc.conf moused_enable="YES"
          chroot ${release} sysrc -f /etc/rc.conf dbus_enable="YES"
          chroot ${release} sysrc -f /etc/rc.conf hald_enable="YES"
          chroot ${release} sysrc -f /etc/rc.conf lightdm_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf livecd_enable="YES" ;;
-    lumina)
-         chroot ${release} sysrc -f /etc/rc.conf moused_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf dbus_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf pcdm_enable="YES"
          chroot ${release} sysrc -f /etc/rc.conf livecd_enable="YES" ;;
     xfce)
          chroot ${release} sysrc -f /etc/rc.conf moused_enable="YES"
@@ -205,18 +181,6 @@ rc()
   if [ -f "${release}/sbin/openrc-run" ] ; then
          chroot ${release} sysrc -f /etc/rc.conf rc_interactive="YES"
   case $desktop in
-   gnome)
-         chroot ${release} rc-update add moused default
-         chroot ${release} rc-update add dbus default
-         chroot ${release} rc-update add hald default
-         chroot ${release} rc-update add livecd default
-         chroot ${release} rc-update add gdm default ;;
-     kde)
-         chroot ${release} rc-update add moused default
-         chroot ${release} rc-update add dbus default
-         chroot ${release} rc-update add hald default
-         chroot ${release} rc-update add livecd default
-         chroot ${release} rc-update add kdm default ;;
      mate)
          chroot ${release} rc-update add moused default
          chroot ${release} rc-update add dbus default
@@ -226,12 +190,6 @@ rc()
          #chroot ${release} rc-update add xdm default
          #chroot ${release} sysrc -f /usr/local/etc/conf.d/xdm DISPLAYMANAGER="lightdm"
          ;;
-    lumina)
-         chroot ${release} rc-update add moused default
-         chroot ${release} rc-update add dbus default
-         chroot ${release} rc-update add hald default
-         chroot ${release} rc-update add livecd default
-         chroot ${release} rc-update add pcdm default ;;
     xfce)
          chroot ${release} rc-update add moused default
          chroot ${release} rc-update add dbus default
@@ -247,13 +205,13 @@ rc()
 
 user()
 {
-  if [ "$systems" != "freeghost" -o "$systems" != "trueghost" ]; then
+  if [ "$systems" != "freebsd" -o "$systems" != "trueos" ]; then
     chroot ${release} echo freebsd | chroot ${release} pw mod user root -h 0
   fi
   chroot ${release} pw useradd liveuser \
   -c "Live User" -d "/home/liveuser" \
   -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
-  if [ $systems != "freeghost" -o $systems != "trueghost" ]; then
+  if [ $systems != "freebsd" -o $systems != "trueos" ]; then
     chroot ${release} echo freebsd | chroot ${release} pw mod user liveuser -h 0
   fi
 }
@@ -261,21 +219,21 @@ user()
 extra_config()
 {
   case $systems in
-    trueghost)
-        . ${cwd}/systems/trueghost/extra/common-live-setting.sh
-        . ${cwd}/systems/trueghost/extra/setuser.sh
-        . ${cwd}/systems/trueghost/extra/dm.sh
-        . ${cwd}/systems/trueghost/extra/gitpkg.sh
+    trueos)
+        . ${cwd}/systems/trueos/extra/common-live-setting.sh
+        . ${cwd}/systems/trueos/extra/setuser.sh
+        . ${cwd}/systems/trueos/extra/dm.sh
+        . ${cwd}/systems/trueos/extra/gitpkg.sh
         create_share_ghostbsd
         setup_liveuser
         lightdm_setup
         git_pc_sysinstall
         ;;
-    freeghost)
-        . ${cwd}/systems/trueghost/extra/common-live-setting.sh
-        . ${cwd}/systems/freeghost/extra/setuser.sh
-        . ${cwd}/systems/freeghost/extra/dm.sh
-        . ${cwd}/systems/freeghost/extra/gitpkg.sh
+    freebsd)
+        . ${cwd}/systems/freebsd/extra/common-live-setting.sh
+        . ${cwd}/systems/freebsd/extra/setuser.sh
+        . ${cwd}/systems/freebsd/extra/dm.sh
+        . ${cwd}/systems/freebsd/extra/gitpkg.sh
         create_share_ghostbsd
         setup_liveuser
         lightdm_setup
