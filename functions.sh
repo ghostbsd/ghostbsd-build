@@ -230,21 +230,17 @@ extra_config()
         . ${cwd}/systems/trueos/extra/common-live-setting.sh
         . ${cwd}/systems/trueos/extra/setuser.sh
         . ${cwd}/systems/trueos/extra/dm.sh
-        . ${cwd}/systems/trueos/extra/gitpkg.sh
         create_share_ghostbsd
         setup_liveuser
         lightdm_setup
-        git_pc_sysinstall
         ;;
     freebsd)
         . ${cwd}/systems/freebsd/extra/common-live-setting.sh
         . ${cwd}/systems/freebsd/extra/setuser.sh
         . ${cwd}/systems/freebsd/extra/dm.sh
-        . ${cwd}/systems/freebsd/extra/gitpkg.sh
         create_share_ghostbsd
         setup_liveuser
         lightdm_setup
-        git_pc_sysinstall
         ;;
     *)
       ;;
