@@ -1,0 +1,25 @@
+Section "ServerLayout"
+        Identifier     "XFree86 Configured"
+        Screen      0  "Screen0" 0 0
+        Option          "AutoAddDevices" "Off
+EndSection
+
+Section "InputDevice"
+        Identifier  "Mouse0"
+        Driver      "vmmouse"
+        Option      "Protocol" "auto"
+        Option      "Device" "/dev/sysmouse"
+        Option      "ZAxisMapping" "4 5 6 7"
+EndSection
+
+Section "Screen"
+        Identifier "Screen0"
+        Device     "Card0"
+        Monitor    "Monitor0"
+EndSection
+
+Section "Device"
+        Identifier      "Card0"
+        Driver          "vmware"
+        BusID           "0:15:0"
+EndSection

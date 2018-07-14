@@ -1,7 +1,0 @@
-[Live CD user permissions]
-Identity=unix-user:ghostbsd
-Action=*
-ResultAny=yes
-ResultInactive=no
-ResultActive=yes
-
