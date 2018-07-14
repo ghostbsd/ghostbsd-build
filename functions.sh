@@ -21,7 +21,7 @@ display_usage()
   echo "You must specify a systems at minimum!"
   echo "Possible choices are:"
   ls ${cwd}/systems
-  echo "Usage: ./livebsd.sh freebsd"
+  echo "Usage: ./build.sh trueos"
   exit 1
 }
 
@@ -38,6 +38,7 @@ validate_desktop()
     echo "Invalid choice specified"
     echo "Possible choices are:"
     ls ${cwd}/systems/${systems}/packages
+    echo "Usage: ./build.sh trueos mate"
     exit 1
   fi
 }
@@ -47,14 +48,20 @@ if [ -z "${systems}" ] ; then
   echo "You must specify a systems!"
   echo "Possible choices are:"
   ls ${cwd}/systems
-  echo "Usage: ./livebsd.sh freebsd"
+  echo "Usage: ./build.sh trueos"
   exit 1
 else
   validate_systems
 fi
 
 # Validate package selection if chosen
-if [ -n "${desktop}" ] ; then
+if [ -z "${desktop}" ] ; then
+    echo "Invalid choice specified"
+    echo "Possible choices are:"
+    ls ${cwd}/systems/${systems}/packages
+    echo "Usage: ./build.sh trueos mate"
+    exit 1
+else
   validate_desktop
 fi
 
