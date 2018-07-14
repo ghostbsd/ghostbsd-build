@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# livecd-video_enable="YES"
+#
+
+# PROVIDE: livecd
+# REQUIRE: LOGIN cleanvar moused syscons dbus
+# BEFORE: gdm kdm lightdm pcdm sddm slim xdm
+
+. /etc/rc.subr
+
+name=livecd
+rcvar=livecd_enable
+
+command="/usr/local/bin/livecd"
+pidfile="/var/run/${name}.pid"
+
+load_rc_config $name
+run_rc_command "$1"

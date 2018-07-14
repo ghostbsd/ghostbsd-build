@@ -13,6 +13,9 @@ mount -u -w /
 echo "==> Make mountpoints"
 mkdir -p /cdrom /memdisk /sysroot
 
+# Allow a few seconds for USB devices to settle
+sleep 15
+
 echo "==> Mount cdrom"
 mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom
 mdmfs -P -F /cdrom/data/system.uzip -o ro md.uzip /sysroot
@@ -21,15 +24,15 @@ if [ "$SINGLE_USER" = "true" ]; then
 	echo -n "Enter memdisk size used for read-write access in the live system: "
 	read MEMDISK_SIZE
 else
-	MEMDISK_SIZE="256"
+	MEMDISK_SIZE="$(($(sysctl -n hw.usermem) / 1024 / 1024 / 2))"
 fi
 
 echo "==> Mount swap-based memdisk"
 mdmfs -s "${MEMDISK_SIZE}m" md /memdisk || exit 1
 mount -t unionfs /memdisk /sysroot
 
-mkdir -p /sysroot/mnt/cdrom
-mount_nullfs -o ro /cdrom /sysroot/mnt/cdrom
+mkdir -p /sysroot/cdrom
+mount_nullfs -o ro /cdrom /sysroot/cdrom
 
 echo "==> Mount devfs"
 mount -t devfs devfs /sysroot/dev

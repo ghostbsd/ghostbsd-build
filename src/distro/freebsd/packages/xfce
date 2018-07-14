@@ -1,0 +1,8 @@
+emulators/virtualbox-ose-additions
+ports-mgmt/pkg
+x11/slim
+x11/xfce
+x11/nvidia-driver
+x11/xorg
+x11-drivers/xf86-input-vmmouse
+x11-drivers/xf86-video-vmware

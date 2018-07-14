@@ -1,0 +1,13 @@
+#!/sbin/openrc-run
+
+command=/usr/local/bin/livecd
+pidfile=/var/run/livecd.pid
+name="livecd"
+
+depend()
+{
+	provide livecd
+	after LOGIN cleanvar moused syscons dbus
+	before gdm kdm lightdm pcdm sddm slim xdm
+}
+

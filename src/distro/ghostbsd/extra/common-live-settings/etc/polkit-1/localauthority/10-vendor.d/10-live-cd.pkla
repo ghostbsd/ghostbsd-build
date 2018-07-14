@@ -1,0 +1,7 @@
+[Live CD user permissions]
+Identity=unix-user:liveuser
+Action=*
+ResultAny=yes
+ResultInactive=no
+ResultActive=yes
+

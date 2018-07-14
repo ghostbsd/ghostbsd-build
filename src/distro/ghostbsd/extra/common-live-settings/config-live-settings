@@ -1,0 +1,25 @@
+#!/bin/sh
+
+user_dirs()
+{
+mkdir -p /home/liveuser/Desktop
+xdg-user-dir
+}
+
+desktop_icons()
+{
+if [ -e /usr/local/share/applications/ghostbsd-irc.desktop ] ; then
+    cp -af /usr/local/share/applications/ghostbsd-irc.desktop \
+    /home/liveuser/Desktop
+    chmod +x /home/liveuser/Desktop/ghostbsd-irc.desktop
+fi
+
+if [ -e /usr/local/share/applications/gbi.desktop ] ; then
+    cp -af /usr/local/share/applications/gbi.desktop \
+    /home/liveuser/Desktop
+    chmod +x /home/liveuser/Desktop/gbi.desktop
+fi
+}
+
+user_dirs
+desktop_icons
