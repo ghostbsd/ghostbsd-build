@@ -29,7 +29,7 @@ copy_files_in()
 create_share_ghostbsd()
 {
   mkdir -p ${release}/usr/local/share/ghostbsd
-  cp -R ${cwd}/distro/trueghost/extra/common-live-settings ${release}/usr/local/share/ghostbsd
+  cp -R ${cwd}/systems/trueos/extra/common-live-settings ${release}/usr/local/share/ghostbsd
   backup_freebsd
   freebsd_overrides
   copy_files_in
