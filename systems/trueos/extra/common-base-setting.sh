@@ -39,7 +39,7 @@ packages_settings()
   fi
 }
 
-Setup_base()
+setup_base()
 {
   # copy files from override to FreeBSD base system
   base_overrides

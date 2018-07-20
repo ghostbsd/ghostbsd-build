@@ -233,7 +233,7 @@ extra_config()
         . ${cwd}/systems/trueos/extra/dm.sh
         create_share_ghostbsd
         setup_liveuser
-        Setup_base
+        setup_base
         lightdm_setup
         ;;
     freebsd)
