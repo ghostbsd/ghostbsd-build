@@ -23,4 +23,5 @@ autologin-user-timeout=0\
 gdm_setup()
 {
   echo 'gdm_enable="YES"' >> ${release}/etc/rc.conf
+
 }
