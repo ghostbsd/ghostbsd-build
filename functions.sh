@@ -228,10 +228,12 @@ extra_config()
   case $systems in
     trueos)
         . ${cwd}/systems/trueos/extra/common-live-setting.sh
+        . ${cwd}/systems/trueos/extra/common-base-setting.sh
         . ${cwd}/systems/trueos/extra/setuser.sh
         . ${cwd}/systems/trueos/extra/dm.sh
         create_share_ghostbsd
         setup_liveuser
+        Setup_base
         lightdm_setup
         ;;
     freebsd)

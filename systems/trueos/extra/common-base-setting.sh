@@ -39,11 +39,13 @@ packages_settings()
   fi
 }
 
-# copy files from override to FreeBSD base system
-base_overrides
-# patch files from etc
-patch_etc_files
-# apply packages settings
-# packages_settings
-local_files
-
+Setup_base()
+{
+  # copy files from override to FreeBSD base system
+  base_overrides
+  # patch files from etc
+  patch_etc_files
+  # apply packages settings
+  # packages_settings
+  local_files
+}
