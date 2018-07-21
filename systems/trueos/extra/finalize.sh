@@ -1,19 +1,6 @@
 #!/bin/sh
-#
-# Copyright (c) 2011 GhostBSD
-#
-# See COPYING for license terms.
-#
-# finalize.sh,v 1.0 Wed 17 Jun 19:42:49 ADT 2015cd  Ovidiu Angelescu
-#
 
 set -e -u
-
-if [ -z "${LOGFILE:-}" ] ; then
-  echo "This script can't run standalone."
-  echo "Please use launch.sh to execute it."
-  exit 1
-fi
 
 default_ghostbsd_rc_conf()
 {

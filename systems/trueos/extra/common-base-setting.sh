@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e -u
+
 base_overrides()
 {
   cp -R extra/common-base-setting/override/* ${release}/

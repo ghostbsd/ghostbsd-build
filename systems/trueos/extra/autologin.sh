@@ -1,13 +1,8 @@
 #!/bin/sh
-#
-# Copyright (c) 2011 GhostBSD
-#
-# See COPYING for licence terms.
-#
-# autologin.sh,v 1.2_1 Monday, January 31 2011 01:06:12 Eric
-#
-# Enable autologin of the $GHOSTBSD_ADDUSER user on the first terminal
-#
+
+set -e -u
+
+
 setup_autologin()
 {
   echo "# liveuser user autologin" >> ${release}/etc/gettytab

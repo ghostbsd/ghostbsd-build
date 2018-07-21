@@ -1,10 +1,4 @@
 #!/bin/sh
-#
-# Copyright (c) 2011 Dario Freni
-#
-# See COPYRIGHT for licence terms.
-#
-# adduser.sh,v 1.5_1 Friday, January 14 2011 13:06:55
 
 set -e -u
 
