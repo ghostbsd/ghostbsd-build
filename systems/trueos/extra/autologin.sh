@@ -8,20 +8,20 @@
 #
 # Enable autologin of the $GHOSTBSD_ADDUSER user on the first terminal
 #
+setup_autologin()
+{
+  echo "# liveuser user autologin" >> ${release}/etc/gettytab
+  echo "liveuser:\\" >> ${release}/etc/gettytab
+  echo ":al=liveuser:ht:np:sp#115200:" >> ${release}/etc/gettytab
 
-GHOSTBSD_ADDUSER=${GHOSTBSD_ADDUSER:-"ghostbsd"}
-
-echo "# ${GHOSTBSD_ADDUSER} user autologin" >> ${BASEDIR}/etc/gettytab
-echo "${GHOSTBSD_ADDUSER}:\\" >> ${BASEDIR}/etc/gettytab
-echo ":al=${GHOSTBSD_ADDUSER}:ht:np:sp#115200:" >> ${BASEDIR}/etc/gettytab
-
-sed -i "" "/ttyv0/s/Pc/${GHOSTBSD_ADDUSER}/g" ${BASEDIR}/etc/ttys
-# echo "sh sysconfig.sh" >> ${BASEDIR}/root/.login
-echo "startx" >> ${BASEDIR}/ghostbsd/.login
-# echo 'if ($tty == ttyv0) then' >> ${BASEDIR}/home/ghostbsd/.cshrc
-# echo 'if ($tty == ttyv0) then' >> ${BASEDIR}/home/ghostbsd/.shrc
-# echo "  sudo netcardmgr" >> ${BASEDIR}/home/ghostbsd/.cshrc
-# echo "  startx" >> ${BASEDIR}/home/ghostbsd/.cshrc
-# echo "  startx" >> ${BASEDIR}/home/ghostbsd/.shrc
-# echo "endif" >> ${BASEDIR}/home/ghostbsd/.cshrc
-# echo "endif" >> ${BASEDIR}/home/ghostbsd/.shrc
+  sed -i "" "/ttyv0/s/Pc/liveuser/g" ${release}/etc/ttys
+  # echo "sh sysconfig.sh" >> ${release}/root/.login
+  echo "startx" >> ${release}/ghostbsd/.login
+  # echo 'if ($tty == ttyv0) then' >> ${release}/home/ghostbsd/.cshrc
+  # echo 'if ($tty == ttyv0) then' >> ${release}/home/ghostbsd/.shrc
+  # echo "  sudo netcardmgr" >> ${release}/home/ghostbsd/.cshrc
+  # echo "  startx" >> ${release}/home/ghostbsd/.cshrc
+  # echo "  startx" >> ${release}/home/ghostbsd/.shrc
+  # echo "endif" >> ${release}/home/ghostbsd/.cshrc
+  # echo "endif" >> ${release}/home/ghostbsd/.shrc
+}

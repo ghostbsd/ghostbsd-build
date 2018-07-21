@@ -15,44 +15,15 @@ if [ -z "${LOGFILE:-}" ] ; then
   exit 1
 fi
 
-clean_desktop_files()
-{
-# Remove Gnome and Mate from ShowOnly in *.desktop
-# needed for update-station
-  DesktopBSD=`ls ${BASEDIR}/usr/local/share/applications/ | grep -v libreoffice | grep -v kde4 | grep -v screensavers`
-  for desktop in $DesktopBSD; do
-    sed -i "" -e 's/OnlyShowIn=Gnome;//g' ${BASEDIR}/usr/local/share/applications/$desktop
-    sed -i "" -e 's/OnlyShowIn=MATE;//g' ${BASEDIR}/usr/local/share/applications/$desktop
-    sed -i "" -e 's/GNOME;//g' ${BASEDIR}/usr/local/share/applications/$desktop
-    sed -i "" -e 's/MATE;//g' ${BASEDIR}/usr/local/share/applications/$desktop
-    sed -i "" -e 's/OnlyShowIn=//g' ${BASEDIR}/usr/local/share/applications/$desktop
-  done
-}
-
 default_ghostbsd_rc_conf()
 {
-  rm ${BASEDIR}/etc/rc.d/virtualbox
-  cp  ${BASEDIR}/etc/rc.conf ${BASEDIR}/etc/rc.conf.ghostbsd
+  cp  ${release}/etc/rc.conf ${release}/etc/rc.conf.ghostbsd
 }
 
 set_sudoers()
 {
-  sed -i "" -e 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/g' ${BASEDIR}/usr/local/etc/sudoers
-  sed -i "" -e 's/# %sudo/%sudo/g' ${BASEDIR}/usr/local/etc/sudoers
-}
-
-dot_xinitrc()
-{
-#echo 'exec $1' > ${BASEDIR}/home/ghostbsd/.xinitrc
-#echo 'exec $1' > ${BASEDIR}/root/.xinitrc
-
-if [ "${PACK_PROFILE}" == "mate" ] ; then
-  echo "exec ck-launch-session mate-session" > ${BASEDIR}/usr/home/ghostbsd/.xinitrc
-  echo "exec ck-launch-session mate-session" > ${BASEDIR}/root/.xinitrc
-elif [ "${PACK_PROFILE}" == "xfce" ] ; then
-  echo "exec ck-launch-session startxfce4" > ${BASEDIR}/usr/home/ghostbsd/.xinitrc
-  echo "exec ck-launch-session startxfce4" > ${BASEDIR}/root/.xinitrc
-fi
+  sed -i "" -e 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/g' ${release}/usr/local/etc/sudoers
+  sed -i "" -e 's/# %sudo/%sudo/g' ${release}/usr/local/etc/sudoers
 }
 
 set_doas()
@@ -73,32 +44,7 @@ permit nopass keepenv :wheel cmd mkdir args -p /var/db/update-station/
 permit nopass keepenv :wheel cmd chmod args -R 665 /var/db/update-station/
 permit nopass keepenv :wheel cmd sh args /usr/local/lib/update-station/cleandesktop.sh
 permit nopass keepenv :wheel cmd shutdown args -r now
-" > ${BASEDIR}/usr/local/etc/doas.conf
-}
-
-reinstall_LigthDM()
-{
-
-cat > ${BASEDIR}/mnt/addpkg.sh << "EOF"
-#!/bin/sh
-
-FORCE_PKG_REGISTER=true
-export FORCE_PKG_REGISTER
-
-# pkg bootstrap with env
-env ASSUME_ALWAYS_YES=YES pkg bootstrap
-
-# pkg install part
-pkgfile="${PACK_PROFILE}-packages"
-pkgaddcmd="pkg install -yf "
-
-$pkgaddcmd lightdm
-echo "lightdm installed"
-EOF
-
-# run addpkg.sh in chroot to add packages
-chrootcmd="chroot ${BASEDIR} sh /mnt/addpkg.sh"
-$chrootcmd
+" > ${release}/usr/local/etc/doas.conf
 }
 
 vmware_supports()
@@ -110,25 +56,19 @@ Section "InputDevice"
 Identifier "Mouse0"
 Driver "vmmouse"
 Option "Device" "/dev/sysmouse"
-EndSection' > ${BASEDIR}/usr/local/etc/X11/xorg.conf.d/vmware.conf
+EndSection' > ${release}/usr/local/etc/X11/xorg.conf.d/vmware.conf
 
 printf 'vmware_guest_vmblock_enable="YES"
 vmware_guest_vmhgfs_enable="YES"
 vmware_guest_vmmemctl_enable="YES"
 vmware_guest_vmxnet_enable="YES"
-vmware_guestd_enable="YES"' > ${BASEDIR}/etc/rc.conf.d/vmware.conf
+vmware_guestd_enable="YES"' > ${release}/etc/rc.conf.d/vmware.conf
 }
 
-enable_sddm()
+final_setup()
 {
-  chrootcmd="chroot ${BASEDIR} /sbin/rc-update add sddm default"
-  $chrootcmd
+  default_ghostbsd_rc_conf
+  set_sudoers
+  set_doas
+  vmware_supports
 }
-
-clean_desktop_files
-default_ghostbsd_rc_conf
-set_sudoers
-set_doas
-dot_xinitrc
-# reinstall_LigthDM
-enable_sddm

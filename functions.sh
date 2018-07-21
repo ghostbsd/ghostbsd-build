@@ -231,10 +231,15 @@ extra_config()
         . ${cwd}/systems/trueos/extra/common-base-setting.sh
         . ${cwd}/systems/trueos/extra/setuser.sh
         . ${cwd}/systems/trueos/extra/dm.sh
+        . ${cwd}/systems/trueos/extra/finalize.sh
+        . ${cwd}/systems/trueos/extra/autologin.sh
         create_share_ghostbsd
         setup_liveuser
         setup_base
-        lightdm_setup
+        #lightdm_setup
+        setup_xinit
+        setup_autologin
+        final_setup
         ;;
     freebsd)
         . ${cwd}/systems/freebsd/extra/common-live-setting.sh
