@@ -176,12 +176,12 @@ rc()
          chroot ${release} sysrc -f /etc/rc.conf moused_enable="YES"
          chroot ${release} sysrc -f /etc/rc.conf dbus_enable="YES"
          chroot ${release} sysrc -f /etc/rc.conf hald_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf lightdm_enable="YES"
+         #chroot ${release} sysrc -f /etc/rc.conf lightdm_enable="YES"
          chroot ${release} sysrc -f /etc/rc.conf livecd_enable="YES" ;;
     xfce)
          chroot ${release} sysrc -f /etc/rc.conf moused_enable="YES"
          chroot ${release} sysrc -f /etc/rc.conf dbus_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf lightdm_enable="YES"
+         #chroot ${release} sysrc -f /etc/rc.conf lightdm_enable="YES"
          chroot ${release} sysrc -f /etc/rc.conf livecd_enable="YES" ;;
   esac
 
@@ -193,7 +193,7 @@ rc()
          chroot ${release} rc-update add dbus default
          chroot ${release} rc-update add hald default
          chroot ${release} rc-update add livecd default
-         chroot ${release} rc-update add lightdm default
+         #chroot ${release} rc-update add lightdm default
          #chroot ${release} rc-update add xdm default
          #chroot ${release} sysrc -f /usr/local/etc/conf.d/xdm DISPLAYMANAGER="lightdm"
          ;;
@@ -202,7 +202,7 @@ rc()
          chroot ${release} rc-update add dbus default
          chroot ${release} rc-update add hald default
          chroot ${release} rc-update add livecd default
-         chroot ${release} rc-update add lightdm default
+         #chroot ${release} rc-update add lightdm default
          #chroot ${release} rc-update add xdm default
          #chroot ${release} sysrc -f /usr/local/etc/conf.d/xdm DISPLAYMANAGER="lightdm"
          ;;
@@ -247,7 +247,7 @@ extra_config()
         . ${cwd}/systems/freebsd/extra/dm.sh
         create_share_ghostbsd
         setup_liveuser
-        lightdm_setup
+        #lightdm_setup
         ;;
     *)
       ;;

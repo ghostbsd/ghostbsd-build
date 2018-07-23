@@ -26,7 +26,6 @@ gawk
 git
 grub2-pcbsd
 nano
-e2fsprogs
 ksh93
 py27-gobject
 py27-gobject3

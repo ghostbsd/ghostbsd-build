@@ -2,8 +2,8 @@
 
 user_dirs()
 {
-mkdir -p /home/liveuser/Desktop
-xdg-user-dir
+  mkdir -p /home/liveuser/Desktop
+  /usr/local/bin/xdg-user-dirs-update
 }
 
 desktop_icons()

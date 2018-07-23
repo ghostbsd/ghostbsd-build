@@ -4,7 +4,7 @@ set -e -u
 
 base_overrides()
 {
-  cp -R extra/common-base-setting/override/* ${release}/
+  cp -R ${cwd}/systems/trueos/extra/common-base-setting/override/* ${release}/
 }
 
 
