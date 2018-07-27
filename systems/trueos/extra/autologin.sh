@@ -11,12 +11,12 @@ setup_autologin()
 
   sed -i "" "/ttyv0/s/Pc/liveuser/g" ${release}/etc/ttys
   # echo "sh sysconfig.sh" >> ${release}/root/.login
-  echo "startx" >> ${release}/home/liveuser/.login
-  # echo 'if ($tty == ttyv0) then' >> ${release}/home/liveuser/.cshrc
-  # echo 'if ($tty == ttyv0) then' >> ${release}/home/liveuser/.shrc
-  # echo "  sudo netcardmgr" >> ${release}/home/liveuser/.cshrc
-  # echo "  startx" >> ${release}/home/liveuser/.cshrc
-  # echo "  startx" >> ${release}/home/liveuser/.shrc
-  # echo "endif" >> ${release}/home/liveuser/.cshrc
-  # echo "endif" >> ${release}/home/liveuser/.shrc
+  echo "startx" >> ${release}/usr/home/liveuser/.login
+  # echo 'if ($tty == ttyv0) then' >> ${release}/usr//home/liveuser/.cshrc
+  # echo 'if ($tty == ttyv0) then' >> ${release}/usr//home/liveuser/.shrc
+  # echo "  sudo netcardmgr" >> ${release}/usr/home/liveuser/.cshrc
+  # echo "  startx" >> ${release}/usr/home/liveuser/.cshrc
+  # echo "  startx" >> ${release}/usr/home/liveuser/.shrc
+  # echo "endif" >> ${release}/usr/home/liveuser/.cshrc
+  # echo "endif" >> ${release}/usr/home/liveuser/.shrc
 }

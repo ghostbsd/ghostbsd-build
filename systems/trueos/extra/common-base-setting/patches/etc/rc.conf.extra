@@ -1,31 +1,7 @@
-hostname="ghostbsd"
-
-# Power saver.
-powerd_enable="YES"
-powerd_flags="-a adp -b adp"
 
 # DEVFS rules
 devfs_system_ruleset="devfsrules_common"
-devd_enable="YES"
-
-# usbd_enable="YES"
-dbus_enable="YES"
-hald_enable="YES"
-polkit_enable="YES"
-
-moused_enable="YES"
-# iscsid_enable="YES"
-
-# Enable linux compatibility
-linux_enable="YES"
 
 # Load the following kernel modules
-kld_list="geom_mirror geom_journal geom_eli linux fuse ext2fs cuse"
-
-# Configs from installed packages
-webcamd_enable="YES"
-vboxguest_enable="YES"
-vboxservice_enable="YES"
-cupsd_enable="YES"
-lpd_enable="NO"
+kld_list="geom_mirror geom_journal geom_eli linux"
 

@@ -9,7 +9,9 @@ base="${livecd}/base"
 packages="${livecd}/packages"
 release="${livecd}/release"
 cdroot="${livecd}/cdroot"
-
+version="18.08"
+label="GhostBSD"
+union_dirs=${union_dirs:-"boot dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
 # Only run as superuser
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
@@ -67,10 +69,16 @@ fi
 
 # Set the volume name
 if [ -n "${desktop}" ] ; then
-  vol="GhostBSD-${desktop}"
+  if [ "${desktop}" == "xfce" ] ; then
+  community="-XFCE"
+  else
+    community=""
+  fi
 else
-  vol="GhostBSD"
+  community=""
 fi
+
+isopath="${livecd}/${label}${version}${community}.iso"
 
 workspace()
 {
@@ -170,57 +178,61 @@ rc()
   chroot ${release} sysrc -f /etc/rc.conf sendmail_submit_enable="NO"
   chroot ${release} sysrc -f /etc/rc.conf sendmail_outbound_enable="NO"
   chroot ${release} sysrc -f /etc/rc.conf sendmail_msp_queue_enable="NO"
-
-  case $desktop in
-    mate)
-         chroot ${release} sysrc -f /etc/rc.conf moused_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf dbus_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf hald_enable="YES"
-         #chroot ${release} sysrc -f /etc/rc.conf lightdm_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf livecd_enable="YES" ;;
-    xfce)
-         chroot ${release} sysrc -f /etc/rc.conf moused_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf dbus_enable="YES"
-         #chroot ${release} sysrc -f /etc/rc.conf lightdm_enable="YES"
-         chroot ${release} sysrc -f /etc/rc.conf livecd_enable="YES" ;;
-  esac
-
+  # DEVFS rules
+  chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
+  # Load the following kernel modules
+  chroot ${release} sysrc -f /etc/rc.conf kld_list="geom_mirror geom_journal geom_eli linux"
   if [ -f "${release}/sbin/openrc-run" ] ; then
-         chroot ${release} sysrc -f /etc/rc.conf rc_interactive="YES"
-  case $desktop in
-     mate)
-         chroot ${release} rc-update add moused default
-         chroot ${release} rc-update add dbus default
-         chroot ${release} rc-update add hald default
-         chroot ${release} rc-update add livecd default
-         #chroot ${release} rc-update add lightdm default
-         #chroot ${release} rc-update add xdm default
-         #chroot ${release} sysrc -f /usr/local/etc/conf.d/xdm DISPLAYMANAGER="lightdm"
-         ;;
-    xfce)
-         chroot ${release} rc-update add moused default
-         chroot ${release} rc-update add dbus default
-         chroot ${release} rc-update add hald default
-         chroot ${release} rc-update add livecd default
-         #chroot ${release} rc-update add lightdm default
-         #chroot ${release} rc-update add xdm default
-         #chroot ${release} sysrc -f /usr/local/etc/conf.d/xdm DISPLAYMANAGER="lightdm"
-         ;;
-  esac
+      chroot ${release} sysrc -f /etc/rc.conf rc_interactive="YES"
+    case $desktop in
+       mate)
+           chroot ${release} rc-update add devfs default
+           chroot ${release} rc-update add moused default
+           chroot ${release} rc-update add dbus default
+           chroot ${release} rc-update add hald default
+           chroot ${release} rc-update add livecd default
+           chroot ${release} rc-update add linux default
+           chroot ${release} rc-update add webcamd default
+           chroot ${release} rc-update add vboxguest default
+           chroot ${release} rc-update add vboxservice default
+           chroot ${release} rc-update add cupsd default
+           chroot ${release} rc-update add usbd default
+           #chroot ${release} rc-update add lightdm default
+           #chroot ${release} rc-update add xdm default
+           #chroot ${release} sysrc -f /usr/local/etc/conf.d/xdm DISPLAYMANAGER="lightdm"
+           ;;
+      xfce)
+           chroot ${release} rc-update add moused default
+           chroot ${release} rc-update add dbus default
+           chroot ${release} rc-update add hald default
+           chroot ${release} rc-update add livecd default
+           #chroot ${release} rc-update add lightdm default
+           #chroot ${release} rc-update add xdm default
+           #chroot ${release} sysrc -f /usr/local/etc/conf.d/xdm DISPLAYMANAGER="lightdm"
+           ;;
+    esac
+  else
+    case $desktop in
+      mate)
+           chroot ${release} sysrc -f /etc/rc.conf moused_enable="YES"
+           chroot ${release} sysrc -f /etc/rc.conf dbus_enable="YES"
+           chroot ${release} sysrc -f /etc/rc.conf hald_enable="YES"
+           #chroot ${release} sysrc -f /etc/rc.conf lightdm_enable="YES"
+           chroot ${release} sysrc -f /etc/rc.conf livecd_enable="YES" ;;
+      xfce)
+           chroot ${release} sysrc -f /etc/rc.conf moused_enable="YES"
+           chroot ${release} sysrc -f /etc/rc.conf dbus_enable="YES"
+           #chroot ${release} sysrc -f /etc/rc.conf lightdm_enable="YES"
+           chroot ${release} sysrc -f /etc/rc.conf livecd_enable="YES" ;;
+    esac
   fi
 }
 
 user()
 {
-  if [ "$systems" != "freebsd" -o "$systems" != "trueos" ]; then
-    chroot ${release} echo freebsd | chroot ${release} pw mod user root -h 0
-  fi
   chroot ${release} pw useradd liveuser \
-  -c "Live User" -d "/home/liveuser" \
+  -c "Live User" -d "/usr/home/liveuser" \
   -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
-  if [ $systems != "freebsd" -o $systems != "trueos" ]; then
-    chroot ${release} echo freebsd | chroot ${release} pw mod user liveuser -h 0
-  fi
 }
 
 extra_config()
@@ -233,13 +245,13 @@ extra_config()
         . ${cwd}/systems/trueos/extra/dm.sh
         . ${cwd}/systems/trueos/extra/finalize.sh
         . ${cwd}/systems/trueos/extra/autologin.sh
-        create_share_ghostbsd
+        set_live_system
         setup_liveuser
-        setup_base
+        #setup_base
         #lightdm_setup
         setup_xinit
         setup_autologin
-        final_setup
+        #final_setup
         ;;
     freebsd)
         . ${cwd}/systems/freebsd/extra/common-live-setting.sh
@@ -290,7 +302,7 @@ ramdisk()
   tar -cf - rescue | tar -xf - -C "${ramdisk_root}"
   cd "${cwd}"
   install -o root -g wheel -m 755 "init.sh.in" "${ramdisk_root}/init.sh"
-  sed "s/@VOLUME@/${vol}/" "init.sh.in" > "${ramdisk_root}/init.sh"
+  sed "s/@VOLUME@/${label}/" "init.sh.in" > "${ramdisk_root}/init.sh"
   mkdir "${ramdisk_root}/dev"
   mkdir "${ramdisk_root}/etc"
   touch "${ramdisk_root}/etc/fstab"
@@ -300,18 +312,29 @@ ramdisk()
   rm -rf "${ramdisk_root}"
 }
 
+mfs()
+{
+
+  for dir in ${union_dirs}; do
+    echo ${dir} >> ${cdroot}/data/uniondirs
+    cd ${release} && tar -cpzf ${cdroot}/data/mfs.tgz ${union_dirs}
+  done
+}
+
 boot()
 {
   cd "${release}"
   tar -cf - --exclude boot/kernel boot | tar -xf - -C "${cdroot}"
   for kfile in kernel geom_uzip.ko nullfs.ko tmpfs.ko unionfs.ko; do
-  tar -cf - boot/kernel/${kfile} | tar -xf - -C "${cdroot}"
+    tar -cf - boot/kernel/${kfile} | tar -xf - -C "${cdroot}"
   done
   cd "${cwd}"
   cp -R boot/ ${cdroot}/boot/
+  mkdir ${cdroot}/etc
 }
 
 image()
 {
-  grub-mkrescue -o ${livecd}/${vol}.iso ${cdroot} -- -volid ${vol}
+  grub-mkrescue -o $isopath ${cdroot} -- -volid $label
+  # sh mkisoimages.sh -b $label $isopath ${cdroot}
 }

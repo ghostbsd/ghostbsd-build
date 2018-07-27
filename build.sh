@@ -12,5 +12,6 @@ rc
 extra_config
 uzip
 ramdisk
+mfs
 boot
 image

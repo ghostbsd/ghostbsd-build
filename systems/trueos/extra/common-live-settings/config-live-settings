@@ -2,7 +2,7 @@
 
 user_dirs()
 {
-  mkdir -p /home/liveuser/Desktop
+  mkdir -p /usr/home/liveuser/Desktop
   /usr/local/bin/xdg-user-dirs-update
 }
 
@@ -10,14 +10,14 @@ desktop_icons()
 {
 if [ -e /usr/local/share/applications/ghostbsd-irc.desktop ] ; then
     cp -af /usr/local/share/applications/ghostbsd-irc.desktop \
-    /home/liveuser/Desktop
-    chmod +x /home/liveuser/Desktop/ghostbsd-irc.desktop
+    /usr/home/liveuser/Desktop
+    chmod +x /usr/home/liveuser/Desktop/ghostbsd-irc.desktop
 fi
 
 if [ -e /usr/local/share/applications/gbi.desktop ] ; then
     cp -af /usr/local/share/applications/gbi.desktop \
-    /home/liveuser/Desktop
-    chmod +x /home/liveuser/Desktop/gbi.desktop
+    /usr/home/liveuser/Desktop
+    chmod +x /usr/home/liveuser/Desktop/gbi.desktop
 fi
 }
 
