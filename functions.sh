@@ -11,7 +11,7 @@ release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 version="18.08"
 label="GhostBSD"
-union_dirs=${union_dirs:-"boot dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
+union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
 # Only run as superuser
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
@@ -58,25 +58,18 @@ fi
 
 # Validate package selection if chosen
 if [ -z "${desktop}" ] ; then
-    echo "Invalid choice specified"
-    echo "Possible choices are:"
-    ls ${cwd}/systems/${systems}/packages
-    echo "Usage: ./build.sh trueos mate"
-    exit 1
+  desktop=mate
 else
   validate_desktop
 fi
 
-# Set the volume name
-if [ -n "${desktop}" ] ; then
-  if [ "${desktop}" == "xfce" ] ; then
+
+if [ "${desktop}" == "xfce" ] ; then
   community="-XFCE"
-  else
-    community=""
-  fi
 else
   community=""
 fi
+
 
 isopath="${livecd}/${label}${version}${community}.iso"
 
@@ -109,8 +102,7 @@ base()
               cd ${base}
               tar -zxvf base.txz -C ${release}
               tar -zxvf kernel.txz -C ${release}
-              tar -zxvf lib32.txz -C ${release}
-              touch ${release}/etc/fstab;;
+              tar -zxvf lib32.txz -C ${release};;
     freebsd)
               if [ ! -f "${base}/base.txz" ] ; then
                 cd ${base}
@@ -127,11 +119,11 @@ base()
               cd ${base}
               tar -zxvf base.txz -C ${release}
               tar -zxvf kernel.txz -C ${release}
-              tar -zxvf lib32.txz -C ${release}
-              touch ${release}/etc/fstab;;
+              tar -zxvf lib32.txz -C ${release};;
              *)
               exit 1;;
   esac
+  mkdir ${release}/cdrom
 }
 
 packages()
@@ -247,11 +239,11 @@ extra_config()
         . ${cwd}/systems/trueos/extra/autologin.sh
         set_live_system
         setup_liveuser
-        #setup_base
+        setup_base
         #lightdm_setup
         setup_xinit
         setup_autologin
-        #final_setup
+        final_setup
         ;;
     freebsd)
         . ${cwd}/systems/freebsd/extra/common-live-setting.sh

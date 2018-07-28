@@ -21,37 +21,26 @@ sleep 5
 echo "==> Mount cdrom"
 mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom
 
-mkdir -p /sysroot/cdrom
-echo "==> mount_nullfs in /cdrom in /sysroot"
-mount_nullfs -o ro /cdrom /sysroot/cdrom
-
-sleep 15
 echo "==> mdmfs /cdrom/data/system.uzip in /sysroot"
 mdmfs -P -F /cdrom/data/system.uzip -o ro md.uzip /sysroot
 
 echo "==> Mount swap-based memdisk"
 MEMDISK_SIZE="$(($(sysctl -n hw.usermem) / 1024 / 1024 / 2))"
-#MEMDISK_SIZE=$(($(sysctl -n hw.usermem) / 2))
 mdmfs -s "${MEMDISK_SIZE}m" md /memdisk || exit 1
-# device=$(mdconfig -a -t malloc -s "${MEMDISK_SIZE}")
-# mount -t unionfs /memdisk /sysroot
-# device=$(mdconfig -a -t malloc -s "${MEMDISK_SIZE}")
-# newfs /dev/${device} > /dev/null 2>&1
-# mount /dev/${device} /memdisk
+
 
 echo "==> tar zxfv /cdrom/data/mfs.tgz -C /memdisk"
 tar zxf /cdrom/data/mfs.tgz -C /memdisk
-# tar -zxf /dist/etc.tgz -C /memdisk
 
 while read uniondir; do
   mount_nullfs /memdisk/${uniondir} /sysroot/${uniondir}
 done < /cdrom/data/uniondirs
-# mount_nullfs /memdisk/etc /etc
+
+echo "==> mount_nullfs in /cdrom in /sysroot"
+mount_nullfs -o ro /cdrom /sysroot/cdrom
 
 echo "==> Mount devfs /sysroot/dev"
 mount -t devfs devfs /sysroot/dev
-
-sleep 1
 
 if [ "$SINGLE_USER" = "true" ]; then
   echo "Starting interactive shell in temporary rootfs ..."

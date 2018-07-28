@@ -35,24 +35,24 @@ cd ghostbsd
 
 ## TrueOS base GhostBSD
 ```
+./build trueo
 ./build trueos mate
 ./build trueos xfce
 ```
 
 ## FreeBSD base GhostBSD
 ```
+./build freebsd
 ./build freebsd mate
 ./build freebsd xfce
 ```
 
 ## Burn an image to cd:
 ```
-cdrecord /usr/local/ghostbsd-build/ghostbsd/ghostbsd-mate.iso
+cdrecord /usr/local/ghostbsd-build/ghostbsd/GhostBSD18.08.iso
 ```
 
 ## Write an image to usb stick:
 ```
-dd if=/usr/local/ghostbsd-build/ghostbsd/ghostbsd-mate.iso of=/dev/da0 bs=4m
+dd if=/usr/local/ghostbsd-build/ghostbsd/GhostBSD18.08.iso of=/dev/da0 bs=4m
 ```
-
-

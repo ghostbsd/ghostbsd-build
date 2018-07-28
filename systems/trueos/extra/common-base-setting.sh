@@ -13,9 +13,6 @@ patch_etc_files()
   cat ${cwd}/systems/trueos/extra/common-base-setting/patches/boot/loader.conf.extra >> ${release}/boot/loader.conf
   cat ${cwd}/systems/trueos/extra/common-base-setting/patches/etc/profile.extra >> ${release}/etc/profile
   cat ${cwd}/systems/trueos/extra/common-base-setting/patches/etc/devfs.rules.extra >> ${release}/etc/devfs.rules
-  cat ${cwd}/systems/trueos/extra/common-base-setting/patches/etc/make.conf.extra >> ${release}/etc/make.conf
-  cat ${cwd}/systems/trueos/extra/common-base-setting/patches/etc/rc.conf.extra >> ${release}/etc/rc.conf
-  cat ${cwd}/systems/trueos/extra/common-base-setting/patches/etc/devd.conf.extra >> ${release}/etc/devd.conf
   cat ${cwd}/systems/trueos/extra/common-base-setting/patches/etc/sysctl.conf.extra >> ${release}/etc/sysctl.conf
   cat ${cwd}/systems/trueos/extra/common-base-setting/patches/etc/fstab.extra >> ${release}/etc/fstab
 }

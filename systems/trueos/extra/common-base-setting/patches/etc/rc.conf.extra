@@ -1,7 +1,0 @@
-
-# DEVFS rules
-devfs_system_ruleset="devfsrules_common"
-
-# Load the following kernel modules
-kld_list="geom_mirror geom_journal geom_eli linux"
-
