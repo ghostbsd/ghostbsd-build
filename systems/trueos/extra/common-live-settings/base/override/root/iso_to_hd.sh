@@ -24,28 +24,15 @@ clean_root_and_auto_login()
   echo 'exec $1'  > /root/.xinitrc
 }
 
-clean_rc_scripts()
-{
-  rm /etc/rc.d/cheatcodes
-  rm /etc/rc.d/uzip
-  rm /etc/rc.d/unionfs
-}
-
 set_sudoers()
 {
   sed -i "" -e 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/g' /usr/local/etc/sudoers
   sed -i "" -e 's/# %sudo/%sudo/g' /usr/local/etc/sudoers
 }
 
-acpi_disable()
-{
-  # test condiion to see if computer was started with acpi disabled
-  sed -i "" -e 's/# hint.acpi.0.disabled="1"/hint.acpi.0.disabled="1"/g' /boot/loader.conf
-}
-
 revert_lightdm()
 {
-  sed -i '' -e "s/autologin-user=liveuser/#autologin-user=liveuser/g"\
+  sed -i '' -e "s/autologin-user=ghostbsd/#autologin-user=ghostbsd/g"\
   -e  "s/autologin-user-timeout=0/#autologin-user-timeout=0/g" \
 }
 
@@ -56,19 +43,14 @@ fix_perms()
   chmod 1777 /tmp
 }
 
-rem_virtualbox()
-{
-  # Check if we are in virtualbox to enable vbox-guest-additions
-  cat /tmp/.ifvbox | grep -q "false"
-  if  [ $? -ne 0 ] ; then
-    pkg delete  -y virtualbox-ose-additions
-  fi
-}
-
 remove_ghostbsd_user()
 {
-  pw userdel -n liveuser
-  rm -rf /home/liveuser
+  pw userdel -n ghostbsd
+  rm -rf /usr/home/ghostbsd
+  ( echo 'g/# ${liveuser} user autologin' ; echo 'wq' ) | ex -s /etc/gettytab
+  ( echo 'g/${liveuser}:\\"/d' ; echo 'wq' ) | ex -s /etc/gettytab
+  ( echo 'g/:al=${liveuser}:ht:np:sp#115200:/d' ; echo 'wq' ) | ex -s /etc/gettytab
+  sed -i "" "/ttyv0/s/ghostbsd/Pc/g" /etc/ttys
 }
 
 PolicyKit_setting()
@@ -116,11 +98,7 @@ printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
 
 purge_live_settings
 set_sudoers
-#acpi_disable
 revert_lightdm
 fix_perms
-rem_virtualbox
 remove_ghostbsd_user
-#clean_root_and_auto_login
-clean_rc_scripts
 PolicyKit_setting

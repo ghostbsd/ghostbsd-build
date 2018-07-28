@@ -6,7 +6,7 @@ lightdm_setup()
 {
   if [ -f ${release}/usr/local/etc/lightdm/lightdm.conf ] ; then
     sed -i "" '/#exit-on-failure=false/a\
-autologin-user=liveuser\
+autologin-user=${liveuser}\
 autologin-user-timeout=0\
 ' ${release}/usr/local/etc/lightdm/lightdm.conf
   fi
@@ -39,10 +39,10 @@ slim_setup()
 setup_xinit()
 {
   if [ "${desktop}" == "mate" ] ; then
-    echo "exec ck-launch-session mate-session" > ${release}/usr/home/liveuser/.xinitrc
+    echo "exec ck-launch-session mate-session" > ${release}/usr/home/${liveuser}/.xinitrc
     echo "exec ck-launch-session mate-session" > ${release}/root/.xinitrc
   elif [ "${desktop}" == "xfce" ] ; then
-    echo "exec ck-launch-session startxfce4" > ${release}/usr/home/liveuser/.xinitrc
+    echo "exec ck-launch-session startxfce4" > ${release}/usr/home/${liveuser}/.xinitrc
     echo "exec ck-launch-session startxfce4" > ${release}/root/.xinitrc
   fi
 }

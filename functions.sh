@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
 cwd="`realpath | sed 's|/scripts||g'`"
+liveuser=ghostbsd
 systems=$1
 desktop=$2
 workdir="/usr/local"
@@ -224,8 +225,8 @@ rc()
 
 user()
 {
-  chroot ${release} pw useradd liveuser \
-  -c "Live User" -d "/usr/home/liveuser" \
+  chroot ${release} pw useradd ${liveuser} \
+  -c "GhostBSD Live User" -d "/usr/home/${liveuser}" \
   -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
 }
 
