@@ -123,8 +123,10 @@ base()
              *)
               exit 1;;
   esac
+  touch ${release}/etc/fstab
   mkdir ${release}/cdrom
 }
+
 
 packages()
 {
