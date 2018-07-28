@@ -237,12 +237,14 @@ extra_config()
         . ${cwd}/systems/trueos/extra/dm.sh
         . ${cwd}/systems/trueos/extra/finalize.sh
         . ${cwd}/systems/trueos/extra/autologin.sh
+        . ${cwd}/systems/trueos/extra/gitpkg.sh
         set_live_system
         setup_liveuser
         setup_base
         #lightdm_setup
         setup_xinit
         setup_autologin
+        git_pc_sysinstall
         final_setup
         ;;
     freebsd)
