@@ -103,7 +103,9 @@ mate-installed-settings
 mate-live-settings
 station-tweak
 plank
+brisk-menu
 grub2-efi
-lightdm-gtk-greeter
+slim
+ghostbsd-slim-theme
 pkg
 xdm

@@ -17,23 +17,10 @@ purge_live_settings()
   rm -f /usr/local/etc/xdg/autostart/umountghostbsd.desktop
 }
 
-clean_root_and_auto_login()
-{
-  # sed -i "" -e 's/root/Pc/g' /etc/ttys
-  rm -rf /root/cardDetect /root/functions.sh /root/sysconfig.sh /root/sysutil.sh /root/sysutil.sh /root/.login /root/Desktop/gbi.desktop
-  echo 'exec $1'  > /root/.xinitrc
-}
-
 set_sudoers()
 {
   sed -i "" -e 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/g' /usr/local/etc/sudoers
   sed -i "" -e 's/# %sudo/%sudo/g' /usr/local/etc/sudoers
-}
-
-revert_lightdm()
-{
-  sed -i '' -e "s/autologin-user=ghostbsd/#autologin-user=ghostbsd/g"\
-  -e  "s/autologin-user-timeout=0/#autologin-user-timeout=0/g" \
 }
 
 fix_perms()
@@ -47,9 +34,9 @@ remove_ghostbsd_user()
 {
   pw userdel -n ghostbsd
   rm -rf /usr/home/ghostbsd
-  ( echo 'g/# ${liveuser} user autologin' ; echo 'wq' ) | ex -s /etc/gettytab
-  ( echo 'g/${liveuser}:\\"/d' ; echo 'wq' ) | ex -s /etc/gettytab
-  ( echo 'g/:al=${liveuser}:ht:np:sp#115200:/d' ; echo 'wq' ) | ex -s /etc/gettytab
+  ( echo 'g/# ghostbsd user autologin' ; echo 'wq' ) | ex -s /etc/gettytab
+  ( echo 'g/ghostbsd:\\"/d' ; echo 'wq' ) | ex -s /etc/gettytab
+  ( echo 'g/:al=ghostbsd:ht:np:sp#115200:/d' ; echo 'wq' ) | ex -s /etc/gettytab
   sed -i "" "/ttyv0/s/ghostbsd/Pc/g" /etc/ttys
 }
 
@@ -96,9 +83,15 @@ printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
 ' > /usr/local/etc/PolicyKit/PolicyKit.conf
 }
 
+set_dm()
+{
+  rc-update add slim default
+}
+
+
 purge_live_settings
 set_sudoers
-revert_lightdm
 fix_perms
 remove_ghostbsd_user
 PolicyKit_setting
+set_dm

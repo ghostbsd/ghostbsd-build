@@ -27,15 +27,6 @@ gdm_setup()
   setup_xinit
 }
 
-
-slim_setup()
-{
-  #echo 'exec $1' > ${release}/home/ghostbsd/.xinitrc
-  #echo 'exec $1' > ${release}/root/.xinitrc
-}
-
-
-
 setup_xinit()
 {
   if [ "${desktop}" == "mate" ] ; then
