@@ -2,16 +2,9 @@
 # Config which clean the system after the installation
 
 # removing the old network configuration
-
-if [ -f /usr/local/etc/default/distro ] ; then
-. /usr/local/etc/default/distro
-fi
-
 purge_live_settings()
 {
-  GBSDFLAVOUR=$(cat /usr/local/etc/default/distro | grep FLAVOUR | cut -d = -f2)
-  pkg delete -y $GBSDFLAVOUR-live-settings
-  pkg delete -y ghostbsd-live-common-settings
+  pkg delete -y mate-live-settings
   # Removing livecd hostname.
   ( echo 'g/hostname="livecd"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
   rm -f /usr/local/etc/xdg/autostart/umountghostbsd.desktop
