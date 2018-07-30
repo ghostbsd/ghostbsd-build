@@ -7,7 +7,8 @@ desktop=$2
 workdir="/usr/local"
 livecd="${workdir}/ghostbsd-build/${systems}"
 base="${livecd}/base"
-packages="${livecd}/packages"
+software_packages="${livecd}/software_packages"
+base_packages="${livecd}/base_packages"
 release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 version="18.08"
@@ -81,7 +82,7 @@ workspace()
     chflags -R noschg ${release} ${cdroot} >/dev/null 2>/dev/null
     rm -rf ${release} ${cdroot} >/dev/null 2>/dev/null
   fi
-  mkdir -p ${livecd} ${base} ${packages} ${release} >/dev/null 2>/dev/null
+  mkdir -p ${livecd} ${base} ${software_packages} ${base_packages} ${release} >/dev/null 2>/dev/null
 }
 
 base()
@@ -128,8 +129,17 @@ base()
   mkdir ${release}/cdrom
 }
 
+packages_base()
+{
+  cp /etc/resolv.conf ${release}/etc/resolv.conf
+  mkdir ${release}/var/cache/pkg
+  mount_nullfs ${base_packages} ${release}/var/cache/pkg
+  pkg-static -c ${release} install -y -g 'FreeBSD-*'
+  rm ${release}/etc/resolv.conf
+  umount ${release}/var/cache/pkg
+}
 
-packages()
+packages_software()
 {
   case $systems in
     trueos)
@@ -140,9 +150,14 @@ packages()
       ;;
   esac
 
+compress_packages()
+{
+
+}
+
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir ${release}/var/cache/pkg
-  mount_nullfs ${packages} ${release}/var/cache/pkg
+  mount_nullfs ${software_packages} ${release}/var/cache/pkg
 
   case $desktop in
       mate)
@@ -186,12 +201,10 @@ rc()
            chroot ${release} rc-update add dbus default
            chroot ${release} rc-update add hald default
            chroot ${release} rc-update add livecd default
-           chroot ${release} rc-update add linux default
            chroot ${release} rc-update add webcamd default
            chroot ${release} rc-update add vboxguest default
            chroot ${release} rc-update add vboxservice default
            chroot ${release} rc-update add cupsd default
-           chroot ${release} rc-update add usbd default
            #chroot ${release} rc-update add lightdm default
            #chroot ${release} rc-update add xdm default
            #chroot ${release} sysrc -f /usr/local/etc/conf.d/xdm DISPLAYMANAGER="lightdm"
