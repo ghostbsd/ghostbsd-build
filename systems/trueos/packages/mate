@@ -79,7 +79,6 @@ montserrat
 roboto-fonts-ttf
 ghostbsd-icons
 ghostbsd-installed-common-settings
-gbi
 update-station
 gksu
 shotwell
@@ -108,4 +107,3 @@ grub2-efi
 slim
 ghostbsd-slim-theme
 pkg
-

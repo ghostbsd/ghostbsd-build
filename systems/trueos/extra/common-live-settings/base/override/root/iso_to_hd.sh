@@ -84,7 +84,7 @@ set_dm()
 
 purge_live_settings
 set_sudoers
-fix_perms
+# fix_perms
 remove_ghostbsd_user
 PolicyKit_setting
 set_dm
