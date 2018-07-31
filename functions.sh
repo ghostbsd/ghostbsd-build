@@ -261,6 +261,7 @@ extra_config()
         setup_xinit
         setup_autologin
         git_pc_sysinstall
+        git_gbi
         final_setup
         ;;
     freebsd)
