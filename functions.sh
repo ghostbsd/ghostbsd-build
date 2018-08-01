@@ -276,6 +276,7 @@ extra_config()
     *)
       ;;
   esac
+  echo "gop set 0" >> ${release}/boot/loader.rc.local
 }
 
 xorg()
