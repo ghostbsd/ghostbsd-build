@@ -33,6 +33,17 @@ remove_ghostbsd_user()
   sed -i "" "/ttyv0/s/ghostbsd/Pc/g" /etc/ttys
 }
 
+setup_slim_xinitrc()
+{
+
+  echo "exec $1" > /root/.xinitrc
+  for user in `ls /usr/home/` ; do
+    echo "exec $1" > /usr/home/${user}/.xinitrc
+    chown ${user}:${user} /usr/home/${user}/.xinitrc
+  done
+
+}
+
 PolicyKit_setting()
 {
 # Setup PolicyKit for mounting device.
@@ -84,7 +95,8 @@ set_dm()
 
 purge_live_settings
 set_sudoers
-# fix_perms
+fix_perms
 remove_ghostbsd_user
 PolicyKit_setting
 set_dm
+setup_slim_xinitrc
