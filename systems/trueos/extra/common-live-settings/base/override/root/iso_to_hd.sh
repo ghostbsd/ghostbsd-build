@@ -36,9 +36,9 @@ remove_ghostbsd_user()
 setup_slim_xinitrc()
 {
 
-  echo "exec $1" > /root/.xinitrc
+  echo 'exec $1' > /root/.xinitrc
   for user in `ls /usr/home/` ; do
-    echo "exec $1" > /usr/home/${user}/.xinitrc
+    echo 'exec $1' > /usr/home/${user}/.xinitrc
     chown ${user}:${user} /usr/home/${user}/.xinitrc
   done
 
