@@ -7,7 +7,6 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 
 ## Features
 * Build GhostBSD with FreeBSD and TrueOS
-* AMD64
 * Mate and XFCE desktop environments
 * Hybrid DVD/USB image
 * Compatible with VirtualBox, and VMware
