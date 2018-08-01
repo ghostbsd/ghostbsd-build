@@ -35,7 +35,7 @@ cd ghostbsd
 
 ## TrueOS base GhostBSD
 ```
-./build trueo
+./build trueos
 ./build trueos mate
 ./build trueos xfce
 ```
