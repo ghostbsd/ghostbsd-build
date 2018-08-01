@@ -16,7 +16,6 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 * FreeBSD, TrueOS, GhostBSD for AMD64
 * 20GB of free disk space
 * 4GB of free memory
-* UFS, or ZFS
 
 ## Initial Setup
 Install the required packages:
