@@ -9,8 +9,10 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 * Build GhostBSD with FreeBSD and TrueOS
 * Mate and XFCE desktop environments
 * Hybrid DVD/USB image
-* Compatible with VirtualBox, and VMware
-* NVIDIA graphics driver
+
+## Graphics Support
+* Compatible with VirtualBox, VMware, NVIDIA graphics out of box
+* SCFB support with automatic best resolution for UEFI enabled systems with Intel/AMD graphics
 
 ## System Requirements
 * FreeBSD, TrueOS, GhostBSD for AMD64
