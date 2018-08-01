@@ -39,6 +39,11 @@ if [ $? -eq 0 -a "${BOOTMODE}" = "UEFI" ]; then
   cp /usr/local/etc/X11/cardDetect/XF86Config.scfb /etc/X11/xorg.conf
 fi
 
+pciconf -lv | grep -B 4 VGA |grep -q AMD
+if [ $? -eq 0 -a "${BOOTMODE}" = "UEFI" ]; then
+  cp /usr/local/etc/X11/cardDetect/XF86Config.scfb /etc/X11/xorg.conf
+fi
+
 # Check for any new wifi devices to setup
 for wnic in `sysctl -b net.wlan.devices 2>/dev/null`
 do
