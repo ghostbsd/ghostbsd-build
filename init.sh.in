@@ -16,7 +16,7 @@ echo "==> Make mountpoints"
 mkdir -p /cdrom /memdisk /sysroot
 
 # Allow a few seconds for USB devices to settle
-sleep 5
+sleep 10 
 
 echo "==> Mount cdrom"
 mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom
