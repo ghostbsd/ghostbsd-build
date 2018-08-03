@@ -192,7 +192,7 @@ rc()
   # DEVFS rules
   chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
   # Load the following kernel modules
-  chroot ${release} sysrc -f /etc/rc.conf kld_list="geom_mirror geom_journal geom_eli linux"
+  chroot ${release} sysrc -f /etc/rc.conf kld_list="geom_mirror geom_journal linux"
   if [ -f "${release}/sbin/openrc-run" ] ; then
       chroot ${release} sysrc -f /etc/rc.conf rc_interactive="YES"
     case $desktop in
