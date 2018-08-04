@@ -348,6 +348,6 @@ boot()
 
 image()
 {
-  grub-mkrescue -o $isopath ${cdroot} -- -volid $label
-  # sh mkisoimages.sh -b $label $isopath ${cdroot}
+  # grub-mkrescue -o $isopath ${cdroot} -- -volid $label
+  sh mkisoimages.sh -b $label $isopath ${cdroot}
 }
