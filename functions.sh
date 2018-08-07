@@ -315,7 +315,7 @@ ramdisk()
   tar -cf - rescue | tar -xf - -C "${ramdisk_root}"
   cd "${cwd}"
   install -o root -g wheel -m 755 "init.sh.in" "${ramdisk_root}/init.sh"
-  sed "s/@VOLUME@/${label}/" "init.sh.in" > "${ramdisk_root}/init.sh"
+  sed "s/@VOLUME@/GHOSTBSD/" "init.sh.in" > "${ramdisk_root}/init.sh"
   mkdir "${ramdisk_root}/dev"
   mkdir "${ramdisk_root}/etc"
   touch "${ramdisk_root}/etc/fstab"
