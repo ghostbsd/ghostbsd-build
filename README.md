@@ -22,7 +22,7 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 ## Initial Setup
 Install the required packages:
 ```
-pkg install git grub2-pcbsd grub2-efi xorriso
+pkg install git
 ```
 Clone the repo:
 ```
