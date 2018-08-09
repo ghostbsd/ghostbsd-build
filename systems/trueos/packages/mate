@@ -25,7 +25,6 @@ fusefs-ext4fuse
 fusefs-simple-mtpfs
 gawk
 git
-grub2-pcbsd
 nano
 ksh93
 py27-gobject
@@ -103,7 +102,6 @@ mate-live-settings
 station-tweak
 plank
 brisk-menu
-grub2-efi
 slim
 ghostbsd-slim-theme
 pkg

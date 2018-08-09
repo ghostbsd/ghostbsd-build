@@ -25,7 +25,6 @@ fusefs-ext4fuse
 fusefs-simple-mtpfs
 gawk
 git
-grub2-pcbsd
 nano
 e2fsprogs
 ksh93
@@ -152,6 +151,5 @@ xfce4-pulseaudio-plugin
 xfce4-whiskermenu-plugin
 xfce-installed-settings
 xfce-live-settings
-grub2-efi
 slim
 pkg
