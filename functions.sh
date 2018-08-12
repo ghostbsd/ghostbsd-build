@@ -7,10 +7,12 @@ desktop=$2
 workdir="/usr/local"
 livecd="${workdir}/ghostbsd-build/${systems}"
 base="${livecd}/base"
-packages="${livecd}/packages"
+software_packages="${livecd}/software_packages"
+base_packages="${livecd}/base_packages"
 release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 version="18.08"
+timestap=`date "+-%Y-%m-%d-%H"`
 label="GhostBSD"
 union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
 # Only run as superuser
@@ -72,7 +74,7 @@ else
 fi
 
 
-isopath="${livecd}/${label}${version}${community}.iso"
+isopath="${livecd}/${label}${version}${timestap}${community}.iso"
 
 workspace()
 {
@@ -81,7 +83,7 @@ workspace()
     chflags -R noschg ${release} ${cdroot} >/dev/null 2>/dev/null
     rm -rf ${release} ${cdroot} >/dev/null 2>/dev/null
   fi
-  mkdir -p ${livecd} ${base} ${packages} ${release} >/dev/null 2>/dev/null
+  mkdir -p ${livecd} ${base} ${software_packages} ${base_packages} ${release} >/dev/null 2>/dev/null
 }
 
 base()
@@ -128,8 +130,17 @@ base()
   mkdir ${release}/cdrom
 }
 
+packages_base()
+{
+  cp /etc/resolv.conf ${release}/etc/resolv.conf
+  mkdir ${release}/var/cache/pkg
+  mount_nullfs ${base_packages} ${release}/var/cache/pkg
+  pkg-static -c ${release} install -y -g 'FreeBSD-*'
+  rm ${release}/etc/resolv.conf
+  umount ${release}/var/cache/pkg
+}
 
-packages()
+packages_software()
 {
   case $systems in
     trueos)
@@ -140,15 +151,20 @@ packages()
       ;;
   esac
 
+compress_packages()
+{
+
+}
+
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir ${release}/var/cache/pkg
-  mount_nullfs ${packages} ${release}/var/cache/pkg
+  mount_nullfs ${software_packages} ${release}/var/cache/pkg
 
   case $desktop in
       mate)
           cat ${cwd}/systems/${systems}/packages/mate | xargs pkg-static -c ${release} install -y ;;
       xfce)
-          cat ${cwd}/systems/${systems}/packages/lumina | xargs pkg-static -c ${release} install -y ;;
+          cat ${cwd}/systems/${systems}/packages/xfce | xargs pkg-static -c ${release} install -y ;;
   esac
 
   rm ${release}/etc/resolv.conf
@@ -176,7 +192,7 @@ rc()
   # DEVFS rules
   chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
   # Load the following kernel modules
-  chroot ${release} sysrc -f /etc/rc.conf kld_list="geom_mirror geom_journal geom_eli linux"
+  chroot ${release} sysrc -f /etc/rc.conf kld_list="geom_mirror geom_journal linux"
   if [ -f "${release}/sbin/openrc-run" ] ; then
       chroot ${release} sysrc -f /etc/rc.conf rc_interactive="YES"
     case $desktop in
@@ -186,12 +202,10 @@ rc()
            chroot ${release} rc-update add dbus default
            chroot ${release} rc-update add hald default
            chroot ${release} rc-update add livecd default
-           chroot ${release} rc-update add linux default
            chroot ${release} rc-update add webcamd default
            chroot ${release} rc-update add vboxguest default
            chroot ${release} rc-update add vboxservice default
            chroot ${release} rc-update add cupsd default
-           chroot ${release} rc-update add usbd default
            #chroot ${release} rc-update add lightdm default
            #chroot ${release} rc-update add xdm default
            #chroot ${release} sysrc -f /usr/local/etc/conf.d/xdm DISPLAYMANAGER="lightdm"
@@ -248,6 +262,7 @@ extra_config()
         setup_xinit
         setup_autologin
         git_pc_sysinstall
+        git_gbi
         final_setup
         ;;
     freebsd)
@@ -261,6 +276,7 @@ extra_config()
     *)
       ;;
   esac
+  echo "gop set 0" >> ${release}/boot/loader.rc.local
 }
 
 xorg()
@@ -299,7 +315,7 @@ ramdisk()
   tar -cf - rescue | tar -xf - -C "${ramdisk_root}"
   cd "${cwd}"
   install -o root -g wheel -m 755 "init.sh.in" "${ramdisk_root}/init.sh"
-  sed "s/@VOLUME@/${label}/" "init.sh.in" > "${ramdisk_root}/init.sh"
+  sed "s/@VOLUME@/GHOSTBSD/" "init.sh.in" > "${ramdisk_root}/init.sh"
   mkdir "${ramdisk_root}/dev"
   mkdir "${ramdisk_root}/etc"
   touch "${ramdisk_root}/etc/fstab"
@@ -332,6 +348,6 @@ boot()
 
 image()
 {
-  grub-mkrescue -o $isopath ${cdroot} -- -volid $label
-  # sh mkisoimages.sh -b $label $isopath ${cdroot}
+  # grub-mkrescue -o $isopath ${cdroot} -- -volid $label
+  sh mkisoimages.sh -b $label $isopath ${cdroot}
 }
