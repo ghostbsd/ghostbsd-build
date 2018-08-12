@@ -164,7 +164,7 @@ compress_packages()
       mate)
           cat ${cwd}/systems/${systems}/packages/mate | xargs pkg-static -c ${release} install -y ;;
       xfce)
-          cat ${cwd}/systems/${systems}/packages/lumina | xargs pkg-static -c ${release} install -y ;;
+          cat ${cwd}/systems/${systems}/packages/xfce | xargs pkg-static -c ${release} install -y ;;
   esac
 
   rm ${release}/etc/resolv.conf
