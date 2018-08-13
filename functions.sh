@@ -29,7 +29,7 @@ case $kernrel in
     echo " Using correct kernel release" 1>&2
     ;;
   *)
-   echo "Using wrong kernel release. Use Trueos 18.06 or GhostBSD 18 to build iso."
+   echo "Using wrong kernel release. Use TrueOS 18.06 or GhostBSD 18 to build iso."
    exit 1
    ;;
 esac
