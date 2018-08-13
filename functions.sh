@@ -12,9 +12,10 @@ base_packages="${livecd}/base_packages"
 release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 version="18.08"
-timestap=`date "+-%Y-%m-%d-%H"`
+timestamp=`date "+-%Y-%m-%d-%H"`
 label="GhostBSD"
 union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
+
 # Only run as superuser
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
@@ -74,7 +75,7 @@ else
 fi
 
 
-isopath="${livecd}/${label}${version}${timestap}${community}.iso"
+isopath="${livecd}/${label}${version}${timestamp}${community}.iso"
 
 workspace()
 {
