@@ -22,12 +22,12 @@ local_files()
   # cp ${cwd}/systems/trueos/extra/common-base-setting/etc/grub.d/10_kghostbsd ${release}/usr/local/etc/grub.d/10_kghostbsd
   #sed -i "" -e 's/"\/usr\/local\/sbin\/beadm"/"\/usr\/local\/etc\/grub.d\/10_kghostbsd"/g' ${release}/usr/local/etc/grub.d/10_kfreebsd
   # Adding kern.vty=vt to 10_kfreebsd
-  sed -i '' '/set kFreeBSD.vfs.root.mountfrom.options=rw/a\
-\	set kFreeBSD.kern.vty=vt\
-\	set kFreeBSD.hw.psm.synaptics_support="1"\
-' ${release}/usr/local/etc/grub.d/10_kfreebsd
+  #  sed -i '' '/set kFreeBSD.vfs.root.mountfrom.options=rw/a\
+  #\	set kFreeBSD.kern.vty=vt\
+  #\	set kFreeBSD.hw.psm.synaptics_support="1"\
+  #' ${release}/usr/local/etc/grub.d/10_kfreebsd
   # Replassing FreeBSD by GhostBSD
-  sed -i '' 's/"FreeBSD"/"GhostBSD"/g' ${release}/usr/local/etc/grub.d/10_kfreebsd
+  #  sed -i '' 's/"FreeBSD"/"GhostBSD"/g' ${release}/usr/local/etc/grub.d/10_kfreebsd
 }
 
 packages_settings()
