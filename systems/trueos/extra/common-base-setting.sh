@@ -46,5 +46,5 @@ setup_base()
   patch_etc_files
   # apply packages settings
   # packages_settings
-  local_files
+  # local_files
 }
