@@ -15,9 +15,11 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 * SCFB support with automatic best resolution for UEFI enabled systems with Intel/AMD graphics
 
 ## System Requirements
-* FreeBSD, TrueOS, GhostBSD for AMD64
+* TrueOS 18.06 or GhostBSD 18 for AMD64
 * 20GB of free disk space
 * 4GB of free memory
+
+Note: GhostBSD 11.1, and earlier releases, cannot be used to build ISO.
 
 ## Initial Setup
 Install the required packages:
