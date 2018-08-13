@@ -24,7 +24,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # Only run with GhostBSD18 or TrueOS 18.06 or later.
-case $REL in
+case $kernrel in
   '12.0-CURRENT')
     echo " Using correct kernel release" 1>&2
     ;;
