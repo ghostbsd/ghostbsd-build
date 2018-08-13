@@ -1,4 +1,4 @@
-loader_brand="gbsd"
-loader_logo="gbsd"
+loader_brand="ghostbsd"
+loader_logo="ghostbsd"
 hw.psm.synaptics_support="1"
 # boot_mute="YES"
