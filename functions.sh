@@ -15,12 +15,24 @@ version="18.08"
 timestamp=`date "+-%Y-%m-%d-%H"`
 label="GhostBSD"
 union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
+kernrel="`uname -r`"
 
 # Only run as superuser
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
   exit 1
 fi
+
+# Only run with GhostBSD18 or TrueOS 18.06 or later.
+case $REL in
+  '12.0-CURRENT')
+    echo " Using correct kernel release" 1>&2
+    ;;
+  *)
+   echo "Using wrong kernel release. Use Trueos 18.06 or GhostBSD 18 to build iso."
+   exit 1
+   ;;
+esac
 
 display_usage()
 {
@@ -141,6 +153,11 @@ packages_base()
   umount ${release}/var/cache/pkg
 }
 
+compress_packages()
+{
+
+}
+
 packages_software()
 {
   case $systems in
@@ -151,11 +168,6 @@ packages_software()
     *)
       ;;
   esac
-
-compress_packages()
-{
-
-}
 
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir ${release}/var/cache/pkg
