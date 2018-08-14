@@ -1,18 +1,18 @@
 #!/bin/sh
 #
-# livecd-video_enable="YES"
+# xconfig-video_enable="YES"
 #
 
-# PROVIDE: livecd
+# PROVIDE: xconfig
 # REQUIRE: LOGIN cleanvar moused syscons dbus
 # BEFORE: gdm kdm lightdm pcdm sddm slim xdm
 
 . /etc/rc.subr
 
-name=livecd
-rcvar=livecd_enable
+name=xconfig
+rcvar=xconfig_enable
 
-command="/usr/local/bin/livecd"
+command="/usr/local/bin/xconfig"
 pidfile="/var/run/${name}.pid"
 
 load_rc_config $name

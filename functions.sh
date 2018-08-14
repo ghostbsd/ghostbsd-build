@@ -197,7 +197,7 @@ packages_software()
 rc()
 {
   chroot ${release} sysrc -f /etc/rc.conf root_rw_mount="NO"
-  chroot ${release} sysrc -f /etc/rc.conf hostname="livecd"
+  chroot ${release} sysrc -f /etc/rc.conf hostname='livecd'
   chroot ${release} sysrc -f /etc/rc.conf sendmail_enable="NONE"
   chroot ${release} sysrc -f /etc/rc.conf sendmail_submit_enable="NO"
   chroot ${release} sysrc -f /etc/rc.conf sendmail_outbound_enable="NO"
@@ -214,7 +214,7 @@ rc()
            chroot ${release} rc-update add moused default
            chroot ${release} rc-update add dbus default
            chroot ${release} rc-update add hald default
-           chroot ${release} rc-update add livecd default
+           chroot ${release} rc-update add xconfig default
            chroot ${release} rc-update add webcamd default
            chroot ${release} rc-update add vboxguest default
            chroot ${release} rc-update add vboxservice default
@@ -227,7 +227,7 @@ rc()
            chroot ${release} rc-update add moused default
            chroot ${release} rc-update add dbus default
            chroot ${release} rc-update add hald default
-           chroot ${release} rc-update add livecd default
+           chroot ${release} rc-update add xconfig default
            #chroot ${release} rc-update add lightdm default
            #chroot ${release} rc-update add xdm default
            #chroot ${release} sysrc -f /usr/local/etc/conf.d/xdm DISPLAYMANAGER="lightdm"
@@ -240,12 +240,12 @@ rc()
            chroot ${release} sysrc -f /etc/rc.conf dbus_enable="YES"
            chroot ${release} sysrc -f /etc/rc.conf hald_enable="YES"
            #chroot ${release} sysrc -f /etc/rc.conf lightdm_enable="YES"
-           chroot ${release} sysrc -f /etc/rc.conf livecd_enable="YES" ;;
+           chroot ${release} sysrc -f /etc/rc.conf xconfig_enable="YES" ;;
       xfce)
            chroot ${release} sysrc -f /etc/rc.conf moused_enable="YES"
            chroot ${release} sysrc -f /etc/rc.conf dbus_enable="YES"
            #chroot ${release} sysrc -f /etc/rc.conf lightdm_enable="YES"
-           chroot ${release} sysrc -f /etc/rc.conf livecd_enable="YES" ;;
+           chroot ${release} sysrc -f /etc/rc.conf xconfig_enable="YES" ;;
     esac
   fi
 }
@@ -295,10 +295,10 @@ extra_config()
 xorg()
 {
   if [ -n "${desktop}" ] ; then
-    install -o root -g wheel -m 755 "${cwd}/xorg/bin/livecd" "${release}/usr/local/bin/"
-    install -o root -g wheel -m 755 "${cwd}/xorg/rc.d/livecd" "${release}/usr/local/etc/rc.d/"
+    install -o root -g wheel -m 755 "${cwd}/xorg/bin/xconfig" "${release}/usr/local/bin/"
+    install -o root -g wheel -m 755 "${cwd}/xorg/rc.d/xconfig" "${release}/usr/local/etc/rc.d/"
     if [ -f "${release}/sbin/openrc-run" ] ; then
-      install -o root -g wheel -m 755 "${cwd}/xorg/init.d/livecd" "${release}/usr/local/etc/init.d/"
+      install -o root -g wheel -m 755 "${cwd}/xorg/init.d/xconfig" "${release}/usr/local/etc/init.d/"
     fi
     if [ ! -d "${release}/usr/local/etc/X11/cardDetect/" ] ; then
       mkdir -p ${release}/usr/local/etc/X11/cardDetect

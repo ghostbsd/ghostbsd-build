@@ -1,12 +1,12 @@
 #!/sbin/openrc-run
 
-command=/usr/local/bin/livecd
-pidfile=/var/run/livecd.pid
-name="livecd"
+command=/usr/local/bin/xconfig
+pidfile=/var/run/xconfig.pid
+name="xconfig"
 
 depend()
 {
-	provide livecd
+	provide xconfig
 	after LOGIN cleanvar moused syscons dbus
 	before gdm kdm lightdm pcdm sddm slim xdm
 }
