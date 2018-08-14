@@ -45,42 +45,6 @@ configure_xorg()
   if [ $? -eq 0 -a "${BOOTMODE}" = "UEFI" ]; then
     cp /usr/local/etc/X11/cardDetect/XF86Config.scfb /etc/X11/xorg.conf
   fi
-
-  # Check for any new wifi devices to setup
-  for wnic in `sysctl -b net.wlan.devices 2>/dev/null`
-  do
-    cat /etc/rc.conf 2>/dev/null | grep -q "wlans_${wnic}="
-    if [ $? -ne 0 ] ; then
-      # We have a wifi device, setup a wlan* entry for it
-      grep -q "^wlans_" /etc/rc.conf
-      if [ $? -eq 0 ] ; then
-        WLANCOUNT=`cat /etc/rc.conf | grep "^wlans_" | wc -l | awk '{print $1}'`
-      else
-        WLANCOUNT="0"
-        WLAN="wlan${WLANCOUNT}"
-
-        # Save the wlan interface
-        echo "wlans_${wnic}=\"${WLAN}\"" >>/etc/rc.conf
-        echo "ifconfig_${WLAN}=\"WPA DHCP\"" >>/etc/rc.conf
-        echo "ifconfig_${WLAN}_ipv6=\"inet6 accept_rtadv\"" >> /etc/rc.conf
-        service netif restart
-      fi
-    fi
-  done
-
-  # Check for active ethernet adapters to setup
-  for nic in `ifconfig | /usr/local/bin/pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active' | egrep -o -m 1 '^[^\t:]+'`
-  do
-    cat /etc/rc.conf 2>/dev/null | grep -q "ifconfig_${nic}="
-    if [ $? -ne 0 ] ; then
-      if [ -f "/sbin/openrc-run" ] ; then
-        /usr/local/sbin/dhcpcd ${nic}
-    else
-      dhclient -b ${nic}
-    fi
-      sysrc -f /etc/rc.conf ifconfig_${nic}="DHCP"
-    fi
-  done
 }
 
 
