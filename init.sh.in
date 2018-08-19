@@ -7,8 +7,6 @@ if [ "`ps -o command 1 | tail -n 1 | ( read c o; echo ${o} )`" = "-s" ]; then
 	SINGLE_USER="true"
 fi
 
-sleep 1
-
 echo "==> Remount rootfs as read-write"
 mount -u -w /
 
@@ -16,7 +14,7 @@ echo "==> Make mountpoints"
 mkdir -p /cdrom /memdisk /sysroot
 
 # Allow a few seconds for USB devices to settle
-sleep 10 
+# sleep 10
 
 echo "==> Mount cdrom"
 mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom
