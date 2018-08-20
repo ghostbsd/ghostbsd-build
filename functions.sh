@@ -103,10 +103,10 @@ base()
 {
   case $systems in
     trueos)
+              mkdir ${release}/etc
               cp /etc/resolv.conf ${release}/etc/resolv.conf
-              mkdir ${release}/var/cache/pkg
+              mkdir -p ${release}/var/cache/pkg
               mount_nullfs ${base_packages} ${release}/var/cache/pkg
-              # pkg-static -r ${release} -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD-base install -y -g 'FreeBSD-*'
               pkg search -q FreeBSD | grep -v -E "(-development|-debug|-profile)" | xargs pkg-static -r ${release} -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD-base install -y -g
               rm ${release}/etc/resolv.conf
               umount ${release}/var/cache/pkg;;
