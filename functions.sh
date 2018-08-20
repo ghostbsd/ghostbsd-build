@@ -103,22 +103,12 @@ base()
 {
   case $systems in
     trueos)
-              if [ ! -f "${base}/base.txz" ] ; then
-                cd ${base}
-                fetch http://pkg.trueos.org/iso/stable/base.txz
-              fi
-              if [ ! -f "${base}/kernel.txz" ] ; then
-                cd ${base}
-                fetch http://pkg.trueos.org/iso/stable/kernel.txz
-              fi
-              if [ ! -f "${base}/lib32.txz" ] ; then
-                cd ${base}
-                fetch http://pkg.trueos.org/iso/stable/lib32.txz
-              fi
-              cd ${base}
-              tar -zxvf base.txz -C ${release}
-              tar -zxvf kernel.txz -C ${release}
-              tar -zxvf lib32.txz -C ${release};;
+              cp /etc/resolv.conf ${release}/etc/resolv.conf
+              mkdir ${release}/var/cache/pkg
+              mount_nullfs ${base_packages} ${release}/var/cache/pkg
+              pkg-static -r ${release} -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD-base install -y -g 'FreeBSD-*'
+              rm ${release}/etc/resolv.conf
+              umount ${release}/var/cache/pkg;;
     freebsd)
               if [ ! -f "${base}/base.txz" ] ; then
                 cd ${base}
@@ -141,16 +131,6 @@ base()
   esac
   touch ${release}/etc/fstab
   mkdir ${release}/cdrom
-}
-
-packages_base()
-{
-  cp /etc/resolv.conf ${release}/etc/resolv.conf
-  mkdir ${release}/var/cache/pkg
-  mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg-static -c ${release} install -y -g 'FreeBSD-*'
-  rm ${release}/etc/resolv.conf
-  umount ${release}/var/cache/pkg
 }
 
 compress_packages()

@@ -5,7 +5,6 @@
 
 workspace
 base
-#packages_base
 packages_software
 #compress_packages
 user
