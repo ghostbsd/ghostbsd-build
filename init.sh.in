@@ -13,8 +13,11 @@ mount -u -w /
 echo "==> Make mountpoints"
 mkdir -p /cdrom /memdisk /sysroot
 
-# Allow a few seconds for USB devices to settle
-# sleep 10
+echo "Waiting for GhostBSD media to initialize"
+while : ; do
+    [ -e "/dev/iso9660/GHOSTBSD" ] && echo "found /dev/iso9660/GHOSTBSD" && break
+    sleep 1
+done
 
 echo "==> Mount cdrom"
 mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom
