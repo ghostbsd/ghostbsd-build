@@ -256,7 +256,9 @@ extra_config()
         setup_xinit
         setup_autologin
         git_pc_sysinstall
-        git_gbi
+        ## git_gbi is for development testing and gbi should be
+        ## remove from the package list to avoid conflict
+        # git_gbi
         final_setup
         ;;
     freebsd)
