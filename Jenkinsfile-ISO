@@ -1,0 +1,28 @@
+pipeline {
+  agent {
+    label 'GhostBSD-ISO'
+  }
+
+  stages {
+
+    stage('clean') {
+      steps {
+        sh 'cd /usr/local/ghostbsd-build/trueos && rm *.iso || true'
+	    sh 'rm -rf ghostbsd-build || true'
+      }
+    }
+    
+    stage('pull') {
+      steps {
+        sh 'git clone https://github.com/ghostbsd/ghostbsd-build --depth=1|| true'
+      }
+    }
+    
+    stage('build') {
+      steps {
+        sh 'cd ghostbsd-build && ./build.sh trueos mate'
+      }
+    }
+    
+  }
+}
