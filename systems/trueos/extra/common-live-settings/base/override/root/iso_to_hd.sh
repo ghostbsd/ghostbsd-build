@@ -33,15 +33,17 @@ remove_ghostbsd_user()
   sed -i "" "/ttyv0/s/ghostbsd/Pc/g" /etc/ttys
 }
 
-setup_slim_xinitrc()
+setup_slim_and_xinitrc()
 {
-
-  echo 'exec $1' > /root/.xinitrc
+  echo 'exec mate' > /root/.xinitrc
+  sed -i "" -e 's/#default_user  /default_user  /g' /usr/local/etc/slim.conf
   for user in `ls /usr/home/` ; do
-    echo 'exec $1' > /usr/home/${user}/.xinitrc
+    echo 'exec mate' > /usr/home/${user}/.xinitrc
     chown ${user}:${user} /usr/home/${user}/.xinitrc
+    sed -i "" -e "s/simone/${user}/g" /usr/local/etc/slim.conf
   done
-
+  rc-update add slim default
+  sed -i "" -e 's/sessiondir	/#sessiondir	/g' /usr/local/etc/slim.conf
 }
 
 PolicyKit_setting()
@@ -87,16 +89,9 @@ printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
 ' > /usr/local/etc/PolicyKit/PolicyKit.conf
 }
 
-set_dm()
-{
-  rc-update add slim default
-}
-
-
 purge_live_settings
 set_sudoers
 fix_perms
 remove_ghostbsd_user
 PolicyKit_setting
-set_dm
-setup_slim_xinitrc
+setup_slim_and_xinitrc
