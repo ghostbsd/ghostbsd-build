@@ -11,8 +11,9 @@ software_packages="${livecd}/software_packages"
 base_packages="${livecd}/base_packages"
 release="${livecd}/release"
 cdroot="${livecd}/cdroot"
-version="18.08"
-timestamp=`date "+-%Y-%m-%d-%H"`
+# version="18.09"
+version=""
+timestamp=`date "+-%Y-%m-%d-%H-%M"`
 label="GhostBSD"
 union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
 kernrel="`uname -r`"
@@ -344,6 +345,10 @@ boot()
 
 image()
 {
-  # grub-mkrescue -o $isopath ${cdroot} -- -volid $label
   sh mkisoimages.sh -b $label $isopath ${cdroot}
+  ls -lh $isopath
+  cd ${livecd}
+  md5 `echo ${isopath}|cut -d / -f6` > $(echo ${isopath}|cut -d / -f6).md5
+  sha256 `echo ${isopath}| cut -d / -f6` > $(echo ${isopath}|cut -d / -f6).sha256
+  cd -
 }

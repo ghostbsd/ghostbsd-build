@@ -35,10 +35,10 @@ remove_ghostbsd_user()
 
 setup_slim_and_xinitrc()
 {
-  echo 'exec mate' > /root/.xinitrc
+  echo 'exec mate-session' > /root/.xinitrc
   sed -i "" -e 's/#default_user  /default_user  /g' /usr/local/etc/slim.conf
   for user in `ls /usr/home/` ; do
-    echo 'exec mate' > /usr/home/${user}/.xinitrc
+    echo 'exec mate-session' > /usr/home/${user}/.xinitrc
     chown ${user}:${user} /usr/home/${user}/.xinitrc
     sed -i "" -e "s/simone/${user}/g" /usr/local/etc/slim.conf
   done
