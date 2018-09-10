@@ -251,15 +251,15 @@ extra_config()
         . ${cwd}/systems/trueos/extra/autologin.sh
         . ${cwd}/systems/trueos/extra/gitpkg.sh
         set_live_system
+        git_pc_sysinstall
+        git_gbi
         setup_liveuser
         setup_base
         #lightdm_setup
         setup_xinit
         setup_autologin
-        git_pc_sysinstall
         ## git_gbi is for development testing and gbi should be
         ## remove from the package list to avoid conflict
-        git_gbi
         final_setup
         ;;
     freebsd)
