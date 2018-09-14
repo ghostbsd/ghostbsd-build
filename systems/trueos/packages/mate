@@ -28,13 +28,11 @@ git
 nano
 ksh93
 py27-gobject
-py27-gobject3
 py27-pexpect
 rsync
 sudo
 doas
 vim
-xorriso
 zsh
 cuse4bsd-kmod
 webcamd
@@ -53,6 +51,8 @@ gnome-cups-manager
 foomatic-db
 foomatic-db-engine
 foomatic-db-hpijs
+bwi-firmware-kmod
+bwn-firmware-kmod
 dhcpcd
 firefox-i18n
 thunderbird-i18n
@@ -73,8 +73,6 @@ fonts-indic
 droid-fonts-ttf
 en-aspell
 en-hunspell
-montserrat
-roboto-fonts-ttf
 ghostbsd-icons
 ghostbsd-installed-common-settings
 update-station

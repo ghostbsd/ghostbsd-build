@@ -108,7 +108,7 @@ base()
               cp /etc/resolv.conf ${release}/etc/resolv.conf
               mkdir -p ${release}/var/cache/pkg
               mount_nullfs ${base_packages} ${release}/var/cache/pkg
-              pkg-static -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD-base search -q FreeBSD | grep -v -E "(-doc|-debug|-profile)" | xargs pkg-static -r ${release} -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD-base install -y -g
+              pkg-static -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD-base search -q FreeBSD | grep "FreeBSD-" | grep -v -E "(-doc|-debug|-profile|-FreeBSD-)" | xargs pkg-static -r ${release} -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD-base install -y -g
               rm ${release}/etc/resolv.conf
               umount ${release}/var/cache/pkg;;
     freebsd)
@@ -187,7 +187,7 @@ rc()
   # DEVFS rules
   chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
   # Load the following kernel modules
-  chroot ${release} sysrc -f /etc/rc.conf kld_list="geom_mirror geom_journal linux"
+  chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 /boot/modules/i915kms.ko /boot/modules/radeonkms.ko amdgpu"
   if [ -f "${release}/sbin/openrc-run" ] ; then
       chroot ${release} sysrc -f /etc/rc.conf rc_interactive="YES"
     case $desktop in
