@@ -11,7 +11,6 @@ xf86-video-scfb
 xf86-input-synaptics
 xf86-input-wacom
 xf86-input-joystick
-drm-next-kmod
 nvidia-driver
 cursor-dmz-theme
 setxkbmap

@@ -11,8 +11,6 @@ live_configure_xorg()
   pciconf -lv | grep -q "VirtualBox"
   if [ $? -eq 0 ] ; then
     cp /usr/local/etc/X11/cardDetect/XF86Config.virtualbox /etc/X11/xorg.conf
-    kldload vboxguest
-    /usr/local/sbin/VBoxService
   fi
 
   # Check to see if we are running as VMware guest
@@ -59,8 +57,6 @@ install_configure_xorg()
   pciconf -lv | grep -q "VirtualBox"
   if [ $? -eq 0 ] ; then
     cp /usr/local/etc/X11/cardDetect/XF86Config.virtualbox /etc/X11/xorg.conf
-    kldload vboxguest
-    /usr/local/sbin/VBoxService
   else
     pkg delete -fy virtualbox-ose-additions >/dev/null 2>/dev/null
   fi
@@ -82,17 +78,21 @@ install_configure_xorg()
     else
       pkg delete -fy nvidia-driver >/dev/null 2>/dev/null
     fi
-    echo $n340drivers | grep -q "$graphcard"
+    # lookibng if we have internet
+    ping -c 1 8.8.8.8
     if [ $? -eq 0 ] ; then
-      pkg install -yf nvidia-driver-340
-      cp /usr/local/etc/X11/cardDetect/XF86Config.nvidia /etc/X11/xorg.conf
-      kldload nvidia-modeset
-    fi
-    echo $n304drivers | grep -q "$graphcard"
-    if [ $? -eq 0 ] ; then
-      pkg install -yf nvidia-driver-304
-      cp /usr/local/etc/X11/cardDetect/XF86Config.nvidia /etc/X11/xorg.conf
-      kldload nvidia-modeset
+      echo $n340drivers | grep -q "$graphcard"
+      if [ $? -eq 0 ] ; then
+        pkg install -yf nvidia-driver-340
+        cp /usr/local/etc/X11/cardDetect/XF86Config.nvidia /etc/X11/xorg.conf
+        kldload nvidia-modeset
+      fi
+      echo $n304drivers | grep -q "$graphcard"
+      if [ $? -eq 0 ] ; then
+        pkg install -yf nvidia-driver-304
+        cp /usr/local/etc/X11/cardDetect/XF86Config.nvidia /etc/X11/xorg.conf
+        kldload nvidia-modeset
+      fi
     fi
   else
       pkg delete -fy nvidia-driver >/dev/null 2>/dev/null
