@@ -187,8 +187,7 @@ rc()
   # DEVFS rules
   chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
   # Load the following kernel modules
-  # chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 /boot/modules/i915kms.ko /boot/modules/radeonkms.ko amdgpu"
-  chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64"
+  chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 /boot/modules/i915kms.ko /boot/modules/radeonkms.ko amdgpu"
   if [ -f "${release}/sbin/openrc-run" ] ; then
       chroot ${release} sysrc -f /etc/rc.conf rc_interactive="YES"
     case $desktop in
@@ -202,18 +201,17 @@ rc()
            chroot ${release} rc-update add vboxguest default
            chroot ${release} rc-update add vboxservice default
            chroot ${release} rc-update add cupsd default
-           #chroot ${release} rc-update add lightdm default
-           #chroot ${release} rc-update add xdm default
-           #chroot ${release} sysrc -f /usr/local/etc/conf.d/xdm DISPLAYMANAGER="lightdm"
            ;;
       xfce)
+           chroot ${release} rc-update add devfs default
            chroot ${release} rc-update add moused default
            chroot ${release} rc-update add dbus default
            chroot ${release} rc-update add hald default
            chroot ${release} rc-update add xconfig default
-           #chroot ${release} rc-update add lightdm default
-           #chroot ${release} rc-update add xdm default
-           #chroot ${release} sysrc -f /usr/local/etc/conf.d/xdm DISPLAYMANAGER="lightdm"
+           chroot ${release} rc-update add webcamd default
+           chroot ${release} rc-update add vboxguest default
+           chroot ${release} rc-update add vboxservice default
+           chroot ${release} rc-update add cupsd default
            ;;
     esac
   else

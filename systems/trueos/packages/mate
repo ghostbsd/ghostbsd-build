@@ -12,6 +12,7 @@ xf86-input-synaptics
 xf86-input-wacom
 xf86-input-joystick
 nvidia-driver
+drm-stable-kmod
 cursor-dmz-theme
 setxkbmap
 xrandr
@@ -100,4 +101,3 @@ plank
 brisk-menu
 slim
 ghostbsd-slim-theme
-pkg
