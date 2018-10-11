@@ -25,7 +25,7 @@ live_configure_xorg()
     graphcard=$(pciconf -lv | grep -B 4 VGA | grep device | cut -f2 -d '[' | cut -f1 -d ']')
     echo $n390drivers | grep -q "$graphcard"
     if [ $? -eq 0 ] ; then
-      cp /usr/local/etc/X11/cardDetect/XF86Config.nvidia /etc/X11/xorg.conf
+      nvidia-xconfig
       kldload nvidia-modeset
     fi
   fi
@@ -73,7 +73,7 @@ install_configure_xorg()
     graphcard=$(pciconf -lv | grep -B 4 VGA | grep device | cut -f2 -d '[' | cut -f1 -d ']')
     echo $n390drivers | grep -q "$graphcard"
     if [ $? -eq 0 ] ; then
-      cp /usr/local/etc/X11/cardDetect/XF86Config.nvidia /etc/X11/xorg.conf
+      nvidia-xconfig
       kldload nvidia-modeset
     else
       pkg delete -fy nvidia-driver >/dev/null 2>/dev/null
@@ -84,18 +84,19 @@ install_configure_xorg()
       echo $n340drivers | grep -q "$graphcard"
       if [ $? -eq 0 ] ; then
         pkg install -yf nvidia-driver-340
-        cp /usr/local/etc/X11/cardDetect/XF86Config.nvidia /etc/X11/xorg.conf
+        nvidia-xconfig
         kldload nvidia-modeset
+        kldload nvidia
       fi
       echo $n304drivers | grep -q "$graphcard"
       if [ $? -eq 0 ] ; then
         pkg install -yf nvidia-driver-304
-        cp /usr/local/etc/X11/cardDetect/XF86Config.nvidia /etc/X11/xorg.conf
-        kldload nvidia-modeset
+        nvidia-xconfig
+        kldload nvidia
       fi
     fi
   else
-      pkg delete -fy nvidia-driver >/dev/null 2>/dev/null
+      pkg delete -fy nvidia-driver nvidia-xconfig nvidia-settings >/dev/null 2>/dev/null
   fi
 
   # Figure out if UEFI or BIOS

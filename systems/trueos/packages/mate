@@ -12,6 +12,8 @@ xf86-input-synaptics
 xf86-input-wacom
 xf86-input-joystick
 nvidia-driver
+nvidia-settings
+nvidia-xconfig
 drm-stable-kmod
 cursor-dmz-theme
 setxkbmap
