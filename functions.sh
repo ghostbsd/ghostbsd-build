@@ -11,9 +11,12 @@ software_packages="${livecd}/software_packages"
 base_packages="${livecd}/base_packages"
 release="${livecd}/release"
 cdroot="${livecd}/cdroot"
-# version="18.09"
-version=""
-timestamp=`date "+-%Y-%m-%d-%H-%M"`
+version="18.10"
+# version=""
+releasestamp="-RC1"
+# releasestamp=""
+# timestamp=`date "+-%Y-%m-%d-%H-%M"`
+timestamp=""
 label="GhostBSD"
 union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
 kernrel="`uname -r`"
@@ -88,7 +91,7 @@ else
 fi
 
 
-isopath="${livecd}/${label}${version}${timestamp}${community}.iso"
+isopath="${livecd}/${label}${version}${releasestamp}${timestamp}${community}.iso"
 
 workspace()
 {
@@ -198,8 +201,8 @@ rc()
            chroot ${release} rc-update add hald default
            chroot ${release} rc-update add xconfig default
            chroot ${release} rc-update add webcamd default
-           chroot ${release} rc-update add vboxguest default
-           chroot ${release} rc-update add vboxservice default
+           chroot ${release} rc-update delete vboxguest default
+           chroot ${release} rc-update delete vboxservice default
            chroot ${release} rc-update add cupsd default
            ;;
       xfce)
@@ -209,8 +212,8 @@ rc()
            chroot ${release} rc-update add hald default
            chroot ${release} rc-update add xconfig default
            chroot ${release} rc-update add webcamd default
-           chroot ${release} rc-update add vboxguest default
-           chroot ${release} rc-update add vboxservice default
+           chroot ${release} rc-update delete vboxguest default
+           chroot ${release} rc-update delete vboxservice default
            chroot ${release} rc-update add cupsd default
            ;;
     esac

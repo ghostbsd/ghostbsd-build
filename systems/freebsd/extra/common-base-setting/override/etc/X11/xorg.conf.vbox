@@ -28,6 +28,7 @@ Section "InputDevice"
 	Identifier  "Mouse0"
 	Driver      "vboxmouse"
 	Option      "CorePointer"
+	Option      "ButtonMapping"  "1 2 3 4 5 6 7 0 0 0"
 EndSection
 
 Section "Monitor"

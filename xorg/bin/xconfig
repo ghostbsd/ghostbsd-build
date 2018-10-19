@@ -11,6 +11,15 @@ live_configure_xorg()
   pciconf -lv | grep -q "VirtualBox"
   if [ $? -eq 0 ] ; then
     cp /usr/local/etc/X11/cardDetect/XF86Config.virtualbox /etc/X11/xorg.conf
+    rc-update add vboxguest default
+    service vboxguest start
+    rc-update add vboxservice default
+    service vboxservice start
+    echo "xmodmap -e 'pointer = 1 2 3 4 5 6 7 0 0 0' &" > /usr/home/ghostbsd/.xinitrc
+    echo "xmodmap -e 'pointer = 1 2 3 4 5 6 7 0 0 0' &" > /root/.xinitrc
+    echo "exec ck-launch-session mate-session" >> /usr/home/ghostbsd/.xinitrc
+    echo "exec ck-launch-session mate-session" >> /root/.xinitrc
+    chown ghostbsd:ghostbsd /usr/home/ghostbsd/.xinitrc
   fi
 
   # Check to see if we are running as VMware guest
@@ -57,6 +66,21 @@ install_configure_xorg()
   pciconf -lv | grep -q "VirtualBox"
   if [ $? -eq 0 ] ; then
     cp /usr/local/etc/X11/cardDetect/XF86Config.virtualbox /etc/X11/xorg.conf
+    rc-update add vboxguest default
+    service vboxguest start
+    rc-update add vboxservice default
+    service vboxservice start
+    # fix mouse maping on
+
+    echo "xmodmap -e 'pointer = 1 2 3 4 5 6 7 0 0 0' &" > /root/.xinitrc
+    echo 'exec mate-session' > /root/.xinitrc
+  for user in `ls /usr/home/` ; do
+    echo "xmodmap -e 'pointer = 1 2 3 4 5 6 7 0 0 0' &" > /usr/home/${user}/.xinitrc
+    echo 'exec mate-session' >> /usr/home/${user}/.xinitrc
+    chown ${user}:${user} /usr/home/${user}/.xinitrc
+    sed -i "" -e "s/simone/${user}/g" /usr/local/etc/slim.conf
+  done
+  rc-update add slim default
   else
     pkg delete -fy virtualbox-ose-additions >/dev/null 2>/dev/null
   fi

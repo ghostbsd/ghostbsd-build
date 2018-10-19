@@ -19,6 +19,7 @@ nvidia-xconfig
 drm-stable-kmod
 cursor-dmz-theme
 setxkbmap
+xmodmap
 xrandr
 bash
 dpkg

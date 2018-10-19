@@ -1,38 +1,67 @@
-# Xorg.conf file generated for PC-BSD
+# Xorg.conf file generated for GhostBSD
 
 Section "ServerLayout"
-    Identifier     "XFree86 Configured"
+    Identifier     "X.org Configured"
     Screen      0  "Screen0" 0 0
-    Option	   "Clone" "off"
-    Option	   "AIGLX" "false"
+    InputDevice    "Mouse0" "CorePointer"
+    InputDevice    "Keyboard0" "CoreKeyboard"
 EndSection
 
 Section "Module"
-    Load           "ddc"
-    Load           "dbe"
-    Load	   "dri"
-    Load	   "dri2"
-    Load           "extmod"
-    Load	   "glx"
+    Load  "glx"
+EndSection
+
+Section "InputDevice"
+    Identifier  "Keyboard0"
+    Driver      "kbd"
+EndSection
+
+Section "InputDevice"
+    Identifier  "Mouse0"
+    Driver      "vboxmouse"
+    Option      "CorePointer"
 EndSection
 
 Section "Monitor"
-    Identifier     "Monitor0"
-    VendorName     "Generic Monitor"
-    ModelName      "Generic"
-
-EndSection
-
-Section "Screen"
-	Identifier "Screen0"
-	Device     "Card0"
-	Monitor    "Monitor0"
+    Identifier   "Monitor0"
+    VendorName   "Monitor Vendor"
+    ModelName    "Monitor Model"
 EndSection
 
 Section "Device"
-	Identifier	"Card0"
-	Driver		"vboxvideo"
-	VendorName "InnoTek Systemberatung GmbG"
-	BoardName "VirtualBox Graphics Adapter"
-	BusID "PCI:0:2:0"
+    Identifier  "Card0"
+    Driver      "vboxvideo"
+    BusID       "PCI:0:2:0"
 EndSection
+
+Section "Screen"
+    Identifier "Screen0"
+    Device     "Card0"
+    Monitor    "Monitor0"
+    SubSection "Display"
+        Viewport   0 0
+        Depth     1
+    EndSubSection
+    SubSection "Display"
+        Viewport   0 0
+        Depth     4
+    EndSubSection
+    SubSection "Display"
+        Viewport   0 0
+        Depth     8
+    EndSubSection
+    SubSection "Display"
+        Viewport   0 0
+        Depth     15
+    EndSubSection
+    SubSection "Display"
+        Viewport   0 0
+        Depth     16
+    EndSubSection
+    SubSection "Display"
+        Viewport   0 0
+        Depth     24
+    EndSubSection
+EndSection
+
+
