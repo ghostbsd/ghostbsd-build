@@ -82,6 +82,7 @@ ghostbsd-icons
 ghostbsd-installed-common-settings
 update-station
 gksu
+libgksu
 shotwell
 exaile
 gnome-mplayer
