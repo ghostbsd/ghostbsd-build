@@ -16,7 +16,6 @@ libva-vdpau-driver
 nvidia-driver
 nvidia-settings
 nvidia-xconfig
-drm-stable-kmod
 cursor-dmz-theme
 setxkbmap
 xmodmap

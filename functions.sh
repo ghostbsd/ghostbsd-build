@@ -13,7 +13,7 @@ release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 version="18.10"
 # version=""
-releasestamp="-RC1"
+releasestamp="-RC2"
 # releasestamp=""
 # timestamp=`date "+-%Y-%m-%d-%H-%M"`
 timestamp=""
@@ -190,7 +190,8 @@ rc()
   # DEVFS rules
   chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
   # Load the following kernel modules
-  chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 /boot/modules/i915kms.ko /boot/modules/radeonkms.ko amdgpu"
+  # chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 /boot/modules/i915kms.ko /boot/modules/radeonkms.ko amdgpu"
+  chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64"
   if [ -f "${release}/sbin/openrc-run" ] ; then
       chroot ${release} sysrc -f /etc/rc.conf rc_interactive="YES"
     case $desktop in
