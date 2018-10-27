@@ -19,7 +19,6 @@ EndSection
 Section "InputDevice"
     Identifier  "Mouse0"
     Driver      "vboxmouse"
-    Option      "CorePointer"
 EndSection
 
 Section "Monitor"
@@ -63,5 +62,3 @@ Section "Screen"
         Depth     24
     EndSubSection
 EndSection
-
-

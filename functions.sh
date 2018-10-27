@@ -13,7 +13,7 @@ release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 version="18.10"
 # version=""
-releasestamp="-RC2"
+releasestamp="-RC3"
 # releasestamp=""
 # timestamp=`date "+-%Y-%m-%d-%H-%M"`
 timestamp=""
@@ -255,7 +255,7 @@ extra_config()
         . ${cwd}/systems/trueos/extra/gitpkg.sh
         set_live_system
         git_pc_sysinstall
-        git_gbi
+        # git_gbi
         setup_liveuser
         setup_base
         #lightdm_setup
@@ -276,7 +276,7 @@ extra_config()
     *)
       ;;
   esac
-  echo "gop set 0" >> ${release}/boot/loader.rc.local
+  # echo "gop set 0" >> ${release}/boot/loader.rc.local
 }
 
 xorg()

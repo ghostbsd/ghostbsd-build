@@ -71,7 +71,6 @@ install_configure_xorg()
     rc-update add vboxservice default
     service vboxservice start
     # fix mouse maping on
-
     echo "xmodmap -e 'pointer = 1 2 3 4 5 6 7 0 0 0' &" > /root/.xinitrc
     echo 'exec mate-session' > /root/.xinitrc
   for user in `ls /usr/home/` ; do
