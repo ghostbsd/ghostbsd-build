@@ -46,6 +46,7 @@ xdg-user-dirs
 ssft
 inxi
 mesa-demos
+transmission-gtk
 zenity
 octopkg
 gsmartcontrol
