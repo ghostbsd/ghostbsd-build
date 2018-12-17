@@ -11,7 +11,7 @@ software_packages="${livecd}/software_packages"
 base_packages="${livecd}/base_packages"
 release="${livecd}/release"
 cdroot="${livecd}/cdroot"
-version="18.11"
+version="18.12"
 # version=""
 releasestamp=""
 # releasestamp=""
@@ -190,7 +190,7 @@ rc()
   # DEVFS rules
   chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
   # Load the following kernel modules
-  chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 /boot/modules/i915kms.ko /boot/modules/radeonkms.ko amdgpu"
+  # chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 /boot/modules/i915kms.ko /boot/modules/radeonkms.ko amdgpu"
   # chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64"
   if [ -f "${release}/sbin/openrc-run" ] ; then
       chroot ${release} sysrc -f /etc/rc.conf rc_interactive="YES"
