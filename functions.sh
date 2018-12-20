@@ -191,7 +191,7 @@ rc()
   chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
   # Load the following kernel modules
   # chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 /boot/modules/i915kms.ko /boot/modules/radeonkms.ko amdgpu"
-  # chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64"
+  # chroot ${release} sysrc -f /etc/rc.conf kld_list="geom_mirror"
   if [ -f "${release}/sbin/openrc-run" ] ; then
       chroot ${release} sysrc -f /etc/rc.conf rc_interactive="YES"
     case $desktop in
@@ -338,7 +338,7 @@ boot()
 {
   cd "${release}"
   tar -cf - --exclude boot/kernel boot | tar -xf - -C "${cdroot}"
-  for kfile in kernel geom_uzip.ko nullfs.ko tmpfs.ko unionfs.ko; do
+  for kfile in kernel geom_uzip.ko nullfs.ko tmpfs.ko geom_mirror.ko; do
     tar -cf - boot/kernel/${kfile} | tar -xf - -C "${cdroot}"
   done
   cd "${cwd}"
