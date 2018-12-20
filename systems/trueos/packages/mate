@@ -1,4 +1,5 @@
 ghostbsd-drivers
+drm-next-kmod
 nvidia-driver
 nvidia-settings
 nvidia-xconfig
@@ -22,7 +23,6 @@ ssft
 inxi
 transmission-gtk
 zenity
-gsmartcontrol
 cups
 cups-smb-backend
 cups-filters
