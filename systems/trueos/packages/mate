@@ -28,7 +28,7 @@ zenity
 cups
 cups-smb-backend
 cups-filters
-gnome-cups-manager
+system-config-printer
 foomatic-db
 foomatic-db-engine
 foomatic-db-hpijs
@@ -55,7 +55,7 @@ gksu
 libgksu
 shotwell
 exaile
-gnome-mplayer
+gnome-mpv
 xfburn
 cheese
 hexchat
