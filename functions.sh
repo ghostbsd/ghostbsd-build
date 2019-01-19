@@ -11,11 +11,11 @@ software_packages="${livecd}/software_packages"
 base_packages="${livecd}/base_packages"
 release="${livecd}/release"
 cdroot="${livecd}/cdroot"
-version="18.12"
-# version=""
+# version="19.02"
+version=""
 releasestamp=""
 # releasestamp=""
-# timestamp=`date "+-%Y-%m-%d-%H-%M"`
+timestamp=`date "+-%Y-%m-%d-%H-%M"`
 timestamp=""
 label="GhostBSD"
 union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
@@ -33,7 +33,7 @@ case $kernrel in
     echo " Using correct kernel release" 1>&2
     ;;
   *)
-   echo "Using wrong kernel release. Use TrueOS 18.06 or GhostBSD 18 to build iso."
+   echo "Using wrong kernel release. Use TrueOS 18.12 or GhostBSD 19 to build iso."
    exit 1
    ;;
 esac
@@ -111,7 +111,7 @@ base()
               cp /etc/resolv.conf ${release}/etc/resolv.conf
               mkdir -p ${release}/var/cache/pkg
               mount_nullfs ${base_packages} ${release}/var/cache/pkg
-              pkg-static -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD-base search -q FreeBSD | grep "FreeBSD-" | grep -v -E "(-doc|-debug|-profile|-FreeBSD-)" | xargs pkg-static -r ${release} -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD-base install -y -g
+              pkg-static -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD search -q GhostBSD | grep "FreeBSD-" | grep -v -E "(-doc|-debug|-profile)" | xargs pkg-static -r ${release} -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD install -y -g
               rm ${release}/etc/resolv.conf
               umount ${release}/var/cache/pkg;;
     freebsd)
