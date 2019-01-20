@@ -16,7 +16,7 @@ version=""
 releasestamp=""
 # releasestamp=""
 timestamp=`date "+-%Y-%m-%d-%H-%M"`
-timestamp=""
+# timestamp=""
 label="GhostBSD"
 union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
 kernrel="`uname -r`"
@@ -111,7 +111,7 @@ base()
               cp /etc/resolv.conf ${release}/etc/resolv.conf
               mkdir -p ${release}/var/cache/pkg
               mount_nullfs ${base_packages} ${release}/var/cache/pkg
-              pkg-static -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD search -q GhostBSD | grep "FreeBSD-" | grep -v -E "(-doc|-debug|-profile)" | xargs pkg-static -r ${release} -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD install -y -g
+              pkg-static -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD search -q GhostBSD | grep "GhostBSD-" | grep -v -E "(-doc|-debug|-profile)" | xargs pkg-static -r ${release} -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD install -y -g
               rm ${release}/etc/resolv.conf
               umount ${release}/var/cache/pkg;;
     freebsd)

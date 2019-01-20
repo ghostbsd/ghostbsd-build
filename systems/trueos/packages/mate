@@ -1,7 +1,7 @@
 xorg-minimal
 xorg-fonts
 ghostbsd-drivers
-drm-next-kmod
+drm-current-kmod
 nvidia-driver
 nvidia-settings
 nvidia-xconfig
