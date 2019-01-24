@@ -32,7 +32,6 @@ system-config-printer
 foomatic-db
 foomatic-db-engine
 foomatic-db-hpijs
-dhcpcd
 firefox-i18n
 thunderbird-i18n
 ghostbsd-bug-report
