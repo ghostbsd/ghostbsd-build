@@ -1,4 +1,5 @@
 loader_brand="ghostbsd"
 loader_logo="ghostbsd"
+loader_menu_title="Welcome to GhostBSD"
 hw.psm.synaptics_support="1"
 # boot_mute="YES"
