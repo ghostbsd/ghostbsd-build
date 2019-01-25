@@ -138,11 +138,6 @@ base()
   mkdir ${release}/cdrom
 }
 
-compress_packages()
-{
-
-}
-
 packages_software()
 {
   case $systems in
@@ -239,7 +234,7 @@ user()
 {
   chroot ${release} pw useradd ${liveuser} \
   -c "GhostBSD Live User" -d "/usr/home/${liveuser}" \
-  -g wheel -G operator -m -s /bin/csh -k /usr/share/skel -w none
+  -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
 }
 
 extra_config()
