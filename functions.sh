@@ -107,7 +107,7 @@ base()
 {
   case $systems in
     trueos)
-              mkdir ${release}/etc
+              mkdir -p ${release}/etc
               cp /etc/resolv.conf ${release}/etc/resolv.conf
               mkdir -p ${release}/var/cache/pkg
               mount_nullfs ${base_packages} ${release}/var/cache/pkg
@@ -155,7 +155,7 @@ packages_software()
   esac
 
   cp /etc/resolv.conf ${release}/etc/resolv.conf
-  mkdir ${release}/var/cache/pkg
+  mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
 
   case $desktop in
