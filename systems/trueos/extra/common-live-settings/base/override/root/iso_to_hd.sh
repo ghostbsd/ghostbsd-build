@@ -39,7 +39,7 @@ setup_slim_and_xinitrc()
   sed -i "" -e 's/#default_user  /default_user  /g' /usr/local/etc/slim.conf
   for user in `ls /usr/home/` ; do
     echo 'exec mate-session' > /usr/home/${user}/.xinitrc
-    chown ${user}:${user} /usr/home/${user}/.xinitrc
+    chown ${user}:wheel /usr/home/${user}/.xinitrc
     sed -i "" -e "s/simone/${user}/g" /usr/local/etc/slim.conf
   done
   rc-update add slim default

@@ -2,12 +2,6 @@
 
 set -e -u
 
-base_overrides()
-{
-  cp -R ${cwd}/systems/trueos/extra/common-base-setting/override/* ${release}/
-}
-
-
 patch_etc_files()
 {
   cat ${cwd}/systems/trueos/extra/common-base-setting/patches/boot/loader.conf.extra >> ${release}/boot/loader.conf
@@ -31,7 +25,6 @@ packages_settings()
 
 setup_base()
 {
-  base_overrides
   patch_etc_files
   packages_settings
 }
