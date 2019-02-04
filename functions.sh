@@ -133,7 +133,7 @@ packages_software()
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
 
-  cp -R ${cwd}/systems/trueos/repos/ ${release};;
+  cp -R ${cwd}/systems/trueos/repos/ ${release};
 
 }
 
