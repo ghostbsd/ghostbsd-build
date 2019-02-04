@@ -30,7 +30,7 @@ fi
 # Only run with 13.0-CURRENT.
 case $kernrel in
   '13.0-CURRENT')
-    echo " Using correct kernel release" 1>&2
+    echo "Using correct kernel release" 1>&2
     ;;
   *)
    echo "Using wrong kernel release. Use TrueOS 18.12 or GhostBSD 19 to build iso."
@@ -105,72 +105,35 @@ workspace()
 
 base()
 {
-  case $systems in
-    trueos)
-              mkdir -p ${release}/etc
-              cp /etc/resolv.conf ${release}/etc/resolv.conf
-              mkdir -p ${release}/var/cache/pkg
-              mount_nullfs ${base_packages} ${release}/var/cache/pkg
-              pkg-static -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD search -q GhostBSD | grep "GhostBSD-" | grep -v -E "(-doc|-debug)" | xargs pkg-static -r ${release} -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD install -y -g
-              rm ${release}/etc/resolv.conf
-              umount ${release}/var/cache/pkg;;
-    freebsd)
-              if [ ! -f "${base}/base.txz" ] ; then
-                cd ${base}
-                fetch http://ftp.freebsd.org/pub/FreeBSD/releases/amd64/11.2-RELEASE/base.txz
-              fi
-              if [ ! -f "${base}/kernel.txz" ] ; then
-                cd ${base}
-                fetch http://ftp.freebsd.org/pub/FreeBSD/releases/amd64/11.2-RELEASE/kernel.txz
-              fi
-              if [ ! -f "${base}/lib32.txz" ] ; then
-                cd ${base}
-                fetch http://ftp.freebsd.org/pub/FreeBSD/releases/amd64/11.2-RELEASE/lib32.txz
-              fi
-              cd ${base}
-              tar -zxvf base.txz -C ${release}
-              tar -zxvf kernel.txz -C ${release}
-              tar -zxvf lib32.txz -C ${release};;
-             *)
-              exit 1;;
-  esac
+  mkdir -p ${release}/etc
+  cp /etc/resolv.conf ${release}/etc/resolv.conf
+  mkdir -p ${release}/var/cache/pkg
+  mount_nullfs ${base_packages} ${release}/var/cache/pkg
+  pkg-static -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD search -q GhostBSD | grep "GhostBSD-" | grep -v -E "(-doc|-debug)" | xargs pkg-static -r ${release} -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD install -y -g
+  rm ${release}/etc/resolv.conf
+  umount ${release}/var/cache/pkg
   touch ${release}/etc/fstab
   mkdir ${release}/cdrom
 }
 
 packages_software()
 {
-  case $systems in
-    trueos)
-            cp -R ${cwd}/systems/trueos/repos/ ${release};;
-    freebsd)
-            cp -R ${cwd}/systems/freebsd/repos/ ${release};;
-    *)
-      ;;
-  esac
-
+  cp -R ${cwd}/systems/trueos/repos/ ${release}
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
 
   case $desktop in
-      mate)
-          cat ${cwd}/systems/${systems}/packages/mate | xargs pkg-static -c ${release} install -y ;;
-      xfce)
-          cat ${cwd}/systems/${systems}/packages/xfce | xargs pkg-static -c ${release} install -y ;;
+    mate)
+      cat ${cwd}/systems/${systems}/packages/mate | xargs pkg-static -c ${release} install -y ;;
+    xfce)
+      cat ${cwd}/systems/${systems}/packages/xfce | xargs pkg-static -c ${release} install -y ;;
   esac
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
 
-  case $systems in
-    trueos)
-            cp -R ${cwd}/systems/trueos/repos/ ${release};;
-    freebsd)
-            cp -R ${cwd}/systems/freebsd/repos/ ${release};;
-    *)
-      ;;
-  esac
+  cp -R ${cwd}/systems/trueos/repos/ ${release};;
 
 }
 
@@ -187,47 +150,29 @@ rc()
   # Load the following kernel modules
   # chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 /boot/modules/i915kms.ko /boot/modules/radeonkms.ko amdgpu"
   # chroot ${release} sysrc -f /etc/rc.conf kld_list="geom_mirror"
-  if [ -f "${release}/sbin/openrc-run" ] ; then
-      chroot ${release} sysrc -f /etc/rc.conf rc_interactive="YES"
-    case $desktop in
-       mate)
-           chroot ${release} rc-update add devfs default
-           chroot ${release} rc-update add moused default
-           chroot ${release} rc-update add dbus default
-           chroot ${release} rc-update add hald default
-           chroot ${release} rc-update add xconfig default
-           chroot ${release} rc-update add webcamd default
-           chroot ${release} rc-update delete vboxguest default
-           chroot ${release} rc-update delete vboxservice default
-           chroot ${release} rc-update add cupsd default
-           ;;
-      xfce)
-           chroot ${release} rc-update add devfs default
-           chroot ${release} rc-update add moused default
-           chroot ${release} rc-update add dbus default
-           chroot ${release} rc-update add hald default
-           chroot ${release} rc-update add xconfig default
-           chroot ${release} rc-update add webcamd default
-           chroot ${release} rc-update delete vboxguest default
-           chroot ${release} rc-update delete vboxservice default
-           chroot ${release} rc-update add cupsd default
-           ;;
-    esac
-  else
-    case $desktop in
-      mate)
-           chroot ${release} sysrc -f /etc/rc.conf moused_enable="YES"
-           chroot ${release} sysrc -f /etc/rc.conf dbus_enable="YES"
-           chroot ${release} sysrc -f /etc/rc.conf hald_enable="YES"
-           #chroot ${release} sysrc -f /etc/rc.conf lightdm_enable="YES"
-           chroot ${release} sysrc -f /etc/rc.conf xconfig_enable="YES" ;;
-      xfce)
-           chroot ${release} sysrc -f /etc/rc.conf moused_enable="YES"
-           chroot ${release} sysrc -f /etc/rc.conf dbus_enable="YES"
-           #chroot ${release} sysrc -f /etc/rc.conf lightdm_enable="YES"
-           chroot ${release} sysrc -f /etc/rc.conf xconfig_enable="YES" ;;
-    esac
-  fi
+  case $desktop in
+    mate)
+      chroot ${release} rc-update add devfs default
+      chroot ${release} rc-update add moused default
+      chroot ${release} rc-update add dbus default
+      chroot ${release} rc-update add hald default
+      chroot ${release} rc-update add xconfig default
+      chroot ${release} rc-update add webcamd default
+      chroot ${release} rc-update delete vboxguest default
+      chroot ${release} rc-update delete vboxservice default
+      chroot ${release} rc-update add cupsd default
+      ;;
+    xfce)
+      chroot ${release} rc-update add devfs default
+      chroot ${release} rc-update add dbus default
+      chroot ${release} rc-update add hald default
+      chroot ${release} rc-update add xconfig default
+      chroot ${release} rc-update add webcamd default
+      chroot ${release} rc-update delete vboxguest default
+      chroot ${release} rc-update delete vboxservice default
+      chroot ${release} rc-update add cupsd default
+      ;;
+  esac
 }
 
 user()
@@ -239,38 +184,24 @@ user()
 
 extra_config()
 {
-  case $systems in
-    trueos)
-        . ${cwd}/systems/trueos/extra/common-live-setting.sh
-        . ${cwd}/systems/trueos/extra/common-base-setting.sh
-        . ${cwd}/systems/trueos/extra/setuser.sh
-        . ${cwd}/systems/trueos/extra/dm.sh
-        . ${cwd}/systems/trueos/extra/finalize.sh
-        . ${cwd}/systems/trueos/extra/autologin.sh
-        . ${cwd}/systems/trueos/extra/gitpkg.sh
-        set_live_system
-        git_pc_sysinstall
-        ## git_gbi is for development testing and gbi should be
-        ## remove from the package list to avoid conflict
-        # git_gbi
-        setup_liveuser
-        setup_base
-        #lightdm_setup
-        setup_xinit
-        setup_autologin
-        final_setup
-        ;;
-    freebsd)
-        . ${cwd}/systems/freebsd/extra/common-live-setting.sh
-        . ${cwd}/systems/freebsd/extra/setuser.sh
-        . ${cwd}/systems/freebsd/extra/dm.sh
-        create_share_ghostbsd
-        setup_liveuser
-        #lightdm_setup
-        ;;
-    *)
-      ;;
-  esac
+  . ${cwd}/systems/trueos/extra/common-live-setting.sh
+  . ${cwd}/systems/trueos/extra/common-base-setting.sh
+  . ${cwd}/systems/trueos/extra/setuser.sh
+  . ${cwd}/systems/trueos/extra/dm.sh
+  . ${cwd}/systems/trueos/extra/finalize.sh
+  . ${cwd}/systems/trueos/extra/autologin.sh
+  . ${cwd}/systems/trueos/extra/gitpkg.sh
+  set_live_system
+  git_pc_sysinstall
+  ## git_gbi is for development testing and gbi should be
+  ## remove from the package list to avoid conflict
+  # git_gbi
+  setup_liveuser
+  setup_base
+  #lightdm_setup
+  setup_xinit
+  setup_autologin
+  final_setup
   echo "gop set 0" >> ${release}/boot/loader.rc.local
 }
 
