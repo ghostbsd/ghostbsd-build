@@ -46,6 +46,16 @@ setup_slim_and_xinitrc()
   sed -i "" -e 's/sessiondir	/#sessiondir	/g' /usr/local/etc/slim.conf
 }
 
+setup_lightdm_and_xinitrc()
+{
+  echo 'exec mate-session' > /root/.xinitrc
+  for user in `ls /usr/home/` ; do
+    echo 'exec mate-session' > /usr/home/${user}/.xinitrc
+    chown ${user}:wheel /usr/home/${user}/.xinitrc
+  done
+  rc-update add lightdm default
+}
+
 PolicyKit_setting()
 {
 # Setup PolicyKit for mounting device.
@@ -94,4 +104,5 @@ set_sudoers
 fix_perms
 remove_ghostbsd_user
 PolicyKit_setting
-setup_slim_and_xinitrc
+# setup_slim_and_xinitrc
+setup_lightdm_and_xinitrc
