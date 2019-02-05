@@ -198,8 +198,8 @@ extra_config()
   # git_gbi
   setup_liveuser
   setup_base
-  #lightdm_setup
-  setup_xinit
+  lightdm_setup
+  # setup_xinit
   setup_autologin
   final_setup
   echo "gop set 0" >> ${release}/boot/loader.rc.local
