@@ -10,5 +10,6 @@ setup_autologin()
   echo ":al=${liveuser}:ht:np:sp#115200:" >> ${release}/etc/gettytab
   sed -i "" "/ttyv0/s/Pc/${liveuser}/g" ${release}/etc/ttys
   mkdir -p ${release}/usr/home/${liveuser}/.config/fish
-  cp ${cwd}/systems/trueos/extra/autologin/config.fish ${release}/usr/home/${liveuser}/.config.fish
+  cp ${cwd}/systems/trueos/extra/autologin/config.fish ${release}/usr/home/${liveuser}/.config/fish/config.fish
+  chmod 765 ${release}/usr/home/${liveuser}/.config/fish/config.fish
 }
