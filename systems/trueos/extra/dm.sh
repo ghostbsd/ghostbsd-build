@@ -5,10 +5,9 @@ set -e -u
 lightdm_setup()
 {
   if [ -f ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf ] ; then
-    echo "background=/usr/local/share/backgrounds/ghostbsd/Tidepool_Sunset.png" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
-    echo "user-background=true" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
-    #echo "theme-name=Ambiance-Blackout-Flat-Aqua" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
-    #echo "icon-theme-name=Vivacious-Colors-Full-Dark" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+    echo "background=/usr/local/share/backgrounds/ghostbsd/Nice_Dawn.jpg" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+    echo "theme-name=Vimix-Dark" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+    echo -e "icon-theme-name=Vivacious-Colors-Full-Dark\n" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
   fi
   setup_xinit
 }
