@@ -50,7 +50,6 @@ en-aspell
 en-hunspell
 ghostbsd-icons
 ghostbsd-installed-common-settings
-gksu
 libgksu
 shotwell
 exaile
@@ -74,4 +73,3 @@ station-tweak
 plank
 brisk-menu
 lightdm-gtk-greeter
-gbi

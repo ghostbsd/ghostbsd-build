@@ -195,7 +195,7 @@ extra_config()
   git_pc_sysinstall
   ## git_gbi is for development testing and gbi should be
   ## remove from the package list to avoid conflict
-  # git_gbi
+  git_gbi
   setup_liveuser
   setup_base
   lightdm_setup
