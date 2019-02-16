@@ -156,7 +156,6 @@ rc()
       chroot ${release} rc-update add moused default
       chroot ${release} rc-update add dbus default
       chroot ${release} rc-update add hald default
-      chroot ${release} rc-update add xconfig default
       chroot ${release} rc-update add webcamd default
       chroot ${release} rc-update delete vboxguest default
       chroot ${release} rc-update delete vboxservice default
@@ -221,6 +220,8 @@ xorg()
     install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.virtualbox" "${release}/usr/local/etc/X11/cardDetect/"
     install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.vmware" "${release}/usr/local/etc/X11/cardDetect/"
     install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.nvidia" "${release}/usr/local/etc/X11/cardDetect/"
+    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.intel" "${release}/usr/local/etc/X11/cardDetect/"
+    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.modesetting" "${release}/usr/local/etc/X11/cardDetect/"
   fi
 }
 
@@ -253,7 +254,6 @@ ramdisk()
 
 mfs()
 {
-
   for dir in ${union_dirs}; do
     echo ${dir} >> ${cdroot}/data/uniondirs
     cd ${release} && tar -cpzf ${cdroot}/data/mfs.tgz ${union_dirs}

@@ -1,6 +1,6 @@
 #!/sbin/openrc-run
 
-command=/usr/local/bin/xconfig
+command=/usr/local/bin/xconfig service
 pidfile=/var/run/xconfig.pid
 name="xconfig"
 

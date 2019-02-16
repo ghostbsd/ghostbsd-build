@@ -12,7 +12,7 @@
 name=xconfig
 rcvar=xconfig_enable
 
-command="/usr/local/bin/xconfig"
+command="/usr/local/bin/xconfig service"
 pidfile="/var/run/${name}.pid"
 
 load_rc_config $name

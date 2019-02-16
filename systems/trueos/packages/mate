@@ -68,7 +68,7 @@ dconf-editor
 gnome-keyring
 mate
 mate-screensaver
-mate-installed-settings
+ghostbsd-mate-settings
 mate-live-settings
 station-tweak
 plank
