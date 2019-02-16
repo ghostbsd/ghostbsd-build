@@ -35,7 +35,7 @@ live_configure_xorg()
     echo $n390drivers | grep -q "$graphcard"
     if [ $? -eq 0 ] ; then
       kldload nvidia-modeset
-      Xorg -configure
+      nvidia-xconfig
     fi
   fi
 
@@ -96,8 +96,8 @@ install_configure_xorg()
     graphcard=$(pciconf -lv | grep -B 4 VGA | grep device | cut -f2 -d '[' | cut -f1 -d ']')
     echo $n390drivers | grep -q "$graphcard"
     if [ $? -eq 0 ] ; then
-      nvidia-xconfig
       kldload nvidia-modeset
+      nvidia-xconfig
     else
       pkg delete -fy nvidia-driver >/dev/null 2>/dev/null
     fi

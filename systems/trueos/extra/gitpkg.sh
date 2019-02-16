@@ -6,8 +6,9 @@ set -e -u
 git_pc_sysinstall()
 {
   if [ ! -d ${release}/pc-sysinstall ]; then
-   echo "Downloading pc-sysinstall from GitHub"
-   git clone https://github.com/GhostBSD/pc-sysinstall.git ${release}/pc-sysinstall >/dev/null 2>&1
+    echo "Downloading pc-sysinstall from GitHub"
+    # git clone https://github.com/GhostBSD/pc-sysinstall.git ${release}/pc-sysinstall >/dev/null 2>&1
+    cp -R /usr/home/ericbsd/projects/ghostbsd/pc-sysinstall ${release}/pc-sysinstall
   fi
 
   cat > ${release}/config.sh << 'EOF'
