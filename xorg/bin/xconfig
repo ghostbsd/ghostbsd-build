@@ -366,6 +366,17 @@ start_nvidia()
   fi
 }
 
+start_intel_drm()
+{
+    # sysrc -f /etc/rc.conf kld_list="linux linux64 /boot/modules/i915kms.ko /boot/modules/radeonkms.ko amdgpu"
+    echo "Starting Desktop (Intel DRM).. Please wait.."
+    kldload /boot/modules/i915kms.ko
+    sysrc -f /etc/rc.conf kld_list="/boot/modules/i915kms.ko"
+    sudo X -configure
+    sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
+    startx
+}
+
 start_shell()
 {
   clear
@@ -388,10 +399,11 @@ manual_setup()
     startx "Start Desktop (No Configuration)" \
     nvidia "Start Desktop (Nvidia)" \
     modeset "Start Desktop (modesetting)"\
-    vesa "Start Desktop (VESA)" \
-    scfb "Start Desktop (SCFB)" \
+    intel_drm "Start Desktop (Intel with drm driver)"\
     intel "Start Desktop (Legacy Intel)" \
     amd "Start Desktop (Radeon)" \
+    vesa "Start Desktop (VESA)" \
+    scfb "Start Desktop (SCFB)" \
     shell "Drop to emergency shell" \
     reboot "Reboot the system" \
     exit "Exit X Configuration" 2>/tmp/answer
@@ -407,17 +419,18 @@ manual_setup()
         modeset) echo "Starting Desktop (modesetting).. Please wait.."
           cp /usr/local/etc/X11/cardDetect/XF86Config.modesetting /etc/X11/xorg.conf
           startx 2>/tmp/Xerrors ;;
-        vesa) echo "Starting Desktop (VESA).. Please wait.."
-          cp /usr/local/etc/X11/cardDetect/XF86Config.vesa /etc/X11/xorg.conf
-          startx 2>/tmp/Xerrors ;;
-        scfb) echo "Starting Desktop (SCFB).. Please wait.."
-          cp /usr/local/etc/X11/cardDetect/XF86Config.scfb /etc/X11/xorg.conf
-          startx 2>/tmp/Xerrors ;;
+        intel_drm) start_intel_drm;;
         intel) echo "Starting Desktop (Legacy Intel).. Please wait.."
           cp /usr/local/etc/X11/cardDetect/XF86Config.intel /etc/X11/xorg.conf
           startx 2>/tmp/Xerrors ;;
         amd) echo "Starting Desktop (Radeon).. Please wait.."
           kldload radeonkms
+          startx 2>/tmp/Xerrors ;;
+        vesa) echo "Starting Desktop (VESA).. Please wait.."
+          cp /usr/local/etc/X11/cardDetect/XF86Config.vesa /etc/X11/xorg.conf
+          startx 2>/tmp/Xerrors ;;
+        scfb) echo "Starting Desktop (SCFB).. Please wait.."
+          cp /usr/local/etc/X11/cardDetect/XF86Config.scfb /etc/X11/xorg.conf
           startx 2>/tmp/Xerrors ;;
         shell) start_shell ;;
         reboot)  reboot -q ;;
