@@ -470,7 +470,7 @@ manual_setup()
     amd "Start Desktop (Radeon)" \
     vesa "Start Desktop (VESA)" \
     scfb "Start Desktop (SCFB)" \
-    virtualbox "Start Desktop (VirtualBox)"
+    virtualbox "Start Desktop (VirtualBox)" \
     shell "Drop to emergency shell" \
     reboot "Reboot the system" \
     exit "Exit X Configuration" 2>/tmp/answer
