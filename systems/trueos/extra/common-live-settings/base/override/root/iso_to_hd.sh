@@ -8,6 +8,7 @@ purge_live_settings()
   # Removing livecd hostname.
   ( echo 'g/hostname="livecd"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
   rm -f /usr/local/etc/xdg/autostart/umountghostbsd.desktop
+  rc-update add xconfig default
 }
 
 set_sudoers()

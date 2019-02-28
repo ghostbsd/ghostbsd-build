@@ -27,10 +27,9 @@ else
   NVDRIVER="None"
 fi
 
-
-
 live_configure_xorg()
 {
+  
   # First check if we are running as a VirtualBox guest
   pciconf -lv | grep -q "VirtualBox"
   if [ $? -eq 0 ] ; then
@@ -83,7 +82,6 @@ live_configure_xorg()
   # fi
 }
 
-
 install_configure_xorg()
 {
   # First check if we are running as a VirtualBox guest
@@ -121,7 +119,7 @@ install_configure_xorg()
     echo $n390drivers | grep -q "$graphcard"
     if [ $? -eq 0 ] ; then
       kldload nvidia-modeset
-      nvidia-xconfig
+      start_nvidia
     else
       pkg delete -fy nvidia-driver >/dev/null 2>/dev/null
     fi
@@ -131,19 +129,20 @@ install_configure_xorg()
       echo $n340drivers | grep -q "$graphcard"
       if [ $? -eq 0 ] ; then
         pkg install -yf nvidia-driver-340
-        nvidia-xconfig
         kldload nvidia-modeset
         kldload nvidia
+        start_nvidia
       fi
       echo $n304drivers | grep -q "$graphcard"
       if [ $? -eq 0 ] ; then
         pkg install -yf nvidia-driver-304
-        nvidia-xconfig
         kldload nvidia
+        start_nvidia
       fi
     fi
   else
       pkg delete -fy nvidia-driver nvidia-xconfig nvidia-settings >/dev/null 2>/dev/null
+      ( echo 'g/kldload_nvidia="nvidia-modeset nvidia"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
   fi
 
   # Figure out if UEFI or BIOS
@@ -154,19 +153,43 @@ install_configure_xorg()
   if [ -n "`kenv grub.platform 2>/dev/null`" -a "`kenv grub.platform 2>/dev/null`" = "efi" ] ; then
     BOOTMODE="UEFI"
   fi
-
-  # pciconf -lv | grep -B 4 VGA |grep -q Intel
-  # if [ $? -eq 0 -a "${BOOTMODE}" = "UEFI" ]; then
-  #   cp /usr/local/etc/X11/cardDetect/XF86Config.scfb /etc/X11/xorg.conf
-  # fi
-
-  # pciconf -lv | grep -B 4 VGA |grep -q AMD
-  # if [ $? -eq 0 -a "${BOOTMODE}" = "UEFI" ]; then
-  #   cp /usr/local/etc/X11/cardDetect/XF86Config.scfb /etc/X11/xorg.conf
-  # fi
 }
 
+clean_xorg()
+{
+    # First check if we are running as a VirtualBox guest
+  pciconf -lv | grep -q "VirtualBox"
+  if [ $? -eq 0 ] ; then
+    rc-update add vboxguest default
+    service vboxguest start
+    rc-update add vboxservice default
+    service vboxservice start
+    # fix mouse maping on
+    echo "xmodmap -e 'pointer = 1 2 3 4 5 6 7 0 0 0' &" > /root/.xinitrc
+    echo 'exec mate-session' > /root/.xinitrc
+    for user in `ls /usr/home/` ; do
+      echo "xmodmap -e 'pointer = 1 2 3 4 5 6 7 0 0 0' &" > /usr/home/${user}/.xinitrc
+      echo 'exec mate-session' >> /usr/home/${user}/.xinitrc
+      chown ${user}:wheel /usr/home/${user}/.xinitrc
+      sed -i "" -e "s/simone/${user}/g" /usr/local/etc/slim.conf
+    done
+  # rc-update add slim default
+  else
+    pkg delete -fy virtualbox-ose-additions >/dev/null 2>/dev/null
+  fi
 
+  # Check to see if NVidia graphics is primary
+  pciconf -lv | grep -B 4 VGA | grep -q NVIDIA
+  if [ $? -eq 0 ] ; then
+    echo "Noting to clean for nvidia"
+  else
+    pkg delete -fy nvidia-driver nvidia-xconfig nvidia-settings >/dev/null 2>/dev/null
+    ( echo 'g/kldload_nvidia="nvidia-modeset nvidia"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
+    kldunload nvidia-modeset
+    kldunload nvidia
+  fi
+  rc-update delete xconfig default
+}
 
 detect_x()
 {
@@ -291,13 +314,39 @@ start_default_xorg()
   return 1
 }
 
+UnloadNvidia()
+{
+  sudo kldunload nvidia-modeset
+  sudo kldunload nvidia
+}
+
 start_xorg()
 {
+  pciconf -lv | grep -B 4 VGA | grep -q NVIDIA
+  if [ $? -eq 0 ] ; then
+    echo "Noting to clean for nvidia"
+  else
+    UnloadNvidia
+  fi
+
+  sudo pciconf -lv | grep -q "VirtualBox"
+  if [ $? -eq 0 ] ; then
+    rc-update add vboxguest default
+    service vboxguest start
+    rc-update add vboxservice default
+    service vboxservice start
+    echo "xmodmap -e 'pointer = 1 2 3 4 5 6 7 0 0 0' &" > /usr/home/ghostbsd/.xinitrc
+    echo "xmodmap -e 'pointer = 1 2 3 4 5 6 7 0 0 0' &" > /root/.xinitrc
+    echo "exec ck-launch-session mate-session" >> /usr/home/ghostbsd/.xinitrc
+    echo "exec ck-launch-session mate-session" >> /root/.xinitrc
+    chown ghostbsd:wheel /usr/home/ghostbsd/.xinitrc
+  fi
 
   sudo X -configure
   sleep 5
   sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
-  
+
+  # Check to see if we are running as VMware guest
   # ATTEMPT=0
   # Try bringing up X now
   startx
@@ -366,15 +415,23 @@ start_nvidia()
   fi
 }
 
+UnloadNvidia()
+{
+  sudo kldunload nvidia-modeset
+  sudo kldunload nvidia
+}
+
 start_intel_drm()
 {
-    # sysrc -f /etc/rc.conf kld_list="linux linux64 /boot/modules/i915kms.ko /boot/modules/radeonkms.ko amdgpu"
-    echo "Starting Desktop (Intel DRM).. Please wait.."
-    kldload /boot/modules/i915kms.ko
-    sysrc -f /etc/rc.conf kld_list="/boot/modules/i915kms.ko"
-    sudo X -configure
-    sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
-    startx
+  UnloadNvidia
+  # sysrc -f /etc/rc.conf kld_list="linux linux64 /boot/modules/i915kms.ko /boot/modules/radeonkms.ko amdgpu"
+  echo "Starting Desktop (Intel DRM).. Please wait.."
+  sudo kldload /boot/modules/i915kms.ko
+  sudo sysrc -f /etc/rc.conf kld_list="/boot/modules/i915kms.ko"
+  sudo X -configure
+  sudo sed -i "" -e 's/intel/modesetting/g' /root/xorg.conf.new
+  sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
+  startx
 }
 
 start_shell()
@@ -404,6 +461,7 @@ manual_setup()
     amd "Start Desktop (Radeon)" \
     vesa "Start Desktop (VESA)" \
     scfb "Start Desktop (SCFB)" \
+    virtualbox "Start Desktop (VirtualBox)"
     shell "Drop to emergency shell" \
     reboot "Reboot the system" \
     exit "Exit X Configuration" 2>/tmp/answer
@@ -417,27 +475,31 @@ manual_setup()
         startx ;;
         nvidia) start_nvidia ;;
         modeset) echo "Starting Desktop (modesetting).. Please wait.."
-          cp /usr/local/etc/X11/cardDetect/XF86Config.modesetting /etc/X11/xorg.conf
+          UnloadNvidia
+          sudo cp /usr/local/etc/X11/cardDetect/XF86Config.modesetting /etc/X11/xorg.conf
           startx 2>/tmp/Xerrors ;;
         intel_drm) start_intel_drm;;
         intel) echo "Starting Desktop (Legacy Intel).. Please wait.."
-          cp /usr/local/etc/X11/cardDetect/XF86Config.intel /etc/X11/xorg.conf
+          UnloadNvidia
+          sudo cp /usr/local/etc/X11/cardDetect/XF86Config.intel /etc/X11/xorg.conf
           startx 2>/tmp/Xerrors ;;
         amd) echo "Starting Desktop (Radeon).. Please wait.."
-          kldload radeonkms
+          UnloadNvidia
+          sudo kldload radeonkms
           startx 2>/tmp/Xerrors ;;
         vesa) echo "Starting Desktop (VESA).. Please wait.."
-          cp /usr/local/etc/X11/cardDetect/XF86Config.vesa /etc/X11/xorg.conf
+          sudo cp /usr/local/etc/X11/cardDetect/XF86Config.vesa /etc/X11/xorg.conf
           startx 2>/tmp/Xerrors ;;
         scfb) echo "Starting Desktop (SCFB).. Please wait.."
-          cp /usr/local/etc/X11/cardDetect/XF86Config.scfb /etc/X11/xorg.conf
+          sudo cp /usr/local/etc/X11/cardDetect/XF86Config.scfb /etc/X11/xorg.conf
           startx 2>/tmp/Xerrors ;;
+        virtualbox) echo "Starting Desktop (AutoDetect).. Please wait.."
+          start_xorg ;;
         shell) start_shell ;;
-        reboot)  reboot -q ;;
+        reboot)  sudo reboot -q ;;
         exit) exit 0 ;;
         *) ;;
     esac
-
   done
 }
 
@@ -453,6 +515,8 @@ elif [ ${TOSTART} = 'service' ]; then
     else
       install_configure_xorg
     fi
+  else
+    clean_xorg
   fi
 else
   manual_setup
