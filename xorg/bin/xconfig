@@ -84,6 +84,52 @@ live_configure_xorg()
 
 install_configure_xorg()
 {
+  # Check to see if NVidia graphics is primary
+  pciconf -lv | grep -B 4 VGA | grep -q NVIDIA
+  if [ $? -eq 0 ] ; then
+    graphcard=$(pciconf -lv | grep -B 4 VGA | grep device | cut -f2 -d '[' | cut -f1 -d ']')
+    echo $n390drivers | grep -q "$graphcard"
+    if [ $? -eq 0 ] ; then
+      kldload nvidia-modeset
+      echo 'kldload_nvidia="nvidia-modeset nvidia"' >> /etc/rc.conf
+      X -configure
+      sleep 5
+      sed -i "" -e 's/nv/nvidia/g' /xorg.conf.new
+      cp /xorg.conf.new /etc/X11/xorg.conf
+    else
+      pkg delete -fy nvidia-driver >/dev/null 2>/dev/null
+    fi
+    # lookibng if we have internet
+    ping -c 1 8.8.8.8
+    if [ $? -eq 0 ] ; then
+      echo $n340drivers | grep -q "$graphcard"
+      if [ $? -eq 0 ] ; then
+        pkg install -yf nvidia-driver-340
+        kldload nvidia-modeset
+        kldload nvidia
+        echo 'kldload_nvidia="nvidia-modeset nvidia"' >> /etc/rc.conf
+        X -configure
+        sleep 5
+        sed -i "" -e 's/nv/nvidia/g' /xorg.conf.new
+        cp /xorg.conf.new /etc/X11/xorg.conf
+      fi
+      echo $n304drivers | grep -q "$graphcard"
+      if [ $? -eq 0 ] ; then
+        pkg install -yf nvidia-driver-304
+        kldload nvidia
+        echo 'kldload_nvidia="nvidia"' >> /etc/rc.conf
+        X -configure
+        sleep 5
+        sed -i "" -e 's/nv/nvidia/g' /xorg.conf.new
+        cp /xorg.conf.new /etc/X11/xorg.conf
+      fi
+    fi
+  else
+    pkg delete -fy nvidia-driver nvidia-xconfig nvidia-settings >/dev/null 2>/dev/null
+    kldunload nvidia-modeset
+    kldunload nvidia
+  fi
+
   # First check if we are running as a VirtualBox guest
   pciconf -lv | grep -q "VirtualBox"
   if [ $? -eq 0 ] ; then
@@ -111,53 +157,23 @@ install_configure_xorg()
   if [ $? -eq 0 ] ; then
     cp /usr/local/etc/X11/cardDetect/XF86Config.vmware /etc/X11/xorg.conf
   fi
-
-  # Check to see if NVidia graphics is primary
-  pciconf -lv | grep -B 4 VGA | grep -q NVIDIA
-  if [ $? -eq 0 ] ; then
-    graphcard=$(pciconf -lv | grep -B 4 VGA | grep device | cut -f2 -d '[' | cut -f1 -d ']')
-    echo $n390drivers | grep -q "$graphcard"
-    if [ $? -eq 0 ] ; then
-      kldload nvidia-modeset
-      start_nvidia
-    else
-      pkg delete -fy nvidia-driver >/dev/null 2>/dev/null
-    fi
-    # lookibng if we have internet
-    ping -c 1 8.8.8.8
-    if [ $? -eq 0 ] ; then
-      echo $n340drivers | grep -q "$graphcard"
-      if [ $? -eq 0 ] ; then
-        pkg install -yf nvidia-driver-340
-        kldload nvidia-modeset
-        kldload nvidia
-        start_nvidia
-      fi
-      echo $n304drivers | grep -q "$graphcard"
-      if [ $? -eq 0 ] ; then
-        pkg install -yf nvidia-driver-304
-        kldload nvidia
-        start_nvidia
-      fi
-    fi
-  else
-      pkg delete -fy nvidia-driver nvidia-xconfig nvidia-settings >/dev/null 2>/dev/null
-      ( echo 'g/kldload_nvidia="nvidia-modeset nvidia"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
-  fi
-
-  # Figure out if UEFI or BIOS
-  BOOTMODE=`sysctl -n machdep.bootmethod`
-  export BOOTMODE
-
-  # Check if booted via GRUB and set BOOTMODE correctly (For GhostBSD and friends)
-  if [ -n "`kenv grub.platform 2>/dev/null`" -a "`kenv grub.platform 2>/dev/null`" = "efi" ] ; then
-    BOOTMODE="UEFI"
-  fi
 }
 
 clean_xorg()
 {
-    # First check if we are running as a VirtualBox guest
+  # Check to see if NVidia graphics is primary
+  pciconf -lv | grep -B 4 VGA | grep -q NVIDIA
+  if [ $? -eq 0 ] ; then
+    kldload nvidia-modeset
+    kldload nvidia
+    echo 'kldload_nvidia="nvidia-modeset nvidia"' >> /etc/rc.conf
+  else
+    pkg delete -fy nvidia-driver nvidia-xconfig nvidia-settings >/dev/null 2>/dev/null
+    kldunload nvidia-modeset
+    kldunload nvidia
+  fi
+
+  # First check if we are running as a VirtualBox guest
   pciconf -lv | grep -q "VirtualBox"
   if [ $? -eq 0 ] ; then
     rc-update add vboxguest default
@@ -178,16 +194,6 @@ clean_xorg()
     pkg delete -fy virtualbox-ose-additions >/dev/null 2>/dev/null
   fi
 
-  # Check to see if NVidia graphics is primary
-  pciconf -lv | grep -B 4 VGA | grep -q NVIDIA
-  if [ $? -eq 0 ] ; then
-    echo "Noting to clean for nvidia"
-  else
-    pkg delete -fy nvidia-driver nvidia-xconfig nvidia-settings >/dev/null 2>/dev/null
-    ( echo 'g/kldload_nvidia="nvidia-modeset nvidia"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
-    kldunload nvidia-modeset
-    kldunload nvidia
-  fi
   rc-update delete xconfig default
 }
 
@@ -402,6 +408,9 @@ start_nvidia()
   hostname | grep -q "livecd"
   if [ $? -eq 0 ] ; then
     if [ "${NVDRIVER}" = "390" ] ; then
+      sudo kldload nvidia-modeset
+      sudo kldload nvidia
+      sudo echo 'kldload_nvidia="nvidia-modeset nvidia"' >> /etc/rc.conf
       sudo X -configure
       sleep 5
       sudo sed -i "" -e 's/nv/nvidia/g' /root/xorg.conf.new
