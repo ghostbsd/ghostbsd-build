@@ -516,7 +516,9 @@ if [ ${TOSTART} = 'setup' ] ; then
   manual_setup
 elif [ ${TOSTART} = 'auto' ]; then
   start_xorg
-elif [ ${TOSTART} = 'service' ]; then
+elif [ ${TOSTART} = 'clean' ]; then
+  clean_xorg
+else
   if [ ! -f "/etc/X11/xorg.conf" ]; then
     hostname | grep -q "livecd"
     if [ $? -eq 0 ] ; then
@@ -527,6 +529,4 @@ elif [ ${TOSTART} = 'service' ]; then
   else
     clean_xorg
   fi
-else
-  manual_setup
 fi
