@@ -204,6 +204,9 @@ extra_config()
   setup_autologin
   final_setup
   echo "gop set 0" >> ${release}/boot/loader.rc.local
+  # To fix lightdm crashing to be remove on the new base update.
+  sed -i '' -e 's/memorylocked=128M/memorylocked=256M/' ${release}/etc/login.conf
+  chroot ${release} cap_mkdb /etc/login.conf
 }
 
 xorg()
