@@ -5,7 +5,7 @@ set -e -u
 lightdm_setup()
 {
   if [ -f ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf ] ; then
-    echo "background=/usr/local/share/backgrounds/ghostbsd/Nice_Dawn.jpg" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+    echo "background=/usr/local/share/backgrounds/ghostbsd/Tidepool_Sunset.jpg" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
     echo "theme-name=Vimix-Dark" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
     echo -e "icon-theme-name=Vivacious-Colors-Full-Dark\n" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
   fi

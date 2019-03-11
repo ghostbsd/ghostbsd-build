@@ -162,6 +162,8 @@ rc()
       chroot ${release} rc-update delete vboxguest default
       chroot ${release} rc-update delete vboxservice default
       chroot ${release} rc-update add cupsd default
+      chroot ${release} rc-update add avahi-daemon default
+      chroot ${release} rc-update add avahi-dnsconfd default
       ;;
     xfce)
       chroot ${release} rc-update add devfs default
