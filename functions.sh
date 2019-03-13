@@ -164,6 +164,7 @@ rc()
       chroot ${release} rc-update add cupsd default
       chroot ${release} rc-update add avahi-daemon default
       chroot ${release} rc-update add avahi-dnsconfd default
+      chroot ${release} rc-update add ntpd default
       ;;
     xfce)
       chroot ${release} rc-update add devfs default
