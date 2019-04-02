@@ -13,10 +13,10 @@ release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 version="19.03"
 # version=""
-releasestamp=""
 # releasestamp=""
-timestamp=`date "+-%Y-%m-%d-%H-%M"`
-# timestamp=""
+releasestamp="-RC2"
+# timestamp=`date "+-%Y-%m-%d-%H-%M"`
+timestamp=""
 label="GhostBSD"
 union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
 kernrel="`uname -r`"
@@ -152,31 +152,18 @@ rc()
   # chroot ${release} sysrc -f /etc/rc.conf kld_list="geom_mirror"
   # remove kldload_nvidia on rc.conf
   ( echo 'g/kldload_nvidia="nvidia-modeset nvidia"/d' ; echo 'wq' ) | ex -s ${release}/etc/rc.conf
-  case $desktop in
-    mate)
-      chroot ${release} rc-update add devfs default
-      chroot ${release} rc-update add moused default
-      chroot ${release} rc-update add dbus default
-      chroot ${release} rc-update add hald default
-      chroot ${release} rc-update add webcamd default
-      chroot ${release} rc-update delete vboxguest default
-      chroot ${release} rc-update delete vboxservice default
-      chroot ${release} rc-update add cupsd default
-      chroot ${release} rc-update add avahi-daemon default
-      chroot ${release} rc-update add avahi-dnsconfd default
-      chroot ${release} rc-update add ntpd default
-      ;;
-    xfce)
-      chroot ${release} rc-update add devfs default
-      chroot ${release} rc-update add dbus default
-      chroot ${release} rc-update add hald default
-      chroot ${release} rc-update add xconfig default
-      chroot ${release} rc-update add webcamd default
-      chroot ${release} rc-update delete vboxguest default
-      chroot ${release} rc-update delete vboxservice default
-      chroot ${release} rc-update add cupsd default
-      ;;
-  esac
+  chroot ${release} rc-update add devfs default
+  chroot ${release} rc-update add moused default
+  chroot ${release} rc-update add dbus default
+  chroot ${release} rc-update add hald default
+  chroot ${release} rc-update add webcamd default
+  chroot ${release} rc-update delete vboxguest default
+  chroot ${release} rc-update delete vboxservice default
+  chroot ${release} rc-update add cupsd default
+  chroot ${release} rc-update add avahi-daemon default
+  chroot ${release} rc-update add avahi-dnsconfd default
+  chroot ${release} rc-update add ntpd default
+  chroot ${release} sysrc -f /etc/rc.conf ntpd_sync_on_start="YES"
 }
 
 user()
@@ -285,7 +272,14 @@ image()
   sh mkisoimages.sh -b $label $isopath ${cdroot}
   ls -lh $isopath
   cd ${livecd}
-  md5 `echo ${isopath}|cut -d / -f6` > $(echo ${isopath}|cut -d / -f6).md5
-  sha256 `echo ${isopath}| cut -d / -f6` > $(echo ${isopath}|cut -d / -f6).sha256
+  shafile=$(echo ${isopath}|cut -d / -f6).sha256
+  torrent=$(echo ${isopath}|cut -d / -f6).torrent
+  tracker1="http://tracker.openbittorrent.com:80/announce"
+  tracker2="udp://tracker.opentrackr.org:1337"
+  tracker3="udp://tracker.coppersurfer.tk:6969"
+  echo "Creating sha256 \"${livecd}/${shafile}\""
+  sha256 `echo ${isopath} | cut -d / -f6` > ${livecd}/${shafile}
+  transmission-create -o ${livecd}/${torrent} -t ${tracker1} -t ${tracker3} -t ${tracker3} ${isopath}
+  chmod 644 ${livecd}/${torrent}
   cd -
 }
