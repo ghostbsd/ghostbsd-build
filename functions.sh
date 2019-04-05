@@ -14,11 +14,15 @@ cdroot="${livecd}/cdroot"
 version="19.04"
 # version=""
 # releasestamp=""
-releasestamp="-RC2"
+releasestamp="-RC3"
 # timestamp=`date "+-%Y-%m-%d-%H-%M"`
 timestamp=""
 label="GhostBSD"
-union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
+if [ $desktop = "mate" ] ; then
+  union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
+else
+  union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc var"}
+fi
 kernrel="`uname -r`"
 
 # Only run as superuser
