@@ -124,8 +124,8 @@ packages_software()
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
 
   case $desktop in
-    xfce)
-      cat ${cwd}/systems/${systems}/packages/xfce | xargs pkg-static -c ${release} install -y ;;
+    mate)
+      cat ${cwd}/systems/${systems}/packages/mate | xargs pkg-static -c ${release} install -y ;;
     xfce)
       cat ${cwd}/systems/${systems}/packages/xfce | xargs pkg-static -c ${release} install -y ;;
   esac
