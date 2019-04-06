@@ -15,11 +15,11 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 * SCFB support with automatic best resolution for UEFI enabled systems with Intel/AMD graphics
 
 ## System Requirements
-* TrueOS 18.06 or GhostBSD 18 for AMD64
+* Latest version of GhostBSD or TrueOS 
 * 20GB of free disk space
 * 4GB of free memory
 
-Note: GhostBSD 11.1, and earlier releases, cannot be used to build ISO.
+Note: GhostBSD 18.06 and earlier releases cannot be used to build ISO.
 
 ## Initial Setup
 Install the required packages:
@@ -30,31 +30,31 @@ Clone the repo:
 ```
 git clone https://www.github.com/ghostbsd/ghostbsd-build.git
 ```
-Enter the directory for running the LiveCD creator:
+Enter the directory for running the LiveCD build script:
 ```
 cd ghostbsd
 ```
 
 ## TrueOS base GhostBSD
+To build a GhostBSD with MATE as default desktop
+```
+./build trueos mate
+```   
+(Option) To build GhostBSD with xfce as default desktop
+```
+./build trueos xfce
+```   
+(Option) To build GhostBSD without a default desktop
 ```
 ./build trueos
-./build trueos mate
-./build trueos xfce
-```
-
-## FreeBSD base GhostBSD
-```
-./build freebsd
-./build freebsd mate
-./build freebsd xfce
-```
+```    
 
 ## Burn an image to cd:
 ```
-cdrecord /usr/local/ghostbsd-build/ghostbsd/GhostBSD18.08.iso
+cdrecord /usr/local/ghostbsd-build/ghostbsd/GhostBSD18.12.iso
 ```
 
 ## Write an image to usb stick:
 ```
-dd if=/usr/local/ghostbsd-build/ghostbsd/GhostBSD18.08.iso of=/dev/da0 bs=4m
+dd if=/usr/local/ghostbsd-build/ghostbsd/GhostBSD18.12.iso of=/dev/da0 bs=4m
 ```
