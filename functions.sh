@@ -53,14 +53,12 @@ validate_desktop()
   fi
 }
 
-
 # Validate package selection if chosen
 if [ -z "${desktop}" ] ; then
   desktop=mate
 else
   validate_desktop
 fi
-
 
 if [ "${desktop}" != "mate" ] ; then
   DESKTOP=$(echo ${desktop} | tr [a-z] [A-Z])

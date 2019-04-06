@@ -27,5 +27,8 @@ setup_xinit()
   elif [ "${desktop}" == "xfce" ] ; then
     echo "exec ck-launch-session startxfce4" > ${release}/usr/home/${liveuser}/.xinitrc
     echo "exec ck-launch-session startxfce4" > ${release}/root/.xinitrc
+  elif [ "${desktop}" == "cinnamon" ] ; then
+    echo "exec ck-launch-session cinnamon-session" > ${release}/usr/home/${liveuser}/.xinitrc
+    echo "exec ck-launch-session cinnamon-session" > ${release}/root/.xinitrc
   fi
 }
