@@ -255,8 +255,8 @@ image()
   tracker2="udp://tracker.opentrackr.org:1337"
   tracker3="udp://tracker.coppersurfer.tk:6969"
   echo "Creating sha256 \"${livecd}/${shafile}\""
-  sha256 `echo ${isopath} | cut -d / -f6` > ${livecd}/${shafile}
-  transmission-create -o ${livecd}/${torrent} -t ${tracker1} -t ${tracker3} -t ${tracker3} ${isopath}
+  sha256 `echo ${isopath} | cut -d / -f6` > ${iso}/${shafile}
+  transmission-create -o ${iso}/${torrent} -t ${tracker1} -t ${tracker3} -t ${tracker3} ${isopath}
   chmod 644 ${livecd}/${torrent}
   cd -
 }
