@@ -38,23 +38,23 @@ cd ghostbsd
 ## TrueOS base GhostBSD
 To build a GhostBSD with MATE as default desktop
 ```
-./build trueos mate
+./build mate
 ```   
 (Option) To build GhostBSD with xfce as default desktop
 ```
-./build trueos xfce
+./build xfce
 ```   
 (Option) To build GhostBSD without a default desktop
 ```
-./build trueos
+./build
 ```    
 
 ## Burn an image to cd:
 ```
-cdrecord /usr/local/ghostbsd-build/ghostbsd/GhostBSD18.12.iso
+cdrecord /usr/local/ghostbsd-build/iso/GhostBSD18.12.iso
 ```
 
 ## Write an image to usb stick:
 ```
-dd if=/usr/local/ghostbsd-build/ghostbsd/GhostBSD18.12.iso of=/dev/da0 bs=4m
+dd if=/usr/local/ghostbsd-build/iso/GhostBSD18.12.iso of=/dev/da0 bs=4m
 ```

@@ -2,21 +2,21 @@
 
 cwd="`realpath | sed 's|/scripts||g'`"
 liveuser=ghostbsd
-systems=$1
-desktop=$2
+desktop=$1
 workdir="/usr/local"
-livecd="${workdir}/ghostbsd-build/${systems}"
+livecd="${workdir}/ghostbsd-build"
 base="${livecd}/base"
+iso="${livecd}/iso"
 software_packages="${livecd}/software_packages"
 base_packages="${livecd}/base_packages"
 release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 version="19.04"
 # version=""
-# releasestamp=""
-releasestamp="-RC3"
-# timestamp=`date "+-%Y-%m-%d-%H-%M"`
-timestamp=""
+# release stamp=""
+release_stamp="-RC3"
+# time stamp=`date "+-%Y-%m-%d-%H-%M"`
+time_stamp=""
 label="GhostBSD"
 if [ $desktop = "mate" ] ; then
   union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
@@ -42,43 +42,17 @@ case $kernrel in
    ;;
 esac
 
-display_usage()
-{
-  echo "You must specify a systems at minimum!"
-  echo "Possible choices are:"
-  ls ${cwd}/systems
-  echo "Usage: ./build.sh trueos"
-  exit 1
-}
-
-validate_systems()
-{
-  if [ ! -d "${cwd}/systems/${systems}" ] ; then
-    display_usage
-  fi
-}
-
 validate_desktop()
 {
-  if [ ! -f "${cwd}/systems/${systems}/packages/${desktop}" ] ; then
+  if [ ! -f "${cwd}/packages/${desktop}" ] ; then
     echo "Invalid choice specified"
     echo "Possible choices are:"
-    ls ${cwd}/systems/${systems}/packages
-    echo "Usage: ./build.sh trueos mate"
+    ls ${cwd}/packages
+    echo "Usage: ./build.sh mate"
     exit 1
   fi
 }
 
-# We must choose a systems at minimum
-if [ -z "${systems}" ] ; then
-  echo "You must specify a systems!"
-  echo "Possible choices are:"
-  ls ${cwd}/systems
-  echo "Usage: ./build.sh trueos"
-  exit 1
-else
-  validate_systems
-fi
 
 # Validate package selection if chosen
 if [ -z "${desktop}" ] ; then
@@ -88,14 +62,15 @@ else
 fi
 
 
-if [ "${desktop}" == "xfce" ] ; then
-  community="-XFCE"
+if [ "${desktop}" != "mate" ] ; then
+  DESKTOP=$(echo ${desktop} | tr [a-z] [A-Z])
+  community="-${DESKTOP}"
 else
   community=""
 fi
 
 
-isopath="${livecd}/${label}${version}${releasestamp}${timestamp}${community}.iso"
+isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
 
 workspace()
 {
@@ -104,7 +79,7 @@ workspace()
     chflags -R noschg ${release} ${cdroot} >/dev/null 2>/dev/null
     rm -rf ${release} ${cdroot} >/dev/null 2>/dev/null
   fi
-  mkdir -p ${livecd} ${base} ${software_packages} ${base_packages} ${release} >/dev/null 2>/dev/null
+  mkdir -p ${livecd} ${base} ${iso} ${software_packages} ${base_packages} ${release} >/dev/null 2>/dev/null
 }
 
 base()
@@ -113,7 +88,7 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg-static -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD search -q GhostBSD | grep "GhostBSD-" | grep -v -E "(-doc|-debug)" | xargs pkg-static -r ${release} -R ${cwd}/systems/trueos/repos/usr/local/etc/pkg/repos/ -C GhostBSD install -y -g
+  pkg-static -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD search -q GhostBSD | grep "GhostBSD-" | grep -v -E "(-doc|-debug)" | xargs pkg-static -r ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD install -y -g
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
   touch ${release}/etc/fstab
@@ -122,22 +97,22 @@ base()
 
 packages_software()
 {
-  cp -R ${cwd}/systems/trueos/repos/ ${release}
+  cp -R ${cwd}/repos/ ${release}
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
 
   case $desktop in
     xfce)
-      cat ${cwd}/systems/${systems}/packages/xfce | xargs pkg-static -c ${release} install -y ;;
+      cat ${cwd}/packages/xfce | xargs pkg-static -c ${release} install -y ;;
     xfce)
-      cat ${cwd}/systems/${systems}/packages/xfce | xargs pkg-static -c ${release} install -y ;;
+      cat ${cwd}/packages/xfce | xargs pkg-static -c ${release} install -y ;;
   esac
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
 
-  cp -R ${cwd}/systems/trueos/repos/ ${release}
+  cp -R ${cwd}/repos/ ${release}
 
 }
 
@@ -179,13 +154,13 @@ user()
 
 extra_config()
 {
-  . ${cwd}/systems/trueos/extra/common-live-setting.sh
-  . ${cwd}/systems/trueos/extra/common-base-setting.sh
-  . ${cwd}/systems/trueos/extra/setuser.sh
-  . ${cwd}/systems/trueos/extra/dm.sh
-  . ${cwd}/systems/trueos/extra/finalize.sh
-  . ${cwd}/systems/trueos/extra/autologin.sh
-  . ${cwd}/systems/trueos/extra/gitpkg.sh
+  . ${cwd}/extra/common-live-setting.sh
+  . ${cwd}/extra/common-base-setting.sh
+  . ${cwd}/extra/setuser.sh
+  . ${cwd}/extra/dm.sh
+  . ${cwd}/extra/finalize.sh
+  . ${cwd}/extra/autologin.sh
+  . ${cwd}/extra/gitpkg.sh
   set_live_system
   git_pc_sysinstall
   ## git_gbi is for development testing and gbi should be
@@ -275,7 +250,7 @@ image()
 {
   sh mkisoimages.sh -b $label $isopath ${cdroot}
   ls -lh $isopath
-  cd ${livecd}
+  cd ${iso}
   shafile=$(echo ${isopath}|cut -d / -f6).sha256
   torrent=$(echo ${isopath}|cut -d / -f6).torrent
   tracker1="http://tracker.openbittorrent.com:80/announce"

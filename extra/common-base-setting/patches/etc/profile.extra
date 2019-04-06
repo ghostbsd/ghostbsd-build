@@ -1,0 +1,4 @@
+CHARSET=UTF-8;	export CHARSET
+LANG=en_US.UTF-8;	export LANG
+GDM_LANG=en_US.UTF-8;	export GDM_LANG
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin; export PATH

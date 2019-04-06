@@ -1,0 +1,10 @@
+vfs.usermount=1
+
+# the following is required to run chromium browser
+kern.ipc.shm_allow_removed=1
+
+# make sure the system find the kernel path.
+kern.bootfile=/boot/kernel/kernel
+
+# this is required for MBR 4 alignement
+kern.geom.part.mbr.enforce_chs=0

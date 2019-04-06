@@ -1,0 +1,3 @@
+proc /proc procfs rw 0 0
+linproc /compat/linux/proc linprocfs rw 0 0
+tmpsf /compat/linux/dev/shm tmpfs rw,mode=1777 0 0
