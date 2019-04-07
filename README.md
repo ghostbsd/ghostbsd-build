@@ -35,14 +35,18 @@ Enter the directory for running the LiveCD build script:
 cd ghostbsd
 ```
 
-## TrueOS base GhostBSD
-To build a GhostBSD with MATE as default desktop
+## TrueOS Based GhostBSD
+To build a GhostBSD with __MATE__ as default desktop
 ```
 ./build mate
 ```   
-(Option) To build GhostBSD with xfce as default desktop
+(Option) To build GhostBSD with __XFCE__ as default desktop
 ```
 ./build xfce
+```   
+(Option) To build GhostBSD with __Cinnamon__ as default desktop
+```
+./build cinnamon
 ```   
 (Option) To build GhostBSD without a default desktop
 ```
