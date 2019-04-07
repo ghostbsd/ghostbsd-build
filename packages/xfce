@@ -104,4 +104,10 @@ xfce4-whiskermenu-plugin
 ghostbsd-xfce-settings
 xfce-live-settings
 lightdm-gtk-greeter
-lightdm-gtk-greeter
+gstreamer-plugins-flac
+gstreamer1-plugins-flac
+gstreamer-plugins-ogg
+gstreamer1-plugins-ogg
+gstreamer-plugins-vorbis
+gstreamer1-plugins-vorbis
+evince-lite
