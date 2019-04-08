@@ -1,10 +1,18 @@
 #!/bin/sh
-# Config which clean the system after the installation
+# Configure which clean the system after the installation
+desktop=$(cat /usr/local/share/ghostbsd/desktop)
 
 # removing the old network configuration
 purge_live_settings()
 {
-  pkg delete -y mate-live-settings
+  case $desktop in
+    mate)
+      pkg delete -y mate-live-settings ;;
+    xfce)
+      pkg delete -y xfce-live-settings ;;
+    cinnamon)
+      ;;
+  esac
   # Removing livecd hostname.
   ( echo 'g/hostname="livecd"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
   rm -f /usr/local/etc/xdg/autostart/umountghostbsd.desktop
@@ -49,11 +57,27 @@ setup_slim_and_xinitrc()
 
 setup_lightdm_and_xinitrc()
 {
-  echo 'exec mate-session' > /root/.xinitrc
-  for user in `ls /usr/home/` ; do
-    echo 'exec mate-session' > /usr/home/${user}/.xinitrc
-    chown ${user}:wheel /usr/home/${user}/.xinitrc
-  done
+  case $desktop in
+    mate)
+      echo 'exec mate-session' > /root/.xinitrc
+      for user in `ls /usr/home/` ; do
+        echo 'exec mate-session' > /usr/home/${user}/.xinitrc
+        chown ${user}:wheel /usr/home/${user}/.xinitrc
+      done ;;
+    xfce)
+      echo 'exec startxfce4' > /root/.xinitrc
+      for user in `ls /usr/home/` ; do
+        echo 'exec startxfce4' > /usr/home/${user}/.xinitrc
+        chown ${user}:wheel /usr/home/${user}/.xinitrc
+      done ;;
+    cinnamon)
+      echo 'exec cinnamon-session' > /root/.xinitrc
+      for user in `ls /usr/home/` ; do
+        echo 'exec cinnamon-session' > /usr/home/${user}/.xinitrc
+        chown ${user}:wheel /usr/home/${user}/.xinitrc
+      done ;;
+      ;;
+  esac
   rc-update add lightdm default
 }
 

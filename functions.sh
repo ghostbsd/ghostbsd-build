@@ -101,10 +101,12 @@ packages_software()
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
 
   case $desktop in
+    mate)
+      cat ${cwd}/packages/mate | xargs pkg-static -c ${release} install -y ;;
     xfce)
       cat ${cwd}/packages/xfce | xargs pkg-static -c ${release} install -y ;;
-    xfce)
-      cat ${cwd}/packages/xfce | xargs pkg-static -c ${release} install -y ;;
+    cinnamon)
+      cat ${cwd}/packages/cinnamon | xargs pkg-static -c ${release} install -y ;;
   esac
 
   rm ${release}/etc/resolv.conf
@@ -174,6 +176,8 @@ extra_config()
   # To fix lightdm crashing to be remove on the new base update.
   sed -i '' -e 's/memorylocked=128M/memorylocked=256M/' ${release}/etc/login.conf
   chroot ${release} cap_mkdb /etc/login.conf
+  mkdir ${release}/usr/local/share/ghostbsd
+  echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
 }
 
 xorg()
@@ -249,14 +253,14 @@ image()
   sh mkisoimages.sh -b $label $isopath ${cdroot}
   ls -lh $isopath
   cd ${iso}
-  shafile=$(echo ${isopath}|cut -d / -f6).sha256
-  torrent=$(echo ${isopath}|cut -d / -f6).torrent
+  shafile=$(echo ${isopath} | cut -d / -f6).sha256
+  torrent=$(echo ${isopath} | cut -d / -f6).torrent
   tracker1="http://tracker.openbittorrent.com:80/announce"
   tracker2="udp://tracker.opentrackr.org:1337"
   tracker3="udp://tracker.coppersurfer.tk:6969"
-  echo "Creating sha256 \"${livecd}/${shafile}\""
+  echo "Creating sha256 \"${iso}/${shafile}\""
   sha256 `echo ${isopath} | cut -d / -f6` > ${iso}/${shafile}
   transmission-create -o ${iso}/${torrent} -t ${tracker1} -t ${tracker3} -t ${tracker3} ${isopath}
-  chmod 644 ${livecd}/${torrent}
+  chmod 644 ${iso}/${torrent}
   cd -
 }
