@@ -176,7 +176,7 @@ extra_config()
   # To fix lightdm crashing to be remove on the new base update.
   sed -i '' -e 's/memorylocked=128M/memorylocked=256M/' ${release}/etc/login.conf
   chroot ${release} cap_mkdb /etc/login.conf
-  mkdir ${release}/usr/local/share/ghostbsd
+  mkdir -p ${release}/usr/local/share/ghostbsd
   echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
 }
 
