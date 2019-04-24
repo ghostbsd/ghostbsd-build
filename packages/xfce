@@ -115,3 +115,8 @@ xarchiver
 zip
 unzip
 p7zip
+gstreamer-plugins-good
+gstreamer1-plugins-good
+gstreamer-plugins-ugly
+gstreamer1-plugins-ugly
+gstreamer-plugins-mad

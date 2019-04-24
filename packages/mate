@@ -73,3 +73,14 @@ station-tweak
 plank
 brisk-menu
 lightdm-gtk-greeter
+gstreamer-plugins-good
+gstreamer1-plugins-good
+gstreamer-plugins-ugly
+gstreamer1-plugins-ugly
+gstreamer-plugins-mad
+gstreamer-plugins-flac
+gstreamer1-plugins-flac
+gstreamer-plugins-ogg
+gstreamer1-plugins-ogg
+gstreamer-plugins-vorbis
+gstreamer1-plugins-vorbis
