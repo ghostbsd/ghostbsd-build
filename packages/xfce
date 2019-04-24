@@ -111,3 +111,7 @@ gstreamer1-plugins-ogg
 gstreamer-plugins-vorbis
 gstreamer1-plugins-vorbis
 evince-lite
+xarchiver
+zip
+unzip
+p7zip
