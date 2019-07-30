@@ -11,14 +11,14 @@ software_packages="${livecd}/software_packages"
 base_packages="${livecd}/base_packages"
 release="${livecd}/release"
 cdroot="${livecd}/cdroot"
-version="19.04"
+version="19.09"
 # version=""
-release stamp=""
+release_stamp=""
 # release_stamp="-RC4"
 # time stamp=`date "+-%Y-%m-%d-%H-%M"`
 time_stamp=""
 label="GhostBSD"
-if [ $desktop = "mate" ] ; then
+if [ "$desktop" = "mate" ] ; then
   union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
 else
   union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc var"}
@@ -34,6 +34,9 @@ fi
 # Only run with 13.0-CURRENT.
 case $kernrel in
   '13.0-CURRENT')
+    echo "Using correct kernel release" 1>&2
+    ;;
+  '12.0-STABLE')
     echo "Using correct kernel release" 1>&2
     ;;
   *)
@@ -86,7 +89,7 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg-static -r ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD install f -y -g os-generic-kernel os-generic-userland os-generic-userland-lib32
+  pkg-static -r ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD install -y -g os-generic-kernel os-generic-userland os-generic-userland-lib32
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -100,17 +103,18 @@ packages_software()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
-
+  mount -t devfs devfs ${release}/dev
   case $desktop in
     mate)
-      cat ${cwd}/packages/mate | xargs pkg-static -c ${release} install -y ;;
+      cat ${cwd}/packages/mate | xargs pkg -c ${release} install -y ;;
     xfce)
-      cat ${cwd}/packages/xfce | xargs pkg-static -c ${release} install -y ;;
+      cat ${cwd}/packages/xfce | xargs pkg -c ${release} install -y ;;
     cinnamon)
       cat ${cwd}/packages/cinnamon | xargs pkg-static -c ${release} install -y ;;
   esac
 
   rm ${release}/etc/resolv.conf
+  umount ${release}/dev
   umount ${release}/var/cache/pkg
 
   cp -R ${cwd}/repos/ ${release}

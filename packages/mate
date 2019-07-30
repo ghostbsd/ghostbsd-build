@@ -1,7 +1,7 @@
 xorg-minimal
 xorg-fonts
 ghostbsd-drivers
-drm-current-kmod
+drm-fbsd12.0-kmod
 nvidia-driver
 nvidia-settings
 nvidia-xconfig
@@ -32,8 +32,8 @@ system-config-printer
 foomatic-db
 foomatic-db-engine
 foomatic-db-hpijs
-firefox-i18n
-thunderbird-i18n
+firefox
+thunderbird
 ghostbsd-bug-report
 ghostbsd-irc
 faac
