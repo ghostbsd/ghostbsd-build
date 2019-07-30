@@ -86,7 +86,8 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg-static -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD search -q GhostBSD | grep "GhostBSD-" | grep -v -E "(-doc|-debug)" | xargs pkg-static -r ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD install -y -g
+  pkg-static -r ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD install f -y -g os-generic-kernel os-generic-userland os-generic-userland-lib32
+
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
   touch ${release}/etc/fstab
