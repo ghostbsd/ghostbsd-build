@@ -22,8 +22,8 @@ done
 echo "==> Mount cdrom"
 mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom
 
-ls /cdrom
-
+ls /cdrom/data
+sleep 1
 echo "==> mdmfs /cdrom/data/system.uzip in /sysroot"
 mdmfs -P -F /cdrom/data/system.uzip -o ro md.uzip /sysroot
 
