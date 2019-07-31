@@ -10,17 +10,19 @@ fi
 echo "==> Remount rootfs as read-write"
 mount -u -w /
 
-echo "==> Make mountpoints"
+echo "==> Make mountpoints /cdrom /memdisk /sysroot"
 mkdir -p /cdrom /memdisk /sysroot
 
 echo "Waiting for GhostBSD media to initialize"
 while : ; do
-    [ -e "/dev/iso9660/GHOSTBSD" ] && echo "found /dev/iso9660/GHOSTBSD" && break
-    sleep 1
+    [ -e "/dev/iso9660/GHOSTBSD" ] && echo "found /dev/iso9660/GHOSTBSD" && sleep 2 && break
+    sleep 2
 done
 
 echo "==> Mount cdrom"
 mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom
+
+ls /cdrom
 
 echo "==> mdmfs /cdrom/data/system.uzip in /sysroot"
 mdmfs -P -F /cdrom/data/system.uzip -o ro md.uzip /sysroot
