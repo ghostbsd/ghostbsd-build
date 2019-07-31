@@ -114,7 +114,6 @@ packages_software()
   esac
 
   rm ${release}/etc/resolv.conf
-  umount ${release}/dev
   umount ${release}/var/cache/pkg
 
   cp -R ${cwd}/repos/ ${release}
@@ -208,6 +207,7 @@ xorg()
 
 uzip()
 {
+  umount ${release}/dev
   install -o root -g wheel -m 755 -d "${cdroot}"
   mkdir "${cdroot}/data"
   makefs "${cdroot}/data/system.ufs" "${release}"
