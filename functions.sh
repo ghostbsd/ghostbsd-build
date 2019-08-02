@@ -244,10 +244,7 @@ mfs()
 boot()
 {
   cd "${release}"
-  tar -cf - --exclude boot/kernel boot | tar -xf - -C "${cdroot}"
-  for kfile in kernel geom_uzip.ko nullfs.ko tmpfs.ko geom_mirror.ko crypto.ko geom_eli.ko aesni.ko; do
-    tar -cf - boot/kernel/${kfile} | tar -xf - -C "${cdroot}"
-  done
+  tar -cf - boot | tar -xf - -C "${cdroot}"
   cd "${cwd}"
   cp -R boot/ ${cdroot}/boot/
   mkdir ${cdroot}/etc
