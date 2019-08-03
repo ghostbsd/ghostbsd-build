@@ -19,18 +19,8 @@ set_doas()
 permit :wheel
 permit nopass keepenv :wheel cmd netcardmgr
 permit nopass keepenv :wheel cmd ifconfig
-permit nopass keepenv :wheel cmd service
+permit nopass keepenv :wheel cmd rc-service
 permit nopass keepenv :wheel cmd wpa_supplicant
-permit nopass keepenv :wheel cmd fbsdupdatecheck
-permit nopass keepenv :wheel cmd fbsdpkgupdate
-permit nopass keepenv :wheel cmd pkg args upgrade -y
-permit nopass keepenv :wheel cmd pkg args upgrade -Fy
-permit nopass keepenv :wheel cmd pkg args lock
-permit nopass keepenv :wheel cmd pkg args unlock
-permit nopass keepenv :wheel cmd mkdir args -p /var/db/update-station/
-permit nopass keepenv :wheel cmd chmod args -R 665 /var/db/update-station/
-permit nopass keepenv :wheel cmd sh args /usr/local/lib/update-station/cleandesktop.sh
-permit nopass keepenv :wheel cmd shutdown args -r now
 " > ${release}/usr/local/etc/doas.conf
 }
 
