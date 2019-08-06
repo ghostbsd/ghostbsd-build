@@ -19,6 +19,7 @@ set_doas()
 permit :wheel
 permit nopass keepenv :wheel cmd netcardmgr
 permit nopass keepenv :wheel cmd ifconfig
+permit nopass keepenv :wheel cmd service
 permit nopass keepenv :wheel cmd rc-service
 permit nopass keepenv :wheel cmd wpa_supplicant
 " > ${release}/usr/local/etc/doas.conf
