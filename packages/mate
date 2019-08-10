@@ -19,7 +19,7 @@ gawk
 git
 nano
 rsync
-vim
+vim-tiny
 wmctrl
 ssft
 inxi
