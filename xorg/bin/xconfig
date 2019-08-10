@@ -509,11 +509,11 @@ manual_setup()
   done
 }
 
-if [ ${TOSTART} = 'setup' ] ; then
+if [ "${TOSTART}" = 'setup' ] ; then
   manual_setup
-elif [ ${TOSTART} = 'auto' ]; then
+elif [ "${TOSTART}" = 'auto' ]; then
   start_xorg
-elif [ ${TOSTART} = 'clean' ]; then
+elif [ "${TOSTART}" = 'clean' ]; then
   clean_xorg
 else
   if [ ! -f "/etc/X11/xorg.conf" ]; then
