@@ -1,7 +1,7 @@
 xorg-minimal
 xorg-fonts
 ghostbsd-drivers
-drm-current-kmod
+drm-fbsd12.0-kmod
 nvidia-driver
 nvidia-settings
 nvidia-xconfig
@@ -19,7 +19,7 @@ gawk
 git
 nano
 rsync
-vim
+vim-tiny
 wmctrl
 ssft
 inxi
