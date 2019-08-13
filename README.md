@@ -24,7 +24,12 @@ Note: GhostBSD 18.06 and earlier releases cannot be used to build ISO.
 ## Initial Setup
 Install the required packages:
 ```
-pkg install git
+pkg install git transmission-cli rsync
+```
+Make sure to have linux64 kernel module loaded
+```
+kldload linux64
+sysrc -f /etc/rc.conf kld_list="linux64"
 ```
 Clone the repo:
 ```
