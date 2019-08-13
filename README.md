@@ -43,19 +43,19 @@ cd ghostbsd
 ## TrueOS Based GhostBSD
 To build a GhostBSD with __MATE__ as default desktop
 ```
-./build mate
+./build.sh mate
 ```   
 (Option) To build GhostBSD with __XFCE__ as default desktop
 ```
-./build xfce
+./build.sh xfce
 ```   
 (Option) To build GhostBSD with __Cinnamon__ as default desktop
 ```
-./build cinnamon
+./build.sh cinnamon
 ```   
 (Option) To build GhostBSD without a default desktop
 ```
-./build
+./build.sh
 ```    
 
 ## Burn an image to cd:
