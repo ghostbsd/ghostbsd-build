@@ -16,6 +16,9 @@ lightdm_setup()
     cp extra/dm/slick-greeter.conf ${release}/usr/local/etc/lightdm/slick-greeter.conf
     mkdir ${release}/etc/lightdm
     cp extra/dm/slick-greeter.conf ${release}/etc/lightdm/slick-greeter.conf
+    cp extra/dm/msd-background-helper ${release}/usr/local/bin/msd-background-helper
+    chmod +x ${release}/usr/local/bin/msd-background-helper
+    cp extra/dm/msd-background-helper.desktop ${release}/usr/local/etc/xdg/autostart/msd-background-helper.desktop
   fi
   setup_xinit
 }
