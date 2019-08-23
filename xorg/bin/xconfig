@@ -412,6 +412,7 @@ start_nvidia()
       sudo X -configure
       sleep 5
       sudo sed -i "" -e 's/nv/nvidia/g' /root/xorg.conf.new
+      sudo sed -i "" -e 's/vesa/nvidia/g' /root/xorg.conf.new
       sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
       startx 2>/tmp/Xerrors
     else:
@@ -436,10 +437,22 @@ start_intel_drm()
   sudo sysrc -f /etc/rc.conf kld_list="/boot/modules/i915kms.ko"
   sudo X -configure
   sudo sed -i "" -e 's/intel/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" -e 's/vesa/modesetting/g' /root/xorg.conf.new
   sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
   startx
 }
 
+start_legacy_intel()
+{
+  echo "Starting Desktop (Legacy Intel).. Please wait.."
+  sudo kldload /boot/modules/i915kms.ko
+  sudo sysrc -f /etc/rc.conf kld_list+="/boot/modules/i915kms.ko"
+  sudo X -configure
+  sudo sed -i "" -e 's/scfb/intel/g' /root/xorg.conf.new
+  sudo sed -i "" -e 's/vesa/intel/g' /root/xorg.conf.new
+  sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
+  startx
+}
 start_shell()
 {
   clear
@@ -458,10 +471,8 @@ manual_setup()
 
     dialog --title "X Configuration Menu" \
     --menu "Please select from the following options:" 20 55 15 \
-    xorg "Start Desktop (Auto Video Configuration)" \
     startx "Start Desktop (No Configuration)" \
     nvidia "Start Desktop (Nvidia)" \
-    modeset "Start Desktop (modesetting)"\
     intel_drm "Start Desktop (Intel with drm driver)"\
     intel "Start Desktop (Legacy Intel)" \
     amd "Start Desktop (Radeon)" \
@@ -475,20 +486,14 @@ manual_setup()
     ANS="`cat /tmp/answer`"
 
     case $ANS in
-        xorg) echo "Starting Desktop (AutoDetect).. Please wait.."
-          start_xorg ;;
         startx) echo "Starting Desktop.. Please wait.."
-        startx ;;
-        nvidia) start_nvidia ;;
-        modeset) echo "Starting Desktop (modesetting).. Please wait.."
-          UnloadNvidia
-          sudo cp /usr/local/etc/X11/cardDetect/XF86Config.modesetting /etc/X11/xorg.conf
-          startx 2>/tmp/Xerrors ;;
-        intel_drm) start_intel_drm;;
-        intel) echo "Starting Desktop (Legacy Intel).. Please wait.."
-          UnloadNvidia
-          sudo cp /usr/local/etc/X11/cardDetect/XF86Config.intel /etc/X11/xorg.conf
-          startx 2>/tmp/Xerrors ;;
+          startx ;;
+        nvidia) 
+	  start_nvidia ;;
+        intel_drm) 
+	  start_intel_drm;;
+        intel) 
+          start_legacy_intel
         amd) echo "Starting Desktop (Radeon).. Please wait.."
           UnloadNvidia
           sudo kldload radeonkms

@@ -132,7 +132,7 @@ rc()
   # DEVFS rules
   chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
   # Load the following kernel modules
-  # chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 /boot/modules/i915kms.ko /boot/modules/radeonkms.ko amdgpu"
+  chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 cuse"
   # chroot ${release} sysrc -f /etc/rc.conf kld_list="geom_mirror"
   # remove kldload_nvidia on rc.conf
   ( echo 'g/kldload_nvidia="nvidia-modeset nvidia"/d' ; echo 'wq' ) | ex -s ${release}/etc/rc.conf
