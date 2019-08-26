@@ -1,0 +1,3 @@
+[org.mate.lockdown]
+disable-lock-screen=true
+disable-user-switching=true

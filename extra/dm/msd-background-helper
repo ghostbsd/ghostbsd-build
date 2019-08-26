@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#
+# Sets the following:
+# [org.freedesktop.DisplayManager.AccountsService]
+# BackgroundFile
+# [User]
+# Background
+# in /var/lib/AccountsService/users/$USER
+
+function setuserbackground(){
+	export USERBACKGROUND=`gsettings get org.mate.background picture-filename | sed -e "s/^'//" -e "s/'$//"`
+
+	dbus-send --system --print-reply \
+	--dest=org.freedesktop.Accounts \
+	--type=method_call \
+	/org/freedesktop/Accounts/User`id -u` \
+	org.freedesktop.Accounts.User.SetBackgroundFile string:"$USERBACKGROUND"
+
+	dbus-send --system --print-reply \
+	--dest=org.freedesktop.Accounts \
+	/org/freedesktop/Accounts/User`id -u` \
+	org.freedesktop.DBus.Properties.Set \
+		string:org.freedesktop.DisplayManager.AccountsService \
+		string:BackgroundFile \
+		variant:string:"$USERBACKGROUND"
+}
+
+setuserbackground
+
+dbus-monitor --profile "type='signal',interface='ca.desrt.dconf.Writer',path='/ca/desrt/dconf/Writer/user',arg0path='/org/mate/desktop/background/'" |
+while read -r line; do
+	setuserbackground
+done
+

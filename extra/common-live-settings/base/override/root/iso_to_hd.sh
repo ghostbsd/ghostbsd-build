@@ -7,7 +7,9 @@ purge_live_settings()
 {
   case $desktop in
     mate)
-      pkg delete -y mate-live-settings ;;
+      rm /usr/local/share/glib-2.0/schemas/92_org.gnome.desktop.screensaver.gschema.override
+      rm /usr/local/share/glib-2.0/schemas/92_org.mate.lockdown.gschema.override
+      glib-compile-schemas /usr/local/share/glib-2.0/schemas ;;
     xfce)
       pkg delete -y xfce-live-settings ;;
     cinnamon)

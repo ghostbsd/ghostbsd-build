@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=MATE Settings Daemon Background Helper
+Comment=Sets the user background in AccountsService on MATE
+Exec=msd-background-helper
+OnlyShowIn=MATE;
+X-MATE-Autostart-enabled=true
+

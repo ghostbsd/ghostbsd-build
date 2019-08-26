@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+# set -e
+
 cwd="`realpath | sed 's|/scripts||g'`"
 liveuser=ghostbsd
 desktop=$1
@@ -166,6 +168,7 @@ extra_config()
   . ${cwd}/extra/finalize.sh
   . ${cwd}/extra/autologin.sh
   . ${cwd}/extra/gitpkg.sh
+  . ${cwd}/extra/mate-live-settings.sh
   set_live_system
   git_pc_sysinstall
   ## git_gbi is for development testing and gbi should be
@@ -174,6 +177,10 @@ extra_config()
   setup_liveuser
   setup_base
   lightdm_setup
+  case $desktop in
+    mate)
+      mate_schemas;;
+  esac
   # setup_xinit
   setup_autologin
   final_setup
