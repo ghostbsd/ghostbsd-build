@@ -29,7 +29,7 @@ fi
 
 live_configure_xorg()
 {
-  
+
   # First check if we are running as a VirtualBox guest
   pciconf -lv | grep -q "VirtualBox"
   if [ $? -eq 0 ] ; then
@@ -488,12 +488,12 @@ manual_setup()
     case $ANS in
         startx) echo "Starting Desktop.. Please wait.."
           startx ;;
-        nvidia) 
-	  start_nvidia ;;
-        intel_drm) 
-	  start_intel_drm;;
-        intel) 
-          start_legacy_intel
+        nvidia)
+          start_nvidia ;;
+        intel_drm)
+          start_intel_drm;;
+        intel)
+          start_legacy_intel;;
         amd) echo "Starting Desktop (Radeon).. Please wait.."
           UnloadNvidia
           sudo kldload radeonkms
