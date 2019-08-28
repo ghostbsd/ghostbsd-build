@@ -1,5 +1,7 @@
 #!/bin/sh
 # Configure which clean the system after the installation
+echo "Starting iso_to_hdd.sh"
+
 desktop=$(cat /usr/local/share/ghostbsd/desktop)
 
 # removing the old network configuration
@@ -14,10 +16,12 @@ purge_live_settings()
       pkg delete -y xfce-live-settings ;;
     cinnamon)
       ;;
+    kde)
+      ;;
   esac
   # Removing livecd hostname.
   ( echo 'g/hostname="livecd"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
-  rm -f /usr/local/etc/xdg/autostart/umountghostbsd.desktop
+  rm -rfv /usr/local/etc/xdg/autostart/umountghostbsd.desktop
   rc-update add xconfig default
 }
 
@@ -25,19 +29,30 @@ set_sudoers()
 {
   sed -i "" -e 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/g' /usr/local/etc/sudoers
   sed -i "" -e 's/# %sudo/%sudo/g' /usr/local/etc/sudoers
+  sed -i "" -e "s/# ${user} ALL=(ALL) NOPASSWD: ALL/g" /usr/local/etc/sudoers/${user}
+}
+
+set_nohistory()
+{
+  sed -i "" -e "s/# export HISTSIZE=0/g" /home/${user}/.bashrc
+  sed -i "" -e "s/# export HISTSIZE=0/g" /root/.bashrc
+  sed -i "" -e "s/# export HISTFILESIZE=0/g" /home/${user}/.bashrc
+  sed -i "" -e "s/# export HISTFILESIZE=0/g" /root/.bashrc
+  sed -i "" -e "s/# export SAVEHIST=0/g" /home/${user}/.bashrc
+  sed -i "" -e "s/# export SAVEHIST=0/g" /root/.bashrc
 }
 
 fix_perms()
 {
   # fix permissions for tmp dirs
-  chmod 1777 /var/tmp
-  chmod 1777 /tmp
+  chmod -Rv 1777 /var/tmp
+  chmod -Rv 1777 /tmp
 }
 
 remove_ghostbsd_user()
 {
   pw userdel -n ghostbsd
-  rm -rf /usr/home/ghostbsd
+  rm -rfv /usr/home/ghostbsd
   ( echo 'g/# ghostbsd user autologin' ; echo 'wq' ) | ex -s /etc/gettytab
   ( echo 'g/ghostbsd:\\"/d' ; echo 'wq' ) | ex -s /etc/gettytab
   ( echo 'g/:al=ghostbsd:ht:np:sp#115200:/d' ; echo 'wq' ) | ex -s /etc/gettytab
@@ -54,7 +69,7 @@ setup_slim_and_xinitrc()
     sed -i "" -e "s/simone/${user}/g" /usr/local/etc/slim.conf
   done
   rc-update add slim default
-  sed -i "" -e 's/sessiondir	/#sessiondir	/g' /usr/local/etc/slim.conf
+  sed -i "" -e 's/sessiondir    /#sessiondir    /g' /usr/local/etc/slim.conf
 }
 
 setup_lightdm_and_xinitrc()
@@ -80,6 +95,31 @@ setup_lightdm_and_xinitrc()
       done ;;
   esac
   rc-update add lightdm default
+}
+
+setup_sddm_and_xinitrc()
+{
+  case $desktop in
+     kde)
+      echo 'exec startkde' > /root/.xinitrc
+      for user in `ls /usr/home/` ; do
+        echo 'exec startkde' > /usr/home/${user}/.xinitrc
+        chown ${user}:wheel /usr/home/${user}/.xinitrc
+      done ;
+  esac
+  rc-update add sddm default
+}
+
+set_qt5ct()
+{
+  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /home/${user}/.xinitrc
+  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /root/.xinitrc
+  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /home/${user}/.xprofile
+  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /root/.xprofile
+  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /home/${user}/.bashrc
+  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /root/.bashrc
+  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /home/${user}/.bash_profile
+  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /root/.bash_profile
 }
 
 PolicyKit_setting()
@@ -127,8 +167,28 @@ printf '<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
 
 purge_live_settings
 set_sudoers
+set_nohistory
 fix_perms
 remove_ghostbsd_user
 PolicyKit_setting
 # setup_slim_and_xinitrc
-setup_lightdm_and_xinitrc
+# setup_lightdm_and_xinitrc
+# setup_sddm_and_xinitrc
+# set_qt5ct
+set_desktop_manager
+
+set_desktop_manager()
+{
+  case $desktop in
+    mate)
+      setup_lightdm_and_xinitrc ;;
+    xfce)
+      setup_lightdm_and_xinitrc ;;
+    cinnamon)
+      ;;
+    kde)
+      setup_sddm_and_xinitrc
+#     set_qt5ct
+      ;;
+  esac
+}
