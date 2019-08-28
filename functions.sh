@@ -21,10 +21,17 @@ release_stamp=""
 time_stamp=`date "+-%Y-%m-%d"`
 # time_stamp=""
 label="GhostBSD"
+
+if [ "$desktop" = "kde" ] ; then
+  union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/plasma var"}
+fi
+
 if [ "$desktop" = "mate" ] ; then
-  union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
+  union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/
+etc usr/local/share/mate-panel var"}
 else
-  union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc var"}
+  union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/
+etc var"}
 fi
 kernrel="`uname -r`"
 
@@ -34,7 +41,6 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-# Only run with 13.0-CURRENT.
 case $kernrel in
   '13.0-CURRENT')
     echo "Using correct kernel release" 1>&2
@@ -81,30 +87,30 @@ workspace()
   umount ${release}/var/cache/pkg >/dev/null 2>/dev/null
   if [ -d "${livecd}" ] ;then
     chflags -R noschg ${release} ${cdroot} >/dev/null 2>/dev/null
-    rm -rf ${release} ${cdroot} >/dev/null 2>/dev/null
+    rm -rfv ${release} ${cdroot} >/dev/null 2>/dev/null
   fi
-  mkdir -p ${livecd} ${base} ${iso} ${software_packages} ${base_packages} ${release} >/dev/null 2>/dev/null
+  mkdir -pv ${livecd} ${base} ${iso} ${software_packages} ${base_packages} ${release} >/dev/null 2>/dev/null
 }
 
 base()
 {
-  mkdir -p ${release}/etc
-  cp /etc/resolv.conf ${release}/etc/resolv.conf
-  mkdir -p ${release}/var/cache/pkg
+  mkdir -pv ${release}/etc
+  cp -rfv /etc/resolv.conf ${release}/etc/resolv.conf
+  mkdir -pv ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
   pkg-static -r ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD install -y -g os-generic-kernel os-generic-userland os-generic-userland-lib32
 
-  rm ${release}/etc/resolv.conf
-  umount ${release}/var/cache/pkg
+  rm -rfv ${release}/etc/resolv.conf
+  umount -fv ${release}/var/cache/pkg
   touch ${release}/etc/fstab
-  mkdir ${release}/cdrom
+  mkdir -pv ${release}/cdrom
 }
 
 packages_software()
 {
-  cp -R ${cwd}/repos/ ${release}
-  cp /etc/resolv.conf ${release}/etc/resolv.conf
-  mkdir -p ${release}/var/cache/pkg
+  cp -Rfv ${cwd}/repos/ ${release}
+  cp -rfv /etc/resolv.conf ${release}/etc/resolv.conf
+  mkdir -pv ${release}/var/cache/pkg
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
   mount -t devfs devfs ${release}/dev
   case $desktop in
@@ -114,18 +120,20 @@ packages_software()
       cat ${cwd}/packages/xfce | xargs pkg -c ${release} install -y ;;
     cinnamon)
       cat ${cwd}/packages/cinnamon | xargs pkg-static -c ${release} install -y ;;
+    kde)
+      cat ${cwd}/packages/kde | xargs pkg -c ${release} install -y ;;
   esac
 
-  rm ${release}/etc/resolv.conf
-  umount ${release}/var/cache/pkg
+  rm -rfv ${release}/etc/resolv.conf
+  umount -fv ${release}/var/cache/pkg
 
-  cp -R ${cwd}/repos/ ${release}
+  cp -Rfv ${cwd}/repos/ ${release}
 
 }
 
 rc()
 {
-  chroot ${release} sysrc -f /etc/rc.conf root_rw_mount="NO"
+  chroot ${release} sysrc -f /etc/rc.conf root_rw_mount="YES"
   chroot ${release} sysrc -f /etc/rc.conf hostname='livecd'
   chroot ${release} sysrc -f /etc/rc.conf sendmail_enable="NONE"
   chroot ${release} sysrc -f /etc/rc.conf sendmail_submit_enable="NO"
@@ -135,13 +143,14 @@ rc()
   chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
   # Load the following kernel modules
   chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 cuse"
-  # chroot ${release} sysrc -f /etc/rc.conf kld_list="geom_mirror"
+  chroot ${release} sysrc -f /etc/rc.conf kld_list="geom_mirror"
   # remove kldload_nvidia on rc.conf
   ( echo 'g/kldload_nvidia="nvidia-modeset nvidia"/d' ; echo 'wq' ) | ex -s ${release}/etc/rc.conf
   chroot ${release} rc-update add devfs default
   chroot ${release} rc-update add moused default
   chroot ${release} rc-update add dbus default
   chroot ${release} rc-update add hald default
+  chroot ${release} rc-update add sddm default
   chroot ${release} rc-update add webcamd default
   chroot ${release} rc-update delete vboxguest default
   chroot ${release} rc-update delete vboxservice default
@@ -156,7 +165,7 @@ user()
 {
   chroot ${release} pw useradd ${liveuser} \
   -c "GhostBSD Live User" -d "/usr/home/${liveuser}" \
-  -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
+  -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w yes
 }
 
 extra_config()
@@ -176,19 +185,23 @@ extra_config()
   git_gbi
   setup_liveuser
   setup_base
-  lightdm_setup
+  if [ -z "${desktop}" == "kde" ] ; then
+    sddm_setup
+  else
+    lightdm_setup
+    setup_autologin
+  fi
   case $desktop in
     mate)
       mate_schemas;;
   esac
   # setup_xinit
-  setup_autologin
   final_setup
   echo "gop set 0" >> ${release}/boot/loader.rc.local
   # To fix lightdm crashing to be remove on the new base update.
   sed -i '' -e 's/memorylocked=128M/memorylocked=256M/' ${release}/etc/login.conf
   chroot ${release} cap_mkdb /etc/login.conf
-  mkdir -p ${release}/usr/local/share/ghostbsd
+  mkdir -pv ${release}/usr/local/share/ghostbsd
   echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
 }
 
@@ -217,28 +230,28 @@ uzip()
 {
   umount ${release}/dev
   install -o root -g wheel -m 755 -d "${cdroot}"
-  mkdir "${cdroot}/data"
+  mkdir -pv "${cdroot}/data"
   makefs "${cdroot}/data/system.ufs" "${release}"
   mkuzip -o "${cdroot}/data/system.uzip" "${cdroot}/data/system.ufs"
-  rm -f "${cdroot}/data/system.ufs"
+  rm -rfv "${cdroot}/data/system.ufs"
 }
 
 ramdisk()
 {
   ramdisk_root="${cdroot}/data/ramdisk"
-  mkdir -p "${ramdisk_root}"
+  mkdir -pv "${ramdisk_root}"
   cd "${release}"
   tar -cf - rescue | tar -xf - -C "${ramdisk_root}"
   cd "${cwd}"
   install -o root -g wheel -m 755 "init.sh.in" "${ramdisk_root}/init.sh"
   sed "s/@VOLUME@/GHOSTBSD/" "init.sh.in" > "${ramdisk_root}/init.sh"
-  mkdir "${ramdisk_root}/dev"
-  mkdir "${ramdisk_root}/etc"
+  mkdir -pv "${ramdisk_root}/dev"
+  mkdir -pv "${ramdisk_root}/etc"
   touch "${ramdisk_root}/etc/fstab"
   cp ${release}/etc/login.conf ${ramdisk_root}/etc/login.conf
   makefs -b '10%' "${cdroot}/data/ramdisk.ufs" "${ramdisk_root}"
   gzip "${cdroot}/data/ramdisk.ufs"
-  rm -rf "${ramdisk_root}"
+  rm -rfv "${ramdisk_root}"
 }
 
 mfs()
