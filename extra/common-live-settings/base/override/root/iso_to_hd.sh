@@ -172,23 +172,12 @@ fix_perms
 remove_ghostbsd_user
 PolicyKit_setting
 # setup_slim_and_xinitrc
-# setup_lightdm_and_xinitrc
-# setup_sddm_and_xinitrc
-# set_qt5ct
-set_desktop_manager
-
-set_desktop_manager()
-{
-  case $desktop in
-    mate)
-      setup_lightdm_and_xinitrc ;;
-    xfce)
-      setup_lightdm_and_xinitrc ;;
-    cinnamon)
-      ;;
-    kde)
-      setup_sddm_and_xinitrc
-#     set_qt5ct
-      ;;
-  esac
-}
+case $desktop in
+  kde)
+    setup_sddm_and_xinitrc
+    # set_qt5ct
+    ;;
+  *)
+    setup_lightdm_and_xinitrc
+    ;;
+esac

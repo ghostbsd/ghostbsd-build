@@ -4,7 +4,7 @@ set -e -u
 
 lightdm_setup()
 {
-   if [ "${desktop}" == "xfce" ] ; then
+  if [ "${desktop}" == "xfce" ] ; then
     sed -i '' "s@#user-session=default@user-session=xfce@" ${release}/usr/local/etc/lightdm/lightdm.conf
     if [ -f ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf ] ; then
       echo "indicators=~host;~spacer;~clock;~spacer;~session;~language;~a11y;~sound;~power" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
@@ -47,7 +47,7 @@ setup_xinit()
   elif [ "${desktop}" == "cinnamon" ] ; then
     echo "exec ck-launch-session cinnamon-session" > ${release}/usr/home/${liveuser}/.xinitrc
     echo "exec ck-launch-session cinnamon-session" > ${release}/root/.xinitrc
- elif [ "${desktop}" == "kde" ] ; then
+  elif [ "${desktop}" == "kde" ] ; then
     echo "exec ck-launch-session startplasmacompositor"> ${release}/usr/home/${liveuser}/.xinitrc
     echo "exec ck-launch-session startplasmacompositor" > ${release}/root/.xinitrc
   fi
