@@ -189,12 +189,14 @@ extra_config()
   git_gbi
   setup_liveuser
   setup_base
-  lightdm_setup
-  case $desktop in
-    mate)
-      echo 'mate_schemas'
-      mate_schemas;;
-  esac
+  if [ "${desktop}" == "kde" ] ; then
+    setup_xinit
+  elif [ "${desktop}" == "mate" ] ; then
+    lightdm_setup
+    mate_schemas
+  else
+    lightdm_setup
+  fi
   setup_autologin
   # setup_xinit
   final_setup
