@@ -21,7 +21,6 @@ purge_live_settings()
   esac
   # Removing livecd hostname.
   ( echo 'g/hostname="livecd"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
-  rm -rfv /usr/local/etc/xdg/autostart/umountghostbsd.desktop
   rc-update add xconfig default
 }
 
