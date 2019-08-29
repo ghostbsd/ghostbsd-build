@@ -64,7 +64,7 @@ validate_desktop()
 
 # Validate package selection if chosen
 if [ -z "${desktop}" ] ; then
-  desktop=mate
+  desktop="mate"
 else
   validate_desktop
 fi
@@ -158,18 +158,9 @@ rc()
 
 user()
 {
-  case $desktop in
-    kde)
-      chroot ${release} pw useradd ${liveuser} \
-      -c "GhostBSD Live User" -d "/usr/home/${liveuser}" \
-      -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w yes
-    ;;
-    *)
-      chroot ${release} pw useradd ${liveuser} \
-      -c "GhostBSD Live User" -d "/usr/home/${liveuser}"\
-      -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
-    ;;
-  esac
+  chroot ${release} pw useradd ${liveuser} \
+  -c "GhostBSD Live User" -d "/usr/home/${liveuser}"\
+  -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
 }
 
 extra_config()
