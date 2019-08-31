@@ -1,4 +1,6 @@
-et -e -u
+#!/bin/sh
+
+set -e -u
 
 lightdm_setup()
 {
