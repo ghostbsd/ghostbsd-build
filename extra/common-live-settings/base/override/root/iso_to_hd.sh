@@ -178,10 +178,10 @@ remove_ghostbsd_user
 PolicyKit_setting
 # setup_slim_and_xinitrc
 case $desktop in
-  kde)
-    setup_sddm_and_xinitrc
-    # set_qt5ct
-    ;;
+#  kde)
+#    setup_sddm_and_xinitrc
+#    set_qt5ct
+#    ;;
   *)
     setup_lightdm_and_xinitrc
     ;;
