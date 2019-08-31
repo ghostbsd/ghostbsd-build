@@ -13,7 +13,7 @@ git_pc_sysinstall()
 
   cat > ${release}/config.sh << 'EOF'
 #!/bin/sh
-echo "installing pc-syinstall"
+echo "Installing pc-syinstall"
 cd /pc-sysinstall
 sh install.sh >/dev/null 2>&1
 EOF
@@ -33,7 +33,7 @@ git_gbi()
 
   cat > ${release}/config.sh << 'EOF'
 #!/bin/sh
-echo "installing gbi from git"
+echo "Installing gbi from git"
 cd /gbi
 python3.6 setup.py install >/dev/null 2>&1
 EOF
