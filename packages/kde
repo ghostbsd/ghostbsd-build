@@ -9,7 +9,8 @@ virtualbox-ose-additions
 xrandr
 mesa-demos
 ghostbsd-utils
-sddm
+lightdm
+lightdm-gtk-greeter
 qterminal
 bash
 nano
