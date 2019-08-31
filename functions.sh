@@ -181,6 +181,7 @@ extra_config()
   setup_liveuser
   setup_base
   if [ "${desktop}" == "kde" ] ; then
+    lightdm_setup
     setup_xinit
   elif [ "${desktop}" == "mate" ] ; then
     lightdm_setup

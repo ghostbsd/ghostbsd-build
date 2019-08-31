@@ -92,22 +92,28 @@ setup_lightdm_and_xinitrc()
         echo 'exec cinnamon-session' > /usr/home/${user}/.xinitrc
         chown ${user}:wheel /usr/home/${user}/.xinitrc
       done ;;
+    kde)
+     echo 'exec startkde' > /root/.xinitrc
+     for user in `ls /usr/home/` ; do
+       echo 'exec startkde' > /usr/home/${user}/.xinitrc
+       chown ${user}:wheel /usr/home/${user}/.xinitrc
+     done ;;
   esac
   rc-update add lightdm default
 }
 
-setup_sddm_and_xinitrc()
-{
-  case $desktop in
-     kde)
-      echo 'exec startkde' > /root/.xinitrc
-      for user in `ls /usr/home/` ; do
-        echo 'exec startkde' > /usr/home/${user}/.xinitrc
-        chown ${user}:wheel /usr/home/${user}/.xinitrc
-      done ;
-  esac
-  rc-update add sddm default
-}
+# setup_sddm_and_xinitrc()
+# {
+#  case $desktop in
+#     kde)
+#      echo 'exec startkde' > /root/.xinitrc
+#      for user in `ls /usr/home/` ; do
+#        echo 'exec startkde' > /usr/home/${user}/.xinitrc
+#        chown ${user}:wheel /usr/home/${user}/.xinitrc
+#      done ;;
+#  esac
+#  rc-update add sddm default
+# }
 
 set_qt5ct()
 {

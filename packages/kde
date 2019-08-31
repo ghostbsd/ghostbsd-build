@@ -9,7 +9,8 @@ virtualbox-ose-additions
 xrandr
 mesa-demos
 ghostbsd-utils
-sddm
+lightdm
+lightdm-gtk-greeter
 qterminal
 bash
 nano
@@ -42,7 +43,7 @@ telegram-desktop
 ghostbsd-bug-report
 ghostbsd-irc
 ghostbsd-icons
-ghostbsd-installed-common-settings
+ghostbsd-common-settings
 git
 openjdk8-jre
 py36-setuptools
