@@ -16,4 +16,6 @@ setup_liveuser()
     chroot ${release} su ${liveuser} -c  "cp -af /usr/local/share/applications/gbi.desktop /usr/home/${liveuser}/Desktop"
     chroot ${release} su ${liveuser} -c  "chmod +x /usr/home/${liveuser}/Desktop/gbi.desktop"
   fi
+
+  echo "Finished liveuser setup"
 }
