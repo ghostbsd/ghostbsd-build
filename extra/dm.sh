@@ -1,6 +1,4 @@
-#!/bin/sh
-
-set -e -u
+et -e -u
 
 lightdm_setup()
 {
@@ -11,26 +9,16 @@ lightdm_setup()
       echo "background=/usr/local/share/backgrounds/ghostbsd/Tidepool_Sunset.jpg" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
       echo "theme-name=Vimix-Dark" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
       echo -e "icon-theme-name=Vivacious-Colors-Full-Dark\n" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
-      setup_xinit
     fi
-  elif [ "${desktop}" == "mate" ] ; then
+  elif [ "${desktop}" == "mate" || "kde"] ; then
     sed -i '' "s@#greeter-session=example-gtk-gnome@greeter-session=slick-greeter@" ${release}/usr/local/etc/lightdm/lightdm.conf
     sed -i '' "s@#user-session=default@user-session=mate@" ${release}/usr/local/etc/lightdm/lightdm.conf
     cp extra/dm/slick-greeter.conf ${release}/usr/local/etc/lightdm/slick-greeter.conf
     cp extra/dm/msd-background-helper ${release}/usr/local/bin/msd-background-helper
     chmod +x ${release}/usr/local/bin/msd-background-helper
     cp extra/dm/msd-background-helper.desktop ${release}/usr/local/etc/xdg/autostart/msd-background-helper.desktop
-    setup_xinit
-    fi
-  elif [ "${desktop}" == "kde" ] ; then
-    sed -i '' "s@#greeter-session=example-gtk-gnome@greeter-session=slick-greeter@" ${release}/usr/local/etc/lightdm/lightdm.conf
-    sed -i '' "s@#user-session=default@user-session=mate@" ${release}/usr/local/etc/lightdm/lightdm.conf
-    cp extra/dm/slick-greeter.conf ${release}/usr/local/etc/lightdm/slick-greeter.conf
-    cp extra/dm/msd-background-helper ${release}/usr/local/bin/msd-background-helper
-    chmod +x ${release}/usr/local/bin/msd-background-helper
-    cp extra/dm/msd-background-helper.desktop ${release}/usr/local/etc/xdg/autostart/msd-background-helper.desktop
-    setup_xinit
-    fi
+  fi
+  setup_xinit
 }
 
 gdm_setup()
@@ -43,7 +31,7 @@ gdm_setup()
 # {
 #  echo 'sddm_enable="YES"' >> ${release}/etc/rc.conf
 #  setup_xinit
-# }
+#}
 
 setup_xinit()
 {
