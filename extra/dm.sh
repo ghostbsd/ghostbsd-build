@@ -21,7 +21,7 @@ lightdm_setup()
     cp extra/dm/msd-background-helper.desktop ${release}/usr/local/etc/xdg/autostart/msd-background-helper.desktop
   elif [ "${desktop}" == "kde" ] ; then
     sed -i '' "s@#user-session=default@user-session=kde@" ${release}/usr/local/etc/lightdm/lightdm.conf
-    if [ -f ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf ] ; then
+#    if [ -f ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf ] ; then
       echo "background=/usr/local/share/backgrounds/ghostbsd/Tidepool_Sunset.jpg" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
       echo "user_background=true" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
       echo "transition-duration=700" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
@@ -31,7 +31,7 @@ lightdm_setup()
       echo "indicators=~spacer;~clock;~host;~spacer;~a11y;~language;~session;~sound;~power" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
       echo "keyboard=onboard --theme=Blackboard" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
       echo -e "a11y-states=contrast;font;keyboard" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
-    fi
+#    fi
   fi 
   setup_xinit
 }
