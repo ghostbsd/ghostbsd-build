@@ -4,7 +4,7 @@ set -e -u
 
 lightdm_setup()
 {
-  if [ "${desktop}" == "xfce" || "kde" ] ; then
+  if [ "${desktop}" == "xfce" ] ; then
     sed -i '' "s@#user-session=default@user-session=xfce@" ${release}/usr/local/etc/lightdm/lightdm.conf
     if [ -f ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf ] ; then
       echo "indicators=~host;~spacer;~clock;~spacer;~session;~language;~a11y;~sound;~power" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
@@ -20,6 +20,19 @@ lightdm_setup()
     chmod +x ${release}/usr/local/bin/msd-background-helper
     cp extra/dm/msd-background-helper.desktop ${release}/usr/local/etc/xdg/autostart/msd-background-helper.desktop
   fi
+  if [ "${desktop}" == "kde" ] ; then
+    sed -i '' "s@#user-session=default@user-session=kde@" ${release}/usr/local/etc/lightdm/lightdm.conf
+    if [ -f ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf ] ; then
+      echo "background=/usr/local/share/backgrounds/ghostbsd/Tidepool_Sunset.jpg" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+      echo "user_background=true" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+      echo "transition-duration=700" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+      echo "theme-name=Vimix-Dark" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+      echo "icon-theme-name=Maya" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+      echo "active-monitor=#cursor" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+      echo "indicators=~spacer;~clock;~host;~spacer;~a11y;~language;~session;~sound;~power" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+      echo "keyboard=onboard --theme=Blackboard" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+      echo -e "a11y-states=contrast;font;keyboard" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+    fi 
   setup_xinit
 }
 
