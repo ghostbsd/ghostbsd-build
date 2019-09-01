@@ -31,6 +31,7 @@ lightdm_setup()
       echo "indicators=~spacer;~clock;~host;~spacer;~a11y;~language;~session;~sound;~power" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
       echo "keyboard=onboard --theme=Blackboard" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
       echo -e "a11y-states=contrast;font;keyboard" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+    fi
   fi 
   setup_xinit
 }
