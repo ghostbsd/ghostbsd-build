@@ -10,7 +10,7 @@ xrandr
 mesa-demos
 ghostbsd-utils
 lightdm
-slick-greeter
+lightdm-gtk-greeter
 qterminal
 bash
 nano
