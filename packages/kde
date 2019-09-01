@@ -11,6 +11,7 @@ mesa-demos
 ghostbsd-utils
 lightdm
 lightdm-gtk-greeter
+qt5-wayland
 qterminal
 bash
 nano
