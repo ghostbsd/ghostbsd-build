@@ -8,7 +8,7 @@ lightdm_setup()
     sed -i '' "s@#user-session=default@user-session=xfce@" ${release}/usr/local/etc/lightdm/lightdm.conf
     if [ -f ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf ] ; then
       echo "indicators=~host;~spacer;~clock;~spacer;~session;~language;~a11y;~sound;~power" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
-      echo "background=/usr/local/share/backgrounds/ghostbsd/Tidepool_Sunset.jpg" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
+      echo "background=/usr/local/share/backgrounds/ghostbsd/Arizona_Desert_Monument.jpg" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
       echo "theme-name=Vimix-Dark" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
       echo -e "icon-theme-name=Vivacious-Colors-Full-Dark\n" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
     fi
