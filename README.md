@@ -60,10 +60,10 @@ To build a GhostBSD with __MATE__ as default desktop
 
 ## Burn an image to cd:
 ```
-cdrecord /usr/local/ghostbsd-build/iso/GhostBSD18.12.iso
+cdrecord /usr/local/ghostbsd-build/iso/GhostBSD19.10.iso
 ```
 
 ## Write an image to usb stick:
 ```
-dd if=/usr/local/ghostbsd-build/iso/GhostBSD18.12.iso of=/dev/da0 bs=4m
+dd if=/usr/local/ghostbsd-build/iso/GhostBSD19.10.iso of=/dev/da0 bs=4m
 ```
