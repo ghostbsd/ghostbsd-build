@@ -37,7 +37,7 @@ git clone https://www.github.com/ghostbsd/ghostbsd-build.git
 ```
 Enter the directory for running the LiveCD build script:
 ```
-cd ghostbsd
+cd ghostbsd-build
 ```
 
 ## TrueOS Based GhostBSD
