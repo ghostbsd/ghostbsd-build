@@ -11,15 +11,15 @@ while :
 do
   case $stage in
     'stage1')
-      echo "##### Starting Stage 1 #####" 1>&2
+      echo "***** Starting Stage 1 *****" 1>&2
       workspace
       base
       packages_software
-      echo "##### Completed Stage 1 #####" 1>&2
+      echo "***** Completed Stage 1 *****" 1>&2
       break  
       ;;
     'stage2')
-      echo "##### Starting Stage 2 #####" 1>&2
+      echo "***** Starting Stage 2 *****" 1>&2
       #compress_packages
       user
       xorg
@@ -30,11 +30,10 @@ do
       mfs
       boot
       image
-      echo "##### Completed Stage 2 #####" 1>&2  
+      echo "***** Completed Stage 2 *****" 1>&2  
       break
       ;;
     *)
-      echo "##### Starting all stages #####" 1>&2
       workspace
       base
       packages_software
@@ -48,7 +47,6 @@ do
       mfs
       boot
       image
-      echo "##### Completed all stages #####" 1>&2
       ;;
   esac
 done
