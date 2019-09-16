@@ -9,7 +9,6 @@ case $stage in
   'stage1')
     echo "##### Starting Stage 1 #####" 1>&2
     determine_desktop
-#    validate_user
     validate_kernrel
     workspace
     base
@@ -34,7 +33,6 @@ case $stage in
   *)
    echo "##### Starting all stages #####" 1>&2
     determine_desktop
-#    validate_user
     validate_kernrel
     workspace
     base
