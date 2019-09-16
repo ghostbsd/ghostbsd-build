@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-set -e
+# set -e
 
 cwd="`realpath | sed 's|/scripts||g'`"
 liveuser=ghostbsd
