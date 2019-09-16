@@ -69,7 +69,6 @@ validate_desktop()
     echo "Usage: ./build.sh mate"
     exit 1
   fi
-}
 
 # Validate package selection if chosen
 if [ -z "${desktop}" ] ; then
@@ -84,7 +83,7 @@ if [ "${desktop}" != "mate" ] ; then
 else
   community=""
 fi
-
+}
 
 isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
 
