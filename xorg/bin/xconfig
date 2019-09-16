@@ -352,55 +352,7 @@ start_xorg()
   sleep 5
   sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
 
-  # Check to see if we are running as VMware guest
-  # ATTEMPT=0
-  # Try bringing up X now
   startx
-  # If we have a success, we can end here
-  # if [ -e "/tmp/.xstarted" ]; then return 0; fi
-  # # Run X Now
-  # while :
-  # do
-  #     case $ATTEMPT in
-  #       0) # Lets try again with the primary video card specifically
-  #         echo "Looking for primary video card..."
-  #         rm /etc/X11/xorg.conf 2>/dev/null
-  #         detect_x
-  #           ;;
-  #       1) # Lets try again with a secondary video card
-  #          echo "Looking for secondary / optimus video card..."
-  #           rm /etc/X11/xorg.conf 2>/dev/null
-  #           cfg_card_busid "2"
-  #           ;;
-  #       2) # Try the Intel driver, since nvidia/vesa will fail on optimus cards
-  #            echo "Trying Intel-only driver..."
-  #           cp /root/cardDetect/XF86Config.modesetting /etc/X11/xorg.conf
-  #           ;;
-  #       3) echo "Trying VESA driver..."
-  #           rm /etc/X11/xorg.conf
-  #           cp /root/cardDetect/XF86Config.compat /etc/X11/xorg.conf
-  #           ;;
-  #       4) if [ `sysctl -n machdep.bootmethod` = "UEFI" ] ; then
-  #             # Last but not least, if we are on UEFI we can always try SCFB
-  #             echo "Trying SCFB - UEFI driver..."
-  #             cp /root/cardDetect/XF86Config.scfb /etc/X11/xorg.conf
-  #           else
-  #             break
-  #           fi
-  #         ;;
-
-  #       *) break ;;
-  #       esac
-
-  #   ATTEMPT=$(expr $ATTEMPT + 1)
-  # done
-
-  # # Couldn't find a valid Xorg config.. Boo :(
-  # echo "ERROR: Failed to start X..."
-  # echo "Dropping to failsafe console... Edit /etc/X11/xorg.conf, and run #startx to bring up the GUI."
-  # echo "[Press Enter to Continue]"
-  # read tmp
-  # /bin/sh
 }
 
 start_nvidia()
@@ -434,7 +386,7 @@ start_intel_drm()
   # sysrc -f /etc/rc.conf kld_list="linux linux64 /boot/modules/i915kms.ko /boot/modules/radeonkms.ko amdgpu"
   echo "Starting Desktop (Intel DRM).. Please wait.."
   sudo kldload /boot/modules/i915kms.ko
-  sudo sysrc -f /etc/rc.conf kld_list="/boot/modules/i915kms.ko"
+  sudo sysrc -f /etc/rc.conf kld_list+="/boot/modules/i915kms.ko"
   sudo X -configure
   sudo sed -i "" -e 's/intel/modesetting/g' /root/xorg.conf.new
   sudo sed -i "" -e 's/vesa/modesetting/g' /root/xorg.conf.new
@@ -444,6 +396,7 @@ start_intel_drm()
 
 start_legacy_intel()
 {
+  UnloadNvidia
   echo "Starting Desktop (Legacy Intel).. Please wait.."
   sudo kldload /boot/modules/i915kms.ko
   sudo sysrc -f /etc/rc.conf kld_list+="/boot/modules/i915kms.ko"
@@ -453,6 +406,25 @@ start_legacy_intel()
   sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
   startx
 }
+
+start_amdgpu()
+{
+  UnloadNvidia
+  echo "Starting Desktop (amdgpu).. Please wait.."
+  sudo kldload amdgpu
+  sudo sysrc -f /etc/rc.conf kld_list+="amdgpu"
+  startx
+}
+
+start_radeonkms()
+{
+  UnloadNvidia
+  echo "Starting Desktop (radeonkms).. Please wait.."
+  sudo kldload /boot/modules/radeonkms.ko
+  sudo sysrc -f /etc/rc.conf kld_list+="/boot/modules/radeonkms.ko"
+  startx
+}
+
 start_shell()
 {
   clear
@@ -472,10 +444,11 @@ manual_setup()
     dialog --title "X Configuration Menu" \
     --menu "Please select from the following options:" 20 55 15 \
     startx "Start Desktop (No Configuration)" \
-    nvidia "Start Desktop (Nvidia)" \
     intel_drm "Start Desktop (Intel with drm driver)"\
     intel "Start Desktop (Legacy Intel)" \
-    amd "Start Desktop (Radeon)" \
+    amdgpu "Start Desktop (AMD GPU)" \
+    radeonkms "Start Desktop (Radeon KMS)" \
+    nvidia "Start Desktop (Nvidia)" \
     vesa "Start Desktop (VESA)" \
     scfb "Start Desktop (SCFB)" \
     virtualbox "Start Desktop (VirtualBox)" \
@@ -488,16 +461,11 @@ manual_setup()
     case $ANS in
         startx) echo "Starting Desktop.. Please wait.."
           startx ;;
-        nvidia)
-          start_nvidia ;;
-        intel_drm)
-          start_intel_drm;;
-        intel)
-          start_legacy_intel;;
-        amd) echo "Starting Desktop (Radeon).. Please wait.."
-          UnloadNvidia
-          sudo kldload radeonkms
-          startx 2>/tmp/Xerrors ;;
+        nvidia) start_nvidia ;;
+        intel_drm) start_intel_drm ;;
+        intel) start_legacy_intel ;;
+        amdgpu) start_amdgpu ;;
+        radeonkms) start_radeonkms ;;
         vesa) echo "Starting Desktop (VESA).. Please wait.."
           sudo cp /usr/local/etc/X11/cardDetect/XF86Config.vesa /etc/X11/xorg.conf
           startx 2>/tmp/Xerrors ;;

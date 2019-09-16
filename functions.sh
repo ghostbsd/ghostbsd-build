@@ -19,8 +19,8 @@ version="19.09"
 release_stamp=""
 # release_stamp="-RC4"
 # time_stamp=`date "+-%Y-%m-%d-%H-%M"`
-time_stamp=`date "+-%Y-%m-%d"`
-# time_stamp=""
+# time_stamp=`date "+-%Y-%m-%d"`
+time_stamp=""
 label="GhostBSD"
 kernrel="`uname -r`"
 
