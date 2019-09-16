@@ -5,6 +5,7 @@
 cwd="`realpath | sed 's|/scripts||g'`"
 liveuser=ghostbsd
 desktop=$1
+stage=$2
 workdir="/usr/local"
 livecd="${workdir}/ghostbsd-build"
 base="${livecd}/base"
@@ -21,7 +22,10 @@ release_stamp=""
 time_stamp=`date "+-%Y-%m-%d"`
 # time_stamp=""
 label="GhostBSD"
+kernrel="`uname -r`"
 
+determine_desktop()
+{
 if [ "$desktop" = "mate" ] ; then
   union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
 elif [ "$desktop" = "kde" ] ; then
@@ -29,15 +33,19 @@ elif [ "$desktop" = "kde" ] ; then
 else
   union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc var"}
 fi
+}
 
-kernrel="`uname -r`"
-
+validate_user()
+{
 # Only run as superuser
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
   exit 1
 fi
+}
 
+validate_kernrel()
+{
 case $kernrel in
   '13.0-CURRENT')
     echo "Using correct kernel release" 1>&2
@@ -50,6 +58,7 @@ case $kernrel in
    exit 1
    ;;
 esac
+}
 
 validate_desktop()
 {
