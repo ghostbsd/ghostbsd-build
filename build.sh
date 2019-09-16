@@ -5,16 +5,18 @@
 
 case $stage in
   'stage1')
-    echo "Starting Stage 1" 1>&2
+    echo "##### Starting Stage 1 #####" 1>&2
     determine_desktop
     validate_user
     validate_kernrel
     workspace
     base
     packages_software
+    echo "##### Completed Stage 1 #####" 1>&2  
+    exit 1
     ;;
   'stage2')
-    echo "Starting Stage 2" 1>&2
+    echo "##### Starting Stage 2 #####" 1>&2
     user
     xorg
     rc
@@ -25,9 +27,11 @@ case $stage in
     mfs
     boot
     image
+    echo "##### Completed Stage 2 #####" 1>&2  
+    exit 1
     ;;
   *)
-   echo "Starting all stages"
+   echo "##### Starting all stages #####" 1>&2
     workspace
     base
     packages_software
@@ -41,5 +45,6 @@ case $stage in
     mfs
     boot
     image
+    echo "##### Completed all stages #####" 1>&2
     ;;
 esac
