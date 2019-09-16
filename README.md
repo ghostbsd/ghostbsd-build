@@ -57,7 +57,7 @@ To build a GhostBSD with __MATE__ as default desktop
 ```
 ./build.sh
 ```    
-(Option) To build GhostBSD using stages. 
+(Experimental) To build GhostBSD using stages. 
 Stage1 is for preliminary workspace setup (i.e. fetch & install packages).
 Stage2 is for livecd setup and ISO creation.
 ```

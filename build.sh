@@ -3,13 +3,15 @@
 # Source our functions
 . functions.sh
 
+determine_desktop
 validate_user
+validate_kernrel
 
 case $stage in
   'stage1')
     echo "##### Starting Stage 1 #####" 1>&2
-    determine_desktop
-    validate_kernrel
+#    determine_desktop
+#    validate_kernrel
     workspace
     base
     packages_software
@@ -18,6 +20,7 @@ case $stage in
     ;;
   'stage2')
     echo "##### Starting Stage 2 #####" 1>&2
+    #compress_packages
     user
     xorg
     rc
@@ -32,8 +35,8 @@ case $stage in
     ;;
   *)
    echo "##### Starting all stages #####" 1>&2
-    determine_desktop
-    validate_kernrel
+#    determine_desktop
+#    validate_kernrel
     workspace
     base
     packages_software
