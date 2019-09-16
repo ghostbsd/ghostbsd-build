@@ -24,7 +24,6 @@ case $stage in
     uzip
     ramdisk
     mfs
-    mfs
     boot
     image
     echo "##### Completed Stage 2 #####" 1>&2  
@@ -32,6 +31,9 @@ case $stage in
     ;;
   *)
    echo "##### Starting all stages #####" 1>&2
+    determine_desktop
+    validate_user
+    validate_kernrel
     workspace
     base
     packages_software
