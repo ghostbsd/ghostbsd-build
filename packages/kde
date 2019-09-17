@@ -42,11 +42,11 @@ telegram-desktop
 ghostbsd-bug-report
 ghostbsd-irc
 ghostbsd-icons
-ghostbsd-installed-common-settings
+ghostbsd-common-settings
 git
 openjdk8-jre
 py36-setuptools
-py36-goboject3
+py36-gobject3
 doas
 gtk-update-icon-cache
 hicolor-icon-theme
