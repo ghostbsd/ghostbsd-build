@@ -24,6 +24,7 @@ obconf-qt
 kf5-kwayland
 kf5-kwindowsystem
 plasma5-kwayland-integration
+lightdm-gtk-greeter
 calligra
 falkon
 kmail
