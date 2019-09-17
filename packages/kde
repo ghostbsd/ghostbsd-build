@@ -42,7 +42,7 @@ telegram-desktop
 ghostbsd-bug-report
 ghostbsd-irc
 ghostbsd-icons
-ghostbsd-installed-common-settings
+ghostbsd-common-settings
 git
 openjdk8-jre
 py36-setuptools
