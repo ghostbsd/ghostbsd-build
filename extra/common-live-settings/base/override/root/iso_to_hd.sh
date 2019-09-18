@@ -104,7 +104,7 @@ setup_sddm_and_xinitrc()
       for user in `ls /usr/home/` ; do
         echo 'exec startkde' > /usr/home/${user}/.xinitrc
         chown ${user}:wheel /usr/home/${user}/.xinitrc
-      done ;
+      done ;;
   esac
   rc-update add sddm default
 }
