@@ -15,7 +15,7 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 * SCFB support with automatic best resolution for UEFI enabled systems with Intel/AMD graphics
 
 ## System Requirements
-* Latest version of GhostBSD or TrueOS 
+* Latest version of GhostBSD 
 * 20GB of free disk space
 * 4GB of free memory
 
