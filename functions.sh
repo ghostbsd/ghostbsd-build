@@ -47,9 +47,9 @@ fi
 validate_kernrel()
 {
 case $kernrel in
-  '13.0-CURRENT')
-    echo "Using correct kernel release" 1>&2
-    ;;
+#  '13.0-CURRENT')
+#    echo "Using correct kernel release" 1>&2
+#    ;;
   '12.0-STABLE')
     echo "Using correct kernel release" 1>&2
     ;;

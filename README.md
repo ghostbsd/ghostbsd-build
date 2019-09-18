@@ -7,7 +7,7 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 
 ## Features
 * Build GhostBSD with GhostBSD or TrueOS
-* Mate and XFCE desktop environments
+* Mate, XFCE, and KDE desktop environments
 * Hybrid DVD/USB image
 
 ## Graphics Support
@@ -15,11 +15,11 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 * SCFB support with automatic best resolution for UEFI enabled systems with Intel/AMD graphics
 
 ## System Requirements
-* Latest version of GhostBSD or TrueOS 
+* Latest version of GhostBSD 
 * 20GB of free disk space
 * 4GB of free memory
 
-Note: GhostBSD 18.06 and earlier releases cannot be used to build ISO.
+Note: GhostBSD 19.09 and later should be used to build ISO.
 
 ## Initial Setup
 Install the required packages:
