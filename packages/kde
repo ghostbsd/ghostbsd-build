@@ -1,4 +1,5 @@
-xorg
+
+rg
 xorg-fonts
 ghostbsd-drivers
 drm-fbsd12.0-kmod
@@ -18,13 +19,10 @@ bsdinfo
 texinfo
 neofetch
 plasma5-plasma
-plasma5-kwin
 kf5-frameworks
 obconf-qt
 kf5-kwayland
-kf5-kwindowsystem
 plasma5-kwayland-integration
-lightdm-gtk-greeter
 calligra
 falkon
 kmail
