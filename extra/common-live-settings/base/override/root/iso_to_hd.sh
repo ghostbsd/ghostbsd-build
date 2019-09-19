@@ -174,7 +174,7 @@ PolicyKit_setting
 case $desktop in
   kde)
     setup_sddm_and_xinitrc
-    # set_qt5ct
+    set_qt5ct
     ;;
   *)
     setup_lightdm_and_xinitrc
