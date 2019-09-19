@@ -48,7 +48,9 @@ setup_xinit()
     echo "exec ck-launch-session cinnamon-session" > ${release}/usr/home/${liveuser}/.xinitrc
     echo "exec ck-launch-session cinnamon-session" > ${release}/root/.xinitrc
   elif [ "${desktop}" == "kde" ] ; then
-    echo "exec ck-launch-session startplasmacompositor"> ${release}/usr/home/${liveuser}/.xinitrc
-    echo "exec ck-launch-session startplasmacompositor" > ${release}/root/.xinitrc
+    echo "exec ck-launch-session startkde"> ${release}/usr/home/${liveuser}/.xinitrc
+    echo "exec ck-launch-session startkde" > ${release}/root/.xinitrc
+#    echo "exec ck-launch-session startplasmacompositor"> ${release}/usr/home/${liveuser}/.xinitrc
+#    echo "exec ck-launch-session startplasmacompositor" > ${release}/root/.xinitrc
   fi
 }
