@@ -155,8 +155,10 @@ rc()
   chroot ${release} rc-update add dbus default
   chroot ${release} rc-update add hald default
   chroot ${release} rc-update add webcamd default
-  chroot ${release} rc-update delete vboxguest default
-  chroot ${release} rc-update delete vboxservice default
+  # remove netmount from default
+  chroot ${release} rc-update delete netmount default
+  # chroot ${release} rc-update delete vboxguest default
+  # chroot ${release} rc-update delete vboxservice default
   chroot ${release} rc-update add cupsd default
   chroot ${release} rc-update add avahi-daemon default
   chroot ${release} rc-update add avahi-dnsconfd default
