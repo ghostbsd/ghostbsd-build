@@ -14,7 +14,7 @@ software_packages="${livecd}/software_packages"
 base_packages="${livecd}/base_packages"
 release="${livecd}/release"
 cdroot="${livecd}/cdroot"
-version="19.09"
+version="19.10"
 # version=""
 release_stamp=""
 # release_stamp="-RC4"
@@ -26,38 +26,38 @@ kernrel="`uname -r`"
 
 determine_desktop()
 {
-if [ "$desktop" = "mate" ] ; then
-  union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
-elif [ "$desktop" = "kde" ] ; then
-  union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/plasma var"}
-else
-  union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc var"}
-fi
+  if [ "$desktop" = "mate" ] ; then
+    union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc usr/local/share/mate-panel var www"}
+  elif [ "$desktop" = "kde" ] ; then
+    union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc usr/local/share/plasma var www"}
+  else
+    union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc var www"}
+  fi
 }
 
 validate_user()
 {
-# Only run as superuser
-if [ "$(id -u)" != "0" ]; then
-  echo "This script must be run as root" 1>&2
-  exit 1
-fi
+  # Only run as superuser
+  if [ "$(id -u)" != "0" ]; then
+    echo "This script must be run as root" 1>&2
+    exit 1
+  fi
 }
 
 validate_kernrel()
 {
-case $kernrel in
-#  '13.0-CURRENT')
-#    echo "Using correct kernel release" 1>&2
-#    ;;
-  '12.0-STABLE')
-    echo "Using correct kernel release" 1>&2
-    ;;
-  *)
-   echo "Using wrong kernel release. Use TrueOS 18.12 or GhostBSD 19 to build iso."
-   exit 1
-   ;;
-esac
+  case $kernrel in
+    '12.1-PRERELEASE')
+      echo "Using correct kernel release" 1>&2
+      ;;
+    '12.0-STABLE')
+      echo "Using correct kernel release" 1>&2
+      ;;
+    *)
+     echo "Using wrong kernel release. Use TrueOS 18.12 or GhostBSD 19 to build iso."
+     exit 1
+     ;;
+  esac
 }
 
 validate_desktop()
@@ -70,19 +70,19 @@ validate_desktop()
     exit 1
   fi
 
-# Validate package selection if chosen
-if [ -z "${desktop}" ] ; then
-  desktop="mate"
-else
-  validate_desktop
-fi
+  # Validate package selection if chosen
+  if [ -z "${desktop}" ] ; then
+    desktop="mate"
+  else
+    validate_desktop
+  fi
 
-if [ "${desktop}" != "mate" ] ; then
-  DESKTOP=$(echo ${desktop} | tr [a-z] [A-Z])
-  community="-${DESKTOP}"
-else
-  community=""
-fi
+  if [ "${desktop}" != "mate" ] ; then
+    DESKTOP=$(echo ${desktop} | tr [a-z] [A-Z])
+    community="-${DESKTOP}"
+  else
+    community=""
+  fi
 }
 
 isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
@@ -182,7 +182,7 @@ extra_config()
   . ${cwd}/extra/gitpkg.sh
   . ${cwd}/extra/mate-live-settings.sh
   set_live_system
-  # git_pc_sysinstall
+  git_pc_sysinstall
   ## git_gbi is for development testing and gbi should be
   ## remove from the package list to avoid conflict
   # git_gbi
@@ -233,9 +233,9 @@ uzip()
   umount ${release}/dev
   install -o root -g wheel -m 755 -d "${cdroot}"
   mkdir "${cdroot}/data"
-  makefs "${cdroot}/data/system.ufs" "${release}"
-  mkuzip -o "${cdroot}/data/system.uzip" "${cdroot}/data/system.ufs"
-  rm -r "${cdroot}/data/system.ufs"
+  makefs "${cdroot}/data/usr.ufs" "${release}/usr"
+  mkuzip -o "${cdroot}/data/usr.uzip" -s 32768 "${cdroot}/data/usr.ufs"
+  rm -r "${cdroot}/data/usr.ufs"
 }
 
 ramdisk()
@@ -268,9 +268,13 @@ boot()
 {
   cd "${release}"
   tar -cf - boot | tar -xf - -C "${cdroot}"
+  cp COPYRIGHT ${cdroot}/COPYRIGHT
   cd "${cwd}"
+  cp LICENSE ${cdroot}/LICENSE
   cp -R boot/ ${cdroot}/boot/
   mkdir ${cdroot}/etc
+  cd ${cdroot}
+  cd "${cwd}"
 }
 
 image()
