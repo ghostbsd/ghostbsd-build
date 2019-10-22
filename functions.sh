@@ -235,8 +235,10 @@ uzip()
   umount ${release}/dev
   install -o root -g wheel -m 755 -d "${cdroot}"
   mkdir "${cdroot}/data"
-  makefs "${cdroot}/data/usr.ufs" "${release}/usr"
-  mkuzip -o "${cdroot}/data/usr.uzip" -s 32768 "${cdroot}/data/usr.ufs"
+  # makefs -t ffs -m 4000m -f '10%' -b '10%' "${cdroot}/data/usr.ufs" "${release}/usr"
+  makefs -t ffs -f '10%' -b '10%' "${cdroot}/data/usr.ufs" "${release}/usr"
+  # makefs "${cdroot}/data/usr.ufs" "${release}/usr"
+  mkuzip -o "${cdroot}/data/usr.uzip" "${cdroot}/data/usr.ufs"
   rm -r "${cdroot}/data/usr.ufs"
 }
 
