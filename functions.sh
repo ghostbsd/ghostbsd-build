@@ -50,11 +50,11 @@ case $kernrel in
 #  '13.0-CURRENT')
 #    echo "Using correct kernel release" 1>&2
 #    ;;
-  '12.0-STABLE')
+  '12.1-PRERELEASE')
     echo "Using correct kernel release" 1>&2
     ;;
   *)
-   echo "Using wrong kernel release. Use TrueOS 18.12 or GhostBSD 19 to build iso."
+   echo "Using wrong kernel release. Please use GhostBSD 19.09 and later to build iso."
    exit 1
    ;;
 esac
