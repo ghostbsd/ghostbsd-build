@@ -48,6 +48,4 @@ fi
 
 kenv init_shell="/bin/sh"
 
-/usr/local/bin/netcardmgr
-
 exit 0

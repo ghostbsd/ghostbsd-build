@@ -5,6 +5,30 @@
 cwd="`realpath | sed 's|/scripts||g'`"
 liveuser=ghostbsd
 desktop=$1
+validate_desktop()
+{
+  if [ ! -f "${cwd}/packages/${desktop}" ] ; then
+    echo "Invalid choice specified"
+    echo "Possible choices are:"
+    ls ${cwd}/packages
+    echo "Usage: ./build.sh mate"
+    exit 1
+  fi
+}
+
+# Validate package selection if chosen
+if [ -z "${desktop}" ] ; then
+  desktop="mate"
+else
+  validate_desktop
+fi
+
+if [ "${desktop}" != "mate" ] ; then
+  DESKTOP=$(echo ${desktop} | tr [a-z] [A-Z])
+  community="-${DESKTOP}"
+else
+  community=""
+fi
 stage=$2
 workdir="/usr/local"
 livecd="${workdir}/ghostbsd-build"
@@ -22,70 +46,14 @@ release_stamp=""
 # time_stamp=`date "+-%Y-%m-%d"`
 time_stamp=""
 label="GhostBSD"
-kernrel="`uname -r`"
-
-determine_desktop()
-{
-  if [ "$desktop" = "mate" ] ; then
-    union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc usr/local/share/mate-panel var www"}
-  elif [ "$desktop" = "kde" ] ; then
-    union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc usr/local/share/plasma var www"}
-  else
-    union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc var www"}
-  fi
-}
-
-validate_user()
-{
-  # Only run as superuser
-  if [ "$(id -u)" != "0" ]; then
-    echo "This script must be run as root" 1>&2
-    exit 1
-  fi
-}
-
-validate_kernrel()
-{
-  case $kernrel in
-    '12.1-PRERELEASE')
-      echo "Using correct kernel release" 1>&2
-      ;;
-    '12.0-STABLE')
-      echo "Using correct kernel release" 1>&2
-      ;;
-    *)
-     echo "Using wrong kernel release. Use TrueOS 18.12 or GhostBSD 19 to build iso."
-     exit 1
-     ;;
-  esac
-}
-
-validate_desktop()
-{
-  if [ ! -f "${cwd}/packages/${desktop}" ] ; then
-    echo "Invalid choice specified"
-    echo "Possible choices are:"
-    ls ${cwd}/packages
-    echo "Usage: ./build.sh mate"
-    exit 1
-  fi
-
-  # Validate package selection if chosen
-  if [ -z "${desktop}" ] ; then
-    desktop="mate"
-  else
-    validate_desktop
-  fi
-
-  if [ "${desktop}" != "mate" ] ; then
-    DESKTOP=$(echo ${desktop} | tr [a-z] [A-Z])
-    community="-${DESKTOP}"
-  else
-    community=""
-  fi
-}
-
 isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
+if [ "$desktop" = "mate" ] ; then
+  union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc usr/local/share/mate-panel var www"}
+elif [ "$desktop" = "kde" ] ; then
+  union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc usr/local/share/plasma var www"}
+else
+  union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc var www"}
+fi
 
 workspace()
 {
