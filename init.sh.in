@@ -10,8 +10,10 @@ fi
 echo "==> Remount rootfs as read-write"
 mount -u -w /
 
-echo "==> Make mountpoints /cdrom /memdisk /sysroot"
-mkdir -p /cdrom /memdisk /sysroot
+makedir=${makedir:-"/bin /boot /cdrom /compat /include /lib /libdata /libexec /man /media /memdisk /mnt /net /proc /rescue /root /sbin /share /tests /tmp /usr /var /www"}
+
+echo "==> Make mountpoints /cdrom /memdisk /usr"
+mkdir -p ${makedir}
 
 echo "Waiting for GhostBSD media to initialize"
 while : ; do
@@ -21,8 +23,9 @@ done
 
 echo "==> Mount cdrom"
 mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom
-echo "==> mdmfs /cdrom/data/system.uzip in /sysroot"
-mdmfs -P -F /cdrom/data/system.uzip -o ro md.uzip /sysroot
+
+echo "==> mdmfs /cdrom/data/usr.uzip in /usr"
+mdmfs -P -F /cdrom/data/usr.uzip -o ro md.uzip /usr
 
 echo "==> Mount swap-based memdisk"
 MEMDISK_SIZE="$(($(sysctl -n hw.usermem) / 1024 / 1024 / 2))"
@@ -30,14 +33,13 @@ mdmfs -s "${MEMDISK_SIZE}m" md /memdisk || exit 1
 
 echo "==> tar zxfv /cdrom/data/mfs.tgz -C /memdisk"
 tar zxf /cdrom/data/mfs.tgz -C /memdisk
-while read uniondir; do
-  mount_nullfs /memdisk/${uniondir} /sysroot/${uniondir}
-done < /cdrom/data/uniondirs
-echo "==> mount_nullfs in /cdrom in /sysroot"
-mount_nullfs -o ro /cdrom /sysroot/cdrom
 
-echo "==> Mount devfs /sysroot/dev"
-mount -t devfs devfs /sysroot/dev
+while read uniondir; do
+  mount_nullfs /memdisk/${uniondir} /${uniondir}
+done < /cdrom/data/uniondirs
+
+echo "==> Mount devfs /dev"
+mount -t devfs devfs /dev
 
 if [ "$SINGLE_USER" = "true" ]; then
   echo "Starting interactive shell in temporary rootfs ..."
@@ -45,4 +47,5 @@ if [ "$SINGLE_USER" = "true" ]; then
 fi
 
 kenv init_shell="/bin/sh"
+
 exit 0

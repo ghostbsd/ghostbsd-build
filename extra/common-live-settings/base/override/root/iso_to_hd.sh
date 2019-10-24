@@ -11,6 +11,7 @@ purge_live_settings()
     mate)
       rm /usr/local/share/glib-2.0/schemas/92_org.gnome.desktop.screensaver.gschema.override
       rm /usr/local/share/glib-2.0/schemas/92_org.mate.lockdown.gschema.override
+      rm /usr/local/share/glib-2.0/schemas/92_org.mate.SettingsDaemon.plugins.housekeeping.gschema.override
       glib-compile-schemas /usr/local/share/glib-2.0/schemas ;;
     xfce)
       pkg delete -y xfce-live-settings ;;
@@ -51,7 +52,7 @@ fix_perms()
 remove_ghostbsd_user()
 {
   pw userdel -n ghostbsd
-  rm -rfv /usr/home/ghostbsd
+  rm -rf /usr/home/ghostbsd
   ( echo 'g/# ghostbsd user autologin' ; echo 'wq' ) | ex -s /etc/gettytab
   ( echo 'g/ghostbsd:\\"/d' ; echo 'wq' ) | ex -s /etc/gettytab
   ( echo 'g/:al=ghostbsd:ht:np:sp#115200:/d' ; echo 'wq' ) | ex -s /etc/gettytab

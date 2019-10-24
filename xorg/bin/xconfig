@@ -326,32 +326,22 @@ UnloadNvidia()
   sudo kldunload nvidia
 }
 
-start_xorg()
+start_virtualbox()
 {
+  echo "Starting Desktop with virtualbox settings.. Please wait.."
   pciconf -lv | grep -B 4 VGA | grep -q NVIDIA
   if [ $? -eq 0 ] ; then
     echo "Noting to clean for nvidia"
   else
     UnloadNvidia
   fi
-
-  pciconf -lv | grep -q "VirtualBox"
-  if [ $? -eq 0 ] ; then
-    sudo rc-update add vboxguest default
-    sudo service vboxguest start
-    sudo rc-update add vboxservice default
-    sudo service vboxservice start
-    echo "xmodmap -e 'pointer = 1 2 3 4 5 6 7 0 0 0' &" > /usr/home/ghostbsd/.xinitrc
-    sudo echo "xmodmap -e 'pointer = 1 2 3 4 5 6 7 0 0 0' &" > /root/.xinitrc
-    echo "exec ck-launch-session mate-session" >> /usr/home/ghostbsd/.xinitrc
-    sudo echo "exec ck-launch-session mate-session" >> /root/.xinitrc
-    chown ghostbsd:wheel /usr/home/ghostbsd/.xinitrc
-  fi
-
+  sudo rc-update add vboxguest default
+  sudo service vboxguest start
+  sudo rc-update add vboxservice default
+  sudo service vboxservice start
   sudo X -configure
   sleep 5
   sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
-
   startx
 }
 
@@ -416,12 +406,21 @@ start_amdgpu()
   startx
 }
 
-start_radeonkms()
+start_drm_radeonkms()
 {
   UnloadNvidia
   echo "Starting Desktop (radeonkms).. Please wait.."
   sudo kldload /boot/modules/radeonkms.ko
   sudo sysrc -f /etc/rc.conf kld_list+="/boot/modules/radeonkms.ko"
+  startx
+}
+
+start_drm_radeonkms()
+{
+  UnloadNvidia
+  echo "Starting Desktop (radeonkms).. Please wait.."
+  sudo kldload radeonkms.ko
+  sudo sysrc -f /etc/rc.conf kld_list+="radeonkms.ko"
   startx
 }
 
@@ -443,15 +442,16 @@ manual_setup()
 
     dialog --title "X Configuration Menu" \
     --menu "Please select from the following options:" 20 55 15 \
-    startx "Start Desktop (No Configuration)" \
-    intel_drm "Start Desktop (Intel with drm driver)"\
-    intel "Start Desktop (Legacy Intel)" \
-    amdgpu "Start Desktop (AMD GPU)" \
-    radeonkms "Start Desktop (Radeon KMS)" \
-    nvidia "Start Desktop (Nvidia)" \
-    vesa "Start Desktop (VESA)" \
-    scfb "Start Desktop (SCFB)" \
-    virtualbox "Start Desktop (VirtualBox)" \
+    startx "Start Desktop without Configuration" \
+    drm_intel "Start Desktop with Intel DRM driver"\
+    intel "Start Desktop with Legacy Intel driver" \
+    amdgpu "Start Desktop with AMD GPU DRM driver" \
+    drm_radeonkms "Start Desktop with Radeon KMS DRM driver" \
+    radeonkms "Start Desktop with Radeon KMS driver" \
+    nvidia "Start Desktop with Nvidia 390 dirver" \
+    vesa "Start Desktop with VESA driver" \
+    scfb "Start Desktop with SCFB driver" \
+    virtualbox "Start Desktop with VirtualBox driver" \
     shell "Drop to emergency shell" \
     reboot "Reboot the system" \
     exit "Exit X Configuration" 2>/tmp/answer
@@ -462,9 +462,10 @@ manual_setup()
         startx) echo "Starting Desktop.. Please wait.."
           startx ;;
         nvidia) start_nvidia ;;
-        intel_drm) start_intel_drm ;;
+        drm_intel) start_intel_drm ;;
         intel) start_legacy_intel ;;
         amdgpu) start_amdgpu ;;
+        drm_radeonkms)start_drm_radeonkms ;;
         radeonkms) start_radeonkms ;;
         vesa) echo "Starting Desktop (VESA).. Please wait.."
           sudo cp /usr/local/etc/X11/cardDetect/XF86Config.vesa /etc/X11/xorg.conf
@@ -472,10 +473,9 @@ manual_setup()
         scfb) echo "Starting Desktop (SCFB).. Please wait.."
           sudo cp /usr/local/etc/X11/cardDetect/XF86Config.scfb /etc/X11/xorg.conf
           startx 2>/tmp/Xerrors ;;
-        virtualbox) echo "Starting Desktop (AutoDetect).. Please wait.."
-          start_xorg ;;
+        virtualbox) start_virtualbox ;;
         shell) start_shell ;;
-        reboot)  sudo reboot -q ;;
+        reboot) sudo reboot -q ;;
         exit) exit 0 ;;
         *) ;;
     esac

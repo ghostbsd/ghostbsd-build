@@ -5,61 +5,6 @@
 cwd="`realpath | sed 's|/scripts||g'`"
 liveuser=ghostbsd
 desktop=$1
-stage=$2
-workdir="/usr/local"
-livecd="${workdir}/ghostbsd-build"
-base="${livecd}/base"
-iso="${livecd}/iso"
-software_packages="${livecd}/software_packages"
-base_packages="${livecd}/base_packages"
-release="${livecd}/release"
-cdroot="${livecd}/cdroot"
-version="19.09"
-# version=""
-release_stamp=""
-# release_stamp="-RC4"
-# time_stamp=`date "+-%Y-%m-%d-%H-%M"`
-# time_stamp=`date "+-%Y-%m-%d"`
-time_stamp=""
-label="GhostBSD"
-kernrel="`uname -r`"
-
-determine_desktop()
-{
-if [ "$desktop" = "mate" ] ; then
-  union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/mate-panel var"}
-elif [ "$desktop" = "kde" ] ; then
-  union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc usr/local/share/plasma var"}
-else
-  union_dirs=${union_dirs:-"boot cdrom dev etc libexec media mnt root tmp usr/home usr/local/etc var"}
-fi
-}
-
-validate_user()
-{
-# Only run as superuser
-if [ "$(id -u)" != "0" ]; then
-  echo "This script must be run as root" 1>&2
-  exit 1
-fi
-}
-
-validate_kernrel()
-{
-case $kernrel in
-#  '13.0-CURRENT')
-#    echo "Using correct kernel release" 1>&2
-#    ;;
-  '12.0-STABLE')
-    echo "Using correct kernel release" 1>&2
-    ;;
-  *)
-   echo "Using wrong kernel release. Use TrueOS 18.12 or GhostBSD 19 to build iso."
-   exit 1
-   ;;
-esac
-}
-
 validate_desktop()
 {
   if [ ! -f "${cwd}/packages/${desktop}" ] ; then
@@ -69,6 +14,7 @@ validate_desktop()
     echo "Usage: ./build.sh mate"
     exit 1
   fi
+}
 
 # Validate package selection if chosen
 if [ -z "${desktop}" ] ; then
@@ -83,9 +29,31 @@ if [ "${desktop}" != "mate" ] ; then
 else
   community=""
 fi
-}
-
+stage=$2
+workdir="/usr/local"
+livecd="${workdir}/ghostbsd-build"
+base="${livecd}/base"
+iso="${livecd}/iso"
+software_packages="${livecd}/software_packages"
+base_packages="${livecd}/base_packages"
+release="${livecd}/release"
+cdroot="${livecd}/cdroot"
+version="19.10"
+# version=""
+release_stamp=""
+# release_stamp="-RC4"
+# time_stamp=`date "+-%Y-%m-%d-%H-%M"`
+# time_stamp=`date "+-%Y-%m-%d"`
+time_stamp=""
+label="GhostBSD"
 isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
+if [ "$desktop" = "mate" ] ; then
+  union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc usr/local/share/mate-panel var www"}
+elif [ "$desktop" = "kde" ] ; then
+  union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc usr/local/share/plasma var www"}
+else
+  union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc var www"}
+fi
 
 workspace()
 {
@@ -155,8 +123,10 @@ rc()
   chroot ${release} rc-update add dbus default
   chroot ${release} rc-update add hald default
   chroot ${release} rc-update add webcamd default
-  chroot ${release} rc-update delete vboxguest default
-  chroot ${release} rc-update delete vboxservice default
+  # remove netmount from default
+  chroot ${release} rc-update delete netmount default
+  # chroot ${release} rc-update delete vboxguest default
+  # chroot ${release} rc-update delete vboxservice default
   chroot ${release} rc-update add cupsd default
   chroot ${release} rc-update add avahi-daemon default
   chroot ${release} rc-update add avahi-dnsconfd default
@@ -182,7 +152,7 @@ extra_config()
   . ${cwd}/extra/gitpkg.sh
   . ${cwd}/extra/mate-live-settings.sh
   set_live_system
-  # git_pc_sysinstall
+  git_pc_sysinstall
   ## git_gbi is for development testing and gbi should be
   ## remove from the package list to avoid conflict
   # git_gbi
@@ -233,9 +203,11 @@ uzip()
   umount ${release}/dev
   install -o root -g wheel -m 755 -d "${cdroot}"
   mkdir "${cdroot}/data"
-  makefs "${cdroot}/data/system.ufs" "${release}"
-  mkuzip -o "${cdroot}/data/system.uzip" "${cdroot}/data/system.ufs"
-  rm -r "${cdroot}/data/system.ufs"
+  # makefs -t ffs -m 4000m -f '10%' -b '10%' "${cdroot}/data/usr.ufs" "${release}/usr"
+  makefs -t ffs -f '10%' -b '10%' "${cdroot}/data/usr.ufs" "${release}/usr"
+  # makefs "${cdroot}/data/usr.ufs" "${release}/usr"
+  mkuzip -o "${cdroot}/data/usr.uzip" "${cdroot}/data/usr.ufs"
+  rm -r "${cdroot}/data/usr.ufs"
 }
 
 ramdisk()
@@ -268,9 +240,13 @@ boot()
 {
   cd "${release}"
   tar -cf - boot | tar -xf - -C "${cdroot}"
+  cp COPYRIGHT ${cdroot}/COPYRIGHT
   cd "${cwd}"
+  cp LICENSE ${cdroot}/LICENSE
   cp -R boot/ ${cdroot}/boot/
   mkdir ${cdroot}/etc
+  cd ${cdroot}
+  cd "${cwd}"
 }
 
 image()
