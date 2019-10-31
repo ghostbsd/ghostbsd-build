@@ -152,7 +152,7 @@ extra_config()
   . ${cwd}/extra/gitpkg.sh
   . ${cwd}/extra/mate-live-settings.sh
   set_live_system
-  git_pc_sysinstall
+  # git_pc_sysinstall
   ## git_gbi is for development testing and gbi should be
   ## remove from the package list to avoid conflict
   # git_gbi
