@@ -38,7 +38,7 @@ software_packages="${livecd}/software_packages"
 base_packages="${livecd}/base_packages"
 release="${livecd}/release"
 cdroot="${livecd}/cdroot"
-version="19.10"
+version="19.11"
 # version=""
 release_stamp=""
 # release_stamp="-RC4"
@@ -96,7 +96,7 @@ packages_software()
     kde)
       cat ${cwd}/packages/kde | xargs pkg -c ${release} install -y ;;
   esac
-
+  mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
 
