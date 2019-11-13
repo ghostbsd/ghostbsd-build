@@ -9,6 +9,9 @@ fi
 kernrel="`uname -r`"
 
 case $kernrel in
+  '12.1-STABLE')
+    echo "Using correct kernel release" 1>&2
+    ;;
   '12.1-PRERELEASE')
     echo "Using correct kernel release" 1>&2
     ;;

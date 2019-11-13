@@ -42,3 +42,23 @@ EOF
   rm -f ${release}/config.sh
   rm -rf ${release}/gbi
 }
+
+git_xfce_settings()
+{
+  if [ ! -d ${release}/pc-sysinstall ]; then
+    echo "Downloading gbi from GitHub"
+    git clone https://github.com/GhostBSD/ghostbsd-xfce-settings.git ${release}/ghostbsd-xfce-settings >/dev/null 2>&1
+  fi
+
+  cat > ${release}/config.sh << 'EOF'
+#!/bin/sh
+echo "installing ghostbsd-xfce-settings from git"
+cd /ghostbsd-xfce-settings
+cp -R etc/xdg/* /usr/local/etc/xdg/
+EOF
+
+  chroot ${release} sh /config.sh
+  rm -f ${release}/config.sh
+  rm -rf ${release}/ghostbsd-xfce-setting
+}
+
