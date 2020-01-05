@@ -45,6 +45,7 @@ ghostbsd-icons
 ghostbsd-common-settings
 git
 openjdk8-jre
+python37
 py37-setuptools
 py37-gobject3
 doas
