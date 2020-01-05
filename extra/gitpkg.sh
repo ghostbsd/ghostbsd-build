@@ -35,7 +35,7 @@ git_gbi()
 #!/bin/sh
 echo "installing gbi from git"
 cd /gbi
-python3.6 setup.py install >/dev/null 2>&1
+/usr/local/bin/python3.7 setup.py install >/dev/null 2>&1
 EOF
 
   chroot ${release} sh /config.sh
