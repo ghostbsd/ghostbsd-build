@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# set -e
+set -e -u
 
 cwd="`realpath | sed 's|/scripts||g'`"
 liveuser=ghostbsd
@@ -29,7 +29,9 @@ if [ "${desktop}" != "mate" ] ; then
 else
   community=""
 fi
-stage=$2
+
+# stage=$2
+
 workdir="/usr/local"
 livecd="${workdir}/ghostbsd-build"
 base="${livecd}/base"
@@ -44,7 +46,7 @@ release_stamp=""
 # release_stamp="-RC4"
 # time_stamp=`date "+-%Y-%m-%d-%H-%M"`
 time_stamp=`date "+-%Y-%m-%d"`
-time_stamp=""
+# time_stamp=""
 label="GhostBSD"
 isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
 if [ "$desktop" = "mate" ] ; then
@@ -55,14 +57,31 @@ else
   union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc var www"}
 fi
 
+
+
 workspace()
 {
-  umount ${release}/var/cache/pkg >/dev/null 2>/dev/null
-  if [ -d "${livecd}" ] ;then
-    chflags -R noschg ${release} ${cdroot} >/dev/null 2>/dev/null
-    rm -rf ${release} ${cdroot} >/dev/null 2>/dev/null
+  if [ -d ${release}/var/cache/pkg ]; then
+    if [ "$(ls -A ${release}/var/cache/pkg)" ]; then
+      umount ${release}/var/cache/pkg
+    fi
   fi
-  mkdir -p ${livecd} ${base} ${iso} ${software_packages} ${base_packages} ${release} >/dev/null 2>/dev/null
+
+  if [ -d "${release}" ] ; then
+    if [ -d ${release}/dev ]; then
+      if [ "$(ls -A ${release}/dev)" ]; then
+        umount ${release}/dev
+      fi
+    fi
+    chflags -R noschg ${release}
+    rm -rf ${release}
+  fi
+
+  if [ -d "${cdroot}" ] ; then
+    chflags -R noschg ${cdroot}
+    rm -rf ${cdroot}
+  fi
+  mkdir -p ${livecd} ${base} ${iso} ${software_packages} ${base_packages} ${release}
 }
 
 base()

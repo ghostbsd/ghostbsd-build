@@ -25,6 +25,10 @@ plasma5-kwayland-integration
 calligra
 falkon
 kmail
+fusefs-ntfs
+fusefs-ext2
+fusefs-simple-mtpfs
+e2fsprogs
 kdeconnect-kde
 spectacle
 kolourpaint

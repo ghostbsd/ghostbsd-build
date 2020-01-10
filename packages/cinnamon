@@ -13,8 +13,9 @@ ghostbsd-utils
 cursor-dmz-theme
 freedesktop-sound-theme
 fusefs-ntfs
-fusefs-ext4fuse
+fusefs-ext2
 fusefs-simple-mtpfs
+e2fsprogs
 dpkg
 gawk
 git

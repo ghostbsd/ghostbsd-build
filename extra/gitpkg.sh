@@ -13,6 +13,7 @@ git_pc_sysinstall()
 
   cat > ${release}/config.sh << 'EOF'
 #!/bin/sh
+set -e -u
 echo "installing pc-syinstall"
 cd /pc-sysinstall
 sh install.sh >/dev/null 2>&1
@@ -27,15 +28,16 @@ git_gbi()
 {
   if [ ! -d ${release}/pc-sysinstall ]; then
     echo "Downloading gbi from GitHub"
-    git clone https://github.com/GhostBSD/gbi.git ${release}/gbi >/dev/null 2>&1
-    # cp -R /usr/home/ericbsd/projects/ghostbsd/gbi ${release}/gbi
+    # git clone https://github.com/GhostBSD/gbi.git ${release}/gbi >/dev/null 2>&1
+    cp -R /usr/home/ericbsd/projects/ghostbsd/gbi ${release}/gbi
   fi
 
   cat > ${release}/config.sh << 'EOF'
 #!/bin/sh
+set -e -u
 echo "installing gbi from git"
 cd /gbi
-/usr/local/bin/python3.7 setup.py install >/dev/null 2>&1
+python3.7 setup.py install >/dev/null 2>&1
 EOF
 
   chroot ${release} sh /config.sh
@@ -52,6 +54,7 @@ git_xfce_settings()
 
   cat > ${release}/config.sh << 'EOF'
 #!/bin/sh
+set -e -u
 echo "installing ghostbsd-xfce-settings from git"
 cd /ghostbsd-xfce-settings
 cp -R etc/xdg/* /usr/local/etc/xdg/
