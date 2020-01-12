@@ -10,18 +10,18 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 * Mate, XFCE, Cinnamon and KDE desktop environments
 * Hybrid DVD/USB image
 
-## Graphics Support
+## Graphics support
 * Compatible with VirtualBox, VMware, NVIDIA graphics out of box
 * SCFB support with automatic best resolution for UEFI enabled systems with Intel/AMD graphics
 
-## System Requirements
+## System requirements
 * Latest version of GhostBSD 
 * 20GB of free disk space
 * 4GB of free memory
 
 Note: GhostBSD 19.09 and later should be used to build ISO.
 
-## Initial Setup
+## Initial setup
 Install the required packages:
 ```
 pkg install git transmission-cli rsync
@@ -35,6 +35,7 @@ Clone the repo:
 ```
 git clone https://www.github.com/ghostbsd/ghostbsd-build.git
 ```
+## Starting a build
 Enter the directory for running the LiveCD build script:
 ```
 cd ghostbsd-build
