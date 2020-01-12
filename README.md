@@ -36,11 +36,12 @@ Clone the repo:
 git clone https://www.github.com/ghostbsd/ghostbsd-build.git
 ```
 ## Starting a build
-Enter the directory for running the LiveCD build script:
+#### Enter the directory for running the LiveCD build script:
 ```
 cd ghostbsd-build
 ```
-To build a GhostBSD with __MATE__ as default desktop
+
+#### To build a GhostBSD with __MATE__ as default desktop
 ```
 ./build.sh
 ```
@@ -48,19 +49,23 @@ or
 ```
 ./build.sh -d mate
 ```
-(Option) To build GhostBSD with __XFCE__ as default desktop
+
+#### (Option) To build GhostBSD with __XFCE__ as default desktop
 ```
 ./build.sh -d xfce
 ```   
-(Option) To build GhostBSD with __Cinnamon__ as default desktop
+
+#### (Option) To build GhostBSD with __Cinnamon__ as default desktop
 ```
 ./build.sh -d cinnamon
 ```   
-(Option) To build GhostBSD the default __KDE__ desktop
+
+#### (Option) To build GhostBSD the default __KDE__ desktop
 ```
 ./build.sh -d kde
 ```    
-(Option) To build GhostBSD release __MATE__ desktop
+
+#### (Option) To build GhostBSD release __MATE__ desktop
 ```
 ./build.sh -r release
 ```
@@ -69,7 +74,7 @@ or
 ./build.sh -d mate -r release
 ```
 
-(Option) To build GhostBSD development __MATE__ desktop iso
+#### (Option) To build GhostBSD development __MATE__ desktop iso
 ```
 ./build.sh
 ```
