@@ -2,26 +2,7 @@
 
 set -e -u
 
-cwd="`realpath | sed 's|/scripts||g'`"
 liveuser=ghostbsd
-desktop=$1
-validate_desktop()
-{
-  if [ ! -f "${cwd}/packages/${desktop}" ] ; then
-    echo "Invalid choice specified"
-    echo "Possible choices are:"
-    ls ${cwd}/packages
-    echo "Usage: ./build.sh mate"
-    exit 1
-  fi
-}
-
-# Validate package selection if chosen
-if [ -z "${desktop}" ] ; then
-  desktop="mate"
-else
-  validate_desktop
-fi
 
 if [ "${desktop}" != "mate" ] ; then
   DESKTOP=$(echo ${desktop} | tr [a-z] [A-Z])
@@ -40,13 +21,18 @@ software_packages="${livecd}/software_packages"
 base_packages="${livecd}/base_packages"
 release="${livecd}/release"
 cdroot="${livecd}/cdroot"
+
 # version="20.01"
-version=""
+if [ "${release_type}" == "release" ] ; then
+  version=`date "+-%y.%m"`
+  time_stamp=""
+else
+  version=""
+  time_stamp=`date "+-%Y-%m-%d"`
+fi
 release_stamp=""
 # release_stamp="-RC4"
-# time_stamp=`date "+-%Y-%m-%d-%H-%M"`
-time_stamp=`date "+-%Y-%m-%d"`
-# time_stamp=""
+
 label="GhostBSD"
 isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
 if [ "$desktop" = "mate" ] ; then

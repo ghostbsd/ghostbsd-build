@@ -6,8 +6,8 @@ Live media creator for GhostBSD distribution
 The purpose of this tool is quickly generate live images for GhostBSD.
 
 ## Features
-* Build GhostBSD with GhostBSD
-* Mate, XFCE, and KDE desktop environments
+* Build GhostBSD from packages
+* Mate, XFCE, Cinnamon and KDE desktop environments
 * Hybrid DVD/USB image
 
 ## Graphics Support
@@ -41,20 +41,41 @@ cd ghostbsd-build
 ```
 To build a GhostBSD with __MATE__ as default desktop
 ```
-./build.sh mate
-```   
+./build.sh
+```
+or
+```
+./build.sh -d mate
+```
 (Option) To build GhostBSD with __XFCE__ as default desktop
 ```
-./build.sh xfce
+./build.sh -d xfce
 ```   
 (Option) To build GhostBSD with __Cinnamon__ as default desktop
 ```
-./build.sh cinnamon
+./build.sh -d cinnamon
 ```   
-(Option) To build GhostBSD the default __MATE__ desktop
+(Option) To build GhostBSD the default __KDE__ desktop
+```
+./build.sh -d kde
+```    
+(Option) To build GhostBSD release __MATE__ desktop
+```
+./build.sh -r release
+```
+or
+```
+./build.sh -d mate -r release
+```
+
+(Option) To build GhostBSD development __MATE__ desktop iso
 ```
 ./build.sh
-```    
+```
+or 
+```
+./build.sh -d mate -r devel
+```
 
 ## Burn an image to cd:
 ```
