@@ -74,7 +74,7 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg-static -r ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD install -y -g os-generic-kernel os-generic-userland os-generic-userland-lib32
+  pkg-static -r ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD install -y -g os-generic-kernel os-generic-userland os-generic-userland-lib32 os-generic-userland-devtools
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
