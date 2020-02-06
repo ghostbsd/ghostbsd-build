@@ -1,6 +1,7 @@
 pkg
 xorg-minimal
 xorg-fonts
+font-awesome
 ghostbsd-drivers
 drm-current-kmod
 nvidia-driver

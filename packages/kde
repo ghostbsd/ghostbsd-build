@@ -1,5 +1,6 @@
 xorg-minimal
 xorg-fonts
+font-awesome
 ghostbsd-drivers
 drm-fbsd12.0-kmod
 nvidia-driver
