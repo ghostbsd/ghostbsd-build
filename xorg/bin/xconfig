@@ -450,7 +450,7 @@ manual_setup()
     amdgpu "Start Desktop with AMD GPU DRM driver" \
     drm_radeonkms "Start Desktop with Radeon KMS DRM driver" \
     radeonkms "Start Desktop with Radeon KMS driver" \
-    nvidia "Start Desktop with Nvidia ${NVERSION} dirver" \
+    nvidia "Start Desktop with Nvidia ${NVERSION} driver" \
     vesa "Start Desktop with VESA driver" \
     scfb "Start Desktop with SCFB driver" \
     virtualbox "Start Desktop with VirtualBox driver" \
