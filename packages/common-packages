@@ -26,8 +26,8 @@ system-config-printer
 foomatic-db
 foomatic-db-engine
 foomatic-db-hpijs
-firefox-i18n
-thunderbird-i18n
+firefox
+thunderbird
 gstreamer1-plugins-neon
 gstreamer1-plugins-soup
 libreoffice
