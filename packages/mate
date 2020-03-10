@@ -1,11 +1,10 @@
-drm-fbsd12.0-kmod
-rhythmbox
-vlc
+brisk-menu
 dconf-editor
-gnome-keyring
-nss_mdns
 ghostbsd-mate
 ghostbsd-mate-settings
-station-tweak
-brisk-menu
+gnome-keyring
+nss_mdns
+rhythmbox
 slick-greeter
+station-tweak
+vlc
