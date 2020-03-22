@@ -50,7 +50,5 @@ setup_xinit()
   elif [ "${desktop}" == "kde" ] ; then
     echo "exec ck-launch-session startkde"> ${release}/usr/home/${liveuser}/.xinitrc
     echo "exec ck-launch-session startkde" > ${release}/root/.xinitrc
-#    echo "exec ck-launch-session startplasmacompositor"> ${release}/usr/home/${liveuser}/.xinitrc
-#    echo "exec ck-launch-session startplasmacompositor" > ${release}/root/.xinitrc
   fi
 }
