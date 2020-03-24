@@ -48,6 +48,5 @@ final_setup()
 {
   default_ghostbsd_rc_conf
   set_sudoers
-  set_doas
   vmware_supports
 }

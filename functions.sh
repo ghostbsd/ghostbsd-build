@@ -84,7 +84,7 @@ base()
 
 packages_software()
 {
-  cp -R ${cwd}/repos/ ${release}
+  # cp -R ${cwd}/repos/ ${release}
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
@@ -173,7 +173,6 @@ extra_config()
     lightdm_setup
   fi
   setup_autologin
-  # setup_xinit
   final_setup
   echo "gop set 0" >> ${release}/boot/loader.rc.local
   # To fix lightdm crashing to be remove on the new base update.
