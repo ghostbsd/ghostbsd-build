@@ -22,10 +22,8 @@ base_packages="${livecd}/base_packages"
 release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 
-# version="20.01"
 if [ "${release_type}" == "release" ] ; then
-  # version=`date "+-%y.%m"`
-  version="-20.03"
+version=`date "+-%y.%m"`
   time_stamp=""
 else
   version=""
@@ -103,9 +101,6 @@ packages_software()
   mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
-
-  cp -R ${cwd}/repos/ ${release}
-
 }
 
 rc()
