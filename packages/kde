@@ -33,6 +33,7 @@ nvidia-driver
 openjdk8-jre
 p7zip
 pc-sysinstall
+pkg
 plasma5-kwayland-integration
 plasma5-plasma
 py37-gobject3
