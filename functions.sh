@@ -124,8 +124,6 @@ rc()
   chroot ${release} rc-update add webcamd default
   chroot ${release} rc-update add powerd default
   chroot ${release} rc-update add ipfw default
-  # chroot ${release} rc-update delete vboxguest default
-  # chroot ${release} rc-update delete vboxservice default
   chroot ${release} rc-update delete netmount default
   chroot ${release} rc-update add cupsd default
   chroot ${release} rc-update add avahi-daemon default
@@ -166,7 +164,7 @@ extra_config()
   final_setup
   echo "gop set 0" >> ${release}/boot/loader.rc.local
   # To fix lightdm crashing to be remove on the new base update.
-  sed -i '' -e 's/memorylocked=128M/memorylocked=256M/' ${release}/etc/login.conf
+  sed -i '' -e 's/memorylocked=128M/memorylocked=256M/g' ${release}/etc/login.conf
   chroot ${release} cap_mkdb /etc/login.conf
   mkdir -p ${release}/usr/local/share/ghostbsd
   echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
