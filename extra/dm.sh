@@ -19,8 +19,13 @@ lightdm_setup()
     cp extra/dm/msd-background-helper ${release}/usr/local/bin/msd-background-helper
     chmod +x ${release}/usr/local/bin/msd-background-helper
     cp extra/dm/msd-background-helper.desktop ${release}/usr/local/etc/xdg/autostart/msd-background-helper.desktop
+  elif [ "${desktop}" == "kde" ] ; then
+    sed -i '' "s@#greeter-session=example-gtk-gnome@greeter-session=slick-greeter@" ${release}/usr/local/etc/lightdm/lightdm.conf
+    sed -i '' "s@#user-session=default@user-session=plasma@" ${release}/usr/local/etc/lightdm/lightdm.conf
+    cp extra/dm/slick-greeter.conf ${release}/usr/local/etc/lightdm/slick-greeter.conf
   fi
   setup_xinit
+
 }
 
 gdm_setup()
@@ -28,13 +33,6 @@ gdm_setup()
   echo 'gdm_enable="YES"' >> ${release}/etc/rc.conf
   setup_xinit
 }
-
-sddm_setup()
-{
-  echo 'sddm_enable="YES"' >> ${release}/etc/rc.conf
-  setup_xinit
-}
-
 
 setup_xinit()
 {
@@ -48,7 +46,7 @@ setup_xinit()
     echo "exec ck-launch-session cinnamon-session" > ${release}/usr/home/${liveuser}/.xinitrc
     echo "exec ck-launch-session cinnamon-session" > ${release}/root/.xinitrc
   elif [ "${desktop}" == "kde" ] ; then
-    echo "exec ck-launch-session startkde"> ${release}/usr/home/${liveuser}/.xinitrc
-    echo "exec ck-launch-session startkde" > ${release}/root/.xinitrc
+    echo "exec ck-launch-session startplasma-x11"> ${release}/usr/home/${liveuser}/.xinitrc
+    echo "exec ck-launch-session startplasma-x11" > ${release}/root/.xinitrc
   fi
 }

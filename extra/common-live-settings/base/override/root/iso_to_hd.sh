@@ -22,7 +22,7 @@ purge_live_settings()
   esac
   # Removing livecd hostname.
   ( echo 'g/hostname="livecd"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
-  rc-update add xconfig default
+  # rc-update add xconfig default
 }
 
 set_sudoers()
@@ -93,6 +93,12 @@ setup_lightdm_and_xinitrc()
         echo 'exec cinnamon-session' > /usr/home/${user}/.xinitrc
         chown ${user}:wheel /usr/home/${user}/.xinitrc
       done ;;
+    kde)
+      echo 'exec startplasma-x11' > /root/.xinitrc
+      for user in `ls /usr/home/` ; do
+        echo 'exec startplasma-x11' > /usr/home/${user}/.xinitrc
+        chown ${user}:wheel /usr/home/${user}/.xinitrc
+      done ;;
   esac
   rc-update add lightdm default
 }
@@ -101,9 +107,9 @@ setup_sddm_and_xinitrc()
 {
   case $desktop in
      kde)
-      echo 'exec startkde' > /root/.xinitrc
+      echo 'exec startplasma-x11' > /root/.xinitrc
       for user in `ls /usr/home/` ; do
-        echo 'exec startkde' > /usr/home/${user}/.xinitrc
+        echo 'exec startplasma-x11' > /usr/home/${user}/.xinitrc
         chown ${user}:wheel /usr/home/${user}/.xinitrc
       done ;;
   esac
@@ -171,13 +177,13 @@ set_nohistory
 fix_perms
 remove_ghostbsd_user
 PolicyKit_setting
-# setup_slim_and_xinitrc
-case $desktop in
-  kde)
-    setup_sddm_and_xinitrc
-    set_qt5ct
-    ;;
-  *)
-    setup_lightdm_and_xinitrc
-    ;;
-esac
+setup_slim_and_xinitrc
+#case $desktop in
+#  kde)
+#    setup_sddm_and_xinitrc
+#    set_qt5ct
+#    ;;
+#  *)
+#    setup_lightdm_and_xinitrc
+#    ;;
+#esac

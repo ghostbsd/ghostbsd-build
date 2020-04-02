@@ -24,7 +24,8 @@ cdroot="${livecd}/cdroot"
 
 # version="20.01"
 if [ "${release_type}" == "release" ] ; then
-  version=`date "+-%y.%m"`
+  # version=`date "+-%y.%m"`
+  version="-20.03"
   time_stamp=""
 else
   version=""
@@ -130,6 +131,7 @@ rc()
   chroot ${release} rc-update add ipfw default
   # chroot ${release} rc-update delete vboxguest default
   # chroot ${release} rc-update delete vboxservice default
+  chroot ${release} rc-update delete netmount default
   chroot ${release} rc-update add cupsd default
   chroot ${release} rc-update add avahi-daemon default
   chroot ${release} rc-update add avahi-dnsconfd default
@@ -161,16 +163,9 @@ extra_config()
   # git_gbi
   setup_liveuser
   setup_base
-  if [ "${desktop}" == "kde" ] ; then
-    setup_xinit
-  elif [ "${desktop}" == "xfce" ] ; then
-    lightdm_setup
-    # git_xfce_settings
-  elif [ "${desktop}" == "mate" ] ; then
-    lightdm_setup
+  lightdm_setup
+  if [ "${desktop}" == "mate" ] ; then
     mate_schemas
-  else
-    lightdm_setup
   fi
   setup_autologin
   final_setup
@@ -186,10 +181,10 @@ xorg()
 {
   if [ -n "${desktop}" ] ; then
     install -o root -g wheel -m 755 "${cwd}/xorg/bin/xconfig" "${release}/usr/local/bin/"
-    install -o root -g wheel -m 755 "${cwd}/xorg/rc.d/xconfig" "${release}/usr/local/etc/rc.d/"
-    if [ -f "${release}/sbin/openrc-run" ] ; then
-      install -o root -g wheel -m 755 "${cwd}/xorg/init.d/xconfig" "${release}/usr/local/etc/init.d/"
-    fi
+    # install -o root -g wheel -m 755 "${cwd}/xorg/rc.d/xconfig" "${release}/usr/local/etc/rc.d/"
+    # if [ -f "${release}/sbin/openrc-run" ] ; then
+    #   install -o root -g wheel -m 755 "${cwd}/xorg/init.d/xconfig" "${release}/usr/local/etc/init.d/"
+    # fi
     if [ ! -d "${release}/usr/local/etc/X11/cardDetect/" ] ; then
       mkdir -p ${release}/usr/local/etc/X11/cardDetect
     fi
