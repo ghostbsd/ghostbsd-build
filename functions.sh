@@ -90,13 +90,13 @@ packages_software()
   mount -t devfs devfs ${release}/dev
   case $desktop in
     mate)
-      cat ${cwd}/packages/mate | xargs pkg -c ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD_PKG install -y ;;
+      cat ${cwd}/packages/mate | xargs pkg -c ${release} install -y ;;
     xfce)
-      cat ${cwd}/packages/xfce | xargs pkg -c ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD_PKG install -y ;;
+      cat ${cwd}/packages/xfce | xargs pkg -c ${release} install -y ;;
     cinnamon)
-      cat ${cwd}/packages/cinnamon | xargs pkg-static -c ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD_PKG install -y ;;
+      cat ${cwd}/packages/cinnamon | xargs pkg -c ${release} install -y ;;
     kde)
-      cat ${cwd}/packages/kde | xargs pkg -c ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD_PKG install -y ;;
+      cat ${cwd}/packages/kde | xargs pkg -c ${release} install -y ;;
   esac
   mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
