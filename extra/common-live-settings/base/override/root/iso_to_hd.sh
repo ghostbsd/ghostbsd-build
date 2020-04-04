@@ -50,7 +50,7 @@ remove_ghostbsd_user()
   sed -i "" "/ttyv0/s/ghostbsd/Pc/g" /etc/ttys
 }
 
-setup_lightdm_and_xinitrc()
+setup_dm_and_xinitrc()
 {
   case $desktop in
     mate)
