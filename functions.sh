@@ -73,7 +73,7 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg-static -r ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD install -y -g os-generic-kernel os-generic-userland os-generic-userland-lib32 os-generic-userland-devtools
+  pkg-static -r ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD_PKG install -y -g os-generic-kernel os-generic-userland os-generic-userland-lib32 os-generic-userland-devtools
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -90,13 +90,13 @@ packages_software()
   mount -t devfs devfs ${release}/dev
   case $desktop in
     mate)
-      cat ${cwd}/packages/mate | xargs pkg -c ${release} install -y ;;
+      cat ${cwd}/packages/mate | xargs pkg -c ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD_PKG install -y ;;
     xfce)
-      cat ${cwd}/packages/xfce | xargs pkg -c ${release} install -y ;;
+      cat ${cwd}/packages/xfce | xargs pkg -c ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD_PKG install -y ;;
     cinnamon)
-      cat ${cwd}/packages/cinnamon | xargs pkg-static -c ${release} install -y ;;
+      cat ${cwd}/packages/cinnamon | xargs pkg-static -c ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD_PKG install -y ;;
     kde)
-      cat ${cwd}/packages/kde | xargs pkg -c ${release} install -y ;;
+      cat ${cwd}/packages/kde | xargs pkg -c ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ -C GhostBSD_PKG install -y ;;
   esac
   mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
