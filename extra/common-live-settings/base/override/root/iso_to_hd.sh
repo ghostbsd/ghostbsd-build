@@ -87,7 +87,7 @@ setup_sddm_and_xinitrc()
 {
   case $desktop in
      kde)
-      echo 'exec startplasma-x11' > /root/.xinitrc
+      echo 'exec ck-launcher-session startplasma-x11' > /root/.xinitrc
       echo "export QT_QPA_PLATFORMTHEME=qt5ct" >> /root/.xprofile
       for user in `ls /usr/home/` ; do
         echo 'exec ck-launcher-session startplasma-x11' > /usr/home/${user}/.xinitrc
