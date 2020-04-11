@@ -50,6 +50,6 @@ vim-tiny
 virtualbox-ose-additions
 vlc
 xorg-fonts
-xorg-minimal
+xorg
 xrandr
 zip
