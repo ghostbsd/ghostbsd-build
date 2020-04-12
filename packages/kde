@@ -20,9 +20,9 @@ git
 gtk-update-icon-cache
 hicolor-icon-theme
 kate
+kde5
 kdeconnect-kde
 kf5-frameworks
-kf5-kwayland
 kmail
 kolourpaint
 linux-c7
@@ -35,14 +35,12 @@ p7zip
 pc-sysinstall
 phonon-gstreamer-qt5
 pkg
-plasma5-kwayland-integration
 plasma5-plasma
 plasma5-plasma-pa
 plasma5-plasma-workspace
 py37-gobject3
 py37-setuptools
 python37
-qt5ct
 qterminal
 slick-greeter
 telegram-desktop
@@ -53,6 +51,6 @@ vim-tiny
 virtualbox-ose-additions
 vlc
 xorg-fonts
-xorg-minimal
+xorg
 xrandr
 zip
