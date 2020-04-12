@@ -73,10 +73,10 @@ setup_dm_and_xinitrc()
       done ;;
     kde)
       echo 'exec ck-launcher-session startplasma-x11' > /root/.xinitrc
-      echo "export QT_QPA_PLATFORMTHEME=qt5ct" >> /root/.xprofile
+#      echo "export QT_QPA_PLATFORMTHEME=qt5ct" >> /root/.xprofile
       for user in `ls /usr/home/` ; do
         echo 'exec ck-launcher-session startplasma-x11' > /usr/home/${user}/.xinitrc
-        echo "export QT_QPA_PLATFORMTHEME=qt5ct" >> /home/${user}/.xprofile
+#        echo "export QT_QPA_PLATFORMTHEME=qt5ct" >> /home/${user}/.xprofile
         chown ${user}:wheel /usr/home/${user}/.xinitrc
       done ;;
   esac
@@ -88,10 +88,10 @@ setup_sddm_and_xinitrc()
   case $desktop in
      kde)
       echo 'exec ck-launcher-session startplasma-x11' > /root/.xinitrc
-      echo "export QT_QPA_PLATFORMTHEME=qt5ct" >> /root/.xprofile
+ #     echo "export QT_QPA_PLATFORMTHEME=qt5ct" >> /root/.xprofile
       for user in `ls /usr/home/` ; do
         echo 'exec ck-launcher-session startplasma-x11' > /usr/home/${user}/.xinitrc
-        echo "export QT_QPA_PLATFORMTHEME=qt5ct" >> /home/${user}/.xprofile
+ #       echo "export QT_QPA_PLATFORMTHEME=qt5ct" >> /home/${user}/.xprofile
         chown ${user}:wheel /usr/home/${user}/.xinitrc
       done ;;
   esac
