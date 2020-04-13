@@ -105,6 +105,7 @@ packages_software()
 
 rc()
 {
+  chroot ${release} sysrc -f /etc/rc.conf rc_parallel="YES"
   chroot ${release} sysrc -f /etc/rc.conf root_rw_mount="NO"
   chroot ${release} sysrc -f /etc/rc.conf hostname='livecd'
   chroot ${release} sysrc -f /etc/rc.conf sendmail_enable="NONE"
