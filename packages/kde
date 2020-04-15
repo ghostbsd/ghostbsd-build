@@ -40,6 +40,7 @@ plasma5-plasma-pa
 plasma5-plasma-workspace
 py37-gobject3
 py37-setuptools
+python3
 python37
 qterminal
 slick-greeter
