@@ -115,7 +115,8 @@ rc()
   # DEVFS rules
   chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
   # Load the following kernel modules
-  chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 cuse /boot/modules/amdgpu.ko /boot/modules/radeonkms.ko /boot/modules/i915kms.ko"
+  # chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 cuse /boot/modules/amdgpu.ko /boot/modules/radeonkms.ko /boot/modules/i915kms.ko"
+  chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 cuse /boot/modules/*"
   # remove kldload_nvidia on rc.conf
   # ( echo 'g/kldload_nvidia="nvidia-modeset nvidia"/d' ; echo 'wq' ) | ex -s ${release}/etc/rc.conf
   chroot ${release} rc-update add devfs default
