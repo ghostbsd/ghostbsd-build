@@ -405,6 +405,10 @@ start_amdgpu()
   echo "Starting Desktop (amdgpu).. Please wait.."
   sudo kldload amdgpu
   sudo sysrc -f /etc/rc.conf kld_list+="amdgpu"
+  sudo X -configure
+  sudo sed -i "" -e 's/scfb/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" -e 's/vesa/modesetting/g' /root/xorg.conf.new
+  sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
   startx
 }
 
@@ -414,17 +418,21 @@ start_drm_radeonkms()
   echo "Starting Desktop (radeonkms).. Please wait.."
   sudo kldload /boot/modules/radeonkms.ko
   sudo sysrc -f /etc/rc.conf kld_list+="/boot/modules/radeonkms.ko"
+  sudo X -configure
+  sudo sed -i "" -e 's/scfb/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" -e 's/vesa/modesetting/g' /root/xorg.conf.new
+  sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
   startx
 }
 
-start_drm_radeonkms()
-{
-  UnloadNvidia
-  echo "Starting Desktop (radeonkms).. Please wait.."
-  sudo kldload radeonkms.ko
-  sudo sysrc -f /etc/rc.conf kld_list+="radeonkms.ko"
-  startx
-}
+# start_drm_radeonkms()
+# {
+#  UnloadNvidia
+#  echo "Starting Desktop (radeonkms).. Please wait.."
+#  sudo kldload radeonkms.ko
+#  sudo sysrc -f /etc/rc.conf kld_list+="radeonkms.ko"
+#  startx
+# }
 
 start_shell()
 {
