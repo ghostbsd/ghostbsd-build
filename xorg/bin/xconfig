@@ -406,8 +406,8 @@ start_amdgpu()
   sudo kldload amdgpu
   sudo sysrc -f /etc/rc.conf kld_list+="amdgpu"
   sudo X -configure
-  sudo sed -i "" -e 's/scfb/modesetting/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/vesa/modesetting/g' /root/xorg.conf.new
+#  sudo sed -i "" -e 's/scfb/modesetting/g' /root/xorg.conf.new
+#  sudo sed -i "" -e 's/vesa/modesetting/g' /root/xorg.conf.new
   sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
   startx
 }
@@ -419,8 +419,8 @@ start_drm_radeonkms()
   sudo kldload /boot/modules/radeonkms.ko
   sudo sysrc -f /etc/rc.conf kld_list+="/boot/modules/radeonkms.ko"
   sudo X -configure
-  sudo sed -i "" -e 's/scfb/modesetting/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/vesa/modesetting/g' /root/xorg.conf.new
+#  sudo sed -i "" -e 's/scfb/modesetting/g' /root/xorg.conf.new
+#  sudo sed -i "" -e 's/vesa/modesetting/g' /root/xorg.conf.new
   sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
   startx
 }
