@@ -42,8 +42,25 @@ live_configure_xorg()
     service vboxservice start
     echo "xmodmap -e 'pointer = 1 2 3 4 5 6 7 0 0 0' &" > /usr/home/ghostbsd/.xinitrc
     echo "xmodmap -e 'pointer = 1 2 3 4 5 6 7 0 0 0' &" > /root/.xinitrc
-    echo "exec ck-launch-session mate-session" >> /usr/home/ghostbsd/.xinitrc
-    echo "exec ck-launch-session mate-session" >> /root/.xinitrc
+
+    case $desktop in
+      mate)
+        echo "exec ck-launch-session mate-session" >> /usr/home/ghostbsd/.xinitrc
+        echo "exec ck-launch-session mate-session" >> /root/.xinitrc     
+        ;;
+      xfce)
+        echo "exec ck-launch-session startxfce4" >> /usr/home/ghostbsd/.xinitrc
+        echo "exec ck-launch-session startxfce4" >> /root/.xinitrc
+        ;;
+      cinnamon)
+        echo 'exec ck-launch-session startxfce4' > /usr/home/${user}/.xinitrc
+        echo 'exec ck-launch-session startxfce4' > /root/.xinitrc
+        ;;
+      kde)
+        echo 'exec ck-launcher-session startplasma-x11' > /usr/home/${user}/.xinitrc
+        echo 'exec ck-launcher-session startplasma-x11' > /root/.xinitrc
+        ;;
+    esac
     chown ghostbsd:wheel /usr/home/ghostbsd/.xinitrc
   fi
 
