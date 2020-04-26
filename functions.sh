@@ -186,9 +186,6 @@ xorg()
     install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.scfb" "${release}/usr/local/etc/X11/cardDetect/"
     install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.virtualbox" "${release}/usr/local/etc/X11/cardDetect/"
     install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.vmware" "${release}/usr/local/etc/X11/cardDetect/"
-    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.nvidia" "${release}/usr/local/etc/X11/cardDetect/"
-    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.intel" "${release}/usr/local/etc/X11/cardDetect/"
-    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.modesetting" "${release}/usr/local/etc/X11/cardDetect/"
   fi
 }
 
