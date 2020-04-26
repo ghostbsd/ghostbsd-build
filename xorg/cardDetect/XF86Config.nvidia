@@ -1,7 +1,0 @@
-# XFree86 configuration file for RoFreeSBIE
-
-Section "Device"
-        Identifier      "Card0"
-        Driver          "nvidia"
-EndSection
-
