@@ -60,12 +60,13 @@ start_nvidia()
 {
   sudo kldload nvidia-modeset
   sudo kldload nvidia
+  echo "Starting Desktop (NVIDIA).. Please wait.."
   # sudo echo 'kldload_nvidia="nvidia-modeset nvidia"' >> /etc/rc.conf
   sudo X -configure
   sleep 5
-  sudo sed -i "" -e 's/nv/nvidia/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/scfb/nvidia/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/vesa/nvidia/g' /root/xorg.conf.new
+  sudo sed -i "" 's/nv/nvidia/g' /root/xorg.conf.new
+  sudo sed -i "" 's/scfb/nvidia/g' /root/xorg.conf.new
+  sudo sed -i "" 's/vesa/nvidia/g' /root/xorg.conf.new
   sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
   startx 2>/tmp/Xerrors
 }
@@ -84,9 +85,9 @@ start_intel_drm()
   # sudo kldload /boot/modules/i915kms.ko
   # sudo sysrc -f /etc/rc.conf kld_list+="/boot/modules/i915kms.ko"
   sudo X -configure
-  sudo sed -i "" -e 's/intel/modesetting/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/scfb/modesetting/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/vesa/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" 's/intel/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" 's/scfb/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" 's/vesa/modesetting/g' /root/xorg.conf.new
   sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
   startx
 }
@@ -98,8 +99,8 @@ start_legacy_intel()
   # sudo kldload /boot/modules/i915kms.ko
   # sudo sysrc -f /etc/rc.conf kld_list+="/boot/modules/i915kms.ko"
   sudo X -configure
-  sudo sed -i "" -e 's/scfb/intel/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/vesa/intel/g' /root/xorg.conf.new
+  sudo sed -i "" 's/scfb/intel/g' /root/xorg.conf.new
+  sudo sed -i "" 's/vesa/intel/g' /root/xorg.conf.new
   sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
   startx
 }
@@ -111,10 +112,10 @@ start_drm_amdgpu_and_radeonkms()
   # sudo kldload amdgpu
   # sudo sysrc -f /etc/rc.conf kld_list+="amdgpu"
   sudo X -configure
-  sudo sed -i "" -e 's/amdgpu/modesetting/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/radeon/modesetting/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/scfb/modesetting/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/vesa/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" 's/amdgpu/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" 's/radeon/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" 's/scfb/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" 's/vesa/modesetting/g' /root/xorg.conf.new
   sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
   startx
 }
@@ -123,14 +124,12 @@ start_drm_modesetting()
 {
   UnloadNvidia
   echo "Starting Desktop with drm modesetting.. Please wait.."
-  # sudo kldload amdgpu
-  # sudo sysrc -f /etc/rc.conf kld_list+="amdgpu"
   sudo X -configure
-  sudo sed -i "" -e 's/intel/modesetting/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/amdgpu/modesetting/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/radeon/modesetting/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/scfb/modesetting/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/vesa/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" 's/intel/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" 's/amdgpu/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" 's/radeon/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" 's/scfb/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" 's/vesa/modesetting/g' /root/xorg.conf.new
   sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
   startx
 }
@@ -142,9 +141,9 @@ start_drm_radeonkms()
   # sudo kldload /boot/modules/radeonkms.ko
   # sudo sysrc -f /etc/rc.conf kld_list+="/boot/modules/radeonkms.ko"
   sudo X -configure
-  sudo sed -i "" -e 's/radeon/modesetting/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/scfb/modesetting/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/vesa/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" 's/radeon/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" 's/scfb/modesetting/g' /root/xorg.conf.new
+  sudo sed -i "" 's/vesa/modesetting/g' /root/xorg.conf.new
   sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
   startx
 }
@@ -154,8 +153,8 @@ start_radeonkms()
   UnloadNvidia
   echo "Starting Desktop (radeonkms).. Please wait.."
   sudo X -configure
-  sudo sed -i "" -e 's/scfb/radeon/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/vesa/radeon/g' /root/xorg.conf.new
+  sudo sed -i "" 's/scfb/radeon/g' /root/xorg.conf.new
+  sudo sed -i "" 's/vesa/radeon/g' /root/xorg.conf.new
   sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
   startx
 }
@@ -165,8 +164,8 @@ start_amdgpu()
   UnloadNvidia
   echo "Starting Desktop (amdgpu).. Please wait.."
   sudo X -configure
-  sudo sed -i "" -e 's/scfb/amdgpu/g' /root/xorg.conf.new
-  sudo sed -i "" -e 's/vesa/amdgpu/g' /root/xorg.conf.new
+  sudo sed -i "" 's/scfb/amdgpu/g' /root/xorg.conf.new
+  sudo sed -i "" 's/vesa/amdgpu/g' /root/xorg.conf.new
   sudo cp /root/xorg.conf.new /etc/X11/xorg.conf
   startx
 }
@@ -270,7 +269,7 @@ fail_safe()
 
 start_xorg()
 {
-  if [ -z NVDRIVER ] ; then
+  if [ -z ${NVDRIVER} ] ; then
     # First check if we are running as a VirtualBox guest
     pciconf -lv | grep -q "VirtualBox"
     if [ $? -eq 0 ] ; then
