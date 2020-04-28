@@ -98,6 +98,17 @@ setup_sddm_and_xinitrc()
   rc-update add sddm default
 }
 
+
+disable_syscons()
+{
+  pciconf -lv | grep -B 4 VGA | grep -q 'Advanced Micro Devices'
+  if [ $? -eq 0 ] ; then
+    echo "hw.syscons.disable=1" >> /boot/loader.conf
+  fi
+}
+
+pciconf -lv | grep -B 4 VGA |
+hw.syscons.disable=1
 PolicyKit_setting()
 {
 # Setup PolicyKit for mounting device.
@@ -146,3 +157,4 @@ fix_perms
 remove_ghostbsd_user
 PolicyKit_setting
 setup_dm_and_xinitrc
+disable_syscons
