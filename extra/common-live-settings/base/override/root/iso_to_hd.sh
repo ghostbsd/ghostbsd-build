@@ -101,14 +101,13 @@ setup_dm_and_xinitrc()
 
 disable_syscons()
 {
-  pciconf -lv | grep -B 4 VGA | grep -q 'Advanced Micro Devices'
+  kenv | grep -q 'hw.syscons.disable'
   if [ $? -eq 0 ] ; then
     echo "hw.syscons.disable=1" >> /boot/loader.conf
   fi
 }
 
-pciconf -lv | grep -B 4 VGA |
-hw.syscons.disable=1
+
 PolicyKit_setting()
 {
 # Setup PolicyKit for mounting device.
