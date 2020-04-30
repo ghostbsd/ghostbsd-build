@@ -128,9 +128,9 @@ rc()
   chroot ${release} rc-update add avahi-dnsconfd default
   chroot ${release} rc-update add ntpd default
   chroot ${release} sysrc -f /etc/rc.conf ntpd_sync_on_start="YES"
-  chroot ${release} sysrc -f /etc/rc.conf vboxguest_enable="YES"
-  chroot ${release} sysrc -f /etc/rc.conf vboxservice_enable="YES"
-  chroot ${release} sysrc -f /etc/rc.conf vboxservice_flags="--disable-timesync"
+#  chroot ${release} sysrc -f /etc/rc.conf vboxguest_enable="YES"
+#  chroot ${release} sysrc -f /etc/rc.conf vboxservice_enable="YES"
+#  chroot ${release} sysrc -f /etc/rc.conf vboxservice_flags="--disable-timesync"
 }
 
 user()
