@@ -61,9 +61,8 @@ start_nvidia()
   sudo kldload nvidia-modeset
   sudo kldload nvidia
   echo "Starting Desktop (NVIDIA).. Please wait.."
-  # sudo echo 'kldload_nvidia="nvidia-modeset nvidia"' >> /etc/rc.conf
+  sudo sysrc -f /etc/rc.conf kldload_nvidia="nvidia-modeset"
   sudo X -configure
-  sleep 5
   sudo sed -i "" 's/nv/nvidia/g' /root/xorg.conf.new
   sudo sed -i "" 's/scfb/nvidia/g' /root/xorg.conf.new
   sudo sed -i "" 's/vesa/nvidia/g' /root/xorg.conf.new
