@@ -23,7 +23,7 @@ release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 
 if [ "${release_type}" == "release" ] ; then
-version=`date "+-%y.%m"`
+version=`date "+-%y.04.1"`
   time_stamp=""
 else
   version=""
