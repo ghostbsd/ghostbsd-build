@@ -88,16 +88,7 @@ packages_software()
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
   mount -t devfs devfs ${release}/dev
-  case $desktop in
-    mate)
-      cat ${cwd}/packages/mate | xargs pkg -c ${release} install -y ;;
-    xfce)
-      cat ${cwd}/packages/xfce | xargs pkg -c ${release} install -y ;;
-    cinnamon)
-      cat ${cwd}/packages/cinnamon | xargs pkg -c ${release} install -y ;;
-    kde)
-      cat ${cwd}/packages/kde | xargs pkg -c ${release} install -y ;;
-  esac
+  cat ${cwd}/packages/${desktop} | xargs pkg -c ${release} install -y
   mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
