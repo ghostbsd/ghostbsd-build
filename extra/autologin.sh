@@ -10,7 +10,7 @@ setup_autologin()
   echo ":al=${liveuser}:ht:np:sp#115200:" >> ${release}/etc/gettytab
   sed -i "" "/ttyv0/s/Pc/${liveuser}/g" ${release}/etc/ttys
   mkdir -p ${release}/usr/home/${liveuser}/.config/fish
-  if [ -f '${release}/usr/local/bin/xconfig' ] ; then
+  if [ -f "${release}/usr/local/bin/xconfig" ] ; then
     printf "if not test -f /tmp/.xstarted
   touch /tmp/.xstarted
   set tty (tty)
