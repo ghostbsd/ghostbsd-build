@@ -73,7 +73,6 @@ workspace
 base
 packages_software
 user
-xorg
 rc
 extra_config
 uzip

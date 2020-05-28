@@ -161,24 +161,6 @@ extra_config()
   echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
 }
 
-xorg()
-{
-  if [ -n "${desktop}" ] ; then
-    install -o root -g wheel -m 755 "${cwd}/xorg/bin/xconfig" "${release}/usr/local/bin/"
-    # install -o root -g wheel -m 755 "${cwd}/xorg/rc.d/xconfig" "${release}/usr/local/etc/rc.d/"
-    # if [ -f "${release}/sbin/openrc-run" ] ; then
-    #   install -o root -g wheel -m 755 "${cwd}/xorg/init.d/xconfig" "${release}/usr/local/etc/init.d/"
-    # fi
-    if [ ! -d "${release}/usr/local/etc/X11/cardDetect/" ] ; then
-      mkdir -p ${release}/usr/local/etc/X11/cardDetect
-    fi
-    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.vesa" "${release}/usr/local/etc/X11/cardDetect/"
-    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.scfb" "${release}/usr/local/etc/X11/cardDetect/"
-    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.virtualbox" "${release}/usr/local/etc/X11/cardDetect/"
-    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.vmware" "${release}/usr/local/etc/X11/cardDetect/"
-  fi
-}
-
 uzip()
 {
   umount ${release}/dev
