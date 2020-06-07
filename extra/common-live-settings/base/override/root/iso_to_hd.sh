@@ -15,6 +15,7 @@ fi
 # removing the old network configuration
 purge_live_settings()
 {
+  mv /usr/local/etc/devd-openrc/automount_devd.conf.skip /usr/local/etc/devd-openrc/automount_devd.conf
   case $desktop in
     mate)
       rm /usr/local/share/glib-2.0/schemas/92_org.gnome.desktop.screensaver.gschema.override

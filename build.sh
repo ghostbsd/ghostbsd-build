@@ -146,7 +146,6 @@ base()
 
 packages_software()
 {
-  # cp -R ${cwd}/repos/ ${release}
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
@@ -222,6 +221,8 @@ extra_config()
   chroot ${release} cap_mkdb /etc/login.conf
   mkdir -p ${release}/usr/local/share/ghostbsd
   echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
+  # bypass automount for live
+  mv ${release}/usr/local/etc/devd-openrc/automount_devd.conf ${release}/usr/local/etc/devd-openrc/automount_devd.conf.skip
 }
 
 xorg()
