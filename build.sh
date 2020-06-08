@@ -221,6 +221,7 @@ extra_config()
   chroot ${release} cap_mkdb /etc/login.conf
   mkdir -p ${release}/usr/local/share/ghostbsd
   echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
+  echo "${liveuser}" > ${release}/usr/local/share/ghostbsd/liveuser
   # bypass automount for live
   mv ${release}/usr/local/etc/devd-openrc/automount_devd.conf ${release}/usr/local/etc/devd-openrc/automount_devd.conf.skip
 }
