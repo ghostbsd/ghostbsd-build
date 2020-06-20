@@ -16,9 +16,6 @@ lightdm_setup()
     sed -i '' "s@#greeter-session=example-gtk-gnome@greeter-session=slick-greeter@" ${release}/usr/local/etc/lightdm/lightdm.conf
     sed -i '' "s@#user-session=default@user-session=mate@" ${release}/usr/local/etc/lightdm/lightdm.conf
     cp extra/dm/slick-greeter.conf ${release}/usr/local/etc/lightdm/slick-greeter.conf
-    cp extra/dm/msd-background-helper ${release}/usr/local/bin/msd-background-helper
-    chmod +x ${release}/usr/local/bin/msd-background-helper
-    cp extra/dm/msd-background-helper.desktop ${release}/usr/local/etc/xdg/autostart/msd-background-helper.desktop
   elif [ "${desktop}" == "kde" ] ; then
     sed -i '' "s@#greeter-session=example-gtk-gnome@greeter-session=slick-greeter@" ${release}/usr/local/etc/lightdm/lightdm.conf
     sed -i '' "s@#user-session=default@user-session=plasma@" ${release}/usr/local/etc/lightdm/lightdm.conf
