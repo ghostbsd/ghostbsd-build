@@ -158,7 +158,6 @@ packages_software()
 
 rc()
 {
-  chroot ${release} sysrc -f /etc/rc.conf kldload_nvidia="nvidia-modeset"
   chroot ${release} sysrc -f /etc/rc.conf rc_parallel="NO"
   chroot ${release} sysrc -f /etc/rc.conf root_rw_mount="NO"
   chroot ${release} sysrc -f /etc/rc.conf hostname='livecd'
@@ -169,7 +168,7 @@ rc()
   # DEVFS rules
   chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
   # Load the following kernel modules
-  chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 cuse /boot/modules/amdgpu.ko /boot/modules/radeonkms.ko /boot/modules/i915kms.ko"
+  chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 cuse"
   chroot ${release} rc-update add devfs default
   chroot ${release} rc-update add moused default
   chroot ${release} rc-update add dbus default
@@ -323,5 +322,3 @@ ramdisk
 mfs
 boot
 image
-
-
