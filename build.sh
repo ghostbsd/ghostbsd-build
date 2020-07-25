@@ -53,7 +53,7 @@ validate_desktop()
   fi
 }
 
-if [ ! -n "$desktop" ]
+if [ ! -z "${desktop-}" ]
 then
   export desktop="mate"
 else
@@ -61,9 +61,9 @@ else
 fi
 
 
-if [ ! -n "$release_type" ]
+if [ ! -z "${release_type-}" ]
 then
-  export release_type="devel"
+  export release_type="release"
 fi
 
 if [ "${desktop}" != "mate" ] ; then
@@ -85,15 +85,9 @@ release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 liveuser="ghostbsd"
 
-if [ "${release_type}" == "release" ] ; then
-version=`date "+-%y.%m"`
-  time_stamp=""
-else
-  version=""
-  time_stamp=`date "+-%Y-%m-%d"`
-fi
+version=`date "+-%y.%m.%d"`
+time_stamp=""
 release_stamp=""
-# release_stamp="-RC4"
 
 label="GhostBSD"
 isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
