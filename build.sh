@@ -30,6 +30,10 @@ helpFunction()
    exit 1 # Exit script after printing help
 }
 
+# Set mate and release to be default
+export desktop="mate"
+export release_type="release"
+
 while getopts "d:r:" opt
 do
    case "$opt" in
@@ -53,18 +57,7 @@ validate_desktop()
   fi
 }
 
-if [ ! -z "${desktop-}" ]
-then
-  export desktop="mate"
-else
-  validate_desktop
-fi
-
-
-if [ ! -z "${release_type-}" ]
-then
-  export release_type="release"
-fi
+validate_desktop
 
 if [ "${desktop}" != "mate" ] ; then
   DESKTOP=$(echo ${desktop} | tr [a-z] [A-Z])
@@ -72,8 +65,6 @@ if [ "${desktop}" != "mate" ] ; then
 else
   community=""
 fi
-
-# stage=$2
 
 workdir="/usr/local"
 livecd="${workdir}/ghostbsd-build"
