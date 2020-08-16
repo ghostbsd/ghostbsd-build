@@ -35,3 +35,23 @@ kern.geom.part.mbr.enforce_chs=0
 #
 # drop udp and tcp packets going to closed sockets
 # net.inet.udp.blackhole=1
+#
+# IPv4 ICMP drop redirect security enhancement
+# net.inet.icmp.drop_redirect=1
+#
+# IPv4 security additions
+# net.inet.ip.check_interface=1
+# net.inet.ip.process_options=0
+# net.inet.ip.random_id=1
+# net.inet.ip.redirect=0
+#
+# IPv4 TCP security additions
+# net.inet.tcp.always_keepalive=0
+# net.inet.tcp.drop_synfin=1
+# net.inet.tcp.icmp_may_rst=0
+# net.inet.tcp.nolocaltimewait=1
+# net.inet.tcp.path_mtu_discovery=0
+#
+# IPv6 and icmp6 redirect for enhancing security
+#net.inet6.icmp6.rediraccept=0
+#net.inet6.ip6.redirect=0
