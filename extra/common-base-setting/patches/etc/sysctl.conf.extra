@@ -30,9 +30,6 @@ kern.geom.part.mbr.enforce_chs=0
 # Hide processes running in jails
 # security.bsd.see_jail_proc=0
 #
-# xorg evdev support
-# kern.evdev.rcpt_mask=6
-#
 # drop udp and tcp packets going to closed sockets
 # net.inet.udp.blackhole=1
 #
