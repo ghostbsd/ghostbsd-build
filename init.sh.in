@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/rescue/sh
 
 PATH="/rescue"
 
@@ -10,7 +10,7 @@ fi
 echo "==> Remount rootfs as read-write"
 mount -u -w /
 
-makedir=${makedir:-"/bin /boot /cdrom /compat /include /lib /libdata /libexec /man /media /memdisk /mnt /net /proc /rescue /root /sbin /share /tests /tmp /usr /var /www"}
+makedir=${makedir:-"/cdrom /memdisk /sysroot /tmp"}
 
 echo "==> Make mountpoints /cdrom /memdisk /usr"
 mkdir -p ${makedir}
@@ -24,28 +24,34 @@ done
 echo "==> Mount cdrom"
 mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom
 
-echo "==> mdmfs /cdrom/data/usr.uzip in /usr"
-mdmfs -P -F /cdrom/data/usr.uzip -o ro md.uzip /usr
+echo "==> Importing read only pool for cloning"
+mdconfig -f /cdrom/data/system.uzip -u 1
+zpool import ghostbsd -o readonly=on
 
-echo "==> Mount swap-based memdisk"
-MEMDISK_SIZE="$(($(sysctl -n hw.usermem) / 1024 / 1024 / 2))"
-mdmfs -s "${MEMDISK_SIZE}m" md /memdisk || exit 1
-
-echo "==> tar zxfv /cdrom/data/mfs.tgz -C /memdisk"
-tar zxf /cdrom/data/mfs.tgz -C /memdisk
-
-while read uniondir; do
-  mount_nullfs /memdisk/${uniondir} /${uniondir}
-done < /cdrom/data/uniondirs
-
-echo "==> Mount devfs /dev"
-mount -t devfs devfs /dev
+# Make room for clone in /tmp
+mount -t tmpfs tmpfs /tmp
 
 if [ "$SINGLE_USER" = "true" ]; then
-  echo "Starting interactive shell in temporary rootfs ..."
-  sh
+        echo "Starting interactive shell in temporary rootfs ..."
+        exit 0
 fi
 
-kenv init_shell="/bin/sh"
+# Ensure the system has more than enough memory for memdisk
+x=3163787264
+y=$(chroot /usr/local/ghostbsd-build/release /sbin/sysctl hw.physmem | chroot /usr/local/ghostbsd-build/release /usr/bin/awk '{print $2}')
+echo "Required memory ${x} for memdisk"
+echo "Detected memory ${y} for memdisk"
+if [ $x -gt $y ] ; then
+  echo "GhostBSD requires 4GB of memory for memdisk, and operation!"
+  echo "Type exit, and press enter after entering the rescue shell to power off."
+  exit 1
+fi
 
+echo "==> Mount swap-based memdisk"
+mdconfig -a -t swap -s 4g
+zpool create livecd /dev/md2
+zfs set compression=gzip livecd
+zfs send ghostbsd | chroot /usr/local/ghostbsd-build/release pv | zfs recv -F livecd
+
+kenv init_shell="/rescue/sh"
 exit 0

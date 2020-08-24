@@ -38,6 +38,7 @@ pkg
 plasma5-plasma
 plasma5-plasma-pa
 plasma5-plasma-workspace
+pv
 py37-gobject3
 py37-setuptools
 python3
