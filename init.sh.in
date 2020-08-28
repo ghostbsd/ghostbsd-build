@@ -48,7 +48,7 @@ echo "==> Mount swap-based memdisk"
 mdconfig -a -t swap -s 4g
 zpool create livecd /dev/md2
 zfs set compression=gzip livecd
-zfs send ghostbsd | chroot /usr/local/ghostbsd-build/release pv | zfs recv -F livecd
+zfs send -c ghostbsd | chroot /usr/local/ghostbsd-build/release pv | zfs recv -F livecd
 
 kenv init_shell="/rescue/sh"
 exit 0
