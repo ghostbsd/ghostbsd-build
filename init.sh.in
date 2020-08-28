@@ -10,7 +10,7 @@ fi
 echo "==> Remount rootfs as read-write"
 mount -u -w /
 
-makedir=${makedir:-"/cdrom /memdisk /sysroot /tmp"}
+makedir=${makedir:-"/cdrom /memdisk /sysroot"}
 
 echo "==> Make mountpoints /cdrom /memdisk /usr"
 mkdir -p ${makedir}
@@ -27,9 +27,6 @@ mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom
 echo "==> Importing read only pool for cloning"
 mdconfig -f /cdrom/data/system.uzip -u 1
 zpool import ghostbsd -o readonly=on
-
-# Make room for clone in /tmp
-mount -t tmpfs tmpfs /tmp
 
 if [ "$SINGLE_USER" = "true" ]; then
         echo "Starting interactive shell in temporary rootfs ..."

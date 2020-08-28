@@ -13,7 +13,6 @@ echo "==> Unmount filesystems for cloning"
 zpool export livecd
 zpool export ghostbsd
 umount -f /cdrom
-umount -f /tmp
 echo "== Set /dev/md2 device for reroot"
 kenv vfs.root.mountfrom=zfs:livecd
 echo "==> Rerooting into memdisk"
