@@ -34,7 +34,11 @@ gdm_setup()
 setup_xinit()
 {
   if [ "${desktop}" == "mate" ] ; then
-    echo "exec ck-launch-session mate-session" > ${release}/usr/home/${liveuser}/.xinitrc
+    echo "exec marco &" > ${release}/usr/home/${liveuser}/.xinitrc
+    echo "exec feh --bg-fill /usr/local/share/backgrounds/ghostbsd/Arizona_Desert_Monument.jpg &" >> ${release}/usr/home/${liveuser}/.xinitrc
+    echo "exec sudo install-station" >> ${release}/usr/home/${liveuser}/.xinitrc
+    chmod 765 ${release}/usr/home/${liveuser}/.xinitrc
+    # echo "exec ck-launch-session mate-session" > ${release}/usr/home/${liveuser}/.xinitrc
     echo "exec ck-launch-session mate-session" > ${release}/root/.xinitrc
   elif [ "${desktop}" == "xfce" ] ; then
     echo "exec ck-launch-session startxfce4" > ${release}/usr/home/${liveuser}/.xinitrc

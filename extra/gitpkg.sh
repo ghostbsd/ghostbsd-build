@@ -26,9 +26,9 @@ EOF
 
 git_gbi()
 {
-  if [ ! -d ${release}/pc-sysinstall ]; then
+  if [ ! -d ${release}/gbi ]; then
     echo "Downloading gbi from GitHub"
-    git clone https://github.com/GhostBSD/gbi.git ${release}/gbi >/dev/null 2>&1
+    git clone -b install-station https://github.com/GhostBSD/gbi.git ${release}/gbi >/dev/null 2>&1
     # cp -R /usr/home/ericbsd/projects/ghostbsd/gbi ${release}/gbi
   fi
 
@@ -45,23 +45,23 @@ EOF
   rm -rf ${release}/gbi
 }
 
-git_xfce_settings()
+git_install_station()
 {
-  if [ ! -d ${release}/pc-sysinstall ]; then
+  if [ ! -d ${release}/install-station ]; then
     echo "Downloading gbi from GitHub"
-    git clone https://github.com/GhostBSD/ghostbsd-xfce-settings.git ${release}/ghostbsd-xfce-settings >/dev/null 2>&1
+    git clone https://github.com/GhostBSD/install-station.git ${release}/install-station >/dev/null 2>&1
+    # cp -R /usr/home/ericbsd/projects/ghostbsd/install-station ${release}/install-station
   fi
 
   cat > ${release}/config.sh << 'EOF'
 #!/bin/sh
 set -e -u
-echo "installing ghostbsd-xfce-settings from git"
-cd /ghostbsd-xfce-settings
-cp -R etc/xdg/* /usr/local/etc/xdg/
+echo "installing install-station from git"
+cd /install-station
+python3.7 setup.py install >/dev/null 2>&1
 EOF
 
   chroot ${release} sh /config.sh
   rm -f ${release}/config.sh
-  rm -rf ${release}/ghostbsd-xfce-setting
+  rm -rf ${release}/gbi
 }
-
