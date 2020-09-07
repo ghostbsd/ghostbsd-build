@@ -49,6 +49,7 @@ mdconfig -a -t swap -s 3g
 zpool create livecd /dev/md2
 zfs set compression=gzip livecd
 zfs set primarycache=none livecd
+zpool status
 zfs send -c ghostbsd | chroot /usr/local/ghostbsd-build/release pv | zfs recv -F livecd
 kenv init_shell="/rescue/sh"
 exit 0
