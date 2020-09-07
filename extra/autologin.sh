@@ -21,4 +21,17 @@ setup_autologin()
 ' > ${release}/usr/home/${liveuser}/.config/fish/config.fish
   chmod 765 ${release}/usr/home/${liveuser}/.config/fish/config.fish
   fi
+
+  mkdir -p ${release}/root/.config/fish
+  if [ -f "${release}/usr/local/bin/xconfig" ] ; then
+    printf '# if not test -f /tmp/.xstarted
+  # touch /tmp/.xstarted
+  set tty (tty)
+  if test $tty = \"/dev/ttyv0\"
+    exec startx
+  end
+#end
+' > ${release}/root/.config/fish/config.fish
+  chmod 765 ${release}/root/.config/fish/config.fish
+  fi
 }
