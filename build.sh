@@ -116,7 +116,7 @@ workspace()
     rm ${livecd}/pool.img
   fi
   mkdir -p ${livecd} ${base} ${iso} ${software_packages} ${base_packages} ${release}
-  truncate -s 4g ${livecd}/pool.img
+  truncate -s 3g ${livecd}/pool.img
   mdconfig -f ${livecd}/pool.img -u 0
   zpool create ghostbsd /dev/md0
   zfs set mountpoint=${release} ghostbsd
