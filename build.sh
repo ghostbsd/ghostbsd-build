@@ -182,6 +182,7 @@ rc()
 
 user()
 {
+  chroot ${release} pw usermod -s /usr/local/bin/fish -n root
   chroot ${release} pw useradd ${liveuser} \
   -c "GhostBSD Live User" -d "/usr/home/${liveuser}"\
   -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
