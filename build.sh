@@ -196,7 +196,6 @@ extra_config()
   . ${cwd}/extra/finalize.sh
   . ${cwd}/extra/autologin.sh
   . ${cwd}/extra/gitpkg.sh
-  . ${cwd}/extra/mate-live-settings.sh
   set_live_system
   # git_pc_sysinstall
   ## git_gbi is for development testing and gbi should be
@@ -206,7 +205,10 @@ extra_config()
   setup_base
   lightdm_setup
   if [ "${desktop}" == "mate" ] ; then
-    mate_schemas
+    chroot ${release} su ${liveuser} -c "gsettings set org.mate.SettingsDaemon.plugins.housekeeping active true"
+    chroot ${release} su ${liveuser} -c "gsettings set org.gnome.desktop.screensaver lock-enabled false"
+    chroot ${release} su ${liveuser} -c "gsettings set org.mate.lockdown disable-lock-screen true"
+    chroot ${release} su ${liveuser} -c "gsettings set org.mate.lockdown disable-user-switching true"
   fi
   setup_autologin
   final_setup
