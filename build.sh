@@ -246,10 +246,8 @@ uzip()
   umount ${release}/dev
   install -o root -g wheel -m 755 -d "${cdroot}"
   mkdir "${cdroot}/data"
-  zpool export ghostbsd
-  mkuzip -o "${cdroot}/data/system.uzip" "${livecd}/pool.img"
-  zpool import ghostbsd
-  zfs set mountpoint=${release} ghostbsd
+  zfs snapshot ghostbsd@clean
+  zfs send -c -e ghostbsd@clean | dd of=/usr/local/ghostbsd-build/cdroot/data/system.img status=progress bs=1M
 }
 
 ramdisk()
@@ -280,8 +278,7 @@ boot()
   cp LICENSE ${cdroot}/LICENSE
   cp -R boot/ ${cdroot}/boot/
   mkdir ${cdroot}/etc
-  cd ${cdroot}
-  cd "${cwd}"
+  cd ${cwd} && zpool export ghostbsd && while zpool status ghostbsd >/dev/null; do :; done 2>/dev/null
 }
 
 image()

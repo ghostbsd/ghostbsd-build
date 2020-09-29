@@ -10,9 +10,9 @@ fi
 echo "==> Remount rootfs as read-write"
 mount -u -w /
 
-makedir=${makedir:-"/cdrom /memdisk /sysroot"}
+makedir=${makedir:-"/cdrom"}
 
-echo "==> Make mountpoints /cdrom /memdisk /usr"
+echo "==> Make mountpoints /cdrom"
 mkdir -p ${makedir}
 
 echo "Waiting for GhostBSD media to initialize"
@@ -24,10 +24,6 @@ done
 echo "==> Mount cdrom"
 mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom
 
-echo "==> Importing read only pool for cloning"
-mdconfig -f /cdrom/data/system.uzip -u 1
-zpool import ghostbsd -o readonly=on
-
 if [ "$SINGLE_USER" = "true" ]; then
         echo "Starting interactive shell in temporary rootfs ..."
         exit 0
@@ -35,7 +31,7 @@ fi
 
 # Ensure the system has more than enough memory for memdisk
 x=3163787264
-y=$(chroot /usr/local/ghostbsd-build/release /sbin/sysctl hw.physmem | chroot /usr/local/ghostbsd-build/release /usr/bin/awk '{print $2}')
+y=$(sysctl -n hw.physmem)
 echo "Required memory ${x} for memdisk"
 echo "Detected memory ${y} for memdisk"
 if [ $x -gt $y ] ; then
@@ -45,11 +41,11 @@ if [ $x -gt $y ] ; then
 fi
 
 echo "==> Mount swap-based memdisk"
-mdconfig -a -t swap -s 3g
-zpool create livecd /dev/md2
+mdconfig -a -t swap -s 3g -u 1 >/dev/null 2>/dev/null
+zpool create livecd /dev/md1 >/dev/null 2>/dev/null
 zfs set compression=gzip livecd
 zfs set primarycache=none livecd
-zpool status
-zfs send -c ghostbsd | chroot /usr/local/ghostbsd-build/release pv | zfs recv -F livecd
+echo "==> Replicate system image to swap-based memdisk"
+dd if=/cdrom/data/system.img status=progress bs=1M | zfs recv -F livecd
 kenv init_shell="/rescue/sh"
 exit 0
