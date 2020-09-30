@@ -1,6 +1,6 @@
 #!/rescue/sh
 
-if [ ! -e /dev/md2 ] ; then
+if [ ! -e /dev/md1 ] ; then
   halt -p
 fi
 
