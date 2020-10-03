@@ -12,7 +12,7 @@ fi
 kernrel="`uname -r`"
 
 case $kernrel in
-  '12.1-STABLE'|'12.1-PRERELEASE'|'12.0-STABLE') ;;
+  '12.2-STABLE'|'12.1-STABLE'|'12.1-PRERELEASE'|'12.0-STABLE') ;;
   *)
     echo "Using wrong kernel release. Use TrueOS 18.12 or GhostBSD 19 to build iso."
     exit 1
