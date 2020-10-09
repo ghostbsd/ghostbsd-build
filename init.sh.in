@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/rescue/sh
 
 PATH="/rescue"
 
@@ -10,9 +10,9 @@ fi
 echo "==> Remount rootfs as read-write"
 mount -u -w /
 
-makedir=${makedir:-"/bin /boot /cdrom /compat /include /lib /libdata /libexec /man /media /memdisk /mnt /net /proc /rescue /root /sbin /share /tests /tmp /usr /var /www"}
+makedir=${makedir:-"/cdrom"}
 
-echo "==> Make mountpoints /cdrom /memdisk /usr"
+echo "==> Make mountpoints /cdrom"
 mkdir -p ${makedir}
 
 echo "Waiting for GhostBSD media to initialize"
@@ -24,28 +24,28 @@ done
 echo "==> Mount cdrom"
 mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom
 
-echo "==> mdmfs /cdrom/data/usr.uzip in /usr"
-mdmfs -P -F /cdrom/data/usr.uzip -o ro md.uzip /usr
-
-echo "==> Mount swap-based memdisk"
-MEMDISK_SIZE="$(($(sysctl -n hw.usermem) / 1024 / 1024 / 2))"
-mdmfs -s "${MEMDISK_SIZE}m" md /memdisk || exit 1
-
-echo "==> tar zxfv /cdrom/data/mfs.tgz -C /memdisk"
-tar zxf /cdrom/data/mfs.tgz -C /memdisk
-
-while read uniondir; do
-  mount_nullfs /memdisk/${uniondir} /${uniondir}
-done < /cdrom/data/uniondirs
-
-echo "==> Mount devfs /dev"
-mount -t devfs devfs /dev
-
 if [ "$SINGLE_USER" = "true" ]; then
-  echo "Starting interactive shell in temporary rootfs ..."
-  sh
+        echo "Starting interactive shell in temporary rootfs ..."
+        exit 0
 fi
 
-kenv init_shell="/bin/sh"
+# Ensure the system has more than enough memory for memdisk
+x=3163787264
+y=$(sysctl -n hw.physmem)
+echo "Required memory ${x} for memdisk"
+echo "Detected memory ${y} for memdisk"
+if [ $x -gt $y ] ; then
+  echo "GhostBSD requires 4GB of memory for memdisk, and operation!"
+  echo "Type exit, and press enter after entering the rescue shell to power off."
+  exit 1
+fi
 
+echo "==> Mount swap-based memdisk"
+mdconfig -a -t swap -s 3g -u 1 >/dev/null 2>/dev/null
+zpool create livecd /dev/md1 >/dev/null 2>/dev/null
+zfs set compression=gzip livecd
+zfs set primarycache=none livecd
+echo "==> Replicate system image to swap-based memdisk"
+dd if=/cdrom/data/system.img status=progress bs=1M | zfs recv -F livecd
+kenv init_shell="/rescue/sh"
 exit 0

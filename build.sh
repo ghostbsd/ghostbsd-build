@@ -12,9 +12,9 @@ fi
 kernrel="`uname -r`"
 
 case $kernrel in
-  '12.2-STABLE'|'12.1-STABLE'|'12.1-PRERELEASE'|'12.0-STABLE') ;;
+  '12.2-STABLE'|'12.1-STABLE'|'12.0-STABLE') ;;
   *)
-    echo "Using wrong kernel release. Use GhostBSD20.04 or later to build iso."
+    echo "Using wrong kernel release. Use GhostBSD 20.04 or later to build iso."
     exit 1
     ;;
 esac
@@ -104,15 +104,23 @@ workspace()
         umount ${release}/dev
       fi
     fi
-    chflags -R noschg ${release}
-    rm -rf ${release}
   fi
 
   if [ -d "${cdroot}" ] ; then
     chflags -R noschg ${cdroot}
     rm -rf ${cdroot}
   fi
+  zpool destroy ghostbsd >/dev/null 2>/dev/null || true
+  mdconfig -d -u 0 >/dev/null 2>/dev/null || true
+  if [ -f "${livecd}/pool.img" ] ; then
+    rm ${livecd}/pool.img
+  fi
   mkdir -p ${livecd} ${base} ${iso} ${software_packages} ${base_packages} ${release}
+  truncate -s 3g ${livecd}/pool.img
+  mdconfig -f ${livecd}/pool.img -u 0
+  zpool create ghostbsd /dev/md0
+  zfs set mountpoint=${release} ghostbsd
+  zfs set compression=gzip-6 ghostbsd
 }
 
 base()
@@ -143,6 +151,7 @@ packages_software()
 
 rc()
 {
+  chroot ${release} touch /etc/rc.conf
   chroot ${release} sysrc -f /etc/rc.conf rc_parallel="NO"
   chroot ${release} sysrc -f /etc/rc.conf hostname='livecd'
   chroot ${release} sysrc -f /etc/rc.conf sendmail_enable="NONE"
@@ -164,6 +173,9 @@ rc()
   chroot ${release} rc-update add avahi-daemon default
   chroot ${release} rc-update add avahi-dnsconfd default
   chroot ${release} rc-update add ntpd default
+  chroot ${release} rc-update delete dumpon boot
+  chroot ${release} rc-update delete savecore boot
+  chroot ${release} rc-update --update
   chroot ${release} sysrc -f /etc/rc.conf ntpd_sync_on_start="YES"
   chroot ${release} sysrc -f /etc/rc.conf vboxservice_flags="--disable-timesync"
 }
@@ -184,7 +196,6 @@ extra_config()
   . ${cwd}/extra/finalize.sh
   . ${cwd}/extra/autologin.sh
   . ${cwd}/extra/gitpkg.sh
-  . ${cwd}/extra/mate-live-settings.sh
   set_live_system
   # git_pc_sysinstall
   ## git_gbi is for development testing and gbi should be
@@ -194,7 +205,10 @@ extra_config()
   setup_base
   lightdm_setup
   if [ "${desktop}" == "mate" ] ; then
-    mate_schemas
+    chroot ${release} su ${liveuser} -c "gsettings set org.mate.SettingsDaemon.plugins.housekeeping active true"
+    chroot ${release} su ${liveuser} -c "gsettings set org.gnome.desktop.screensaver lock-enabled false"
+    chroot ${release} su ${liveuser} -c "gsettings set org.mate.lockdown disable-lock-screen true"
+    chroot ${release} su ${liveuser} -c "gsettings set org.mate.lockdown disable-user-switching true"
   fi
   setup_autologin
   final_setup
@@ -207,6 +221,8 @@ extra_config()
   echo "${liveuser}" > ${release}/usr/local/share/ghostbsd/liveuser
   # bypass automount for live
   mv ${release}/usr/local/etc/devd-openrc/automount_devd.conf ${release}/usr/local/etc/devd-openrc/automount_devd.conf.skip
+  # Mkdir for linux compat to ensure /etc/fstab can mount when booting LiveCD
+  chroot ${release} mkdir -p /compat/linux/dev/shm
 }
 
 xorg()
@@ -232,11 +248,8 @@ uzip()
   umount ${release}/dev
   install -o root -g wheel -m 755 -d "${cdroot}"
   mkdir "${cdroot}/data"
-  # makefs -t ffs -m 4000m -f '10%' -b '10%' "${cdroot}/data/usr.ufs" "${release}/usr"
-  makefs -t ffs -f '10%' -b '10%' "${cdroot}/data/usr.ufs" "${release}/usr"
-  # makefs "${cdroot}/data/usr.ufs" "${release}/usr"
-  mkuzip -o "${cdroot}/data/usr.uzip" "${cdroot}/data/usr.ufs"
-  rm -r "${cdroot}/data/usr.ufs"
+  zfs snapshot ghostbsd@clean
+  zfs send -c -e ghostbsd@clean | dd of=/usr/local/ghostbsd-build/cdroot/data/system.img status=progress bs=1M
 }
 
 ramdisk()
@@ -251,18 +264,11 @@ ramdisk()
   mkdir "${ramdisk_root}/dev"
   mkdir "${ramdisk_root}/etc"
   touch "${ramdisk_root}/etc/fstab"
+  install -o root -g wheel -m 755 "rc.in" "${ramdisk_root}/etc/rc"
   cp ${release}/etc/login.conf ${ramdisk_root}/etc/login.conf
   makefs -b '10%' "${cdroot}/data/ramdisk.ufs" "${ramdisk_root}"
   gzip "${cdroot}/data/ramdisk.ufs"
   rm -rf "${ramdisk_root}"
-}
-
-mfs()
-{
-  for dir in ${union_dirs}; do
-    echo ${dir} >> ${cdroot}/data/uniondirs
-    cd ${release} && tar -cpzf ${cdroot}/data/mfs.tgz ${union_dirs}
-  done
 }
 
 boot()
@@ -274,8 +280,7 @@ boot()
   cp LICENSE ${cdroot}/LICENSE
   cp -R boot/ ${cdroot}/boot/
   mkdir ${cdroot}/etc
-  cd ${cdroot}
-  cd "${cwd}"
+  cd ${cwd} && zpool export ghostbsd && while zpool status ghostbsd >/dev/null; do :; done 2>/dev/null
 }
 
 image()
@@ -303,6 +308,5 @@ rc
 extra_config
 uzip
 ramdisk
-mfs
 boot
 image
