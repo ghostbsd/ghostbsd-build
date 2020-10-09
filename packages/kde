@@ -34,11 +34,12 @@ openjdk8-jre
 p7zip
 pc-sysinstall
 phonon-gstreamer-qt5
-pkg
+plasma5-kde-gtk-config
 plasma5-plasma
 plasma5-plasma-pa
 plasma5-plasma-workspace
 pv
+pkg
 py37-gobject3
 py37-setuptools
 python3
