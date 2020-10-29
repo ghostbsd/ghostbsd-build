@@ -219,6 +219,8 @@ extra_config()
   mv ${release}/usr/local/etc/devd-openrc/automount_devd.conf ${release}/usr/local/etc/devd-openrc/automount_devd.conf.skip
   # Mkdir for linux compat to ensure /etc/fstab can mount when booting LiveCD
   chroot ${release} mkdir -p /compat/linux/dev/shm
+  # Add /boot/entropy file
+  chroot ${release} touch /boot/entropy
 }
 
 xorg()
