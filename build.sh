@@ -154,10 +154,6 @@ rc()
   chroot ${release} touch /etc/rc.conf
   chroot ${release} sysrc -f /etc/rc.conf rc_parallel="NO"
   chroot ${release} sysrc -f /etc/rc.conf hostname='livecd'
-  chroot ${release} sysrc -f /etc/rc.conf sendmail_enable="NONE"
-  chroot ${release} sysrc -f /etc/rc.conf sendmail_submit_enable="NO"
-  chroot ${release} sysrc -f /etc/rc.conf sendmail_outbound_enable="NO"
-  chroot ${release} sysrc -f /etc/rc.conf sendmail_msp_queue_enable="NO"
   # DEVFS rules
   chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
   # Load the following kernel modules
