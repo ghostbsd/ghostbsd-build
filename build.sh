@@ -181,13 +181,18 @@ user()
   chroot ${release} pw useradd ${liveuser} \
   -c "GhostBSD Live User" -d "/usr/home/${liveuser}"\
   -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
+  chroot ${release} su ${liveuser} -c "mkdir -p /usr/home/${liveuser}/Desktop"
+  if [ -e ${release}/usr/local/share/applications/gbi.desktop ] ; then
+    chroot ${release} su ${liveuser} -c  "cp -af /usr/local/share/applications/gbi.desktop /usr/home/${liveuser}/Desktop"
+    chroot ${release} su ${liveuser} -c  "chmod +x /usr/home/${liveuser}/Desktop/gbi.desktop"
+    sed -i '' -e 's/NoDisplay=true/NoDisplay=false/g' ${release}/usr/home/${liveuser}/Desktop/gbi.desktop
+  fi
 }
 
 extra_config()
 {
   . ${cwd}/extra/common-live-setting.sh
   . ${cwd}/extra/common-base-setting.sh
-  . ${cwd}/extra/setuser.sh
   . ${cwd}/extra/dm.sh
   . ${cwd}/extra/finalize.sh
   . ${cwd}/extra/autologin.sh
@@ -197,7 +202,6 @@ extra_config()
   ## git_gbi is for development testing and gbi should be
   ## remove from the package list to avoid conflict
   # git_gbi
-  setup_liveuser
   setup_base
   lightdm_setup
   if [ "${desktop}" == "mate" ] ; then
