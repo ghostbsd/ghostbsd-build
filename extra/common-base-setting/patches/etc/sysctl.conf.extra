@@ -10,10 +10,20 @@ kern.bootfile=/boot/kernel/kernel
 kern.geom.part.mbr.enforce_chs=0
 
 # PROPOSED SECURITY ADDITIONS BELOW
+#
+# hw.kbd.keymap_restrict_change=4
+# kern.dmesg_restrict=1
+# kern.randompid=1
+# kern.sugid_coredump=0
+#
 # Prevent users from seeing information about processes
 # that are being run under another UID.
 # security.bsd.see_other_uids=0
 # security.bsd.see_other_gids=0
+#
+# security.bsd.hardlink_check_gid=1
+# security.bsd.hardlink_check_uid=1
+# security.bsd.stack_guard_page=1
 #
 # Disable Reading Kernel Buffers
 # security.bsd.unprivileged_read_msgbuf=0
@@ -32,6 +42,7 @@ kern.geom.part.mbr.enforce_chs=0
 #
 # drop udp and tcp packets going to closed sockets
 # net.inet.udp.blackhole=1
+# net.inet.tcp.blackhole=2
 #
 # IPv4 ICMP drop redirect security enhancement
 # net.inet.icmp.drop_redirect=1
@@ -41,6 +52,9 @@ kern.geom.part.mbr.enforce_chs=0
 # net.inet.ip.process_options=0
 # net.inet.ip.random_id=1
 # net.inet.ip.redirect=0
+# net.inet.ip.accept_sourceroute=0
+# net.inet.ip.forwarding=0
+# net.inet.ip.sourceroute=0 
 #
 # IPv4 TCP security additions
 # net.inet.tcp.always_keepalive=0
@@ -49,6 +63,9 @@ kern.geom.part.mbr.enforce_chs=0
 # net.inet.tcp.nolocaltimewait=1
 # net.inet.tcp.path_mtu_discovery=0
 #
+# IPv4 icmp additions
+# net.inet.icmp.bmcastecho=0
+#
 # IPv6 and icmp6 redirect for enhancing security
-#net.inet6.icmp6.rediraccept=0
-#net.inet6.ip6.redirect=0
+# net.inet6.icmp6.rediraccept=0
+# net.inet6.ip6.redirect=0
