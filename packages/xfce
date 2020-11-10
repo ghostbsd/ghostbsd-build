@@ -37,7 +37,6 @@ gstreamer1-plugins-soup
 gtk-murrine-engine
 gtk3-unico-engine
 libreoffice
-lightdm-gtk-greeter
 mesa-demos
 nano
 nss_mdns
@@ -52,6 +51,7 @@ python
 rhythmbox
 rsync
 shotwell
+slick-greeter
 system-config-printer
 telegram-desktop
 thunderbird

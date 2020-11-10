@@ -4,22 +4,13 @@ set -e -u
 
 lightdm_setup()
 {
+  sed -i '' "s@#greeter-session=example-gtk-gnome@greeter-session=slick-greeter@" ${release}/usr/local/etc/lightdm/lightdm.conf
   if [ "${desktop}" == "xfce" ] ; then
     sed -i '' "s@#user-session=default@user-session=xfce@" ${release}/usr/local/etc/lightdm/lightdm.conf
-    if [ -f ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf ] ; then
-      echo "indicators=~host;~spacer;~clock;~spacer;~session;~language;~a11y;~sound;~power" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
-      echo "background=/usr/local/share/backgrounds/ghostbsd/Arizona_Desert_Monument.jpg" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
-      echo "theme-name=Vimix-Dark" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
-      echo -e "icon-theme-name=Vivacious-Colors-Full-Dark\n" >> ${release}/usr/local/etc/lightdm/lightdm-gtk-greeter.conf
-    fi
   elif [ "${desktop}" == "mate" ] ; then
-    sed -i '' "s@#greeter-session=example-gtk-gnome@greeter-session=slick-greeter@" ${release}/usr/local/etc/lightdm/lightdm.conf
     sed -i '' "s@#user-session=default@user-session=mate@" ${release}/usr/local/etc/lightdm/lightdm.conf
-    cp extra/dm/slick-greeter.conf ${release}/usr/local/etc/lightdm/slick-greeter.conf
   elif [ "${desktop}" == "kde" ] ; then
-    sed -i '' "s@#greeter-session=example-gtk-gnome@greeter-session=slick-greeter@" ${release}/usr/local/etc/lightdm/lightdm.conf
     sed -i '' "s@#user-session=default@user-session=plasma@" ${release}/usr/local/etc/lightdm/lightdm.conf
-    cp extra/dm/slick-greeter.conf ${release}/usr/local/etc/lightdm/slick-greeter.conf
   fi
   setup_xinit
 
