@@ -204,12 +204,6 @@ extra_config()
   # git_gbi
   setup_base
   lightdm_setup
-  if [ "${desktop}" == "mate" ] ; then
-    chroot ${release} su ${liveuser} -c "gsettings set org.mate.SettingsDaemon.plugins.housekeeping active true"
-    chroot ${release} su ${liveuser} -c "gsettings set org.gnome.desktop.screensaver lock-enabled false"
-    chroot ${release} su ${liveuser} -c "gsettings set org.mate.lockdown disable-lock-screen true"
-    chroot ${release} su ${liveuser} -c "gsettings set org.mate.lockdown disable-user-switching true"
-  fi
   setup_autologin
   final_setup
   echo "gop set 0" >> ${release}/boot/loader.rc.local
