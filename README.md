@@ -19,7 +19,7 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 * 20GB of free disk space
 * 4GB of free memory
 
-Note: GhostBSD 19.09 and later should be used to build ISO.
+Note: GhostBSD 20.04 and later should be used to build ISO.
 
 ## Initial setup
 Install the required packages:
@@ -85,10 +85,10 @@ or
 
 ## Burn an image to cd:
 ```
-cdrecord /usr/local/ghostbsd-build/iso/GhostBSD19.10.iso
+cdrecord /usr/local/ghostbsd-build/iso/GhostBSD-20.04.iso
 ```
 
 ## Write an image to usb stick:
 ```
-dd if=/usr/local/ghostbsd-build/iso/GhostBSD19.10.iso of=/dev/da0 bs=4m
+dd if=/usr/local/ghostbsd-build/iso/GhostBSD-20.04.iso of=/dev/da0 bs=4m
 ```
