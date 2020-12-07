@@ -1,5 +1,5 @@
 ark
-drm-fbsd12.0-kmod
+drm-kmod
 e2fsprogs
 font-awesome
 fusefs-ext2
@@ -19,7 +19,6 @@ kdeconnect-kde
 kf5-frameworks
 linux-c7
 mesa-demos
-nvidia-driver
 p7zip
 pc-sysinstall
 phonon-gstreamer-qt5
