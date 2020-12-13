@@ -92,25 +92,14 @@ fi
 
 workspace()
 {
-  if [ -d ${release}/var/cache/pkg ]; then
-    if [ "$(ls -A ${release}/var/cache/pkg)" ]; then
-      umount ${release}/var/cache/pkg
-    fi
-  fi
-
-  if [ -d "${release}" ] ; then
-    if [ -d ${release}/dev ]; then
-      if [ "$(ls -A ${release}/dev)" ]; then
-        umount ${release}/dev
-      fi
-    fi
-  fi
-
+  umount ${release}/var/cache/pkg >/dev/null 2>/dev/null || true
+  umount ${base_packages} >/dev/null 2>/dev/null || true
   if [ -d "${cdroot}" ] ; then
     chflags -R noschg ${cdroot}
     rm -rf ${cdroot}
   fi
   zpool destroy ghostbsd >/dev/null 2>/dev/null || true
+  umount ghostbsd >/dev/null 2>/dev/null || true
   mdconfig -d -u 0 >/dev/null 2>/dev/null || true
   if [ -f "${livecd}/pool.img" ] ; then
     rm ${livecd}/pool.img
