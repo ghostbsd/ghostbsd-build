@@ -15,7 +15,9 @@ setup_autologin()
   touch /tmp/.xstarted
   set tty (tty)
   if test $tty = \"/dev/ttyv0\"
-    exec xconfig auto
+    sudo xconfig auto
+    sleep 1
+    startx
   end
 end
 ' > ${release}/usr/home/${liveuser}/.config/fish/config.fish
