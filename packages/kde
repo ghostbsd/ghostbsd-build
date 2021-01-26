@@ -14,17 +14,13 @@ ghostbsd-wallpapers
 gtk-update-icon-cache
 hicolor-icon-theme
 kde5
-kdeconnect-kde
-kf5-frameworks
-linux-c7
+kde-baseapps
 mesa-demos
+nvidia-driver
 p7zip
 pc-sysinstall
 phonon-gstreamer-qt5
-plasma5-kde-gtk-config
 plasma5-plasma
-plasma5-plasma-pa
-plasma5-plasma-workspace
 pv
 pkg
 py37-gobject3
@@ -32,6 +28,7 @@ py37-setuptools
 python3
 python37
 slick-greeter
+sudo
 texinfo
 unrar
 unzip
