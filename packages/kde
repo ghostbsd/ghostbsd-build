@@ -4,7 +4,6 @@ e2fsprogs
 font-awesome
 fusefs-ext2
 fusefs-ntfs
-fusefs-simple-mtpfs
 gbi
 gdisk
 ghostbsd-drivers
