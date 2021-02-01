@@ -61,6 +61,13 @@ disable_syscons()
   fi
 }
 
+
+restore_settings()
+{
+  mv /usr/local/etc/devd-openrc/automount_devd.conf.skip /usr/local/etc/devd-openrc/automount_devd.conf
+}
+
 remove_ghostbsd_user
 setup_dm_and_xinitrc
 disable_syscons
+restore_settings
