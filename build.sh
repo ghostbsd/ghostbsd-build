@@ -92,8 +92,9 @@ fi
 
 workspace()
 {
-  umount ${release}/var/cache/pkg >/dev/null 2>/dev/null || true
+  umount ${release}/dev >/dev/null 2>/dev/null || true
   umount ${base_packages} >/dev/null 2>/dev/null || true
+  umount ${release} >/dev/null 2>/dev/null || true
   if [ -d "${cdroot}" ] ; then
     chflags -R noschg ${cdroot}
     rm -rf ${cdroot}

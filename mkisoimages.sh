@@ -25,8 +25,7 @@
 
 set -e
 
-scriptdir=$(dirname $(realpath $0))
-. ${scriptdir}/../../tools/boot/install-boot.sh
+. install-boot.sh
 
 if [ -z $ETDUMP ]; then
     ETDUMP=etdump
