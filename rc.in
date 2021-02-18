@@ -1,5 +1,7 @@
 #!/rescue/sh
 
+set -e
+
 if [ ! -e /dev/md1 ] ; then
   halt -p
 fi
@@ -12,7 +14,7 @@ kenv -u init_shell
 echo "==> Unmount filesystems for cloning"
 zpool export livecd
 umount -f /cdrom
-echo "== Set /dev/md2 device for reroot"
+echo "== Set /dev/md1 device for reroot"
 kenv vfs.root.mountfrom=zfs:livecd
 echo "==> Rerooting into memdisk"
 reboot -r
