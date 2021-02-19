@@ -146,7 +146,7 @@ rc()
   # DEVFS rules
   chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
   # Load the following kernel modules
-  chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 cuse"
+  chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 cuse ig4 iicbus iichid"
   chroot ${release} rc-update add dhcpcd boot
   chroot ${release} rc-update add devfs default
   chroot ${release} rc-update add moused default
