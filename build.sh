@@ -12,7 +12,7 @@ fi
 kernrel="`uname -r`"
 
 case $kernrel in
-  '12.2-STABLE'|'12.1-STABLE'|'12.0-STABLE'|'13.0-ALPHA3'|'13.0-BETA1'|'13.0-BETA2'|'13.0-BETA3'|'13.0-RC1'|'13.0-RC2'|'13.0-RC3'|'13.0-STABLE') ;;
+  '13.0-ALPHA3'|'13.0-BETA1'|'13.0-BETA2'|'13.0-BETA3'|'13.0-RC1'|'13.0-RC2'|'13.0-RC3'|'13.0-STABLE') ;;
   *)
     echo "Using wrong kernel release. Use GhostBSD 20.04 or later to build iso."
     exit 1
@@ -76,7 +76,7 @@ release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 liveuser="ghostbsd"
 
-version=`date "+-%y.%m.%d"`
+version=`date "+-13-%y.%m.%d"`
 time_stamp=""
 release_stamp=""
 
