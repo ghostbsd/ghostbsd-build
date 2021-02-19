@@ -34,9 +34,11 @@ system-config-printer
 tlwg-ttf
 transmission-gtk
 unzip
+virtualbox-ose-additions
 vlc
 xarchiver
 xconfig
+xf86-input-evdev
 xfce
 xfce4-battery-plugin
 xfce4-bsdcpufreq-plugin
