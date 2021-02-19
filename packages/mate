@@ -41,5 +41,6 @@ vim-tiny
 vlc
 webrtc-audio-processing
 xconfig
+xf86-input-evdev
 xorg-minimal
 zip
