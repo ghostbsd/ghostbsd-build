@@ -76,7 +76,7 @@ release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 liveuser="ghostbsd"
 
-version=`date "+-%y.%m.%d"`
+version=`date "+-12-%y.%m.%d"`
 time_stamp=""
 release_stamp=""
 
