@@ -148,14 +148,11 @@ rc()
   chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
   # Load the following kernel modules
   chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 cuse"
-  chroot ${release} rc-update add dhcpcd boot
-  chroot ${release} rc-update add devfs default
   chroot ${release} rc-update add moused default
   chroot ${release} rc-update add dbus default
   chroot ${release} rc-update add webcamd default
   chroot ${release} rc-update add powerd default
   chroot ${release} rc-update add ipfw default
-  chroot ${release} rc-update delete netmount default
   chroot ${release} rc-update add cupsd default
   chroot ${release} rc-update add avahi-daemon default
   chroot ${release} rc-update add avahi-dnsconfd default
