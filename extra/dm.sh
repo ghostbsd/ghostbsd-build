@@ -11,6 +11,8 @@ lightdm_setup()
     sed -i '' "s@#user-session=default@user-session=mate@" ${release}/usr/local/etc/lightdm/lightdm.conf
   elif [ "${desktop}" == "kde" ] ; then
     sed -i '' "s@#user-session=default@user-session=plasma@" ${release}/usr/local/etc/lightdm/lightdm.conf
+  elif [ "${desktop}" == "cinnamon" ] ; then
+    sed -i '' "s@#user-session=default@user-session=cinnamon@" ${release}/usr/local/etc/lightdm/lightdm.conf
   fi
   setup_xinit
 
