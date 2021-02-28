@@ -14,7 +14,7 @@ cursor-dmz-theme
 dconf-editor
 dejavu
 dpkg
-drm-fbsd12.0-kmod
+drm-fbsd13-kmod
 droid-fonts-ttf
 e2fsprogs
 en-aspell
@@ -42,12 +42,9 @@ ghostbsd-wallpapers
 git
 gnome-keyring
 gnome-terminal
-gstreamer-plugins-neon
-gstreamer-plugins-soup
 gtk-murrine-engine
 gtk3-unico-engine
 hexchat
-inxi
 lightdm-gtk-greeter
 mesa-demos
 mint-themes
@@ -68,7 +65,6 @@ pv
 rsync
 shotwell
 system-config-printer
-ssft
 station-tweak
 telegram-desktop
 thunderbird
