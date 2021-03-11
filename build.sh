@@ -146,8 +146,6 @@ rc()
   chroot ${release} sysrc -f /etc/rc.conf hostname='livecd'
   # DEVFS rules
   chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
-  # Load the following kernel modules
-  chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 cuse"
   chroot ${release} rc-update add moused default
   chroot ${release} rc-update add dbus default
   chroot ${release} rc-update add webcamd default
