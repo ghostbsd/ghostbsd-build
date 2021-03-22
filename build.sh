@@ -155,8 +155,6 @@ rc()
   chroot ${release} rc-update add avahi-daemon default
   chroot ${release} rc-update add avahi-dnsconfd default
   chroot ${release} rc-update add ntpd default
-  chroot ${release} rc-update delete dumpon boot
-  chroot ${release} rc-update delete savecore boot
   chroot ${release} rc-update --update
   chroot ${release} sysrc -f /etc/rc.conf ntpd_sync_on_start="YES"
   chroot ${release} sysrc -f /etc/rc.conf vboxservice_flags="--disable-timesync"
