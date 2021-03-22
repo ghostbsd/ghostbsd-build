@@ -1,3 +1,0 @@
-hw.psm.synaptics_support="1"
-net.inet.ip.fw.default_to_accept="1"
-entropy_cache_load="YES"
