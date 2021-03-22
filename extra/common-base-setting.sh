@@ -4,7 +4,6 @@ set -e -u
 
 patch_etc_files()
 {
-  cat ${cwd}/extra/common-base-setting/patches/boot/loader.conf.extra >> ${release}/boot/loader.conf
   cat ${cwd}/extra/common-base-setting/patches/etc/devfs.rules.extra >> ${release}/etc/devfs.rules
   cat ${cwd}/extra/common-base-setting/patches/etc/fstab.extra >> ${release}/etc/fstab
   mkdir -p ${release}/compat/linux/sys
