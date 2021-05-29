@@ -683,7 +683,7 @@ xorg-fonts-truetype
 xorg-fonts-type1
 xorg-libraries
 xorg-server
-xorgproto-2020.1
+xorgproto-2021.4
 xpr
 xprop
 xrandr
