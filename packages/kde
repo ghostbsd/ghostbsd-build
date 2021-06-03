@@ -529,7 +529,7 @@ py38-toml
 py38-zipp
 pydbus-common
 pygobject3-common
-python38
+python38_3,2
 qca-qt5
 qpdf
 qscintilla2-qt5
