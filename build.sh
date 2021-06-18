@@ -149,7 +149,6 @@ rc()
   chroot ${release} rc-update add moused default
   chroot ${release} rc-update add dbus default
   chroot ${release} rc-update add webcamd default
-  chroot ${release} rc-update add powerd default
   chroot ${release} rc-update add ipfw default
   chroot ${release} rc-update add cupsd default
   chroot ${release} rc-update add avahi-daemon default
