@@ -17,6 +17,8 @@ setup_autologin()
   if test $tty = \"/dev/ttyv0\"
     sudo xconfig auto
     sleep 1
+    echo "X configuation completed"
+    sleep 1
     startx
   end
 end
