@@ -79,16 +79,8 @@ liveuser="ghostbsd"
 version=`date "+-%y.%m.%d"`
 time_stamp=""
 release_stamp=""
-
 label="GhostBSD"
 isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
-if [ "$desktop" = "mate" ] ; then
-  union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc usr/local/share/mate-panel var www"}
-elif [ "$desktop" = "kde" ] ; then
-  union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc usr/local/share/plasma var www"}
-else
-  union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc var www"}
-fi
 
 workspace()
 {
