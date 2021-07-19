@@ -135,7 +135,8 @@ rc()
 {
   chroot ${release} touch /etc/rc.conf
   chroot ${release} sysrc hostname='livecd'
-  # DEVFS rules
+  chroot ${release} sysrc kld_list="linux linux64 cuse fusefs"
+  chroot ${release} sysrc linux_enable="YES"
   chroot ${release} sysrc devfs_enable="YES"
   chroot ${release} sysrc devfs_system_ruleset="devfsrules_common"
   chroot ${release} rc-update add moused default
