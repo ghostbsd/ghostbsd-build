@@ -135,25 +135,18 @@ rc()
 {
   chroot ${release} touch /etc/rc.conf
   chroot ${release} sysrc hostname='livecd'
+  chroot ${release} sysrc zfs_enable="YES"
   chroot ${release} sysrc kld_list="linux linux64 cuse fusefs"
   chroot ${release} sysrc linux_enable="YES"
   chroot ${release} sysrc devfs_enable="YES"
   chroot ${release} sysrc devfs_system_ruleset="devfsrules_common"
-  chroot ${release} rc-update add moused default
   chroot ${release} sysrc moused_enable="YES"
-  chroot ${release} rc-update add dbus default
   chroot ${release} sysrc dbus_enable="YES"
-  chroot ${release} rc-update add webcamd default
   chroot ${release} sysrc webcamd_enable="YES"
-  chroot ${release} rc-update add ipfw default
   chroot ${release} sysrc ipfw_enable="YES"
-  chroot ${release} rc-update add cupsd default
   chroot ${release} sysrc cupsd_enable="YES"
-  chroot ${release} rc-update add avahi-daemon default
-  chroot ${release} sysrc avahi-daemon_enable="YES"
-  chroot ${release} rc-update add avahi-dnsconfd default
-  chroot ${release} sysrc avahi-dnsconfd_enable="YES"
-  chroot ${release} rc-update --update
+  chroot ${release} sysrc avahi_daemon_enable="YES"
+  chroot ${release} sysrc avahi_dnsconfd_enable="YES"
   chroot ${release} sysrc ntpd_enable="YES"
   chroot ${release} sysrc ntpd_sync_on_start="YES"
 }
