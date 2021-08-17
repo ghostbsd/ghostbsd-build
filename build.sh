@@ -12,7 +12,7 @@ fi
 kernrel="`uname -r`"
 
 case $kernrel in
-  '13.0-ALPHA3'|'13.0-BETA1'|'13.0-BETA2'|'13.0-BETA3'|'13.0-RC1'|'13.0-RC2'|'13.0-RC3'|'13.0-STABLE') ;;
+  '13.0-STABLE') ;;
   *)
     echo "Using wrong kernel release. Use GhostBSD 20.04 or later to build iso."
     exit 1
@@ -111,7 +111,9 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg-static -r ${release} -R ${cwd}/pkg/ -C GhostBSD_PKG install -y -g os-generic-kernel os-generic-userland os-generic-userland-lib32 os-generic-userland-devtools
+  pkg_list="os-generic-kernel os-generic-userland os-generic-userland-lib32"
+  pkg_list="${pkg_list} os-generic-userland-devtools"
+  pkg-static -r ${release} -R ${cwd}/pkg/ -C GhostBSD_PKG install -y ${pkg_list}
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -133,6 +135,10 @@ packages_software()
 
 rc()
 {
+  # The 2 next line are to be remove when when the upgrade to FreeBSD rc.d
+  # is completed
+  chroot ${release} touch /boot/loader.conf
+  chroot ${release} sysrc -f /boot/loader.conf rc_system="bsdrc"
   chroot ${release} touch /etc/rc.conf
   chroot ${release} sysrc hostname='livecd'
   chroot ${release} sysrc zfs_enable="YES"
