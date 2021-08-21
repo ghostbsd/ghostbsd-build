@@ -12,7 +12,7 @@ fi
 kernrel="`uname -r`"
 
 case $kernrel in
-  '13.0-ALPHA3'|'13.0-BETA1'|'13.0-BETA2'|'13.0-BETA3'|'13.0-RC1'|'13.0-RC2'|'13.0-RC3'|'13.0-STABLE') ;;
+  '13.0-STABLE') ;;
   *)
     echo "Using wrong kernel release. Use GhostBSD 20.04 or later to build iso."
     exit 1
@@ -79,16 +79,8 @@ liveuser="ghostbsd"
 version=`date "+-%y.%m.%d"`
 time_stamp=""
 release_stamp=""
-
 label="GhostBSD"
 isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
-if [ "$desktop" = "mate" ] ; then
-  union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc usr/local/share/mate-panel var www"}
-elif [ "$desktop" = "kde" ] ; then
-  union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc usr/local/share/plasma var www"}
-else
-  union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc var www"}
-fi
 
 workspace()
 {
@@ -119,7 +111,9 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg-static -r ${release} -R ${cwd}/pkg/ -C GhostBSD_PKG install -y -g os-generic-kernel os-generic-userland os-generic-userland-lib32 os-generic-userland-devtools
+  pkg_list="os-generic-kernel os-generic-userland os-generic-userland-lib32"
+  pkg_list="${pkg_list} os-generic-userland-devtools"
+  pkg-static -r ${release} -R ${cwd}/pkg/ -C GhostBSD_PKG install -y ${pkg_list}
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -141,21 +135,26 @@ packages_software()
 
 rc()
 {
+  # The 2 next line are to be remove when when the upgrade to FreeBSD rc.d
+  # is completed
+  chroot ${release} touch /boot/loader.conf
+  chroot ${release} sysrc -f /boot/loader.conf rc_system="bsdrc"
   chroot ${release} touch /etc/rc.conf
-  chroot ${release} sysrc -f /etc/rc.conf rc_parallel="NO"
-  chroot ${release} sysrc -f /etc/rc.conf hostname='livecd'
-  # DEVFS rules
-  chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
-  chroot ${release} rc-update add moused default
-  chroot ${release} rc-update add dbus default
-  chroot ${release} rc-update add webcamd default
-  chroot ${release} rc-update add ipfw default
-  chroot ${release} rc-update add cupsd default
-  chroot ${release} rc-update add avahi-daemon default
-  chroot ${release} rc-update add avahi-dnsconfd default
-  chroot ${release} rc-update --update
-  chroot ${release} sysrc -f /etc/rc.conf ntpd_sync_on_start="YES"
-  chroot ${release} sysrc -f /etc/rc.conf vboxservice_flags="--disable-timesync"
+  chroot ${release} sysrc hostname='livecd'
+  chroot ${release} sysrc zfs_enable="YES"
+  chroot ${release} sysrc kld_list="linux linux64 cuse fusefs"
+  chroot ${release} sysrc linux_enable="YES"
+  chroot ${release} sysrc devfs_enable="YES"
+  chroot ${release} sysrc devfs_system_ruleset="devfsrules_common"
+  chroot ${release} sysrc moused_enable="YES"
+  chroot ${release} sysrc dbus_enable="YES"
+  chroot ${release} sysrc webcamd_enable="YES"
+  chroot ${release} sysrc ipfw_enable="YES"
+  chroot ${release} sysrc cupsd_enable="YES"
+  chroot ${release} sysrc avahi_daemon_enable="YES"
+  chroot ${release} sysrc avahi_dnsconfd_enable="YES"
+  chroot ${release} sysrc ntpd_enable="YES"
+  chroot ${release} sysrc ntpd_sync_on_start="YES"
 }
 
 user()
