@@ -50,7 +50,7 @@ setup_dm_and_xinitrc()
         chown ${user}:wheel /usr/home/${user}/.xinitrc
       done ;;
   esac
-  rc-update add lightdm default
+  sysrc lightdm_enable="YES"
 }
 
 disable_syscons()
