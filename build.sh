@@ -151,6 +151,7 @@ rc()
   chroot ${release} sysrc lightdm_enable="NO"
   chroot ${release} sysrc webcamd_enable="YES"
   chroot ${release} sysrc ipfw_enable="YES"
+  chroot ${release} sysrc firewall_enable="YES"
   chroot ${release} sysrc cupsd_enable="YES"
   chroot ${release} sysrc avahi_daemon_enable="YES"
   chroot ${release} sysrc avahi_dnsconfd_enable="YES"
