@@ -12,9 +12,9 @@ fi
 kernrel="`uname -r`"
 
 case $kernrel in
-  '12.1-STABLE'|'12.1-PRERELEASE'|'12.0-STABLE') ;;
+  '13.0-STABLE') ;;
   *)
-    echo "Using wrong kernel release. Use TrueOS 18.12 or GhostBSD 19 to build iso."
+    echo "Using wrong kernel release. Use GhostBSD 20.04 or later to build iso."
     exit 1
     ;;
 esac
@@ -79,44 +79,26 @@ liveuser="ghostbsd"
 version=`date "+-%y.%m.%d"`
 time_stamp=""
 release_stamp=""
-
 label="GhostBSD"
 isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
-if [ "$desktop" = "mate" ] ; then
-  union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc usr/local/share/mate-panel var www"}
-elif [ "$desktop" = "kde" ] ; then
-  union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc usr/local/share/plasma var www"}
-else
-  union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc var www"}
-fi
 
 workspace()
 {
-  if [ -d ${release}/var/cache/pkg ]; then
-    if [ "$(ls -A ${release}/var/cache/pkg)" ]; then
-      umount ${release}/var/cache/pkg
-    fi
-  fi
-
-  if [ -d "${release}" ] ; then
-    if [ -d ${release}/dev ]; then
-      if [ "$(ls -A ${release}/dev)" ]; then
-        umount ${release}/dev
-      fi
-    fi
-  fi
-
+  umount ${release}/dev >/dev/null 2>/dev/null || true
+  umount ${base_packages} >/dev/null 2>/dev/null || true
+  umount ${release} >/dev/null 2>/dev/null || true
   if [ -d "${cdroot}" ] ; then
     chflags -R noschg ${cdroot}
     rm -rf ${cdroot}
   fi
   zpool destroy ghostbsd >/dev/null 2>/dev/null || true
+  umount ghostbsd >/dev/null 2>/dev/null || true
   mdconfig -d -u 0 >/dev/null 2>/dev/null || true
   if [ -f "${livecd}/pool.img" ] ; then
     rm ${livecd}/pool.img
   fi
   mkdir -p ${livecd} ${base} ${iso} ${software_packages} ${base_packages} ${release}
-  truncate -s 4g ${livecd}/pool.img
+  truncate -s 6g ${livecd}/pool.img
   mdconfig -f ${livecd}/pool.img -u 0
   zpool create ghostbsd /dev/md0
   zfs set mountpoint=${release} ghostbsd
@@ -129,7 +111,9 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg-static -r ${release} -R ${cwd}/pkg/ -C GhostBSD_PKG install -y -g os-generic-kernel os-generic-userland os-generic-userland-lib32 os-generic-userland-devtools
+  pkg_list="os-generic-kernel os-generic-userland os-generic-userland-lib32"
+  pkg_list="${pkg_list} os-generic-userland-devtools"
+  pkg-static -r ${release} -R ${cwd}/pkg/ -C GhostBSD_PKG install -y ${pkg_list}
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -151,33 +135,28 @@ packages_software()
 
 rc()
 {
+  # The 2 next line are to be remove when when the upgrade to FreeBSD rc.d
+  # is completed
+  chroot ${release} touch /boot/loader.conf
+  chroot ${release} sysrc -f /boot/loader.conf rc_system="bsdrc"
   chroot ${release} touch /etc/rc.conf
-  chroot ${release} sysrc -f /etc/rc.conf rc_parallel="NO"
-  chroot ${release} sysrc -f /etc/rc.conf hostname='livecd'
-  chroot ${release} sysrc -f /etc/rc.conf sendmail_enable="NONE"
-  chroot ${release} sysrc -f /etc/rc.conf sendmail_submit_enable="NO"
-  chroot ${release} sysrc -f /etc/rc.conf sendmail_outbound_enable="NO"
-  chroot ${release} sysrc -f /etc/rc.conf sendmail_msp_queue_enable="NO"
-  # DEVFS rules
-  chroot ${release} sysrc -f /etc/rc.conf devfs_system_ruleset="devfsrules_common"
-  # Load the following kernel modules
-  chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 cuse"
-  chroot ${release} rc-update add devfs default
-  chroot ${release} rc-update add moused default
-  chroot ${release} rc-update add dbus default
-  chroot ${release} rc-update add webcamd default
-  chroot ${release} rc-update add powerd default
-  chroot ${release} rc-update add ipfw default
-  chroot ${release} rc-update delete netmount default
-  chroot ${release} rc-update add cupsd default
-  chroot ${release} rc-update add avahi-daemon default
-  chroot ${release} rc-update add avahi-dnsconfd default
-  chroot ${release} rc-update add ntpd default
-  chroot ${release} rc-update delete dumpon boot
-  chroot ${release} rc-update delete savecore boot
-  chroot ${release} rc-update --update
-  chroot ${release} sysrc -f /etc/rc.conf ntpd_sync_on_start="YES"
-  chroot ${release} sysrc -f /etc/rc.conf vboxservice_flags="--disable-timesync"
+  chroot ${release} sysrc hostname='livecd'
+  chroot ${release} sysrc zfs_enable="YES"
+  chroot ${release} sysrc kld_list="linux linux64 cuse fusefs"
+  chroot ${release} sysrc linux_enable="YES"
+  chroot ${release} sysrc devfs_enable="YES"
+  chroot ${release} sysrc devfs_system_ruleset="devfsrules_common"
+  chroot ${release} sysrc moused_enable="YES"
+  chroot ${release} sysrc dbus_enable="YES"
+  chroot ${release} sysrc lightdm_enable="NO"
+  chroot ${release} sysrc webcamd_enable="YES"
+  chroot ${release} sysrc ipfw_enable="YES"
+  chroot ${release} sysrc firewall_enable="YES"
+  chroot ${release} sysrc cupsd_enable="YES"
+  chroot ${release} sysrc avahi_daemon_enable="YES"
+  chroot ${release} sysrc avahi_dnsconfd_enable="YES"
+  chroot ${release} sysrc ntpd_enable="YES"
+  chroot ${release} sysrc ntpd_sync_on_start="YES"
 }
 
 user()
@@ -186,33 +165,31 @@ user()
   chroot ${release} pw useradd ${liveuser} \
   -c "GhostBSD Live User" -d "/usr/home/${liveuser}"\
   -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
+  chroot ${release} su ${liveuser} -c "mkdir -p /usr/home/${liveuser}/Desktop"
+  if [ -e ${release}/usr/local/share/applications/gbi.desktop ] ; then
+    chroot ${release} su ${liveuser} -c  "cp -af /usr/local/share/applications/gbi.desktop /usr/home/${liveuser}/Desktop"
+    chroot ${release} su ${liveuser} -c  "chmod +x /usr/home/${liveuser}/Desktop/gbi.desktop"
+    sed -i '' -e 's/NoDisplay=true/NoDisplay=false/g' ${release}/usr/home/${liveuser}/Desktop/gbi.desktop
+  fi
 }
 
 extra_config()
 {
   . ${cwd}/extra/common-live-setting.sh
   . ${cwd}/extra/common-base-setting.sh
-  . ${cwd}/extra/setuser.sh
   . ${cwd}/extra/dm.sh
   . ${cwd}/extra/finalize.sh
   . ${cwd}/extra/autologin.sh
   . ${cwd}/extra/gitpkg.sh
-  # . ${cwd}/extra/mate-live-settings.sh
   set_live_system
-  git_pc_sysinstall
+  # git_pc_sysinstall
   ## git_gbi is for development testing and gbi should be
   ## remove from the package list to avoid conflict
-  git_gbi
-  git_install_station
+  # git_gbi
+  # git_install_station
   setup_liveuser
   setup_base
   lightdm_setup
-  if [ "${desktop}" == "mate" ] ; then
-    chroot ${release} su ${liveuser} -c "gsettings set org.mate.SettingsDaemon.plugins.housekeeping active true"
-    chroot ${release} su ${liveuser} -c "gsettings set org.gnome.desktop.screensaver lock-enabled false"
-    chroot ${release} su ${liveuser} -c "gsettings set org.mate.lockdown disable-lock-screen true"
-    chroot ${release} su ${liveuser} -c "gsettings set org.mate.lockdown disable-user-switching true"
-  fi
   setup_autologin
   final_setup
   echo "gop set 0" >> ${release}/boot/loader.rc.local
@@ -226,6 +203,8 @@ extra_config()
   mv ${release}/usr/local/etc/devd-openrc/automount_devd.conf ${release}/usr/local/etc/devd-openrc/automount_devd.conf.skip
   # Mkdir for linux compat to ensure /etc/fstab can mount when booting LiveCD
   chroot ${release} mkdir -p /compat/linux/dev/shm
+  # Add /boot/entropy file
+  chroot ${release} touch /boot/entropy
 }
 
 xorg()
@@ -251,10 +230,8 @@ uzip()
   umount ${release}/dev
   install -o root -g wheel -m 755 -d "${cdroot}"
   mkdir "${cdroot}/data"
-  zpool export ghostbsd
-  mkuzip -o "${cdroot}/data/system.uzip" "${livecd}/pool.img"
-  zpool import ghostbsd
-  zfs set mountpoint=${release} ghostbsd
+  zfs snapshot ghostbsd@clean
+  zfs send -c -e ghostbsd@clean | dd of=/usr/local/ghostbsd-build/cdroot/data/system.img status=progress bs=1M
 }
 
 ramdisk()
@@ -285,8 +262,7 @@ boot()
   cp LICENSE ${cdroot}/LICENSE
   cp -R boot/ ${cdroot}/boot/
   mkdir ${cdroot}/etc
-  cd ${cdroot}
-  cd "${cwd}"
+  cd ${cwd} && zpool export ghostbsd && while zpool status ghostbsd >/dev/null; do :; done 2>/dev/null
 }
 
 image()
