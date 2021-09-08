@@ -50,7 +50,8 @@ setup_dm_and_xinitrc()
         chown ${user}:wheel /usr/home/${user}/.xinitrc
       done ;;
   esac
-  sysrc lightdm_enable="YES"
+
+  echo 'lightdm_enable="YES"' >> /etc/rc.conf
 }
 
 disable_syscons()
