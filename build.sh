@@ -148,7 +148,7 @@ rc()
   chroot ${release} sysrc devfs_system_ruleset="devfsrules_common"
   chroot ${release} sysrc moused_enable="YES"
   chroot ${release} sysrc dbus_enable="YES"
-  # chroot ${release} sysrc lightdm_enable="NO"
+  chroot ${release} sysrc lightdm_enable="NO"
   chroot ${release} sysrc webcamd_enable="YES"
   chroot ${release} sysrc ipfw_enable="YES"
   chroot ${release} sysrc firewall_enable="YES"
@@ -190,14 +190,11 @@ extra_config()
   setup_autologin
   final_setup
   echo "gop set 0" >> ${release}/boot/loader.rc.local
-  # To fix lightdm crashing to be remove on the new base update.
-  sed -i '' -e 's/memorylocked=128M/memorylocked=256M/g' ${release}/etc/login.conf
-  chroot ${release} cap_mkdb /etc/login.conf
   mkdir -p ${release}/usr/local/share/ghostbsd
   echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
   echo "${liveuser}" > ${release}/usr/local/share/ghostbsd/liveuser
   # bypass automount for live
-  mv ${release}/usr/local/etc/devd-openrc/automount_devd.conf ${release}/usr/local/etc/devd-openrc/automount_devd.conf.skip
+  mv ${release}/usr/local/etc/devd/automount_devd.conf ${release}/usr/local/etc/devd/automount_devd.conf.skip
   # Mkdir for linux compat to ensure /etc/fstab can mount when booting LiveCD
   chroot ${release} mkdir -p /compat/linux/dev/shm
   # Add /boot/entropy file

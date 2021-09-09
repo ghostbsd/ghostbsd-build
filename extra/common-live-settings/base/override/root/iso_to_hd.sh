@@ -14,8 +14,9 @@ fi
 
 remove_ghostbsd_user()
 {
-  pw userdel -n ghostbsd
-  rm -rf /usr/home/ghostbsd
+  echo "Remove ghostbsd user"
+  pw userdel -n ghostbsd -r
+  echo "Remove auto login"
   ( echo 'g/# ghostbsd user autologin' ; echo 'wq' ) | ex -s /etc/gettytab
   ( echo 'g/ghostbsd:\\"/d' ; echo 'wq' ) | ex -s /etc/gettytab
   ( echo 'g/:al=ghostbsd:ht:np:sp#115200:/d' ; echo 'wq' ) | ex -s /etc/gettytab
@@ -24,51 +25,45 @@ remove_ghostbsd_user()
 
 setup_dm_and_xinitrc()
 {
+  echo "setup xinitrc for ${desktop}"
   case $desktop in
     mate)
       echo 'exec mate-session' > /root/.xinitrc
       for user in `ls /usr/home/` ; do
         echo 'exec mate-session' > /usr/home/${user}/.xinitrc
-        chown ${user}:wheel /usr/home/${user}/.xinitrc
+        chown ${user}:${user} /usr/home/${user}/.xinitrc
       done ;;
     xfce)
       echo 'exec startxfce4' > /root/.xinitrc
       for user in `ls /usr/home/` ; do
         echo 'exec startxfce4' > /usr/home/${user}/.xinitrc
-        chown ${user}:wheel /usr/home/${user}/.xinitrc
+        chown ${user}:${user} /usr/home/${user}/.xinitrc
       done ;;
     cinnamon)
       echo 'exec cinnamon-session' > /root/.xinitrc
       for user in `ls /usr/home/` ; do
         echo 'exec cinnamon-session' > /usr/home/${user}/.xinitrc
-        chown ${user}:wheel /usr/home/${user}/.xinitrc
+        chown ${user}:${user} /usr/home/${user}/.xinitrc
       done ;;
     kde)
       echo 'exec ck-launcher-session startplasma-x11' > /root/.xinitrc
       for user in `ls /usr/home/` ; do
         echo 'exec ck-launcher-session startplasma-x11' > /usr/home/${user}/.xinitrc
-        chown ${user}:wheel /usr/home/${user}/.xinitrc
+        chown ${user}:${user} /usr/home/${user}/.xinitrc
       done ;;
   esac
 
-  echo 'lightdm_enable="YES"' >> /etc/rc.conf
+  echo "Enable LightDM at boot"
+  # for unknown reason sysrc does not work in this script
+  sed -i '' 's/lightdm_enable="NO"/lightdm_enable="YES"/g' /etc/rc.conf
 }
-
-disable_syscons()
-{
-  kenv | grep -q 'hw.syscons.disable'
-  if [ $? -eq 0 ] ; then
-    echo "hw.syscons.disable=1" >> /boot/loader.conf
-  fi
-}
-
 
 restore_settings()
 {
-  mv /usr/local/etc/devd-openrc/automount_devd.conf.skip /usr/local/etc/devd-openrc/automount_devd.conf
+  echo "Restore automount_devd.conf"
+  mv /usr/local/etc/devd/automount_devd.conf.skip /usr/local/etc/devd/automount_devd.conf
 }
 
 remove_ghostbsd_user
 setup_dm_and_xinitrc
-disable_syscons
 restore_settings
