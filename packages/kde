@@ -574,7 +574,7 @@ qt5-widgets
 qt5-x11extras
 qt5-xml
 qt5-xmlpatterns
-re2-20210601
+re2-20210801
 readline
 rsync
 samba412
