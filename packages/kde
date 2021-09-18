@@ -438,7 +438,7 @@ p5-URI
 p7zip
 pango
 pc-sysinstall
-pciids-20210426
+pciids-20210725
 pcre
 pcre2
 perl5
@@ -487,12 +487,12 @@ plasma5-plasma-sdk
 plasma5-plasma-systemmonitor
 plasma5-plasma-workspace
 plasma5-plasma-workspace-wallpapers
-plasma5-polkit-kde-agent-1-5.22.1
+plasma5-polkit-kde-agent-1-5.22.5
 plasma5-powerdevil
 plasma5-systemsettings
 png
 polkit
-polkit-qt-1-0.113.0_8
+polkit-qt-1-0.114.0
 poppler
 poppler-data
 poppler-glib
@@ -574,7 +574,6 @@ qt5-widgets
 qt5-x11extras
 qt5-xml
 qt5-xmlpatterns
-qtchooser-66_4
 re2-20210601
 readline
 rsync
