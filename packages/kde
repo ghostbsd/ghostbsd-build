@@ -51,7 +51,7 @@ dolphin
 dotconf
 double-conversion
 drm-fbsd13-kmod
-drm-kmod-g20190710_1
+drm-kmod
 droid-fonts-ttf
 e2fsprogs
 ebook-tools
@@ -134,7 +134,7 @@ gobject-introspection
 gpgme
 gpgme-cpp
 gpgme-qt5
-gpu-firmware-kmod-g20210330    
+gpu-firmware-kmod    
 grantlee5
 graphite2
 groff
@@ -172,7 +172,7 @@ icu
 Imath
 indexinfo
 iso-codes
-iso8879-1986_3
+iso8879
 jansson
 jasper
 jbig2dec
@@ -308,7 +308,7 @@ libICE
 libiconv
 libidn
 libidn2
-libinotify-20180201_2
+libinotify
 libinput
 libkdcraw
 libkexiv2
@@ -346,7 +346,7 @@ libtextstyle
 libtheora
 libudev-devd
 libunistring
-libunwind-20201110
+libunwind
 libv4l
 libva
 libvdpau
@@ -430,7 +430,7 @@ p5-IO-HTML
 p5-IO-Socket-INET6
 p5-IO-Socket-SSL
 p5-LWP-MediaTypes
-p5-Mozilla-CA-20200520
+p5-Mozilla-CA
 p5-Net-SSLeay
 p5-Socket6
 p5-TimeDate
@@ -438,7 +438,7 @@ p5-URI
 p7zip
 pango
 pc-sysinstall
-pciids-20210725
+pciids
 pcre
 pcre2
 perl5
@@ -487,12 +487,12 @@ plasma5-plasma-sdk
 plasma5-plasma-systemmonitor
 plasma5-plasma-workspace
 plasma5-plasma-workspace-wallpapers
-plasma5-polkit-kde-agent-1-5.22.5
+plasma5-polkit-kde-agent-1
 plasma5-powerdevil
 plasma5-systemsettings
 png
 polkit
-polkit-qt-1-0.114.0
+polkit-qt-1
 poppler
 poppler-data
 poppler-glib
@@ -574,7 +574,7 @@ qt5-widgets
 qt5-x11extras
 qt5-xml
 qt5-xmlpatterns
-re2-20210801
+re2
 readline
 rsync
 samba412
@@ -682,7 +682,7 @@ xorg-fonts-truetype
 xorg-fonts-type1
 xorg-libraries
 xorg-server
-xorgproto-2021.4
+xorgproto
 xpr
 xprop
 xrandr
