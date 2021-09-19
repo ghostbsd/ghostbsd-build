@@ -148,7 +148,7 @@ rc()
   chroot ${release} sysrc devfs_system_ruleset="devfsrules_common"
   chroot ${release} sysrc moused_enable="YES"
   chroot ${release} sysrc dbus_enable="YES"
-  chroot ${release} sysrc lightdm_enable="YES"
+  chroot ${release} sysrc lightdm_enable="NO"
   chroot ${release} sysrc webcamd_enable="YES"
   chroot ${release} sysrc ipfw_enable="YES"
   chroot ${release} sysrc firewall_enable="YES"
