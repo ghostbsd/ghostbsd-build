@@ -28,7 +28,7 @@ git_gbi()
 {
   if [ ! -d ${release}/gbi ]; then
     echo "Downloading gbi from GitHub"
-    git clone -b install-station https://github.com/GhostBSD/gbi.git ${release}/gbi >/dev/null 2>&1
+    git clone -b setup-station https://github.com/GhostBSD/gbi.git ${release}/gbi >/dev/null 2>&1
     # cp -R /usr/home/ericbsd/projects/ghostbsd/gbi ${release}/gbi
   fi
 
@@ -37,7 +37,7 @@ git_gbi()
 set -e -u
 echo "installing gbi from git"
 cd /gbi
-python3.7 setup.py install >/dev/null 2>&1
+python3 setup.py install >/dev/null 2>&1
 EOF
 
   chroot ${release} sh /config.sh
@@ -58,7 +58,7 @@ git_install_station()
 set -e -u
 echo "installing install-station from git"
 cd /install-station
-python3.7 setup.py install >/dev/null 2>&1
+python3 setup.py install >/dev/null 2>&1
 EOF
 
   chroot ${release} sh /config.sh

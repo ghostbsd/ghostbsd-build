@@ -182,12 +182,11 @@ extra_config()
   . ${cwd}/extra/autologin.sh
   . ${cwd}/extra/gitpkg.sh
   set_live_system
-  # git_pc_sysinstall
   ## git_gbi is for development testing and gbi should be
   ## remove from the package list to avoid conflict
-  # git_gbi
-  # git_install_station
-  setup_liveuser
+  # git_pc_sysinstall
+  git_gbi
+  git_install_station
   setup_base
   lightdm_setup
   setup_autologin
