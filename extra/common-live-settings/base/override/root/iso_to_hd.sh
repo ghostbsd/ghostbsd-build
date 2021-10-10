@@ -26,30 +26,31 @@ remove_ghostbsd_user()
 setup_dm_and_xinitrc()
 {
   echo "setup xinitrc for ${desktop}"
+  users=$(ls /usr/home/)
   case $desktop in
     mate)
       echo 'exec mate-session' > /root/.xinitrc
-      for user in `ls /usr/home/` ; do
-        echo 'exec mate-session' > /usr/home/${user}/.xinitrc
-        chown ${user}:${user} /usr/home/${user}/.xinitrc
+      for user in $users ; do
+        echo 'exec mate-session' > "/usr/home/${user}/.xinitrc"
+        chown "${user}":"${user}" "/usr/home/${user}/.xinitrc"
       done ;;
     xfce)
       echo 'exec startxfce4' > /root/.xinitrc
-      for user in `ls /usr/home/` ; do
-        echo 'exec startxfce4' > /usr/home/${user}/.xinitrc
-        chown ${user}:${user} /usr/home/${user}/.xinitrc
+      for user in $users ; do
+        echo 'exec startxfce4' > "/usr/home/${user}/.xinitrc"
+        chown "${user}":"${user}" "/usr/home/${user}/.xinitrc"
       done ;;
     cinnamon)
       echo 'exec cinnamon-session' > /root/.xinitrc
-      for user in `ls /usr/home/` ; do
-        echo 'exec cinnamon-session' > /usr/home/${user}/.xinitrc
-        chown ${user}:${user} /usr/home/${user}/.xinitrc
+      for user in $users ; do
+        echo 'exec cinnamon-session' > "/usr/home/${user}/.xinitrc"
+        chown "${user}":"${user}" "/usr/home/${user}/.xinitrc"
       done ;;
     kde)
       echo 'exec ck-launcher-session startplasma-x11' > /root/.xinitrc
-      for user in `ls /usr/home/` ; do
-        echo 'exec ck-launcher-session startplasma-x11' > /usr/home/${user}/.xinitrc
-        chown ${user}:${user} /usr/home/${user}/.xinitrc
+      for user in $users ; do
+        echo 'exec ck-launcher-session startplasma-x11' > "/usr/home/${user}/.xinitrc"
+        chown "${user}":"${user}" "/usr/home/${user}/.xinitrc"
       done ;;
   esac
 
