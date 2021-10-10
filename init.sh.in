@@ -4,7 +4,7 @@ set -e
 
 PATH="/rescue"
 
-if [ "`ps -o command 1 | tail -n 1 | ( read c o; echo ${o} )`" = "-s" ]; then
+if [ "$(ps -o command 1 | tail -n 1 | ( read -r c o; echo "${o}" ))" = "-s" ]; then
   echo "==> Running in single-user mode"
   SINGLE_USER="true"
 fi
@@ -15,7 +15,7 @@ mount -u -w /
 makedir=${makedir:-"/cdrom"}
 
 echo "==> Make mountpoints /cdrom"
-mkdir -p ${makedir}
+mkdir -p "${makedir}"
 
 echo "Waiting for GhostBSD media to initialize"
 while : ; do
@@ -36,7 +36,7 @@ x=3163787264
 y=$(sysctl -n hw.physmem)
 echo "Required memory ${x} for memdisk"
 echo "Detected memory ${y} for memdisk"
-if [ $x -gt $y ] ; then
+if [ "$x" -gt "$y" ] ; then
   echo "GhostBSD requires 4GB of memory for memdisk, and operation!"
   echo "Type exit, and press enter after entering the rescue shell to power off."
   exit 1
