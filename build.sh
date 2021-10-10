@@ -243,8 +243,10 @@ boot()
 
 image()
 {
-  sh mkisoimages.sh -b $label $isopath ${cdroot}
-  ls -lh $isopath
+  cd script
+  sh mkisoimages.sh -b $label "$isopath" ${cdroot}
+  cd -
+  ls -lh "$isopath"
   cd ${iso}
   shafile=$(echo ${isopath} | cut -d / -f6).sha256
   torrent=$(echo ${isopath} | cut -d / -f6).torrent
