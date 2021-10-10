@@ -15,5 +15,4 @@ jobs:
       env:
         SHELLCHECK_OPTS: -x -e SC2154
       with:
-        ignore: with:
         ignore: install-boot.sh mkisoimages.sh
