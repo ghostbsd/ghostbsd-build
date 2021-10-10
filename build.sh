@@ -249,7 +249,9 @@ boot()
 
 image()
 {
+  cd script
   sh mkisoimages.sh -b $label "$isopath" ${cdroot}
+  cd -
   ls -lh "$isopath"
   cd ${iso}
   shafile=$(echo "${isopath}" | cut -d / -f6).sha256
