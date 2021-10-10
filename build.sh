@@ -2,14 +2,15 @@
 
 set -e -u
 
-export cwd="`realpath | sed 's|/scripts||g'`"
+cwd="$(realpath | sed 's|/scripts||g')"
+export cwd
 # Only run as superuser
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
   exit 1
 fi
 
-kernrel="`uname -r`"
+kernrel="$(uname -r)"
 
 case $kernrel in
   '13.0-STABLE') ;;
@@ -19,14 +20,13 @@ case $kernrel in
     ;;
 esac
 
-desktop_list=`ls ${cwd}/packages | tr '\n' ' '`
-
+desktop_list=$(find packages -type f | cut -d '/' -f2 | tr -s '\n' ' ')
 helpFunction()
 {
-   echo "Usage: $0 -d desktop -r release type"
-   echo -e "\t-h for help"
-   echo -e "\t-d Desktop: ${desktop_list}"
-   echo -e "\t-r Release: devel or release"
+   printf "Usage: %s -d desktop -r release type" "$0"
+   printf "\t-h for help"
+   printf "\t-d Desktop: %s" "${desktop_list}"
+   printf "\t-r Release: devel or release"
    exit 1 # Exit script after printing help
 }
 
@@ -34,7 +34,7 @@ helpFunction()
 export desktop="mate"
 export release_type="release"
 
-while getopts "d:r:" opt
+while getopts "d:r:h" opt
 do
    case "$opt" in
       'd') export desktop="$OPTARG" ;;
@@ -51,7 +51,7 @@ validate_desktop()
   if [ ! -f "${cwd}/packages/${desktop}" ] ; then
     echo "Invalid choice specified"
     echo "Possible choices are:"
-    echo $desktop_list
+    echo "$desktop_list"
     echo "Usage: ./build.sh mate"
     exit 1
   fi
@@ -60,7 +60,7 @@ validate_desktop()
 validate_desktop
 
 if [ "${desktop}" != "mate" ] ; then
-  DESKTOP=$(echo ${desktop} | tr [a-z] [A-Z])
+  DESKTOP=$(echo "${desktop}" | tr '[:lower:]' '[:upper:]')
   community="-${DESKTOP}"
 else
   community=""
@@ -76,7 +76,7 @@ release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 liveuser="ghostbsd"
 
-version=`date "+-%y.%m.%d"`
+version=$(date "+-%y.%m.%d")
 time_stamp=""
 release_stamp=""
 label="GhostBSD"
@@ -84,8 +84,9 @@ isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
 
 workspace()
 {
-  umount ${release}/dev >/dev/null 2>/dev/null || true
   umount ${base_packages} >/dev/null 2>/dev/null || true
+  umount ${software_packages} >/dev/null 2>/dev/null || true
+  umount devfs >/dev/null 2>/dev/null || true
   umount ${release} >/dev/null 2>/dev/null || true
   if [ -d "${cdroot}" ] ; then
     chflags -R noschg ${cdroot}
@@ -111,9 +112,9 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg_list="os-generic-kernel os-generic-userland os-generic-userland-lib32"
-  pkg_list="${pkg_list} os-generic-userland-devtools"
-  pkg-static -r ${release} -R ${cwd}/pkg/ -C GhostBSD_PKG install -y ${pkg_list}
+  pkg-static -r ${release} -R "${cwd}/pkg/" -C GhostBSD_PKG install -y \
+    os-generic-kernel os-generic-userland os-generic-userland-lib32 \
+    os-generic-userland-devtools
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -127,7 +128,8 @@ packages_software()
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
   mount -t devfs devfs ${release}/dev
-  cat ${cwd}/packages/${desktop} | xargs pkg -c ${release} install -y
+  # cat "${cwd}/packages/${desktop}" |
+  xargs pkg -c ${release} install -y < "${cwd}/packages/${desktop}"
   mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -175,12 +177,13 @@ user()
 
 extra_config()
 {
-  . ${cwd}/extra/common-live-setting.sh
-  . ${cwd}/extra/common-base-setting.sh
-  . ${cwd}/extra/dm.sh
-  . ${cwd}/extra/finalize.sh
-  . ${cwd}/extra/autologin.sh
-  . ${cwd}/extra/gitpkg.sh
+  . "${cwd}/extra/common-live-setting.sh"
+  . "${cwd}/extra/common-base-setting.sh"
+  . "${cwd}/extra/dm.sh"
+  . "${cwd}/extra/finalize.sh"
+  . "${cwd}/extra/autologin.sh"
+  . "${cwd}/extra/gitpkg.sh"
+  . "${cwd}/extra/setuser.sh"
   set_live_system
   ## git_gbi is for development testing and gbi should be
   ## remove from the package list to avoid conflict
@@ -189,6 +192,7 @@ extra_config()
   git_install_station
   setup_base
   lightdm_setup
+  setup_liveuser
   setup_autologin
   final_setup
   echo "gop set 0" >> ${release}/boot/loader.rc.local
@@ -240,23 +244,23 @@ boot()
   cp LICENSE ${cdroot}/LICENSE
   cp -R boot/ ${cdroot}/boot/
   mkdir ${cdroot}/etc
-  cd ${cwd} && zpool export ghostbsd && while zpool status ghostbsd >/dev/null; do :; done 2>/dev/null
+  cd "${cwd}" && zpool export ghostbsd && while zpool status ghostbsd >/dev/null; do :; done 2>/dev/null
 }
 
 image()
 {
-  sh mkisoimages.sh -b $label $isopath ${cdroot}
-  ls -lh $isopath
+  sh mkisoimages.sh -b $label "$isopath" ${cdroot}
+  ls -lh "$isopath"
   cd ${iso}
-  shafile=$(echo ${isopath} | cut -d / -f6).sha256
-  torrent=$(echo ${isopath} | cut -d / -f6).torrent
+  shafile=$(echo "${isopath}" | cut -d / -f6).sha256
+  torrent=$(echo "${isopath}" | cut -d / -f6).torrent
   tracker1="http://tracker.openbittorrent.com:80/announce"
   tracker2="udp://tracker.opentrackr.org:1337"
   tracker3="udp://tracker.coppersurfer.tk:6969"
   echo "Creating sha256 \"${iso}/${shafile}\""
-  sha256 `echo ${isopath} | cut -d / -f6` > ${iso}/${shafile}
-  transmission-create -o ${iso}/${torrent} -t ${tracker1} -t ${tracker3} -t ${tracker3} ${isopath}
-  chmod 644 ${iso}/${torrent}
+  sha256 "$(echo "${isopath}" | cut -d / -f6)" > "${iso}/${shafile}"
+  transmission-create -o "${iso}/${torrent}" -t ${tracker1} -t ${tracker2} -t ${tracker3} "${isopath}"
+  chmod 644 "${iso}/${torrent}"
   cd -
 }
 
