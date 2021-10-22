@@ -1,18 +1,17 @@
 name: 'Verify code with ShellCheck'
 on:
   pull_request:
-    branches: [ master ]
-
+    branches: [master]
 
 jobs:
   shellcheck:
     name: Shellcheck
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Run ShellCheck
-      uses: ludeeus/action-shellcheck@master
-      env:
-        SHELLCHECK_OPTS: -x -e SC2154
-      with:
-        ignore: script
+      - uses: actions/checkout@v2
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        env:
+          SHELLCHECK_OPTS: -x -e SC2154
+        with:
+          ignore: script
