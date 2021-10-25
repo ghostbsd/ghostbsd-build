@@ -23,10 +23,10 @@ esac
 desktop_list=$(find packages -type f | cut -d '/' -f2 | tr -s '\n' ' ')
 helpFunction()
 {
-   echo "Usage: $0 -d desktop -r release type"
-   echo -e "\t-h for help"
-   echo -e "\t-d Desktop: ${desktop_list}"
-   echo -e "\t-b Build type: unstable or release"
+  printf "Usage: %s -d desktop -r release type" "$0"
+  printf "\t-h for help"
+  printf "\t-d Desktop: %s" "${desktop_list}"
+  printf "\t-b Build type: unstable or release"
    exit 1 # Exit script after printing help
 }
 
