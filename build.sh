@@ -23,27 +23,37 @@ esac
 desktop_list=$(find packages -type f | cut -d '/' -f2 | tr -s '\n' ' ')
 helpFunction()
 {
-   printf "Usage: %s -d desktop -r release type" "$0"
-   printf "\t-h for help"
-   printf "\t-d Desktop: %s" "${desktop_list}"
-   printf "\t-r Release: devel or release"
+   echo "Usage: $0 -d desktop -r release type"
+   echo -e "\t-h for help"
+   echo -e "\t-d Desktop: ${desktop_list}"
+   echo -e "\t-b Build type: unstable or release"
    exit 1 # Exit script after printing help
 }
 
 # Set mate and release to be default
 export desktop="mate"
-export release_type="release"
+export build_type="release"
 
-while getopts "d:r:h" opt
+while getopts "d:b:h" opt
 do
    case "$opt" in
       'd') export desktop="$OPTARG" ;;
-      'r') export release_type="$OPTARG" ;;
+      'b') export build_type="$OPTARG" ;;
       'h') helpFunction ;;
       '?') helpFunction ;;
       *) helpFunction ;;
    esac
 done
+
+
+if [ "${build_type}" = "release" ] ; then
+  PKGCONG="GhostBSD_PKG"
+elif [ "${build_type}" = "unstable" ] ; then
+  PKGCONG="GhostBSD_Unstable"
+else
+  printf "\t-b Build type: unstable or release"
+  exit 1
+fi
 
 
 validate_desktop()
@@ -112,7 +122,7 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg-static -r ${release} -R "${cwd}/pkg/" -C GhostBSD_PKG install -y \
+  pkg-static -r ${release} -R "${cwd}/pkg/" -C ${PKGCONG} install -y \
     os-generic-kernel os-generic-userland os-generic-userland-lib32 \
     os-generic-userland-devtools
 
@@ -124,6 +134,9 @@ base()
 
 packages_software()
 {
+  if [ "${build_type}" = "unstable" ] ; then
+    cp pkg/GhostBSD_TEST.conf ${release}/etc/pkg/GhostBSD.conf
+  fi
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
