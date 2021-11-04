@@ -132,6 +132,22 @@ base()
   mkdir ${release}/cdrom
 }
 
+
+set_ghostbsd_version()
+{
+  echo "Get the GhostBSD version file"
+  if [ "${build_type}" = "release" ] ; then
+    pkg_url=$(pkg-static -R pkg/ -vv | grep '/stable' | cut -d '"' -f2)
+  else
+    pkg_url=$(pkg-static -R pkg/ -vv | grep '/unstable' | cut -d '"' -f2)
+  fi
+  version_url="${pkg_url}/version"
+  cd ${release}/etc
+  fetch "${version_url}"
+  cd -
+}
+
+
 packages_software()
 {
   if [ "${build_type}" = "unstable" ] ; then
@@ -281,6 +297,7 @@ image()
 
 workspace
 base
+set_ghostbsd_version
 packages_software
 user
 rc
