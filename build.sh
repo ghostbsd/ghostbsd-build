@@ -61,7 +61,7 @@ validate_desktop()
   if [ ! -f "${cwd}/packages/${desktop}" ] ; then
     echo "Invalid choice specified"
     echo "Possible choices are:"
-    echo $desktop_list
+    echo "$desktop_list"
     echo "Usage: ./build.sh mate"
     exit 1
   fi
@@ -86,11 +86,9 @@ release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 liveuser="ghostbsd"
 
-version=`date "+-%y.%m.%d"`
 time_stamp=""
 release_stamp=""
 label="GhostBSD"
-isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
 
 workspace()
 {
@@ -144,6 +142,8 @@ set_ghostbsd_version()
   cd ${release}/etc
   fetch "${version_url}"
   cd -
+  version="-$(curl "${version_url}")"
+  isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
 }
 
 
