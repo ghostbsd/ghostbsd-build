@@ -185,7 +185,9 @@ rc()
   chroot ${release} sysrc avahi_daemon_enable="YES"
   chroot ${release} sysrc avahi_dnsconfd_enable="YES"
   chroot ${release} sysrc ntpd_enable="YES"
+  chroot ${release} sysrc sddm_enable="YES"
   chroot ${release} sysrc ntpd_sync_on_start="YES"
+
 }
 
 user()
@@ -210,10 +212,6 @@ extra_config()
   . ${cwd}/extra/autologin.sh
   . ${cwd}/extra/gitpkg.sh
   set_live_system
-  # git_pc_sysinstall
-  ## git_gbi is for development testing and gbi should be
-  ## remove from the package list to avoid conflict
-  # git_gbi
   setup_base
   lightdm_setup
   setup_autologin
@@ -293,8 +291,8 @@ workspace
 base
 set_ghostbsd_version
 packages_software
-user
 rc
+user
 extra_config
 uzip
 ramdisk
