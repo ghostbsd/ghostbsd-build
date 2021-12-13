@@ -111,7 +111,7 @@ workspace()
   mdconfig -f ${livecd}/pool.img -u 0
   zpool create ghostbsd /dev/md0
   zfs set mountpoint=${release} ghostbsd
-  zfs set compression=gzip-6 ghostbsd
+  zfs set compression=zstd-9 ghostbsd
 }
 
 base()
