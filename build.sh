@@ -186,7 +186,7 @@ rc()
   chroot ${release} sysrc avahi_daemon_enable="YES"
   chroot ${release} sysrc avahi_dnsconfd_enable="YES"
   chroot ${release} sysrc ntpd_enable="YES"
-  chroot ${release} sysrc sddm_enable="YES"
+  chroot ${release} sysrc bsdstats_enable="NO"
   chroot ${release} sysrc ntpd_sync_on_start="YES"
 
 }
