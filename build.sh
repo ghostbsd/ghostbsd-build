@@ -209,6 +209,7 @@ extra_config()
   . ${cwd}/extra/common-live-setting.sh
   . ${cwd}/extra/common-base-setting.sh
   . ${cwd}/extra/dm.sh
+  . ${cwd}/extra/additions.sh
   . ${cwd}/extra/finalize.sh
   . ${cwd}/extra/autologin.sh
   . ${cwd}/extra/gitpkg.sh
