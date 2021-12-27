@@ -177,8 +177,7 @@ rc()
   chroot ${release} sysrc devfs_system_ruleset="devfsrules_common"
   chroot ${release} sysrc moused_enable="YES"
   chroot ${release} sysrc dbus_enable="YES"
-  chroot ${release} sysrc sddm_enable="YES"
-  chroot ${release} sysrc lightdm_enable="NO"
+  chroot ${release} sysrc lightdm_enable="YES"
   chroot ${release} sysrc webcamd_enable="YES"
   chroot ${release} sysrc ipfw_enable="YES"
   chroot ${release} sysrc firewall_enable="YES"
@@ -186,11 +185,8 @@ rc()
   chroot ${release} sysrc avahi_daemon_enable="YES"
   chroot ${release} sysrc avahi_dnsconfd_enable="YES"
   chroot ${release} sysrc ntpd_enable="YES"
-  chroot ${release} sysrc bsdstats_enable="NO"
   chroot ${release} sysrc ntpd_sync_on_start="YES"
-
 }
-
 user()
 {
   chroot ${release} pw useradd ${liveuser} \
