@@ -94,7 +94,6 @@ workspace()
 {
   umount ${base_packages} >/dev/null 2>/dev/null || true
   umount ${software_packages} >/dev/null 2>/dev/null || true
-  umount devfs >/dev/null 2>/dev/null || true
   umount ${release} >/dev/null 2>/dev/null || true
   if [ -d "${cdroot}" ] ; then
     chflags -R noschg ${cdroot}
@@ -168,8 +167,6 @@ rc()
 {
   # The 2 next line are to be remove when when the upgrade to FreeBSD rc.d
   # is completed
-  chroot ${release} touch /boot/loader.conf
-  chroot ${release} sysrc -f /boot/loader.conf rc_system="bsdrc"
   chroot ${release} touch /etc/rc.conf
   chroot ${release} sysrc hostname='livecd'
   chroot ${release} sysrc zfs_enable="YES"
