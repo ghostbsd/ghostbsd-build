@@ -291,8 +291,8 @@ image()
 
 workspace
 base
-set_ghostbsd_version
 packages_software
+set_ghostbsd_version
 user
 rc
 extra_config
