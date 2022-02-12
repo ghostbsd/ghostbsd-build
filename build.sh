@@ -281,15 +281,15 @@ image()
   tracker3="udp://tracker.coppersurfer.tk:6969"
   echo "Creating sha256 \"${iso}/${shafile}\""
   sha256 `echo ${isopath} | cut -d / -f6` > ${iso}/${shafile}
-  transmission-create -o ${iso}/${torrent} -t ${tracker1} -t ${tracker3} -t ${tracker3} ${isopath}
+  transmission-create -o ${iso}/${torrent} -t ${tracker1} -t ${tracker2} -t ${tracker3} ${isopath}
   chmod 644 ${iso}/${torrent}
   cd -
 }
 
 workspace
 base
-set_ghostbsd_version
 packages_software
+set_ghostbsd_version
 user
 rc
 extra_config
