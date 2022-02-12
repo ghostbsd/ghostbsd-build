@@ -129,6 +129,20 @@ base()
   mkdir ${release}/cdrom
 }
 
+packages_software()
+{
+  if [ "${build_type}" = "unstable" ] ; then
+    cp pkg/GhostBSD_TEST.conf ${release}/etc/pkg/GhostBSD.conf
+  fi
+  cp /etc/resolv.conf ${release}/etc/resolv.conf
+  mkdir -p ${release}/var/cache/pkg
+  mount_nullfs ${software_packages} ${release}/var/cache/pkg
+  mount -t devfs devfs ${release}/dev
+  cat ${cwd}/packages/${desktop} | xargs pkg -c ${release} install -y
+  mkdir -p ${release}/compat/linux/proc
+  rm ${release}/etc/resolv.conf
+  umount ${release}/var/cache/pkg
+}
 
 set_ghostbsd_version()
 {
@@ -144,23 +158,6 @@ set_ghostbsd_version()
   # cd -
   version="-$(cat ${release}/etc/version)"
   isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
-}
-
-
-packages_software()
-{
-  if [ "${build_type}" = "unstable" ] ; then
-    cp pkg/GhostBSD_TEST.conf ${release}/etc/pkg/GhostBSD.conf
-  fi
-  cp /etc/resolv.conf ${release}/etc/resolv.conf
-  mkdir -p ${release}/var/cache/pkg
-  mount_nullfs ${software_packages} ${release}/var/cache/pkg
-  mount -t devfs devfs ${release}/dev
-  # cat "${cwd}/packages/${desktop}" |
-  xargs pkg -c ${release} install -y < "${cwd}/packages/${desktop}"
-  mkdir -p ${release}/compat/linux/proc
-  rm ${release}/etc/resolv.conf
-  umount ${release}/var/cache/pkg
 }
 
 rc()
