@@ -142,7 +142,8 @@ set_ghostbsd_version()
   cd ${release}/etc
   fetch "${version_url}"
   cd -
-  version="-$(curl "${version_url}")"
+  version="-$(curl ${version_url})"
+  echo $version
   isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
 }
 
