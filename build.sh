@@ -20,8 +20,9 @@ case $kernrel in
     ;;
 esac
 
-desktop_list=$(find packages -type f | cut -d '/' -f2 | tr -s '\n' ' ')
-helpFunction()
+desktop_list=`ls ${cwd}/packages | tr '\n' ' '`
+
+help_function()
 {
   printf "Usage: %s -d desktop -r release type" "$0"
   printf "\t-h for help"
@@ -39,9 +40,9 @@ do
    case "$opt" in
       'd') export desktop="$OPTARG" ;;
       'b') export build_type="$OPTARG" ;;
-      'h') helpFunction ;;
-      '?') helpFunction ;;
-      *) helpFunction ;;
+      'h') help_function ;;
+      '?') help_function ;;
+      *) help_function ;;
    esac
 done
 
