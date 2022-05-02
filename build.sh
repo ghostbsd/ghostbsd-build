@@ -21,7 +21,7 @@ esac
 
 desktop_list=`ls ${cwd}/packages | tr '\n' ' '`
 
-helpFunction()
+help_function()
 {
    echo "Usage: $0 -d desktop -r release type"
    echo -e "\t-h for help"
@@ -39,9 +39,9 @@ do
    case "$opt" in
       'd') export desktop="$OPTARG" ;;
       'b') export build_type="$OPTARG" ;;
-      'h') helpFunction ;;
-      '?') helpFunction ;;
-      *) helpFunction ;;
+      'h') help_function ;;
+      '?') help_function ;;
+      *) help_function ;;
    esac
 done
 
