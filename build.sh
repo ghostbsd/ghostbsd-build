@@ -13,7 +13,7 @@ fi
 kernrel="$(uname -r)"
 
 case $kernrel in
-  '13.0-STABLE') ;;
+  '13.0-STABLE' | '13.1-STABLE') ;;
   *)
     echo "Using wrong kernel release. Use GhostBSD 20.04 or later to build iso."
     exit 1
