@@ -27,7 +27,6 @@ ghostbsd-utils
 git
 gstreamer1-plugins-neon
 nss_mdns
-nvidia-driver
 pc-sysinstall
 pkg
 plank

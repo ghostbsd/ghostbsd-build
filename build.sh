@@ -47,7 +47,7 @@ done
 
 
 if [ "${build_type}" = "release" ] ; then
-  PKGCONG="GhostBSD_PKG"
+  PKGCONG="GhostBSD"
 elif [ "${build_type}" = "unstable" ] ; then
   PKGCONG="GhostBSD_Unstable"
 else
@@ -119,9 +119,9 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg-static -r ${release} -R "${cwd}/pkg/" -C ${PKGCONG} install -y \
-    os-generic-kernel os-generic-userland os-generic-userland-lib32 \
-    os-generic-userland-devtools
+  pkg_list="os-generic-kernel os-generic-userland os-generic-userland-lib32"
+  pkg_list="${pkg_list} os-generic-userland-devtools"
+  pkg-static -r ${release} -R ${cwd}/pkg/ install -y -r ${PKGCONG} ${pkg_list}
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -148,7 +148,7 @@ set_ghostbsd_version()
 packages_software()
 {
   if [ "${build_type}" = "unstable" ] ; then
-    cp pkg/GhostBSD_TEST.conf ${release}/etc/pkg/GhostBSD.conf
+    cp pkg/GhostBSD_Unstable.conf ${release}/etc/pkg/GhostBSD.conf
   fi
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
@@ -160,10 +160,18 @@ packages_software()
   umount ${release}/var/cache/pkg
 }
 
+fetch_x_drivers_packages()
+{
+  mkdir ${release}/xdrivers
+  echo $(pkg -R ${cwd}/pkg/ rquery -x -r ${PKGCONG} '%n %n-%v.pkg' "nvidia-driver") > ${release}/xdrivers/drivers-list
+  pkg_list=$(pkg -R ${cwd}/pkg/ rquery -x -r ${PKGCONG} '%n-%v.pkg' "nvidia-driver")
+  for line in $pkg_list ; do
+    fetch -o ${release}/xdrivers ${pkg_url}/All/$line
+  done
+}
+
 rc()
 {
-  # The 2 next line are to be remove when when the upgrade to FreeBSD rc.d
-  # is completed
   chroot ${release} touch /etc/rc.conf
   chroot ${release} sysrc hostname='livecd'
   chroot ${release} sysrc zfs_enable="YES"
@@ -293,6 +301,7 @@ workspace
 base
 set_ghostbsd_version
 packages_software
+fetch_x_drivers_packages
 user
 rc
 extra_config
