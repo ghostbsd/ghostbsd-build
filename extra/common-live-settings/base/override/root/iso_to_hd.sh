@@ -6,10 +6,6 @@ if [ -f "/usr/local/bin/mate-session" ]; then
   desktop='mate'
 elif [ -f "/usr/local/bin/startxfce4" ]; then
   desktop='xfce'
-elif [ -f "/usr/local/bin/cinnamon-session" ]; then
-  desktop='cinnamon'
-elif [ -f "/usr/local/bin/startplasma-x11" ]; then
-  desktop='kde'
 fi
 
 remove_ghostbsd_user()
@@ -38,18 +34,6 @@ setup_dm_and_xinitrc()
       echo 'exec startxfce4' > /root/.xinitrc
       for user in $users ; do
         echo 'exec startxfce4' > "/usr/home/${user}/.xinitrc"
-        chown "${user}":"${user}" "/usr/home/${user}/.xinitrc"
-      done ;;
-    cinnamon)
-      echo 'exec cinnamon-session' > /root/.xinitrc
-      for user in $users ; do
-        echo 'exec cinnamon-session' > "/usr/home/${user}/.xinitrc"
-        chown "${user}":"${user}" "/usr/home/${user}/.xinitrc"
-      done ;;
-    kde)
-      echo 'exec ck-launcher-session startplasma-x11' > /root/.xinitrc
-      for user in $users ; do
-        echo 'exec ck-launcher-session startplasma-x11' > "/usr/home/${user}/.xinitrc"
         chown "${user}":"${user}" "/usr/home/${user}/.xinitrc"
       done ;;
   esac
