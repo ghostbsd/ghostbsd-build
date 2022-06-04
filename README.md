@@ -7,7 +7,7 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 
 ## Features
 * Build GhostBSD from packages
-* Mate, XFCE, Cinnamon, and KDE desktop environments
+* Mate and XFCE desktop environments
 * Hybrid DVD/USB image
 
 ## Graphics support
@@ -17,9 +17,9 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 ## System requirements
 * Latest version of GhostBSD 
 * 20GB of free disk space
-* 8GB of free memory
+* 4GB of free memory
 
-Note: GhostBSD 20.09.08 and later should be used to build ISO.
+Note: GhostBSD 22.01.12 and later should be used to build ISO.
 
 ## Initial setup
 Install the required packages:
@@ -43,52 +43,24 @@ cd ghostbsd-build
 
 #### To build a GhostBSD with __MATE__ as default desktop
 ```
-./build.sh
+./build.sh -d mate -b unstable
 ```
 or
 ```
-./build.sh -d mate
+./build.sh -d mate -b release
 ```
 
 #### (Option) To build GhostBSD with __XFCE__ as default desktop
 ```
-./build.sh -d xfce
+./build.sh -d xfce -b unstable
 ```   
-
-#### (Option) To build GhostBSD with __Cinnamon__ as default desktop
-```
-./build.sh -d cinnamon
-```   
-
-#### (Option) To build GhostBSD the default __KDE__ desktop
-```
-./build.sh -d kde
-```    
-
-#### (Option) To build GhostBSD release __MATE__ desktop
-```
-./build.sh -r release
-```
-or
-```
-./build.sh -d mate -r release
-```
-
-#### (Option) To build GhostBSD development __MATE__ desktop iso
-```
-./build.sh
-```
-or 
-```
-./build.sh -d mate -r devel
-```
 
 ## Burn an image to cd:
 ```
-cdrecord /usr/local/ghostbsd-build/iso/GhostBSD-21.09.08.iso
+cdrecord /usr/local/ghostbsd-build/iso/GhostBSD-22.01.12.iso
 ```
 
 ## Write an image to usb stick:
 ```
-dd if=/usr/local/ghostbsd-build/iso/GhostBSD-21.09.08.iso of=/dev/da0 bs=4m
+dd if=/usr/local/ghostbsd-build/iso/GhostBSD-22.01.12.iso of=/dev/da0 bs=4m
 ```
