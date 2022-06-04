@@ -14,12 +14,6 @@ lightdm_setup()
 
 }
 
-gdm_setup()
-{
-  echo 'gdm_enable="YES"' >> ${release}/etc/rc.conf
-  setup_xinit
-}
-
 setup_xinit()
 {
   if [ "${desktop}" == "mate" ] ; then
