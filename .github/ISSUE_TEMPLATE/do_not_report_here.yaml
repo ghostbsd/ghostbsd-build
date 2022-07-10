@@ -1,2 +1,18 @@
 name: Do not report issue here
 description: Use [https://github.com/ghostbsd/ghostbsd-src/issues/new/choose](https://github.com/ghostbsd/ghostbsd-src/issues/new/choose)
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Please read this first
+        Before reporting an issue, make sure it is not in our [Development Management](https://github.com/orgs/ghostbsd/projects/4/views/12).
+
+        Follow these tips to help us understand your issue.
+        * Only one issue per report
+        * The title describes the issue
+        * Follow the information of each field
+        * Be concise and clear on each field
+        * Make sure the issue is understandable after reading it
+
+        **Note:** If we have a problem understanding the issue, we might close the report.
