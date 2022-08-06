@@ -2,7 +2,9 @@
 
 set -e -u
 
-export cwd="`realpath`"
+cwd="$(realpath)"
+export cwd
+
 # Only run as superuser
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
@@ -19,7 +21,7 @@ case $kernrel in
     ;;
 esac
 
-desktop_list=`ls ${cwd}/packages | tr '\n' ' '`
+desktop_list=$(find packages -type f | cut -d '/' -f2 | tr -s '\n' ' ')
 
 help_function()
 {
@@ -94,13 +96,13 @@ workspace()
 {
   umount ${base_packages} >/dev/null 2>/dev/null || true
   umount ${software_packages} >/dev/null 2>/dev/null || true
+  umount ${release}/dev >/dev/null 2>/dev/null || true
+  zpool destroy ghostbsd >/dev/null 2>/dev/null || true
   umount ${release} >/dev/null 2>/dev/null || true
   if [ -d "${cdroot}" ] ; then
     chflags -R noschg ${cdroot}
     rm -rf ${cdroot}
   fi
-  zpool destroy ghostbsd >/dev/null 2>/dev/null || true
-  umount ghostbsd >/dev/null 2>/dev/null || true
   mdconfig -d -u 0 >/dev/null 2>/dev/null || true
   if [ -f "${livecd}/pool.img" ] ; then
     rm ${livecd}/pool.img
@@ -119,9 +121,9 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg_list="os-generic-kernel os-generic-userland os-generic-userland-lib32"
-  pkg_list="${pkg_list} os-generic-userland-devtools"
-  pkg-static -r ${release} -R ${cwd}/pkg/ install -y -r ${PKGCONG} ${pkg_list}
+  pkg-static -r ${release} -R "${cwd}/pkg/" install -y -r ${PKGCONG} \
+    os-generic-kernel os-generic-userland os-generic-userland-lib32 \
+    os-generic-userland-devtools
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -154,7 +156,8 @@ packages_software()
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
   mount -t devfs devfs ${release}/dev
-  cat ${cwd}/packages/${desktop} | xargs pkg -c ${release} install -y
+  pkg_list="$(cat "${cwd}/packages/${desktop}")"
+  echo "$pkg_list" | xargs pkg -c ${release} install -y
   mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -163,11 +166,11 @@ packages_software()
 fetch_x_drivers_packages()
 {
   mkdir ${release}/xdrivers
-  pkg -R ${cwd}/pkg/ update
-  echo "$(pkg -R ${cwd}/pkg/ rquery -x -r ${PKGCONG} '%n %n-%v.pkg' 'nvidia-driver')" > ${release}/xdrivers/drivers-list
-  pkg_list="$(pkg -R ${cwd}/pkg/ rquery -x -r ${PKGCONG} '%n-%v.pkg' 'nvidia-driver')"
+  pkg -R "${cwd}/pkg/" update
+  pkg -R "${cwd}/pkg/" rquery -x -r ${PKGCONG} '%n %n-%v.pkg' 'nvidia-driver' > ${release}/xdrivers/drivers-list
+  pkg_list="$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKGCONG} '%n-%v.pkg' 'nvidia-driver')"
   for line in $pkg_list ; do
-    fetch -o ${release}/xdrivers ${pkg_url}/All/$line
+    fetch -o ${release}/xdrivers "${pkg_url}/All/$line"
   done
 }
 
@@ -293,7 +296,9 @@ image()
   tracker2="udp://tracker.opentrackr.org:1337"
   tracker3="udp://tracker.coppersurfer.tk:6969"
   echo "Creating sha256 \"${iso}/${shafile}\""
-
+  sha256 "$(echo "${isopath}" | cut -d / -f6)" > "${iso}/${shafile}"
+  transmission-create -o "${iso}/${torrent}" -t ${tracker1} -t ${tracker2} -t ${tracker3} "${isopath}"
+  chmod 644 "${iso}/${torrent}"
   cd -
 }
 

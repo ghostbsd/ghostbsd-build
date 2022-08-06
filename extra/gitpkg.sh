@@ -28,7 +28,7 @@ git_gbi()
 {
   if [ ! -d "${release}/gbi" ]; then
     echo "Downloading gbi from GitHub"
-    git clone -b network-setup https://github.com/GhostBSD/gbi.git "${release}/gbi" >/dev/null 2>&1
+    git clone -b ghostbsd-src/issues/105 https://github.com/GhostBSD/gbi.git "${release}/gbi" >/dev/null 2>&1
     # cp -R /usr/home/ericbsd/projects/ghostbsd/gbi ${release}/gbi
   fi
 
