@@ -5,14 +5,11 @@ cups-filters
 cursor-dmz-theme
 dconf-editor
 drm-kmod
-droid-fonts-ttf
 en-aspell
 en-hunspell
 evolution
 feh
 firefox
-font-awesome
-fonts-indic
 foomatic-db
 freedesktop-sound-theme
 fusefs-ext2
@@ -21,6 +18,7 @@ fusefs-simple-mtpfs
 gdk-pixbuf2
 ghostbsd-common-settings
 ghostbsd-drivers
+ghostbsd-fonts
 ghostbsd-icons
 ghostbsd-mate
 ghostbsd-utils
@@ -37,7 +35,6 @@ shotwell
 slick-greeter
 station-tweak
 system-config-printer
-tlwg-ttf
 transmission-gtk
 vim-tiny
 virtualbox-ose-additions

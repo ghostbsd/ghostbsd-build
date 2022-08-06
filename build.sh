@@ -231,8 +231,9 @@ extra_config()
   mkdir -p ${release}/usr/local/share/ghostbsd
   echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
   echo "${liveuser}" > ${release}/usr/local/share/ghostbsd/liveuser
-  # bypass automount for live
+  # bypass automount for live iso
   mv ${release}/usr/local/etc/devd/automount_devd.conf ${release}/usr/local/etc/devd/automount_devd.conf.skip
+  mv ${release}/usr/local/etc/devd/automount_devd_localdisks.conf ${release}/usr/local/etc/devd/automount_devd_localdisks.conf.skip
   # Mkdir for linux compat to ensure /etc/fstab can mount when booting LiveCD
   chroot ${release} mkdir -p /compat/linux/dev/shm
   # Add /boot/entropy file
@@ -292,9 +293,7 @@ image()
   tracker2="udp://tracker.opentrackr.org:1337"
   tracker3="udp://tracker.coppersurfer.tk:6969"
   echo "Creating sha256 \"${iso}/${shafile}\""
-  sha256 "$(echo "${isopath}" | cut -d / -f6)" > "${iso}/${shafile}"
-  transmission-create -o "${iso}/${torrent}" -t ${tracker1} -t ${tracker2} -t ${tracker3} "${isopath}"
-  chmod 644 "${iso}/${torrent}"
+
   cd -
 }
 

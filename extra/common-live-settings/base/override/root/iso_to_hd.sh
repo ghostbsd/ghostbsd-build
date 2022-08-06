@@ -45,8 +45,9 @@ setup_dm_and_xinitrc()
 
 restore_settings()
 {
-  echo "Restore automount_devd.conf"
+  echo "Restore automount_devd.conf and automount_devd_localdisks.conf"
   mv /usr/local/etc/devd/automount_devd.conf.skip /usr/local/etc/devd/automount_devd.conf
+  mv /usr/local/etc/devd/automount_devd_localdisks.conf.skip /usr/local/etc/devd/automount_devd_localdisks.conf
 }
 
 remove_ghostbsd_user
