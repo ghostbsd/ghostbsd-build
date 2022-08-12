@@ -25,7 +25,6 @@ ghostbsd-utils
 git
 gstreamer1-plugins-neon
 nss_mdns
-pc-sysinstall
 pkg
 plank
 pv

@@ -222,9 +222,10 @@ extra_config()
   set_live_system
   ## git_gbi is for development testing and gbi should be
   ## remove from the package list to avoid conflict
-  # git_pc_sysinstall
+  git_pc_sysinstall
   git_gbi
   git_install_station
+  git_setup_station
   setup_base
   lightdm_setup
   setup_liveuser
