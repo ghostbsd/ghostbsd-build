@@ -15,7 +15,7 @@ mount -u -w /
 makedir=${makedir:-"/cdrom"}
 
 echo "==> Make mountpoints /cdrom"
-mkdir -p ${makedir}
+mkdir -p "${makedir}"
 
 echo "Waiting for GhostBSD media to initialize"
 while : ; do
@@ -32,18 +32,20 @@ if [ "$SINGLE_USER" = "true" ]; then
 fi
 
 # Ensure the system has more than enough memory for memdisk
-x=3163787264
-y=$(sysctl -n hw.physmem)
-echo "Required memory ${x} for memdisk"
-echo "Detected memory ${y} for memdisk"
-if [ $x -gt $y ] ; then
+requiredmem=4294967296
+realmem=$(sysctl -n hw.realmem)
+memdisk_size=$((("${realmem}"*75/100)/1024/1024/1024))
+echo "Required memory ${requiredmem} for memdisk"
+echo "Detected memory ${realmem} for memdisk"
+if [ "$requiredmem" -ge "$realmem" ] ; then
+  SINGLE_USER="true"
   echo "GhostBSD requires 4GB of memory for memdisk, and operation!"
   echo "Type exit, and press enter after entering the rescue shell to power off."
   exit 1
 fi
 
 echo "==> Mount swap-based memdisk"
-mdconfig -a -t swap -s 3g -u 1 >/dev/null 2>/dev/null
+mdconfig -a -t swap -s ${memdisk_size}g -u 1 >/dev/null 2>/dev/null
 zpool create livecd /dev/md1 >/dev/null 2>/dev/null
 zfs set compression=zstd-9 livecd
 zfs set primarycache=none livecd
