@@ -37,7 +37,7 @@ realmem=$(sysctl -n hw.realmem)
 memdisk_size=$((("${realmem}"*75/100)/1024/1024/1024))
 echo "Required memory ${requiredmem} for memdisk"
 echo "Detected memory ${realmem} for memdisk"
-if [ "$requiredmem" -ge "$realmem" ] ; then
+if [ "$realmem" -lt "$requiredmem" ] ; then
   SINGLE_USER="true"
   echo "GhostBSD requires 4GB of memory for memdisk, and operation!"
   echo "Type exit, and press enter after entering the rescue shell to power off."
