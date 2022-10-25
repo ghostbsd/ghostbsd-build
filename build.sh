@@ -164,7 +164,7 @@ packages_software()
 fetch_x_drivers_packages()
 {
   mkdir ${release}/xdrivers
-  pkg -R ${cwd}/pkg/ update
+  yes | pkg -R ${cwd}/pkg/ update
   echo "$(pkg -R ${cwd}/pkg/ rquery -x -r ${PKGCONG} '%n %n-%v.pkg' 'nvidia-driver')" > ${release}/xdrivers/drivers-list
   pkg_list="$(pkg -R ${cwd}/pkg/ rquery -x -r ${PKGCONG} '%n-%v.pkg' 'nvidia-driver')"
   for line in $pkg_list ; do
