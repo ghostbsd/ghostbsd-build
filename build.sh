@@ -175,6 +175,7 @@ fetch_x_drivers_packages()
 rc()
 {
   chroot ${release} touch /etc/rc.conf
+  chroot ${release} sysrc rc_startupmsgs="NO"
   chroot ${release} sysrc hostname='livecd'
   chroot ${release} sysrc zfs_enable="YES"
   chroot ${release} sysrc kld_list="linux linux64 cuse fusefs"
