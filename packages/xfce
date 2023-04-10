@@ -17,6 +17,7 @@ ghostbsd-xfce4
 ghostbsd-xfce-settings
 ghostbsd-xfce-themes
 git
+gpu-firmware-kmod
 gnome-keyring
 gstreamer1-plugins-neon
 nss_mdns
