@@ -3,7 +3,7 @@ ghostbsd-build
 Live media creator for GhostBSD distribution
 
 ## Introduction
-The purpose of this tool is quickly generate live images for GhostBSD.
+The purpose of this tool is to quickly generate live images for GhostBSD.
 
 ## Features
 * Build GhostBSD from packages
