@@ -15,7 +15,7 @@ jobs:
   pr_opened:
     name: pr_opened
     runs-on: ubuntu-latest
-    if: github.event.action == 'opened'
+    if: github.event_name == 'pull_request_target' && github.event.action == 'opened'
     steps:
       - name: Move PR to ${{ env.in_review }}
         uses: leonsteinhaeuser/project-beta-automations@v2.1.0
