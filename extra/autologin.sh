@@ -19,7 +19,7 @@ setup_autologin()
     sleep 1
     echo "X configuation completed"
     sleep 1
-    rm -rf /xdrivers
+    sudo rm -rf /xdrivers
     sleep 1
     startx
   end
