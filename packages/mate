@@ -4,6 +4,7 @@ cups-filters
 cursor-dmz-theme
 dconf-editor
 drm-kmod
+egl-wayland
 evolution
 firefox
 foomatic-db
