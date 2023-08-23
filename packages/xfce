@@ -1,6 +1,7 @@
 cups
 cups-filters
 drm-kmod
+egl-wayland
 evince-lite
 evolution
 ffmpegthumbnailer
