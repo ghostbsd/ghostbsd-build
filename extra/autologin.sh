@@ -18,6 +18,8 @@ setup_autologin()
     sleep 1
     sudo xconfig auto
     sleep 1
+    sudo rm -rf /xdrivers
+    sleep 1
     startx
   end
 " > "${release}/usr/home/${liveuser}/.config/fish/config.fish"

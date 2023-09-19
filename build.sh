@@ -14,7 +14,7 @@ fi
 kernrel="$(uname -r)"
 
 case $kernrel in
-  '13.0-STABLE' | '13.1-STABLE') ;;
+  '13.1-STABLE' | '13.2-STABLE' | '14.0-STABLE' | '14.0-CURRENT') ;;
   *)
     echo "Using wrong kernel release. Use GhostBSD 20.04 or later to build iso."
     exit 1
@@ -242,6 +242,8 @@ extra_config()
   chroot ${release} mkdir -p /compat/linux/dev/shm
   # Add /boot/entropy file
   chroot ${release} touch /boot/entropy
+  # default GhostBSD to local time instead of UTC
+  chroot ${release} touch /etc/wall_cmos_clock
 }
 
 uzip()
