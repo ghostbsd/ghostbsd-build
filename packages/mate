@@ -18,6 +18,7 @@ ghostbsd-mate
 ghostbsd-utils
 git
 gstreamer1-plugins-neon
+hw-probe
 nss_mdns
 pc-sysinstall
 pkg
