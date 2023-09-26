@@ -20,6 +20,7 @@ ghostbsd-xfce-themes
 git
 gnome-keyring
 gstreamer1-plugins-neon
+hw-probe
 nss_mdns
 nvidia-driver
 pc-sysinstall
