@@ -121,7 +121,6 @@ base()
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
   pkg_list="os-generic-kernel os-generic-userland os-generic-userland-lib32"
-  pkg_list="${pkg_list} os-generic-userland-devtools"
   pkg-static -r ${release} -R ${cwd}/pkg/ install -y -r ${PKGCONG} ${pkg_list}
 
   rm ${release}/etc/resolv.conf
