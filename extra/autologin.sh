@@ -14,11 +14,11 @@ setup_autologin()
   mkdir -p "${release}/usr/home/${liveuser}/.config/fish"
   printf "set tty (tty)
   if test \$tty = \"/dev/ttyv0\"
-    startx
-    sleep 1
     sudo xconfig auto
     sleep 1
     sudo rm -rf /xdrivers
+    sleep 1
+    startx
     sleep 1
     startx
   end

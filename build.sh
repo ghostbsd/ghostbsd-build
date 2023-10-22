@@ -122,8 +122,7 @@ base()
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
   pkg-static -r ${release} -R "${cwd}/pkg/" install -y -r ${PKGCONG} \
-    os-generic-kernel os-generic-userland os-generic-userland-lib32 \
-    os-generic-userland-devtools
+    os-generic-kernel os-generic-userland os-generic-userland-lib32
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -166,9 +165,9 @@ packages_software()
 fetch_x_drivers_packages()
 {
   mkdir ${release}/xdrivers
-  yes | pkg -R ${cwd}/pkg/ update
-  echo "$(pkg -R ${cwd}/pkg/ rquery -x -r ${PKGCONG} '%n %n-%v.pkg' 'nvidia-driver')" > ${release}/xdrivers/drivers-list
-  pkg_list="$(pkg -R ${cwd}/pkg/ rquery -x -r ${PKGCONG} '%n-%v.pkg' 'nvidia-driver')"
+  yes | pkg -R "${cwd}/pkg/" update
+  echo """$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKGCONG} '%n %n-%v.pkg' 'nvidia-driver')""" > ${release}/xdrivers/drivers-list
+  pkg_list="""$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKGCONG} '%n-%v.pkg' 'nvidia-driver')"""
   for line in $pkg_list ; do
     fetch -o ${release}/xdrivers "${pkg_url}/All/$line"
   done
