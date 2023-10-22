@@ -132,16 +132,6 @@ base()
 
 set_ghostbsd_version()
 {
-  echo "Get the GhostBSD version file"
-  if [ "${build_type}" = "release" ] ; then
-    pkg_url=$(pkg-static -R pkg/ -vv | grep '/stable' | cut -d '"' -f2)
-  else
-    pkg_url=$(pkg-static -R pkg/ -vv | grep '/unstable' | cut -d '"' -f2)
-  fi
-  version_url="${pkg_url}/version"
-  cd ${release}/etc
-  fetch "${version_url}"
-  cd -
   version="-$(cat ${release}/etc/version)"
   isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
 }
