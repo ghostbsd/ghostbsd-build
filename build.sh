@@ -152,6 +152,11 @@ packages_software()
 
 fetch_x_drivers_packages()
 {
+  if [ "${build_type}" = "release" ] ; then
+    pkg_url=$(pkg-static -R pkg/ -vv | grep '/stable' | cut -d '"' -f2)
+  else
+    pkg_url=$(pkg-static -R pkg/ -vv | grep '/unstable' | cut -d '"' -f2)
+  fi
   mkdir ${release}/xdrivers
   yes | pkg -R ${cwd}/pkg/ update
   echo "$(pkg -R ${cwd}/pkg/ rquery -x -r ${PKGCONG} '%n %n-%v.pkg' 'nvidia-driver')" > ${release}/xdrivers/drivers-list
