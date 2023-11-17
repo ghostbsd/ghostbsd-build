@@ -122,8 +122,8 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg-static -r ${release} -R "${cwd}/pkg/" install -y -r ${PKGCONG} \
-    os-generic-kernel os-generic-userland os-generic-userland-lib32
+  pkg_list="os-generic-kernel os-generic-userland os-generic-userland-lib32"
+  pkg-static -r ${release} -R "${cwd}/pkg/" install -y -r ${PKGCONG} "${pkg_list}"
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -133,16 +133,6 @@ base()
 
 set_ghostbsd_version()
 {
-  echo "Get the GhostBSD version file"
-  if [ "${build_type}" = "release" ] ; then
-    pkg_url=$(pkg-static -R pkg/ -vv | grep '/stable' | cut -d '"' -f2)
-  else
-    pkg_url=$(pkg-static -R pkg/ -vv | grep '/unstable' | cut -d '"' -f2)
-  fi
-  version_url="${pkg_url}/version"
-  cd ${release}/etc
-  fetch "${version_url}"
-  cd -
   version="-$(cat ${release}/etc/version)"
   isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
 }
@@ -165,6 +155,11 @@ packages_software()
 
 fetch_x_drivers_packages()
 {
+  if [ "${build_type}" = "release" ] ; then
+    pkg_url=$(pkg-static -R pkg/ -vv | grep '/stable' | cut -d '"' -f2)
+  else
+    pkg_url=$(pkg-static -R pkg/ -vv | grep '/unstable' | cut -d '"' -f2)
+  fi
   mkdir ${release}/xdrivers
   yes | pkg -R "${cwd}/pkg/" update
   echo """$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKGCONG} '%n %n-%v.pkg' 'nvidia-driver')""" > ${release}/xdrivers/drivers-list

@@ -4,10 +4,8 @@ set -e -u
 
 . "${cwd}/extra/common-live-setting.sh"
 . "${cwd}/extra/common-base-setting.sh"
-. "${cwd}/extra/dm.sh"
 . "${cwd}/extra/finalize.sh"
 . "${cwd}/extra/autologin.sh"
-. "${cwd}/extra/gitpkg.sh"
 . "${cwd}/extra/setuser.sh"
 
 lightdm_setup()
