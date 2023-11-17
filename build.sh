@@ -87,6 +87,7 @@ base_packages="${livecd}/base_packages"
 release="${livecd}/release"
 cdroot="${livecd}/cdroot"
 liveuser="ghostbsd"
+export liveuser
 
 time_stamp=""
 release_stamp=""
@@ -195,45 +196,14 @@ rc()
   chroot ${release} sysrc ntpd_sync_on_start="YES"
 }
 
-user()
-{
-  chroot ${release} pw usermod -s /usr/local/bin/fish -n root
-  chroot ${release} pw useradd ${liveuser} \
-  -c "GhostBSD Live User" -d "/usr/home/${liveuser}"\
-  -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
-  chroot ${release} su ${liveuser} -c "mkdir -p /usr/home/${liveuser}/Desktop"
-  if [ -e ${release}/usr/local/share/applications/gbi.desktop ] ; then
-    chroot ${release} su ${liveuser} -c  "cp -af /usr/local/share/applications/gbi.desktop /usr/home/${liveuser}/Desktop"
-    chroot ${release} su ${liveuser} -c  "chmod +x /usr/home/${liveuser}/Desktop/gbi.desktop"
-    sed -i '' -e 's/NoDisplay=true/NoDisplay=false/g' ${release}/usr/home/${liveuser}/Desktop/gbi.desktop
-  fi
-}
-
 extra_config()
 {
-  . "${cwd}/extra/common-live-setting.sh"
-  . "${cwd}/extra/common-base-setting.sh"
-  . "${cwd}/extra/dm.sh"
-  . "${cwd}/extra/finalize.sh"
-  . "${cwd}/extra/autologin.sh"
-  . "${cwd}/extra/gitpkg.sh"
-  . "${cwd}/extra/setuser.sh"
-  set_live_system
-  ## git_gbi is for development testing and gbi should be
-  ## remove from the package list to avoid conflict
-  git_pc_sysinstall
-  git_gbi
-  git_install_station
-  git_setup_station
-  setup_base
-  lightdm_setup
-  setup_liveuser
-  setup_autologin
-  final_setup
-  echo "gop set 0" >> ${release}/boot/loader.rc.local
+  # run config for GhostBSD flavor
+  sh "${cwd}/extra/${desktop}.sh"
+
+  # echo "gop set 0" >> ${release}/boot/loader.rc.local
   mkdir -p ${release}/usr/local/share/ghostbsd
   echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
-  echo "${liveuser}" > ${release}/usr/local/share/ghostbsd/liveuser
   # bypass automount for live iso
   mv ${release}/usr/local/etc/devd/automount_devd.conf ${release}/usr/local/etc/devd/automount_devd.conf.skip
   mv ${release}/usr/local/etc/devd/automount_devd_localdisks.conf ${release}/usr/local/etc/devd/automount_devd_localdisks.conf.skip
@@ -309,7 +279,6 @@ base
 set_ghostbsd_version
 packages_software
 fetch_x_drivers_packages
-user
 rc
 extra_config
 uzip

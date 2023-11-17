@@ -9,8 +9,3 @@ patch_etc_files()
   mkdir -p "${release}/compat/linux/dev/shm"
   mkdir -p "${release}/compat/linux/sys"
 }
-
-setup_base()
-{
-  patch_etc_files
-}
