@@ -21,13 +21,10 @@ setup_xinit()
 }
 
 
-
 set_live_system
 patch_etc_files
-
-lightdm_setup
-setup_xinit
-
 community_setup_liveuser
 community_setup_autologin
+lightdm_setup
+setup_xinit
 final_setup

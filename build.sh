@@ -85,6 +85,7 @@ iso="${livecd}/iso"
 software_packages="${livecd}/software_packages"
 base_packages="${livecd}/base_packages"
 release="${livecd}/release"
+export release
 cdroot="${livecd}/cdroot"
 liveuser="ghostbsd"
 export liveuser
@@ -122,8 +123,8 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg_list="os-generic-kernel os-generic-userland os-generic-userland-lib32"
-  pkg-static -r ${release} -R "${cwd}/pkg/" install -y -r ${PKGCONG} "${pkg_list}"
+  pkg-static -r ${release} -R "${cwd}/pkg/" install -y -r ${PKGCONG} \
+    os-generic-kernel os-generic-userland os-generic-userland-lib32
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg

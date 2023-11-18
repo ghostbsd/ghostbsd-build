@@ -35,9 +35,8 @@ git_gbi
 git_install_station
 git_setup_station
 
-lightdm_setup
-setup_xinit
-
 ghostbsd_setup_liveuser
 ghostbsd_setup_autologin
+lightdm_setup
+setup_xinit
 final_setup
