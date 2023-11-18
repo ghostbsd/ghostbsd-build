@@ -21,22 +21,22 @@ remove_ghostbsd_user()
 
 setup_dm_and_xinitrc()
 {
-  echo "setup xinitrc for ${desktop}"
-  users=$(ls /usr/home/)
-  case $desktop in
-    mate)
-      echo 'exec mate-session' > /root/.xinitrc
-      for user in $users ; do
-        echo 'exec mate-session' > "/usr/home/${user}/.xinitrc"
-        chown "${user}":"${user}" "/usr/home/${user}/.xinitrc"
-      done ;;
-    xfce)
-      echo 'exec startxfce4' > /root/.xinitrc
-      for user in $users ; do
-        echo 'exec startxfce4' > "/usr/home/${user}/.xinitrc"
-        chown "${user}":"${user}" "/usr/home/${user}/.xinitrc"
-      done ;;
-  esac
+  # echo "setup xinitrc for ${desktop}"
+  # users=$(ls /usr/home/)
+  # case $desktop in
+  #   mate)
+  #     echo 'exec mate-session' > /root/.xinitrc
+  #     for user in $users ; do
+  #       echo 'exec mate-session' > "/usr/home/${user}/.xinitrc"
+  #       chown "${user}":"${user}" "/usr/home/${user}/.xinitrc"
+  #     done ;;
+  #   xfce)
+  #     echo 'exec startxfce4' > /root/.xinitrc
+  #     for user in $users ; do
+  #       echo 'exec startxfce4' > "/usr/home/${user}/.xinitrc"
+  #       chown "${user}":"${user}" "/usr/home/${user}/.xinitrc"
+  #     done ;;
+  # esac
 
   echo "Enable LightDM at boot"
   # for unknown reason sysrc does not work in this script

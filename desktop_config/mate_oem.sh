@@ -2,12 +2,12 @@
 
 set -e -u
 
-. "${cwd}/extra/common-live-setting.sh"
-. "${cwd}/extra/common-base-setting.sh"
-. "${cwd}/extra/finalize.sh"
-. "${cwd}/extra/autologin.sh"
-. "${cwd}/extra/gitpkg.sh"
-. "${cwd}/extra/setuser.sh"
+. "${cwd}/common_config/live-setting.sh"
+. "${cwd}/common_config/base-setting.sh"
+. "${cwd}/common_config/finalize.sh"
+. "${cwd}/common_config/autologin.sh"
+. "${cwd}/common_config/gitpkg.sh"
+. "${cwd}/common_config/setuser.sh"
 
 lightdm_setup()
 {

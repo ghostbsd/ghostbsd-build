@@ -14,7 +14,7 @@ fi
 kernrel="$(uname -r)"
 
 case $kernrel in
-  '13.1-STABLE' | '13.2-STABLE' | '14.0-STABLE' | '14.0-CURRENT') ;;
+  '13.1-STABLE' | '13.2-STABLE' | '14.0-STABLE' | '15.0-CURRENT') ;;
   *)
     echo "Using wrong kernel release. Use GhostBSD 20.04 or later to build iso."
     exit 1
@@ -22,6 +22,7 @@ case $kernrel in
 esac
 
 desktop_list=$(find packages -type f | cut -d '/' -f2 | tr -s '\n' ' ')
+desktop_config_list=$(find desktop_config -type f)
 
 help_function()
 {
@@ -47,7 +48,6 @@ do
    esac
 done
 
-
 if [ "${build_type}" = "release" ] ; then
   PKGCONG="GhostBSD"
 elif [ "${build_type}" = "unstable" ] ; then
@@ -57,19 +57,23 @@ else
   exit 1
 fi
 
+# validate desktop packages
+if [ ! -f "${cwd}/packages/${desktop}" ] ; then
+  echo "The packages/${desktop} file does not exist."
+  echo "Please create a package file named '${desktop}'and place it under packages/."
+  echo "Or use a valide desktop below:"
+  echo "$desktop_list"
+  echo "Usage: ./build.sh -d desktop"
+  exit 1
+fi
 
-validate_desktop()
-{
-  if [ ! -f "${cwd}/packages/${desktop}" ] ; then
-    echo "Invalid choice specified"
-    echo "Possible choices are:"
-    echo "$desktop_list"
-    echo "Usage: ./build.sh mate"
-    exit 1
-  fi
-}
-
-validate_desktop
+# validate desktop
+if [ ! -f "${cwd}/desktop_config/${desktop}.sh" ] ; then
+  echo "The desktop_config/${desktop}.sh file does not exist."
+  echo "Please create a config file named '${desktop}.sh' like these config:"
+  echo "$desktop_config_list"
+  exit 1
+fi
 
 if [ "${desktop}" != "mate" ] ; then
   DESKTOP=$(echo "${desktop}" | tr '[:lower:]' '[:upper:]')
@@ -192,11 +196,8 @@ rc()
   chroot ${release} sysrc ntpd_sync_on_start="YES"
 }
 
-extra_config()
+ghostbsd_config()
 {
-  # run config for GhostBSD flavor
-  sh "${cwd}/extra/${desktop}.sh"
-
   # echo "gop set 0" >> ${release}/boot/loader.rc.local
   mkdir -p ${release}/usr/local/share/ghostbsd
   echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
@@ -209,6 +210,12 @@ extra_config()
   chroot ${release} touch /boot/entropy
   # default GhostBSD to local time instead of UTC
   chroot ${release} touch /etc/wall_cmos_clock
+}
+
+desktop_config()
+{
+  # run config for GhostBSD flavor
+  sh "${cwd}/desktop_config/${desktop}.sh"
 }
 
 uzip()
@@ -276,7 +283,8 @@ set_ghostbsd_version
 packages_software
 fetch_x_drivers_packages
 rc
-extra_config
+desktop_config
+ghostbsd_config
 uzip
 ramdisk
 boot

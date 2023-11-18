@@ -2,11 +2,11 @@
 
 set -e -u
 
-. "${cwd}/extra/common-live-setting.sh"
-. "${cwd}/extra/common-base-setting.sh"
-. "${cwd}/extra/finalize.sh"
-. "${cwd}/extra/autologin.sh"
-. "${cwd}/extra/setuser.sh"
+. "${cwd}/common_config/live-setting.sh"
+. "${cwd}/common_config/base-setting.sh"
+. "${cwd}/common_config/finalize.sh"
+. "${cwd}/common_config/autologin.sh"
+. "${cwd}/common_config/setuser.sh"
 
 lightdm_setup()
 {
@@ -16,8 +16,10 @@ lightdm_setup()
 
 setup_xinit()
 {
-  echo "exec ck-launch-session startxfce4" > "${release}/usr/home/${liveuser}/.xinitrc"
+  chroot "${release}" su "${liveuser}" -c "echo 'exec ck-launch-session startxfce4' > /usr/home/${liveuser}/.xinitrc"
   echo "exec ck-launch-session startxfce4" > "${release}/root/.xinitrc"
+  echo "exec ck-launch-session startxfce4" > "${release}/root/.xinitrc"
+  echo "exec ck-launch-session startxfce4" > "${release}/usr/share/skel/dot.xinitrc"
 }
 
 
