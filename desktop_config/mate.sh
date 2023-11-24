@@ -2,10 +2,9 @@
 
 set -e -u
 
-. "${cwd}/common_config/live-setting.sh"
+. "${cwd}/common_config/autologin.sh"
 . "${cwd}/common_config/base-setting.sh"
 . "${cwd}/common_config/finalize.sh"
-. "${cwd}/common_config/autologin.sh"
 . "${cwd}/common_config/setuser.sh"
 
 lightdm_setup()
@@ -25,7 +24,6 @@ setup_xinit()
   echo "exec ck-launch-session mate-session" > "${release}/usr/share/skel/dot.xinitrc"
 }
 
-set_live_system
 patch_etc_files
 community_setup_liveuser
 community_setup_autologin

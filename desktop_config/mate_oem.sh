@@ -2,10 +2,9 @@
 
 set -e -u
 
-. "${cwd}/common_config/live-setting.sh"
+. "${cwd}/common_config/autologin.sh"
 . "${cwd}/common_config/base-setting.sh"
 . "${cwd}/common_config/finalize.sh"
-. "${cwd}/common_config/autologin.sh"
 . "${cwd}/common_config/gitpkg.sh"
 . "${cwd}/common_config/setuser.sh"
 
@@ -27,7 +26,6 @@ setup_xinit()
   echo "exec setup-station" >> "${release}/root/.xinitrc"
 }
 
-set_live_system
 patch_etc_files
 
 git_pc_sysinstall
