@@ -15,7 +15,7 @@ lightdm_setup()
 
 setup_xinit()
 {
-  chroot "${release}" su "${liveuser}" -c "echo 'exec ck-launch-session startxfce4' > /usr/home/${liveuser}/.xinitrc"
+  chroot "${release}" su "${liveuser}" -c "echo 'exec ck-launch-session startxfce4' > /home/${liveuser}/.xinitrc"
   echo "exec ck-launch-session startxfce4" > "${release}/root/.xinitrc"
   echo "exec ck-launch-session startxfce4" > "${release}/root/.xinitrc"
   echo "exec ck-launch-session startxfce4" > "${release}/usr/share/skel/dot.xinitrc"

@@ -16,10 +16,10 @@ lightdm_setup()
 
 setup_xinit()
 {
-  echo "exec marco &" > "${release}/usr/home/${liveuser}/.xinitrc"
-  echo "exec feh --bg-fill /usr/local/share/backgrounds/ghostbsd/Lake_View.jpg &" >> "${release}/usr/home/${liveuser}/.xinitrc"
-  echo "exec sudo install-station" >> "${release}/usr/home/${liveuser}/.xinitrc"
-  chmod 765 "${release}/usr/home/${liveuser}/.xinitrc"
+  echo "exec marco &" > "${release}/home/${liveuser}/.xinitrc"
+  echo "exec feh --bg-fill /usr/local/share/backgrounds/ghostbsd/Lake_View.jpg &" >> "${release}/home/${liveuser}/.xinitrc"
+  echo "exec sudo install-station" >> "${release}/home/${liveuser}/.xinitrc"
+  chmod 765 "${release}/home/${liveuser}/.xinitrc"
   # root
   echo "exec marco &" > "${release}/root/.xinitrc"
   echo "exec feh --bg-fill /usr/local/share/backgrounds/ghostbsd/Lake_View.jpg &" >> "${release}/root/.xinitrc"

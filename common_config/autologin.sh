@@ -10,7 +10,7 @@ ghostbsd_setup_autologin()
     echo ":al=${liveuser}:ht:np:sp#115200:"
   } >> "${release}/etc/gettytab"
   sed -i "" "/ttyv0/s/Pc/${liveuser}/g" "${release}/etc/ttys"
-  mkdir -p "${release}/usr/home/${liveuser}/.config/fish"
+  mkdir -p "${release}/home/${liveuser}/.config/fish"
   printf "set tty (tty)
   if test \$tty = \"/dev/ttyv0\"
     sudo xconfig auto
@@ -21,8 +21,8 @@ ghostbsd_setup_autologin()
     sleep 1
     startx
   end
-" > "${release}/usr/home/${liveuser}/.config/fish/config.fish"
-  chmod 765 "${release}/usr/home/${liveuser}/.config/fish/config.fish"
+" > "${release}/home/${liveuser}/.config/fish/config.fish"
+  chmod 765 "${release}/home/${liveuser}/.config/fish/config.fish"
 
   # setup root
   mkdir -p "${release}/root/.config/fish"
@@ -42,7 +42,7 @@ community_setup_autologin()
     echo ":al=${liveuser}:ht:np:sp#115200:"
   } >> "${release}/etc/gettytab"
   sed -i "" "/ttyv0/s/Pc/${liveuser}/g" "${release}/etc/ttys"
-  mkdir -p "${release}/usr/home/${liveuser}/.config/fish"
+  mkdir -p "${release}/home/${liveuser}/.config/fish"
   if [ -f "${release}/usr/local/bin/xconfig" ] ; then
     printf "if not test -f /tmp/.xstarted
   touch /tmp/.xstarted
@@ -57,7 +57,7 @@ community_setup_autologin()
     startx
   end
 end
-" > "${release}/usr/home/${liveuser}/.config/fish/config.fish"
-  chmod 765 "${release}/usr/home/${liveuser}/.config/fish/config.fish"
+" > "${release}/home/${liveuser}/.config/fish/config.fish"
+  chmod 765 "${release}/home/${liveuser}/.config/fish/config.fish"
   fi
 }
