@@ -2,31 +2,34 @@
 
 set -e -u
 
-export cwd="`realpath`"
+cwd="$(realpath)"
+export cwd
+
 # Only run as superuser
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
   exit 1
 fi
 
-kernrel="`uname -r`"
+kernrel="$(uname -r)"
 
 case $kernrel in
-  '13.1-STABLE' | '13.2-STABLE' | '14.0-STABLE' | '14.0-CURRENT') ;;
+  '13.1-STABLE' | '13.2-STABLE' | '14.0-STABLE' | '15.0-CURRENT') ;;
   *)
     echo "Using wrong kernel release. Use GhostBSD 20.04 or later to build iso."
     exit 1
     ;;
 esac
 
-desktop_list=`ls ${cwd}/packages | tr '\n' ' '`
+desktop_list=$(find packages -type f | cut -d '/' -f2 | tr -s '\n' ' ')
+desktop_config_list=$(find desktop_config -type f)
 
 help_function()
 {
-   echo "Usage: $0 -d desktop -r release type"
-   echo -e "\t-h for help"
-   echo -e "\t-d Desktop: ${desktop_list}"
-   echo -e "\t-b Build type: unstable or release"
+  printf "Usage: %s -d desktop -r release type" "$0"
+  printf "\t-h for help"
+  printf "\t-d Desktop: %s" "${desktop_list}"
+  printf "\t-b Build type: unstable or release"
    exit 1 # Exit script after printing help
 }
 
@@ -45,7 +48,6 @@ do
    esac
 done
 
-
 if [ "${build_type}" = "release" ] ; then
   PKGCONG="GhostBSD"
 elif [ "${build_type}" = "unstable" ] ; then
@@ -55,22 +57,26 @@ else
   exit 1
 fi
 
+# validate desktop packages
+if [ ! -f "${cwd}/packages/${desktop}" ] ; then
+  echo "The packages/${desktop} file does not exist."
+  echo "Please create a package file named '${desktop}'and place it under packages/."
+  echo "Or use a valide desktop below:"
+  echo "$desktop_list"
+  echo "Usage: ./build.sh -d desktop"
+  exit 1
+fi
 
-validate_desktop()
-{
-  if [ ! -f "${cwd}/packages/${desktop}" ] ; then
-    echo "Invalid choice specified"
-    echo "Possible choices are:"
-    echo "$desktop_list"
-    echo "Usage: ./build.sh mate"
-    exit 1
-  fi
-}
-
-validate_desktop
+# validate desktop
+if [ ! -f "${cwd}/desktop_config/${desktop}.sh" ] ; then
+  echo "The desktop_config/${desktop}.sh file does not exist."
+  echo "Please create a config file named '${desktop}.sh' like these config:"
+  echo "$desktop_config_list"
+  exit 1
+fi
 
 if [ "${desktop}" != "mate" ] ; then
-  DESKTOP=$(echo ${desktop} | tr [a-z] [A-Z])
+  DESKTOP=$(echo "${desktop}" | tr '[:lower:]' '[:upper:]')
   community="-${DESKTOP}"
 else
   community=""
@@ -83,8 +89,10 @@ iso="${livecd}/iso"
 software_packages="${livecd}/software_packages"
 base_packages="${livecd}/base_packages"
 release="${livecd}/release"
+export release
 cdroot="${livecd}/cdroot"
 liveuser="ghostbsd"
+export liveuser
 
 time_stamp=""
 release_stamp=""
@@ -92,16 +100,15 @@ label="GhostBSD"
 
 workspace()
 {
-  umount ${release}/dev >/dev/null 2>/dev/null || true
   umount ${base_packages} >/dev/null 2>/dev/null || true
   umount ${software_packages} >/dev/null 2>/dev/null || true
+  umount ${release}/dev >/dev/null 2>/dev/null || true
+  zpool destroy ghostbsd >/dev/null 2>/dev/null || true
   umount ${release} >/dev/null 2>/dev/null || true
   if [ -d "${cdroot}" ] ; then
     chflags -R noschg ${cdroot}
     rm -rf ${cdroot}
   fi
-  zpool destroy ghostbsd >/dev/null 2>/dev/null || true
-  umount ghostbsd >/dev/null 2>/dev/null || true
   mdconfig -d -u 0 >/dev/null 2>/dev/null || true
   if [ -f "${livecd}/pool.img" ] ; then
     rm ${livecd}/pool.img
@@ -120,8 +127,8 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg_list="os-generic-kernel os-generic-userland os-generic-userland-lib32"
-  pkg-static -r ${release} -R ${cwd}/pkg/ install -y -r ${PKGCONG} ${pkg_list}
+  pkg-static -r ${release} -R "${cwd}/pkg/" install -y -r ${PKGCONG} \
+    os-generic-kernel os-generic-userland os-generic-userland-lib32
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -144,7 +151,8 @@ packages_software()
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
   mount -t devfs devfs ${release}/dev
-  cat ${cwd}/packages/${desktop} | xargs pkg -c ${release} install -y
+  pkg_list="$(cat "${cwd}/packages/${desktop}")"
+  echo "$pkg_list" | xargs pkg -c ${release} install -y
   mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -158,11 +166,11 @@ fetch_x_drivers_packages()
     pkg_url=$(pkg-static -R pkg/ -vv | grep '/unstable' | cut -d '"' -f2)
   fi
   mkdir ${release}/xdrivers
-  yes | pkg -R ${cwd}/pkg/ update
-  echo "$(pkg -R ${cwd}/pkg/ rquery -x -r ${PKGCONG} '%n %n-%v.pkg' 'nvidia-driver')" > ${release}/xdrivers/drivers-list
-  pkg_list="$(pkg -R ${cwd}/pkg/ rquery -x -r ${PKGCONG} '%n-%v.pkg' 'nvidia-driver')"
+  yes | pkg -R "${cwd}/pkg/" update
+  echo """$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKGCONG} '%n %n-%v.pkg' 'nvidia-driver')""" > ${release}/xdrivers/drivers-list
+  pkg_list="""$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKGCONG} '%n-%v.pkg' 'nvidia-driver')"""
   for line in $pkg_list ; do
-    fetch -o ${release}/xdrivers ${pkg_url}/All/$line
+    fetch -o ${release}/xdrivers "${pkg_url}/All/$line"
   done
 }
 
@@ -188,40 +196,11 @@ rc()
   chroot ${release} sysrc ntpd_sync_on_start="YES"
 }
 
-user()
+ghostbsd_config()
 {
-  chroot ${release} pw useradd ${liveuser} \
-  -c "GhostBSD Live User" -d "/usr/home/${liveuser}"\
-  -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
-  chroot ${release} su ${liveuser} -c "mkdir -p /usr/home/${liveuser}/Desktop"
-  if [ -e ${release}/usr/local/share/applications/gbi.desktop ] ; then
-    chroot ${release} su ${liveuser} -c  "cp -af /usr/local/share/applications/gbi.desktop /usr/home/${liveuser}/Desktop"
-    chroot ${release} su ${liveuser} -c  "chmod +x /usr/home/${liveuser}/Desktop/gbi.desktop"
-    sed -i '' -e 's/NoDisplay=true/NoDisplay=false/g' ${release}/usr/home/${liveuser}/Desktop/gbi.desktop
-  fi
-}
-
-extra_config()
-{
-  . ${cwd}/extra/common-live-setting.sh
-  . ${cwd}/extra/common-base-setting.sh
-  . ${cwd}/extra/dm.sh
-  . ${cwd}/extra/finalize.sh
-  . ${cwd}/extra/autologin.sh
-  . ${cwd}/extra/gitpkg.sh
-  set_live_system
-  # git_pc_sysinstall
-  ## git_gbi is for development testing and gbi should be
-  ## remove from the package list to avoid conflict
-  # git_gbi
-  setup_base
-  lightdm_setup
-  setup_autologin
-  final_setup
-  echo "gop set 0" >> ${release}/boot/loader.rc.local
+  # echo "gop set 0" >> ${release}/boot/loader.rc.local
   mkdir -p ${release}/usr/local/share/ghostbsd
   echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
-  echo "${liveuser}" > ${release}/usr/local/share/ghostbsd/liveuser
   # bypass automount for live iso
   mv ${release}/usr/local/etc/devd/automount_devd.conf ${release}/usr/local/etc/devd/automount_devd.conf.skip
   mv ${release}/usr/local/etc/devd/automount_devd_localdisks.conf ${release}/usr/local/etc/devd/automount_devd_localdisks.conf.skip
@@ -231,6 +210,12 @@ extra_config()
   chroot ${release} touch /boot/entropy
   # default GhostBSD to local time instead of UTC
   chroot ${release} touch /etc/wall_cmos_clock
+}
+
+desktop_config()
+{
+  # run config for GhostBSD flavor
+  sh "${cwd}/desktop_config/${desktop}.sh"
 }
 
 uzip()
@@ -270,7 +255,7 @@ boot()
   cp LICENSE ${cdroot}/LICENSE
   cp -R boot/ ${cdroot}/boot/
   mkdir ${cdroot}/etc
-  cd ${cwd} && zpool export ghostbsd && while zpool status ghostbsd >/dev/null; do :; done 2>/dev/null
+  cd "${cwd}" && zpool export ghostbsd && while zpool status ghostbsd >/dev/null; do :; done 2>/dev/null
 }
 
 image()
@@ -280,15 +265,15 @@ image()
   cd -
   ls -lh "$isopath"
   cd ${iso}
-  shafile=$(echo ${isopath} | cut -d / -f6).sha256
-  torrent=$(echo ${isopath} | cut -d / -f6).torrent
+  shafile=$(echo "${isopath}" | cut -d / -f6).sha256
+  torrent=$(echo "${isopath}" | cut -d / -f6).torrent
   tracker1="http://tracker.openbittorrent.com:80/announce"
   tracker2="udp://tracker.opentrackr.org:1337"
   tracker3="udp://tracker.coppersurfer.tk:6969"
   echo "Creating sha256 \"${iso}/${shafile}\""
-  sha256 `echo ${isopath} | cut -d / -f6` > ${iso}/${shafile}
-  transmission-create -o ${iso}/${torrent} -t ${tracker1} -t ${tracker2} -t ${tracker3} ${isopath}
-  chmod 644 ${iso}/${torrent}
+  sha256 "$(echo "${isopath}" | cut -d / -f6)" > "${iso}/${shafile}"
+  transmission-create -o "${iso}/${torrent}" -t ${tracker1} -t ${tracker2} -t ${tracker3} "${isopath}"
+  chmod 644 "${iso}/${torrent}"
   cd -
 }
 
@@ -297,9 +282,9 @@ base
 set_ghostbsd_version
 packages_software
 fetch_x_drivers_packages
-user
 rc
-extra_config
+desktop_config
+ghostbsd_config
 uzip
 ramdisk
 boot
