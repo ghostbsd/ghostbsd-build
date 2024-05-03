@@ -14,9 +14,9 @@ fi
 kernrel="$(uname -r)"
 
 case $kernrel in
-  '13.1-STABLE' | '13.2-STABLE' | '14.0-STABLE' | '15.0-CURRENT') ;;
+  '13.2-STABLE' | '14.0-STABLE' | '14.1-PRERELEASE' | '14.1-STABLE' | '15.0-CURRENT') ;;
   *)
-    echo "Using wrong kernel release. Use GhostBSD 20.04 or later to build iso."
+    echo "FreeBSD or GhostBSD release is not supported."
     exit 1
     ;;
 esac
