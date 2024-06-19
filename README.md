@@ -3,7 +3,7 @@ ghostbsd-build
 Live media creator for GhostBSD distribution
 
 ## Introduction
-The purpose of this tool is quickly generate live images for GhostBSD.
+The purpose of this tool is to quickly generate live images for GhostBSD.
 
 ## Features
 * Build GhostBSD from packages
@@ -24,7 +24,7 @@ Note: GhostBSD 22.01.12 and later should be used to build ISO.
 ## Initial setup
 Install the required packages:
 ```
-pkg install git transmission-cli rsync
+pkg install git transmission-utils rsync
 ```
 Make sure to have linux64 kernel module loaded
 ```
