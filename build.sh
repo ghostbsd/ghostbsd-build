@@ -21,7 +21,7 @@ case $kernrel in
     ;;
 esac
 
-desktop_list=$(find packages -type f | cut -d '/' -f2 | tr -s '\n' ' ')
+desktop_list=$(find packages -type f | grep base | cut -d '/' -f2 | tr -s '\n' ' ')
 desktop_config_list=$(find desktop_config -type f)
 
 help_function()
@@ -100,8 +100,8 @@ label="GhostBSD"
 
 workspace()
 {
-  umount ${base_packages} >/dev/null 2>/dev/null || true
   umount ${software_packages} >/dev/null 2>/dev/null || true
+  umount ${base_packages} >/dev/null 2>/dev/null || true
   umount ${release}/dev >/dev/null 2>/dev/null || true
   zpool destroy ghostbsd >/dev/null 2>/dev/null || true
   umount ${release} >/dev/null 2>/dev/null || true
@@ -123,12 +123,13 @@ workspace()
 
 base()
 {
+  base_list="$(cat "${cwd}/packages/base")"
   mkdir -p ${release}/etc
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg-static -r ${release} -R "${cwd}/pkg/" install -y -r ${PKGCONG} \
-    os-generic-kernel os-generic-userland os-generic-userland-lib32
+  # shellcheck disable=SC2086
+  pkg-static -r ${release} -R "${cwd}/pkg/" install -y -r ${PKGCONG}_base $base_list
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -152,7 +153,9 @@ packages_software()
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
   mount -t devfs devfs ${release}/dev
   pkg_list="$(cat "${cwd}/packages/${desktop}")"
-  echo "$pkg_list" | xargs pkg -c ${release} install -y
+  # shellcheck disable=SC2086
+  pkg-static -c ${release} install -y $pkg_list
+  mkdir -p ${release}/proc
   mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
