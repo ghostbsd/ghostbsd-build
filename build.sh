@@ -164,9 +164,9 @@ packages_software()
 fetch_x_drivers_packages()
 {
   if [ "${build_type}" = "release" ] ; then
-    pkg_url=$(pkg-static -R pkg/ -vv | grep '/stable' | cut -d '"' -f2)
+    pkg_url=$(pkg-static -R pkg/ -vv | grep '/stable.*/latest' | cut -d '"' -f2)
   else
-    pkg_url=$(pkg-static -R pkg/ -vv | grep '/unstable' | cut -d '"' -f2)
+    pkg_url=$(pkg-static -R pkg/ -vv | grep '/unstable.*/latest' | cut -d '"' -f2)
   fi
   mkdir ${release}/xdrivers
   yes | pkg -R "${cwd}/pkg/" update
