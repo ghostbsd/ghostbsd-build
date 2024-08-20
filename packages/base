@@ -87,7 +87,6 @@ GhostBSD-inetd
 GhostBSD-inetd-man
 GhostBSD-ipf
 GhostBSD-ipf-man
-GhostBSD-ipfilter
 GhostBSD-ipfw
 GhostBSD-ipfw-man
 GhostBSD-iscsi
