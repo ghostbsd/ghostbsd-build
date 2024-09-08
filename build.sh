@@ -11,10 +11,10 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-kernrel="$(uname -r)"
+kernel="$(uname -r)"
 
-case $kernrel in
-  '13.2-STABLE' | '14.0-STABLE' | '14.1-PRERELEASE' | '14.1-STABLE' | '15.0-CURRENT') ;;
+case $kernel in
+  '13.3-STABLE' | '14.1-STABLE' | '15.0-CURRENT') ;;
   *)
     echo "FreeBSD or GhostBSD release is not supported."
     exit 1
@@ -26,10 +26,11 @@ desktop_config_list=$(find desktop_config -type f)
 
 help_function()
 {
-  printf "Usage: %s -d desktop -r release type" "$0"
-  printf "\t-h for help"
-  printf "\t-d Desktop: %s" "${desktop_list}"
-  printf "\t-b Build type: unstable or release"
+  printf "Usage: %s -d desktop -r release type\n" "$0"
+  printf "\t-h for help\n"
+  printf "\t-d Desktop: %s\n" "${desktop_list}"
+  printf "\t-b Build type: unstable or release\n"
+  printf "\t-t Test: FreeBSD os packages\n"
    exit 1 # Exit script after printing help
 }
 
@@ -37,21 +38,24 @@ help_function()
 export desktop="mate"
 export build_type="release"
 
-while getopts "d:b:h" opt
+while getopts "d:b:th" opt
 do
    case "$opt" in
       'd') export desktop="$OPTARG" ;;
       'b') export build_type="$OPTARG" ;;
+      't') export desktop="test" ; build_type="test";;
       'h') help_function ;;
       '?') help_function ;;
       *) help_function ;;
    esac
 done
 
-if [ "${build_type}" = "release" ] ; then
-  PKGCONG="GhostBSD"
+if [ "${build_type}" = "test" ] ; then
+  PKG_CONF="FreeBSD"
+elif [ "${build_type}" = "release" ] ; then
+  PKG_CONF="GhostBSD"
 elif [ "${build_type}" = "unstable" ] ; then
-  PKGCONG="GhostBSD_Unstable"
+  PKG_CONF="GhostBSD_Unstable"
 else
   printf "\t-b Build type: unstable or release"
   exit 1
@@ -61,7 +65,7 @@ fi
 if [ ! -f "${cwd}/packages/${desktop}" ] ; then
   echo "The packages/${desktop} file does not exist."
   echo "Please create a package file named '${desktop}'and place it under packages/."
-  echo "Or use a valide desktop below:"
+  echo "Or use a valid desktop below:"
   echo "$desktop_list"
   echo "Usage: ./build.sh -d desktop"
   exit 1
@@ -90,9 +94,9 @@ software_packages="${livecd}/software_packages"
 base_packages="${livecd}/base_packages"
 release="${livecd}/release"
 export release
-cdroot="${livecd}/cdroot"
-liveuser="ghostbsd"
-export liveuser
+cd_root="${livecd}/cd_root"
+live_user="ghostbsd"
+export live_user
 
 time_stamp=""
 release_stamp=""
@@ -105,9 +109,9 @@ workspace()
   umount ${release}/dev >/dev/null 2>/dev/null || true
   zpool destroy ghostbsd >/dev/null 2>/dev/null || true
   umount ${release} >/dev/null 2>/dev/null || true
-  if [ -d "${cdroot}" ] ; then
-    chflags -R noschg ${cdroot}
-    rm -rf ${cdroot}
+  if [ -d "${cd_root}" ] ; then
+    chflags -R noschg ${cd_root}
+    rm -rf ${cd_root}
   fi
   mdconfig -d -u 0 >/dev/null 2>/dev/null || true
   if [ -f "${livecd}/pool.img" ] ; then
@@ -123,13 +127,17 @@ workspace()
 
 base()
 {
-  base_list="$(cat "${cwd}/packages/base")"
+  if [ "${desktop}" = "test" ] ; then
+    base_list="$(cat "${cwd}/packages/test_base")"
+  else
+    base_list="$(cat "${cwd}/packages/base")"
+  fi
   mkdir -p ${release}/etc
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
   # shellcheck disable=SC2086
-  pkg-static -r ${release} -R "${cwd}/pkg/" install -y -r ${PKGCONG}_base $base_list
+  pkg-static -r ${release} -R "${cwd}/pkg/" install -y -r ${PKG_CONF}_base $base_list
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -139,8 +147,12 @@ base()
 
 set_ghostbsd_version()
 {
-  version="-$(cat ${release}/etc/version)"
-  isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
+  if [ "${desktop}" = "test" ] ; then
+    version="$(date +%Y-%m-%d)"
+  else
+    version="-$(cat ${release}/etc/version)"
+  fi
+  iso_path="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
 }
 
 packages_software()
@@ -170,8 +182,8 @@ fetch_x_drivers_packages()
   fi
   mkdir ${release}/xdrivers
   yes | pkg -R "${cwd}/pkg/" update
-  echo """$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKGCONG} '%n %n-%v.pkg' 'nvidia-driver' | grep -v libva)""" > ${release}/xdrivers/drivers-list
-  pkg_list="""$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKGCONG} '%n-%v.pkg' 'nvidia-driver' | grep -v libva)"""
+  echo """$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n %n-%v.pkg' 'nvidia-driver' | grep -v libva)""" > ${release}/xdrivers/drivers-list
+  pkg_list="""$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n-%v.pkg' 'nvidia-driver' | grep -v libva)"""
   for line in $pkg_list ; do
     fetch -o ${release}/xdrivers "${pkg_url}/All/$line"
   done
@@ -223,16 +235,16 @@ desktop_config()
 
 uzip()
 {
-  umount ${release}/dev
-  install -o root -g wheel -m 755 -d "${cdroot}"
-  mkdir "${cdroot}/data"
+#  umount ${release}/dev
+  install -o root -g wheel -m 755 -d "${cd_root}"
+  mkdir "${cd_root}/data"
   zfs snapshot ghostbsd@clean
-  zfs send -c -e ghostbsd@clean | dd of=/usr/local/ghostbsd-build/cdroot/data/system.img status=progress bs=1M
+  zfs send -c -e ghostbsd@clean | dd of=/usr/local/ghostbsd-build/cd_root/data/system.img status=progress bs=1M
 }
 
 ramdisk()
 {
-  ramdisk_root="${cdroot}/data/ramdisk"
+  ramdisk_root="${cd_root}/data/ramdisk"
   mkdir -p "${ramdisk_root}"
   cd "${release}"
   tar -cf - rescue | tar -xf - -C "${ramdisk_root}"
@@ -244,38 +256,38 @@ ramdisk()
   touch "${ramdisk_root}/etc/fstab"
   install -o root -g wheel -m 755 "rc.in" "${ramdisk_root}/etc/rc"
   cp ${release}/etc/login.conf ${ramdisk_root}/etc/login.conf
-  makefs -b '10%' "${cdroot}/data/ramdisk.ufs" "${ramdisk_root}"
-  gzip "${cdroot}/data/ramdisk.ufs"
+  makefs -b '10%' "${cd_root}/data/ramdisk.ufs" "${ramdisk_root}"
+  gzip "${cd_root}/data/ramdisk.ufs"
   rm -rf "${ramdisk_root}"
 }
 
 boot()
 {
   cd "${release}"
-  tar -cf - boot | tar -xf - -C "${cdroot}"
-  cp COPYRIGHT ${cdroot}/COPYRIGHT
+  tar -cf - boot | tar -xf - -C "${cd_root}"
+  cp COPYRIGHT ${cd_root}/COPYRIGHT
   cd "${cwd}"
-  cp LICENSE ${cdroot}/LICENSE
-  cp -R boot/ ${cdroot}/boot/
-  mkdir ${cdroot}/etc
+  cp LICENSE ${cd_root}/LICENSE
+  cp -R boot/ ${cd_root}/boot/
+  mkdir ${cd_root}/etc
   cd "${cwd}" && zpool export ghostbsd && while zpool status ghostbsd >/dev/null; do :; done 2>/dev/null
 }
 
 image()
 {
   cd script
-  sh mkisoimages.sh -b $label "$isopath" ${cdroot}
+  sh mkisoimages.sh -b $label "$iso_path" ${cd_root}
   cd -
-  ls -lh "$isopath"
+  ls -lh "$iso_path"
   cd ${iso}
-  shafile=$(echo "${isopath}" | cut -d / -f6).sha256
-  torrent=$(echo "${isopath}" | cut -d / -f6).torrent
+  shafile=$(echo "${iso_path}" | cut -d / -f6).sha256
+  torrent=$(echo "${iso_path}" | cut -d / -f6).torrent
   tracker1="http://tracker.openbittorrent.com:80/announce"
   tracker2="udp://tracker.opentrackr.org:1337"
   tracker3="udp://tracker.coppersurfer.tk:6969"
   echo "Creating sha256 \"${iso}/${shafile}\""
-  sha256 "$(echo "${isopath}" | cut -d / -f6)" > "${iso}/${shafile}"
-  transmission-create -o "${iso}/${torrent}" -t ${tracker1} -t ${tracker2} -t ${tracker3} "${isopath}"
+  sha256 "$(echo "${iso_path}" | cut -d / -f6)" > "${iso}/${shafile}"
+  transmission-create -o "${iso}/${torrent}" -t ${tracker1} -t ${tracker2} -t ${tracker3} "${iso_path}"
   chmod 644 "${iso}/${torrent}"
   cd -
 }
@@ -283,11 +295,13 @@ image()
 workspace
 base
 set_ghostbsd_version
-packages_software
-fetch_x_drivers_packages
-rc
-desktop_config
-ghostbsd_config
+if [ "${desktop}" != "test" ] ; then
+  packages_software
+  fetch_x_drivers_packages
+  rc
+  desktop_config
+  ghostbsd_config
+fi
 uzip
 ramdisk
 boot
