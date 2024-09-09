@@ -5,12 +5,12 @@ set -e -u
 ghostbsd_setup_autologin()
 {
   {
-    echo "# ${liveuser} user autologin"
-    echo "${liveuser}:\\"
-    echo ":al=${liveuser}:ht:np:sp#115200:"
+    echo "# ${live_user} user autologin"
+    echo "${live_user}:\\"
+    echo ":al=${live_user}:ht:np:sp#115200:"
   } >> "${release}/etc/gettytab"
-  sed -i "" "/ttyv0/s/Pc/${liveuser}/g" "${release}/etc/ttys"
-  mkdir -p "${release}/home/${liveuser}/.config/fish"
+  sed -i "" "/ttyv0/s/Pc/${live_user}/g" "${release}/etc/ttys"
+  mkdir -p "${release}/home/${live_user}/.config/fish"
   printf "set tty (tty)
   if test \$tty = \"/dev/ttyv0\"
     sudo xconfig auto
@@ -21,8 +21,8 @@ ghostbsd_setup_autologin()
     sleep 1
     startx
   end
-" > "${release}/home/${liveuser}/.config/fish/config.fish"
-  chmod 765 "${release}/home/${liveuser}/.config/fish/config.fish"
+" > "${release}/home/${live_user}/.config/fish/config.fish"
+  chmod 765 "${release}/home/${live_user}/.config/fish/config.fish"
 
   # setup root
   mkdir -p "${release}/root/.config/fish"
@@ -37,12 +37,12 @@ ghostbsd_setup_autologin()
 community_setup_autologin()
 {
   {
-    echo "# ${liveuser} user autologin"
-    echo "${liveuser}:\\"
-    echo ":al=${liveuser}:ht:np:sp#115200:"
+    echo "# ${live_user} user autologin"
+    echo "${live_user}:\\"
+    echo ":al=${live_user}:ht:np:sp#115200:"
   } >> "${release}/etc/gettytab"
-  sed -i "" "/ttyv0/s/Pc/${liveuser}/g" "${release}/etc/ttys"
-  mkdir -p "${release}/home/${liveuser}/.config/fish"
+  sed -i "" "/ttyv0/s/Pc/${live_user}/g" "${release}/etc/ttys"
+  mkdir -p "${release}/home/${live_user}/.config/fish"
   if [ -f "${release}/usr/local/bin/xconfig" ] ; then
     printf "if not test -f /tmp/.xstarted
   touch /tmp/.xstarted
@@ -57,7 +57,7 @@ community_setup_autologin()
     startx
   end
 end
-" > "${release}/home/${liveuser}/.config/fish/config.fish"
-  chmod 765 "${release}/home/${liveuser}/.config/fish/config.fish"
+" > "${release}/home/${live_user}/.config/fish/config.fish"
+  chmod 765 "${release}/home/${live_user}/.config/fish/config.fish"
   fi
 }
