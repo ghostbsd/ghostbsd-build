@@ -128,7 +128,6 @@ workspace()
     zpool destroy ghostbsd 2>/dev/null
     exit 1
   fi
-  fi
 }
 
 base()
