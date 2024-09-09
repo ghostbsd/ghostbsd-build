@@ -21,7 +21,10 @@ case $kernel in
     ;;
 esac
 
-desktop_list=$(find packages -type f | grep base | cut -d '/' -f2 | tr -s '\n' ' ')
+# Use find to locate base files and extract filenames directly, converting newlines to spaces
+desktop_list=$(find packages -type f -name '*base*' -exec basename {} \; | tr '\n' ' ')
+
+# Find all files in the desktop_config directory
 desktop_config_list=$(find desktop_config -type f)
 
 help_function()
