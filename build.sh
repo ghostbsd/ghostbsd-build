@@ -132,7 +132,8 @@ workspace()
   mkdir -p ${livecd} ${base} ${iso} ${software_packages} ${base_packages} ${release}
 
   # Create a new pool image file of 6GB
-  truncate -s 6g ${livecd}/pool.img
+  POOL_SIZE='6g'
+  truncate -s ${POOL_SIZE} ${livecd}/pool.img
   
   # Attach the pool image as a memory disk
   mdconfig -f ${livecd}/pool.img -u 0
