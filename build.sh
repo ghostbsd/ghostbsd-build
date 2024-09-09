@@ -270,7 +270,14 @@ boot()
   cp LICENSE ${cd_root}/LICENSE
   cp -R boot/ ${cd_root}/boot/
   mkdir ${cd_root}/etc
-  cd "${cwd}" && zpool export ghostbsd && while zpool status ghostbsd >/dev/null; do :; done 2>/dev/null
+
+  # Try to unmount dev and release if mounted
+  umount ${release}/dev >/dev/null 2>/dev/null || true
+  umount ${release} >/dev/null 2>/dev/null || true
+  
+  # Export ZFS pool and ensure it's clean
+  zpool export ghostbsd
+  while zpool status ghostbsd >/dev/null; do :; done 2>/dev/null
 }
 
 image()
