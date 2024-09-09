@@ -123,9 +123,11 @@ workspace()
   mkdir -p ${livecd} ${base} ${iso} ${software_packages} ${base_packages} ${release}
   truncate -s 6g ${livecd}/pool.img
   mdconfig -f ${livecd}/pool.img -u 0
-  zpool create ghostbsd /dev/md0
-  zfs set mountpoint=${release} ghostbsd
-  zfs set compression=zstd-9 ghostbsd
+  zpool create -O mountpoint=${release} -O compression=zstd-9 ghostbsd /dev/md0
+  if [ $? -ne 0 ]; then
+    echo "Failed to create ZFS pool ghostbsd"
+    exit 1
+  fi
 }
 
 base()
@@ -238,11 +240,10 @@ desktop_config()
 
 uzip()
 {
-#  umount ${release}/dev
   install -o root -g wheel -m 755 -d "${cd_root}"
   mkdir "${cd_root}/data"
   zfs snapshot ghostbsd@clean
-  zfs send -c -e ghostbsd@clean | dd of=/usr/local/ghostbsd-build/cd_root/data/system.img status=progress bs=1M
+  zfs send -p -c -e ghostbsd@clean | dd of=/usr/local/ghostbsd-build/cd_root/data/system.img status=progress bs=1M
 }
 
 ramdisk()
@@ -280,7 +281,15 @@ boot()
   
   # Export ZFS pool and ensure it's clean
   zpool export ghostbsd
-  while zpool status ghostbsd >/dev/null; do :; done 2>/dev/null
+  timeout=10
+  while zpool status ghostbsd >/dev/null 2>&1; do
+    sleep 1
+    timeout=$((timeout - 1))
+    if [ $timeout -eq 0 ]; then
+      echo "Failed to cleanly export ZFS pool within timeout"
+      break
+    fi
+  done
 }
 
 image()
