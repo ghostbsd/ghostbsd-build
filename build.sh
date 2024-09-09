@@ -123,10 +123,11 @@ workspace()
   mkdir -p ${livecd} ${base} ${iso} ${software_packages} ${base_packages} ${release}
   truncate -s 6g ${livecd}/pool.img
   mdconfig -f ${livecd}/pool.img -u 0
-  zpool create -O mountpoint=${release} -O compression=zstd-9 ghostbsd /dev/md0
-  if [ $? -ne 0 ]; then
-    echo "Failed to create ZFS pool ghostbsd"
+  if ! zpool create -O mountpoint="${release}" -O compression=zstd-9 ghostbsd /dev/md0; then
+    echo "Failed to create ZFS pool 'ghostbsd'. Command: zpool create -O mountpoint=${release} -O compression=zstd-9 ghostbsd /dev/md0"
+    zpool destroy ghostbsd 2>/dev/null
     exit 1
+  fi
   fi
 }
 
