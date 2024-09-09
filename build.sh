@@ -107,25 +107,48 @@ label="GhostBSD"
 
 workspace()
 {
+  # Unmount any existing mounts and clean up
   umount ${software_packages} >/dev/null 2>/dev/null || true
   umount ${base_packages} >/dev/null 2>/dev/null || true
   umount ${release}/dev >/dev/null 2>/dev/null || true
   zpool destroy ghostbsd >/dev/null 2>/dev/null || true
   umount ${release} >/dev/null 2>/dev/null || true
+
+  # Remove old build directory if it exists
   if [ -d "${cd_root}" ] ; then
     chflags -R noschg ${cd_root}
     rm -rf ${cd_root}
   fi
+
+  # Detach memory device if previously attached
   mdconfig -d -u 0 >/dev/null 2>/dev/null || true
+  
+  # Remove old pool image if it exists
   if [ -f "${livecd}/pool.img" ] ; then
     rm ${livecd}/pool.img
   fi
+
+  # Create necessary directories for the build
   mkdir -p ${livecd} ${base} ${iso} ${software_packages} ${base_packages} ${release}
+
+  # Create a new pool image file of 6GB
   truncate -s 6g ${livecd}/pool.img
+  
+  # Attach the pool image as a memory disk
   mdconfig -f ${livecd}/pool.img -u 0
+
+  # Attempt to create the ZFS pool with error handling
   if ! zpool create -O mountpoint="${release}" -O compression=zstd-9 ghostbsd /dev/md0; then
-    echo "Failed to create ZFS pool 'ghostbsd'. Command: zpool create -O mountpoint=${release} -O compression=zstd-9 ghostbsd /dev/md0"
-    zpool destroy ghostbsd 2>/dev/null
+    # Provide detailed error message in case of failure
+    echo "Error: Failed to create ZFS pool 'ghostbsd' with the following command:"
+    echo "zpool create -O mountpoint='${release}' -O compression=zstd-9 ghostbsd /dev/md0"
+    
+    # Clean up resources in case of failure
+    zpool destroy ghostbsd 2>/dev/null || true
+    mdconfig -d -u 0 2>/dev/null || true
+    rm -f ${livecd}/pool.img 2>/dev/null || true
+    
+    # Exit with an error code
     exit 1
   fi
 }
