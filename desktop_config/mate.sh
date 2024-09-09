@@ -15,11 +15,11 @@ lightdm_setup()
 
 setup_xinit()
 {
-  chroot "${release}" su "${liveuser}" -c "echo 'gsettings set org.mate.SettingsDaemon.plugins.housekeeping active true &' > /home/${liveuser}/.xinitrc"
-  chroot "${release}" su "${liveuser}" -c "echo 'gsettings set org.mate.screensaver lock-enabled false &' >> /home/${liveuser}/.xinitrc"
-  chroot "${release}" su "${liveuser}" -c "echo 'gsettings set org.mate.lockdown disable-lock-screen true &' >> /home/${liveuser}/.xinitrc"
-  chroot "${release}" su "${liveuser}" -c "echo 'gsettings set org.mate.lockdown disable-user-switching true &' >> /home/${liveuser}/.xinitrc"
-  chroot "${release}" su "${liveuser}" -c "echo 'exec ck-launch-session mate-session' >> /home/${liveuser}/.xinitrc"
+  chroot "${release}" su "${live_user}" -c "echo 'gsettings set org.mate.SettingsDaemon.plugins.housekeeping active true &' > /home/${live_user}/.xinitrc"
+  chroot "${release}" su "${live_user}" -c "echo 'gsettings set org.mate.screensaver lock-enabled false &' >> /home/${live_user}/.xinitrc"
+  chroot "${release}" su "${live_user}" -c "echo 'gsettings set org.mate.lockdown disable-lock-screen true &' >> /home/${live_user}/.xinitrc"
+  chroot "${release}" su "${live_user}" -c "echo 'gsettings set org.mate.lockdown disable-user-switching true &' >> /home/${live_user}/.xinitrc"
+  chroot "${release}" su "${live_user}" -c "echo 'exec ck-launch-session mate-session' >> /home/${live_user}/.xinitrc"
   echo "exec ck-launch-session mate-session" > "${release}/root/.xinitrc"
   echo "exec ck-launch-session mate-session" > "${release}/usr/share/skel/dot.xinitrc"
 }
