@@ -12,7 +12,6 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 kernel="$(uname -r)"
-
 case $kernel in
   '13.3-STABLE' | '14.1-STABLE' | '15.0-CURRENT') ;;
   *)
@@ -158,16 +157,19 @@ base()
 {
   if [ "${desktop}" = "test" ] ; then
     base_list="$(cat "${cwd}/packages/test_base")"
+    vital_base="$(cat "${cwd}/packages/vital/test_base")"
   else
     base_list="$(cat "${cwd}/packages/base")"
+    vital_base="$(cat "${cwd}/packages/vital/base")"
   fi
   mkdir -p ${release}/etc
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
   # shellcheck disable=SC2086
-  pkg-static -r ${release} -R "${cwd}/pkg/" install -y -r ${PKG_CONF}_base $base_list
-
+  pkg-static -r ${release} -R "${cwd}/pkg/" install -y -r ${PKG_CONF}_base ${base_list}
+  # shellcheck disable=SC2086
+  pkg-static -r ${release} -R "${cwd}/pkg/" set -y -v 1 ${vital_base}
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
   touch ${release}/etc/fstab
@@ -193,9 +195,12 @@ packages_software()
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${software_packages} ${release}/var/cache/pkg
   mount -t devfs devfs ${release}/dev
-  pkg_list="$(cat "${cwd}/packages/${desktop}")"
+  packages="$(cat "${cwd}/packages/${desktop}")"
+  vital_packages="$(cat "${cwd}/packages/vital/${desktop}")"
   # shellcheck disable=SC2086
-  pkg-static -c ${release} install -y $pkg_list
+  pkg-static -c ${release} install -y ${packages}
+  # shellcheck disable=SC2086
+  pkg-static -c ${release} set -y -v 1 ${vital_packages}
   mkdir -p ${release}/proc
   mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
