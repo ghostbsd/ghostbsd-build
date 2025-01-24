@@ -17,7 +17,6 @@ setup_xinit()
 {
   chroot "${release}" su "${live_user}" -c "echo 'exec ck-launch-session startxfce4' > /home/${live_user}/.xinitrc"
   echo "exec ck-launch-session startxfce4" > "${release}/root/.xinitrc"
-  echo "exec ck-launch-session startxfce4" > "${release}/root/.xinitrc"
   echo "exec ck-launch-session startxfce4" > "${release}/usr/share/skel/dot.xinitrc"
 }
 
