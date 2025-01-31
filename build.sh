@@ -11,15 +11,6 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-kernel="$(uname -r)"
-case $kernel in
-  '13.3-STABLE' | '14.1-STABLE' | '15.0-CURRENT') ;;
-  *)
-    echo "FreeBSD or GhostBSD release is not supported."
-    exit 1
-    ;;
-esac
-
 # Use find to locate base files and extract filenames directly, converting newlines to spaces
 desktop_list=$(find packages -type f -name '*base*' -exec basename {} \; | tr '\n' ' ')
 
