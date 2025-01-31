@@ -111,7 +111,6 @@ GhostBSD-runtime
 GhostBSD-runtime-lib32
 GhostBSD-ssh
 GhostBSD-ssh-lib32
-GhostBSD-syscons
 GhostBSD-syslogd
 GhostBSD-tcpd
 GhostBSD-tcpd-lib32

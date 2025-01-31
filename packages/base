@@ -223,7 +223,6 @@ GhostBSD-smbutils-man
 GhostBSD-ssh
 GhostBSD-ssh-lib32
 GhostBSD-ssh-man
-GhostBSD-syscons-data
 GhostBSD-syslogd
 GhostBSD-syslogd-man
 GhostBSD-tcpd
