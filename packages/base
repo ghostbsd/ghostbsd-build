@@ -187,6 +187,7 @@ GhostBSD-newsyslog
 GhostBSD-newsyslog-man
 GhostBSD-nfs
 GhostBSD-nfs-man
+GhostBSD-nuageinit
 GhostBSD-nvme-tools
 GhostBSD-nvme-tools-man
 GhostBSD-openssl
@@ -222,7 +223,7 @@ GhostBSD-smbutils-man
 GhostBSD-ssh
 GhostBSD-ssh-lib32
 GhostBSD-ssh-man
-GhostBSD-syscons
+GhostBSD-syscons-data
 GhostBSD-syslogd
 GhostBSD-syslogd-man
 GhostBSD-tcpd
@@ -237,6 +238,7 @@ GhostBSD-unbound-man
 GhostBSD-utilities
 GhostBSD-utilities-lib32
 GhostBSD-utilities-man
+GhostBSD-utilities-man-lib32
 GhostBSD-vi
 GhostBSD-vi-man
 GhostBSD-vt-data
