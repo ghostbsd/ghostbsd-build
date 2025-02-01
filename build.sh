@@ -83,8 +83,7 @@ workdir="/usr/local"
 livecd="${workdir}/ghostbsd-build"
 base="${livecd}/base"
 iso="${livecd}/iso"
-software_packages="${livecd}/software_packages"
-base_packages="${livecd}/base_packages"
+packages_storage="${livecd}/packages"
 release="${livecd}/release"
 export release
 cd_root="${livecd}/cd_root"
@@ -98,8 +97,7 @@ label="GhostBSD"
 workspace()
 {
   # Unmount any existing mounts and clean up
-  umount ${software_packages} >/dev/null 2>/dev/null || true
-  umount ${base_packages} >/dev/null 2>/dev/null || true
+  umount ${packages_storage} >/dev/null 2>/dev/null || true
   umount ${release}/dev >/dev/null 2>/dev/null || true
   zpool destroy ghostbsd >/dev/null 2>/dev/null || true
   umount ${release} >/dev/null 2>/dev/null || true
@@ -119,7 +117,7 @@ workspace()
   fi
 
   # Create necessary directories for the build
-  mkdir -p ${livecd} ${base} ${iso} ${software_packages} ${base_packages} ${release}
+  mkdir -p ${livecd} ${base} ${iso} ${packages_storage}  ${release}
 
   # Create a new pool image file of 6GB
   POOL_SIZE='6g'
@@ -156,11 +154,11 @@ base()
   mkdir -p ${release}/etc
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
-  mount_nullfs ${base_packages} ${release}/var/cache/pkg
+  mount_nullfs ${packages_storage} ${release}/var/cache/pkg
   # shellcheck disable=SC2086
-  pkg-static -r ${release} -R "${cwd}/pkg/" install -y -r ${PKG_CONF}_base ${base_list}
+  pkg -r ${release} -R "${cwd}/pkg/" install -y -r ${PKG_CONF}_base ${base_list}
   # shellcheck disable=SC2086
-  pkg-static -r ${release} -R "${cwd}/pkg/" set -y -v 1 ${vital_base}
+  pkg -r ${release} -R "${cwd}/pkg/" set -y -v 1 ${vital_base}
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
   touch ${release}/etc/fstab
@@ -184,14 +182,14 @@ packages_software()
   fi
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
-  mount_nullfs ${software_packages} ${release}/var/cache/pkg
+  mount_nullfs ${packages_storage} ${release}/var/cache/pkg
   mount -t devfs devfs ${release}/dev
   packages="$(cat "${cwd}/packages/${desktop}")"
   vital_packages="$(cat "${cwd}/packages/vital/${desktop}")"
   # shellcheck disable=SC2086
-  pkg-static -c ${release} install -y ${packages}
+  pkg -c ${release} install -y ${packages}
   # shellcheck disable=SC2086
-  pkg-static -c ${release} set -y -v 1 ${vital_packages}
+  pkg -c ${release} set -y -v 1 ${vital_packages}
   mkdir -p ${release}/proc
   mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
@@ -201,9 +199,9 @@ packages_software()
 fetch_x_drivers_packages()
 {
   if [ "${build_type}" = "release" ] ; then
-    pkg_url=$(pkg-static -R pkg/ -vv | grep '/stable.*/latest' | cut -d '"' -f2)
+    pkg_url=$(pkg -R pkg/ -vv | grep '/stable.*/latest' | cut -d '"' -f2)
   else
-    pkg_url=$(pkg-static -R pkg/ -vv | grep '/unstable.*/latest' | cut -d '"' -f2)
+    pkg_url=$(pkg -R pkg/ -vv | grep '/unstable.*/latest' | cut -d '"' -f2)
   fi
   mkdir ${release}/xdrivers
   yes | pkg -R "${cwd}/pkg/" update
