@@ -1,0 +1,16 @@
+bwi-firmware-kmod>0:net/bwi-firmware-kmod
+bwn-firmware-kmod>0:net/bwn-firmware-kmod
+drm-kmod
+egl-wayland
+gstreamer1-plugins-neon
+realtek-re-kmod
+utouch-kmod
+virtualbox-ose-additions
+xf86-input-evdev
+xf86-input-joystick>0:x11-drivers/xf86-input-joystick
+xf86-input-keyboard>0:x11-drivers/xf86-input-keyboard
+xf86-input-mouse>0:x11-drivers/xf86-input-mouse
+xf86-input-synaptics>0:x11-drivers/xf86-input-synaptics
+xf86-input-vmmouse>0:x11-drivers/xf86-input-vmmouse
+xf86-video-scfb>0:x11-drivers/xf86-video-scfb
+xf86-video-vesa>0:x11-drivers/xf86-video-vesa
