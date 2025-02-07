@@ -185,7 +185,6 @@ packages_software()
   de_packages="$(cat "${cwd}/packages/${desktop}")"
   common_packages="$(cat "${cwd}/packages/common")"
   drivers_packages="$(cat "${cwd}/packages/drivers")"
-  echo ${drivers_packages}
   vital_de_packages="$(cat "${cwd}/packages/vital/${desktop}")"
   vital_common_packages="$(cat "${cwd}/packages/vital/common")"
   # shellcheck disable=SC2086
