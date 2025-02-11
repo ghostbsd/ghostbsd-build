@@ -12,11 +12,10 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # Use find to locate base files and extract filenames directly, converting newlines to spaces
-desktop_list=$(find packages -type f -name '*base*' -exec basename {} \; | tr '\n' ' ')
+find packages -type f ! -name '*base*' ! -name '*common*' ! -name '*drivers*' -exec basename {} \; | sort -u | tr '\n' ' '
 
 # Find all files in the desktop_config directory
 desktop_config_list=$(find desktop_config -type f)
-
 help_function()
 {
   printf "Usage: %s -d desktop -r release type\n" "$0"
@@ -26,7 +25,6 @@ help_function()
   printf "\t-t Test: FreeBSD os packages\n"
    exit 1 # Exit script after printing help
 }
-
 # Set mate and release to be default
 export desktop="mate"
 export build_type="release"
@@ -184,12 +182,15 @@ packages_software()
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${packages_storage} ${release}/var/cache/pkg
   mount -t devfs devfs ${release}/dev
-  packages="$(cat "${cwd}/packages/${desktop}")"
-  vital_packages="$(cat "${cwd}/packages/vital/${desktop}")"
+  de_packages="$(cat "${cwd}/packages/${desktop}")"
+  common_packages="$(cat "${cwd}/packages/common")"
+  drivers_packages="$(cat "${cwd}/packages/drivers")"
+  vital_de_packages="$(cat "${cwd}/packages/vital/${desktop}")"
+  vital_common_packages="$(cat "${cwd}/packages/vital/common")"
   # shellcheck disable=SC2086
-  pkg -c ${release} install -y ${packages}
+  pkg -c ${release} install -y ${de_packages} ${common_packages} ${drivers_packages}
   # shellcheck disable=SC2086
-  pkg -c ${release} set -y -v 1 ${vital_packages}
+  pkg -c ${release} set -y -v 1 ${vital_de_packages}  ${vital_common_packages}
   mkdir -p ${release}/proc
   mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
