@@ -4,7 +4,6 @@ set -e -u
 
 set_user()
 {
-  chroot "${release}" pw usermod -s /usr/local/bin/fish -n root
   chroot "${release}" pw useradd "${live_user}" -u 1100 \
   -c "GhostBSD Live User" -d "/home/${live_user}" \
   -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
