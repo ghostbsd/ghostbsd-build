@@ -48,7 +48,7 @@ echo "==> Mount swap-based memdisk"
 mdconfig -a -t swap -s ${memdisk_size}g -u 1 >/dev/null 2>/dev/null
 # We can safely disable pre-fetch as we are already running from memory.
 sysctl vfs.zfs.prefetch_disable=1
-zpool create livecd -O primarycache=none /dev/md1 >/dev/null 2>/dev/null
+zpool create livecd /dev/md1 >/dev/null 2>/dev/null
 zfs set compression=zstd-9 livecd
 zfs set primarycache=none livecd
 echo "==> Replicate system image to swap-based memdisk"
