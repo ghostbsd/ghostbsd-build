@@ -46,7 +46,7 @@ fi
 
 echo "==> Mount swap-based memdisk"
 mdconfig -a -t swap -s ${memdisk_size}g -u 1 >/dev/null 2>/dev/null
-zpool create livecd -O primarycache=none /dev/md1 >/dev/null 2>/dev/null
+zpool create -O primarycache=none livecd /dev/md1 >/dev/null 2>/dev/null
 zfs set compression=zstd-9 livecd
 echo "==> Replicate system image to swap-based memdisk"
 dd if=/cdrom/data/system.img status=progress bs=1M | zfs recv -F livecd
