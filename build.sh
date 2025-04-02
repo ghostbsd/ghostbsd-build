@@ -233,6 +233,7 @@ rc()
   chroot ${release} sysrc avahi_dnsconfd_enable="YES"
   chroot ${release} sysrc ntpd_enable="YES"
   chroot ${release} sysrc ntpd_sync_on_start="YES"
+  chroot ${release} sysrc clear_tmp_enable="YES"
 }
 
 ghostbsd_config()
