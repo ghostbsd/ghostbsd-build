@@ -292,6 +292,9 @@ boot()
   cp -R boot/ ${cd_root}/boot/
   mkdir ${cd_root}/etc
 
+  # Set the correct root mount point for ZFS
+  echo 'vfs.root.mountfrom="zfs:ghostbsd/ROOT/default"' >> "${cd_root}/boot/loader.conf"
+
   # Try to unmount dev and release if mounted
   umount ${release}/dev >/dev/null 2>/dev/null || true
   umount ${release} >/dev/null 2>/dev/null || true
