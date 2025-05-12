@@ -2,7 +2,6 @@ cups
 cups-filters
 drm-kmod
 exfat-utils
-firefox
 fish
 foomatic-db
 fusefs-exfat
@@ -23,6 +22,7 @@ rhythmbox
 shotwell
 slick-greeter
 system-config-printer
+ungoogled-chromium
 unzip
 webrtc-audio-processing
 xconfig
