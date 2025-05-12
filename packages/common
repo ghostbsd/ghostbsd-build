@@ -1,7 +1,6 @@
 cups
 cups-filters
 drm-kmod
-evolution
 exfat-utils
 firefox
 fish
@@ -25,7 +24,6 @@ shotwell
 slick-greeter
 system-config-printer
 unzip
-vlc
 webrtc-audio-processing
 xconfig
 xorg-minimal
