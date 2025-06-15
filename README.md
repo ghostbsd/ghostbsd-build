@@ -54,6 +54,10 @@ or
 ```
 ./build.sh -d xfce -b unstable
 ```   
+#### (Option) To build GhostBSD with __KDE Plasma 6__ as default desktop
+```
+./build.sh -d plasma -b unstable
+```   
 
 ## Burn an image to cd:
 ```
