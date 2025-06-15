@@ -7,7 +7,7 @@ The purpose of this tool is to quickly generate live images for GhostBSD.
 
 ## Features
 * Build GhostBSD from packages
-* Mate and XFCE desktop environments
+* Mate, XFCE, Kde Plasma 6 desktop environments
 * Hybrid DVD/USB image
 
 ## Graphics support
