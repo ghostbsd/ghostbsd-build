@@ -1,9 +1,11 @@
-gnustep-make
-gnustep-base
-gnustep-gui
-gnustep-back
-gworkspace
-systempreferences
+gershwin-tools-make
+gershwin-libs-base
+gershwin-libs-gui
+gershwin-libs-back
+gershwin-workspace
+gershwin-systempreferences
+gershwin-globaldefaults
+ghostbsd-gershwin-settings
 marco
 mate-panel
 mate-applet-appmenu
