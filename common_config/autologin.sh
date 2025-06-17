@@ -72,10 +72,10 @@ community_setup_autologin_gershwin()
 
   sed -i "" "/ttyv0/s/Pc/${live_user}/g" "${release}/etc/ttys"
 
-  mkdir -p "${release}/home/${live_user}/.config/fish"
+  mkdir -p "${release}/Users/${live_user}/.config/fish"
 
   if [ -f "${release}/usr/local/bin/xconfig" ] ; then
-    cat > "${release}/home/${live_user}/.config/fish/config.fish" <<'EOF'
+    cat > "${release}/Users/${live_user}/.config/fish/config.fish" <<'EOF'
 function gnustep_env
   /bin/sh -c '. /usr/GNUstep/System/Library/Makefiles/GNUstep.sh; env' \
   | while read -l line
@@ -110,6 +110,6 @@ if not test -f /tmp/.xstarted
 end
 EOF
 
-    chmod 765 "${release}/home/${live_user}/.config/fish/config.fish"
+    chmod 765 "${release}/Users/${live_user}/.config/fish/config.fish"
   fi
 }
