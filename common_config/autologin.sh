@@ -111,6 +111,6 @@ end
 EOF
 
     chmod 765 "${release}/Users/${live_user}/.config/fish/config.fish"
-    chown -R 1000:wheel "${release}/Users/${live_user}/.config/"
+    chown -R 1001:wheel "${release}/Users/${live_user}/.config/"
   fi
 }
