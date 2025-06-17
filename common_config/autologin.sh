@@ -77,7 +77,7 @@ community_setup_autologin_gershwin()
   if [ -f "${release}/usr/local/bin/xconfig" ] ; then
     cat > "${release}/Users/${live_user}/.config/fish/config.fish" <<'EOF'
 function gnustep_env
-  /bin/sh -c '. /usr/GNUstep/System/Library/Makefiles/GNUstep.sh; env' \
+  /bin/sh -c '. /System/Library/Makefiles/GNUstep.sh; env' \
   | while read -l line
     set -l parts (string split -m1 "=" $line)
     set -l var $parts[1]
