@@ -9,5 +9,5 @@ gershwin-systempreferences
 gershwin-terminal
 gershwin-textedit
 ghostbsd-gershwin-settings
-marco
-mate-settings-daemon
+ghostbsd-zsh-settings
+xfce4-wm
