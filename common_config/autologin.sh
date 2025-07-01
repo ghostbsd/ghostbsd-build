@@ -75,26 +75,7 @@ community_setup_autologin_gershwin()
   mkdir -p "${release}/Users/${live_user}/.config/fish"
 
   if [ -f "${release}/usr/local/bin/xconfig" ] ; then
-    cat > "${release}/Users/${live_user}/.config/fish/config.fish" <<'EOF'
-function gnustep_env
-  /bin/sh -c '. /System/Library/Makefiles/GNUstep.sh; env' \
-  | while read -l line
-    set -l parts (string split -m1 "=" $line)
-    set -l var $parts[1]
-    set -l val $parts[2]
-    if test (count $parts) -eq 2
-      switch $var
-        case PWD SHLVL _
-          # skip read-only vars
-        case '*'
-          set -gx $var $val
-      end
-    end
-  end
-end
-
-gnustep_env
-
+    cat > "${release}/Users/${live_user}/.zshrc" <<'EOF'
 if not test -f /tmp/.xstarted
   touch /tmp/.xstarted
   sudo xconfig auto
@@ -107,7 +88,7 @@ if not test -f /tmp/.xstarted
 end
 EOF
 
-    chmod 765 "${release}/Users/${live_user}/.config/fish/config.fish"
-    chown -R 1100:wheel "${release}/Users/${live_user}/.config/"
+    chmod 765 "${release}/Users/${live_user}/.zshrc"
+    chown 1100:wheel "${release}/Users/${live_user}/.zshrc"
   fi
 }
