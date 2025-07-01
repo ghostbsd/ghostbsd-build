@@ -76,7 +76,7 @@ community_setup_autologin_gershwin()
 
   if [ -f "${release}/usr/local/bin/xconfig" ] ; then
     cat > "${release}/Users/${live_user}/.zshrc" <<'EOF'
-if not test -f /tmp/.xstarted
+if [ ! -f /tmp/.xstarted ]; then
   touch /tmp/.xstarted
   sudo xconfig auto
   sleep 1
@@ -85,7 +85,7 @@ if not test -f /tmp/.xstarted
   sudo rm -rf /xdrivers
   sleep 1
   startx
-end
+fi
 EOF
 
     chmod 765 "${release}/Users/${live_user}/.zshrc"
