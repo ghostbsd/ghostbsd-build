@@ -9,5 +9,9 @@ gershwin-systempreferences
 gershwin-terminal
 gershwin-textedit
 ghostbsd-gershwin-settings
+ghostbsd-wallpapers
+ghostbsd-xfce-themes
 ghostbsd-zsh-settings
 xfce4-wm
+xfce4-panel
+xfce4-pulseaudio-plugin
