@@ -61,3 +61,32 @@ end
   chmod 765 "${release}/home/${live_user}/.config/fish/config.fish"
   fi
 }
+
+community_setup_autologin_gershwin()
+{
+  {
+    echo "# ${live_user} user autologin"
+    echo "${live_user}:\\"
+    echo ":al=${live_user}:ht:np:sp#115200:"
+  } >> "${release}/etc/gettytab"
+
+  sed -i "" "/ttyv0/s/Pc/${live_user}/g" "${release}/etc/ttys"
+
+  if [ -f "${release}/usr/local/bin/xconfig" ] ; then
+    cat > "${release}/Users/${live_user}/.zshrc" <<'EOF'
+if [ ! -f /tmp/.xstarted ]; then
+  touch /tmp/.xstarted
+  sudo xconfig auto
+  sleep 1
+  echo "X configuration completed"
+  sleep 1
+  sudo rm -rf /xdrivers
+  sleep 1
+  startx
+fi
+EOF
+
+    chmod 765 "${release}/Users/${live_user}/.zshrc"
+    chown 1100:wheel "${release}/Users/${live_user}/.zshrc"
+  fi
+}

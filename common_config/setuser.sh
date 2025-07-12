@@ -9,6 +9,13 @@ set_user()
   -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
 }
 
+set_user_gershwin()
+{
+  chroot "${release}" pw useradd "${live_user}" -u 1100 \
+  -c "GhostBSD Live User" -d "/Users/${live_user}" \
+  -g wheel -G operator -m -s /usr/local/bin/zsh -k /usr/share/skel -w none
+}
+
 ghostbsd_setup_liveuser()
 {
   set_user
@@ -38,4 +45,11 @@ community_setup_liveuser()
    chroot "${release}" su "${live_user}" -c  "chmod +x /home/${live_user}/Desktop/gbi.desktop"
    sed -i '' -e 's/NoDisplay=true/NoDisplay=false/g' "${release}/home/${live_user}/Desktop/gbi.desktop"
   fi
+}
+
+community_setup_liveuser_gershwin()
+{
+  set_user_gershwin
+  chroot "${release}" su - "${live_user}" -c "xdg-user-dirs-update"
+  chroot "${release}" su - "${live_user}" -c "ln -sf /System/Applications/Installer.app \"/Users/${live_user}/Desktop/Installer.app\""
 }
