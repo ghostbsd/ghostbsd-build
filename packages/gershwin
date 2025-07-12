@@ -2,7 +2,3 @@ gershwin-desktop
 gershwin-gbi-wrapper
 gershwin-ghostbsd-wrappers
 gershwin-firefox-wrapper
-gershwin-dbuskit
-gershwin-appmenu-registrar
-gershwin-appmenu-gtk-module
-gershwin-xfce4-appmenu-plugin
