@@ -50,11 +50,6 @@ community_setup_liveuser()
 community_setup_liveuser_gershwin()
 {
   set_user_gershwin
-  #chroot "${release}" su "${live_user}" -c "mkdir -p /Users/${live_user}/Desktop"
-
-  #if [ -e "${release}/usr/local/share/applications/gbi.desktop" ] ; then
-  # chroot "${release}" su "${live_user}" -c  "cp -af /usr/local/share/applications/gbi.desktop /home/${live_user}/Desktop"
-  # chroot "${release}" su "${live_user}" -c  "chmod +x /home/${live_user}/Desktop/gbi.desktop"
-  # sed -i '' -e 's/NoDisplay=true/NoDisplay=false/g' "${release}/home/${live_user}/Desktop/gbi.desktop"
-  #fi
+  chroot "${release}" su - "${live_user}" -c "xdg-user-dirs-update"
+  chroot "${release}" su - "${live_user}" -c "ln -sf /System/Applications/Installer.app \"/Users/${live_user}/Desktop/Installer.app\""
 }
