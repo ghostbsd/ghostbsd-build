@@ -72,8 +72,6 @@ community_setup_autologin_gershwin()
 
   sed -i "" "/ttyv0/s/Pc/${live_user}/g" "${release}/etc/ttys"
 
-  mkdir -p "${release}/Users/${live_user}/.config/fish"
-
   if [ -f "${release}/usr/local/bin/xconfig" ] ; then
     cat > "${release}/Users/${live_user}/.zshrc" <<'EOF'
 if [ ! -f /tmp/.xstarted ]; then
