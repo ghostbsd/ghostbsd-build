@@ -41,8 +41,8 @@ do
    esac
 done
 
-if [ "${build_type}" = "test" ] ; then
-  PKG_CONF="FreeBSD"
+if [ "${build_type}" = "testing" ] ; then
+  PKG_CONF="GhostBSD_Testing"
 elif [ "${build_type}" = "release" ] ; then
   PKG_CONF="GhostBSD"
 elif [ "${build_type}" = "unstable" ] ; then
