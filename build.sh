@@ -243,6 +243,8 @@ ghostbsd_config()
   echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
   # Mkdir for linux compat to ensure /etc/fstab can mount when booting LiveCD
   chroot ${release} mkdir -p /compat/linux/dev/shm
+  chroot ${release} mkdir -p /compat/linux/proc
+  chroot ${release} mkdir -p /compat/linux/sys
   # Add /boot/entropy file
   chroot ${release} touch /boot/entropy
   # default GhostBSD to local time instead of UTC
