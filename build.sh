@@ -178,6 +178,9 @@ packages_software()
   if [ "${build_type}" = "unstable" ] ; then
     cp pkg/GhostBSD_Unstable.conf ${release}/etc/pkg/GhostBSD.conf
   fi
+  if [ "${build_type}" = "testing" ] ; then
+    cp pkg/GhostBSD_Testing.conf ${release}/etc/pkg/GhostBSD.conf
+  fi
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${packages_storage} ${release}/var/cache/pkg
