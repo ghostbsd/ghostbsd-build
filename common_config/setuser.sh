@@ -44,7 +44,19 @@ community_setup_liveuser()
    chroot "${release}" su "${live_user}" -c  "cp -af /usr/local/share/applications/gbi.desktop /home/${live_user}/Desktop"
    chroot "${release}" su "${live_user}" -c  "chmod +x /home/${live_user}/Desktop/gbi.desktop"
    sed -i '' -e 's/NoDisplay=true/NoDisplay=false/g' "${release}/home/${live_user}/Desktop/gbi.desktop"
-   chroot "${release}" su "${live_user}" -c  "gio set /home/${live_user}/Desktop/gbi.desktop metadata::trusted true"
+   # Trust desktop file for XFCE 4.18+ using checksum metadata
+   if [ "${desktop}" = "xfce" ] ; then
+     chroot "${release}" su - "${live_user}" -c '
+       dbus-run-session -- sh -c "
+         /usr/local/libexec/gvfsd >/dev/null 2>&1 &
+         /usr/local/libexec/gvfsd-metadata >/dev/null 2>&1 &
+         sleep 1
+         f=\$HOME/Desktop/gbi.desktop
+         sum=\$(sha256 -q \"\$f\")
+         gio set -t string \"\$f\" metadata::xfce-exe-checksum \"\$sum\"
+       "
+     '
+   fi
   fi
 }
 
