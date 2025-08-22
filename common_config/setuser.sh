@@ -44,6 +44,7 @@ community_setup_liveuser()
    chroot "${release}" su "${live_user}" -c  "cp -af /usr/local/share/applications/gbi.desktop /home/${live_user}/Desktop"
    chroot "${release}" su "${live_user}" -c  "chmod +x /home/${live_user}/Desktop/gbi.desktop"
    sed -i '' -e 's/NoDisplay=true/NoDisplay=false/g' "${release}/home/${live_user}/Desktop/gbi.desktop"
+   chroot "${release}" su "${live_user}" -c  "gio set /home/${live_user}/Desktop/gbi.desktop metadata::trusted true"
   fi
 }
 
