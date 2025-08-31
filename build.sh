@@ -165,11 +165,7 @@ base()
 
 set_ghostbsd_version()
 {
-  if [ "${desktop}" = "test" ] ; then
-    version="$(date +%Y-%m-%d)"
-  else
-    version="-$(cat ${release}/etc/version)"
-  fi
+  version="-$(cat ${release}/etc/version)"
   iso_path="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
 }
 
