@@ -53,7 +53,7 @@ elif [ "${build_type}" = "release" ] ; then
 elif [ "${build_type}" = "unstable" ] ; then
   PKG_CONF="GhostBSD_Unstable"
 else
-  printf "\t-b Build type: unstable, testing, or release\n"
+  printf "\t-b Build type: unstable, testing, or release"
   exit 1
 fi
 
