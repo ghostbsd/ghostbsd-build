@@ -148,7 +148,14 @@ base()
   else
     base_list="$(cat "${cwd}/packages/base")"
     vital_base="$(cat "${cwd}/packages/vital/base")"
+    if [ "${desktop}" = "gershwin" ] ; then
+      base_devel="$(cat "${cwd}/packages/base-devel")"
+      base_list="${base_list} ${base_devel}"
+      vital_base_devel="$(cat "${cwd}/packages/vital/base-devel")"
+      vital_base="${vital_base} ${vital_base_devel}"
+    fi
   fi
+
   mkdir -p ${release}/etc
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
@@ -190,6 +197,13 @@ packages_software()
   drivers_packages="$(cat "${cwd}/packages/drivers")"
   vital_de_packages="$(cat "${cwd}/packages/vital/${desktop}")"
   vital_common_packages="$(cat "${cwd}/packages/vital/common")"
+
+  if [ "${desktop}" != "gershwin" ] ; then
+    applications_packages="$(cat "${cwd}/packages/applications")"
+  else
+    applications_packages=""
+  fi
+
   # shellcheck disable=SC2086
   pkg -c ${release} install -y ${de_packages} ${common_packages} ${drivers_packages}
   # shellcheck disable=SC2086
