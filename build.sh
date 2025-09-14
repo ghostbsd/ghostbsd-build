@@ -12,16 +12,16 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # Use find to locate base files and extract filenames directly, converting newlines to spaces
-find packages -type f ! -name '*base*' ! -name '*common*' ! -name '*drivers*' -exec basename {} \; | sort -u | tr '\n' ' '
+desktop_list=$(find packages -type f ! -name '*base*' ! -name '*common*' ! -name '*drivers*' -exec basename {} \; | sort -u | tr '\n' ' ')
 
 # Find all files in the desktop_config directory
 desktop_config_list=$(find desktop_config -type f)
 help_function()
 {
-  printf "Usage: %s -d desktop -r release type\n" "$0"
+  printf "Usage: %s -d desktop -b build_type\n" "$0"
   printf "\t-h for help\n"
   printf "\t-d Desktop: %s\n" "${desktop_list}"
-  printf "\t-b Build type: unstable or release\n"
+  printf "\t-b Build type: unstable, testing, or release\n"
   printf "\t-t Test: FreeBSD os packages\n"
    exit 1 # Exit script after printing help
 }
@@ -41,14 +41,14 @@ do
    esac
 done
 
-if [ "${build_type}" = "test" ] ; then
-  PKG_CONF="FreeBSD"
+if [ "${build_type}" = "testing" ] ; then
+  PKG_CONF="GhostBSD_Testing"
 elif [ "${build_type}" = "release" ] ; then
   PKG_CONF="GhostBSD"
 elif [ "${build_type}" = "unstable" ] ; then
   PKG_CONF="GhostBSD_Unstable"
 else
-  printf "\t-b Build type: unstable or release"
+  printf "\t-b Build type: unstable, testing, or release"
   exit 1
 fi
 
@@ -160,7 +160,7 @@ base()
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
   touch ${release}/etc/fstab
-  mkdir ${release}/cdrom
+  mkdir ${release}/cdrom ${release}/mnt ${release}/media
 }
 
 set_ghostbsd_version()
@@ -177,6 +177,9 @@ packages_software()
 {
   if [ "${build_type}" = "unstable" ] ; then
     cp pkg/GhostBSD_Unstable.conf ${release}/etc/pkg/GhostBSD.conf
+  fi
+  if [ "${build_type}" = "testing" ] ; then
+    cp pkg/GhostBSD_Testing.conf ${release}/etc/pkg/GhostBSD.conf
   fi
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
@@ -201,16 +204,21 @@ fetch_x_drivers_packages()
 {
   if [ "${build_type}" = "release" ] ; then
     pkg_url=$(pkg -R pkg/ -vv | grep '/stable.*/latest' | cut -d '"' -f2)
+  elif [ "${build_type}" = "testing" ]; then
+    pkg_url=$(pkg -R pkg/ -vv | grep '/testing.*/latest' | cut -d '"' -f2)
   else
     pkg_url=$(pkg -R pkg/ -vv | grep '/unstable.*/latest' | cut -d '"' -f2)
   fi
   mkdir ${release}/xdrivers
   yes | pkg -R "${cwd}/pkg/" update
-  echo """$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n %n-%v.pkg' 'nvidia-driver' | grep -v libva)""" > ${release}/xdrivers/drivers-list
-  pkg_list="""$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n-%v.pkg' 'nvidia-driver' | grep -v libva)"""
+  # TODO: Do not forgot to fix that when we move to xlibre.
+  #  We only skipping xlibre for now until we are doe testing.
+  echo """$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n %n-%v.pkg' 'nvidia-driver' | grep -v libva | grep -v xlibre)""" > ${release}/xdrivers/drivers-list
+  pkg_list="""$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n-%v.pkg' 'nvidia-driver' | grep -v libva| grep -v xlibre)"""
   for line in $pkg_list ; do
     fetch -o ${release}/xdrivers "${pkg_url}/All/$line"
   done
+  ls ${release}/xdrivers
 }
 
 rc()
@@ -243,6 +251,8 @@ ghostbsd_config()
   echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
   # Mkdir for linux compat to ensure /etc/fstab can mount when booting LiveCD
   chroot ${release} mkdir -p /compat/linux/dev/shm
+  chroot ${release} mkdir -p /compat/linux/proc
+  chroot ${release} mkdir -p /compat/linux/sys
   # Add /boot/entropy file
   chroot ${release} touch /boot/entropy
   # default GhostBSD to local time instead of UTC
@@ -331,13 +341,11 @@ image()
 workspace
 base
 set_ghostbsd_version
-if [ "${desktop}" != "test" ] ; then
-  packages_software
-  fetch_x_drivers_packages
-  rc
-  desktop_config
-  ghostbsd_config
-fi
+packages_software
+fetch_x_drivers_packages
+rc
+desktop_config
+ghostbsd_config
 uzip
 ramdisk
 boot
