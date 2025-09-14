@@ -188,6 +188,21 @@ packages_software()
   if [ "${build_type}" = "testing" ] ; then
     cp pkg/GhostBSD_Testing.conf ${release}/etc/pkg/GhostBSD.conf
   fi
+
+  # Remove this before pull request!
+  # Add Gershwin repository if building Gershwin desktop
+  if [ "${desktop}" = "gershwin" ] ; then
+    cat >> ${release}/etc/pkg/GhostBSD.conf << 'EOF'
+
+gershwin: {
+  url: "http://localhost/gnustep_base-gnustep_ports/",
+  enabled: yes,
+  priority: 100
+}
+EOF
+  fi
+  
+
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${packages_storage} ${release}/var/cache/pkg
