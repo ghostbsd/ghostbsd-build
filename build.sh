@@ -481,39 +481,20 @@ ghostbsd_config()
   log "GhostBSD configuration applied"
 }
 
-# Enhanced desktop_config function that sources common_config scripts
+# Clean desktop_config function that avoids user creation conflicts
 desktop_config()
 {
   log "=== Configuring desktop environment: ${desktop} ==="
   
-  # Source common configuration functions
+  # Source common configuration functions (but only call the safe ones)
   log "Loading common configuration functions..."
   . "${cwd}/common_config/base-setting.sh"
-  . "${cwd}/common_config/setuser.sh"
-  . "${cwd}/common_config/autologin.sh"
-  . "${cwd}/common_config/gitpkg.sh"
+  . "${cwd}/common_config/gitpkg.sh" 
   . "${cwd}/common_config/finalize.sh"
   
   # Apply base patches and settings
   log "Applying base system patches..."
   patch_etc_files
-  
-  # Setup live user based on desktop type
-  log "Setting up live user for ${desktop}..."
-  case "${desktop}" in
-    "gershwin")
-      ghostbsd_setup_liveuser_gershwin
-      community_setup_autologin_gershwin
-      ;;
-    "mate")
-      ghostbsd_setup_liveuser
-      ghostbsd_setup_autologin
-      ;;
-    *)
-      community_setup_liveuser
-      community_setup_autologin
-      ;;
-  esac
   
   # Install git packages
   log "Installing git-based packages..."
@@ -522,13 +503,13 @@ desktop_config()
   git_install_station
   git_setup_station
   
+  # Run desktop-specific configuration script (this handles user setup)
+  log "Running desktop-specific configuration script..."
+  sh "${cwd}/desktop_config/${desktop}.sh"
+  
   # Apply final setup
   log "Applying final system setup..."
   final_setup
-  
-  # Run desktop-specific configuration
-  log "Running desktop-specific configuration script..."
-  sh "${cwd}/desktop_config/${desktop}.sh"
   
   log "Desktop configuration completed"
 }
