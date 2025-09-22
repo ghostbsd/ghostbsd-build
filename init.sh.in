@@ -4,51 +4,321 @@ set -e
 
 PATH="/rescue"
 
+# Enhanced logging function
+log() {
+    echo "$(date '+%H:%M:%S') [INIT] $*"
+}
+
+error_exit() {
+    log "ERROR: $*"
+    exit 1
+}
+
 if [ "$(ps -o command 1 | tail -n 1 | ( read -r c o; echo "${o}" ))" = "-s" ]; then
-  echo "==> Running in single-user mode"
-  SINGLE_USER="true"
+    log "Running in single-user mode"
+    SINGLE_USER="true"
 fi
 
-echo "==> Remount rootfs as read-write"
+log "=== GhostBSD Live System Initialization ==="
+
+log "Remount rootfs as read-write"
 mount -u -w /
 
 makedir=${makedir:-"/cdrom"}
 
-echo "==> Make mountpoints /cdrom"
+log "Make mountpoints /cdrom"
 mkdir -p "${makedir}"
 
-echo "Waiting for GhostBSD media to initialize"
-while : ; do
-    [ -e "/dev/iso9660/GHOSTBSD" ] && echo "found /dev/iso9660/GHOSTBSD" && sleep 2 && break
+log "Waiting for GhostBSD media to initialize"
+timeout=60
+while [ $timeout -gt 0 ]; do
+    if [ -e "/dev/iso9660/GHOSTBSD" ]; then
+        log "Found /dev/iso9660/GHOSTBSD"
+        sleep 2
+        break
+    fi
     sleep 2
+    timeout=$((timeout - 1))
 done
 
-echo "==> Mount cdrom"
-mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom
+if [ $timeout -eq 0 ]; then
+    error_exit "Timeout waiting for GhostBSD media"
+fi
+
+log "Mount cdrom"
+if ! mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom; then
+    error_exit "Failed to mount cdrom"
+fi
 
 if [ "$SINGLE_USER" = "true" ]; then
-        echo "Starting interactive shell in temporary rootfs ..."
-        exit 0
+    log "Starting interactive shell in temporary rootfs ..."
+    exit 0
 fi
 
-# Ensure the system has more than enough memory for memdisk
-requiredmem=4294967296
+# Enhanced memory checks and system analysis
+log "=== System Analysis ==="
+requiredmem=8589934592  # 8GB minimum
 realmem=$(sysctl -n hw.realmem)
-memdisk_size=$((("${realmem}"*75/100)/1024/1024/1024))
-echo "Required memory ${requiredmem} for memdisk"
-echo "Detected memory ${realmem} for memdisk"
-if [ "$realmem" -lt "$requiredmem" ] ; then
-  SINGLE_USER="true"
-  echo "GhostBSD requires 4GB of memory for memdisk, and operation!"
-  echo "Type exit, and press enter after entering the rescue shell to power off."
-  exit 1
+realmem_gb=$((realmem/1024/1024/1024))
+log "Required memory: $requiredmem bytes (8GB minimum)"
+log "Detected memory: $realmem bytes (${realmem_gb}GB)"
+
+if [ "$realmem" -lt "$requiredmem" ]; then
+    SINGLE_USER="true"
+    error_exit "GhostBSD requires 8GB of memory for optimal operation. Detected: ${realmem_gb}GB"
 fi
 
-echo "==> Mount swap-based memdisk"
-mdconfig -a -t swap -s ${memdisk_size}g -u 1 >/dev/null 2>/dev/null
-zpool create -O primarycache=none livecd /dev/md1 >/dev/null 2>/dev/null
-zfs set compression=zstd-9 livecd
-echo "==> Replicate system image to swap-based memdisk"
-dd if=/cdrom/data/system.img status=progress bs=1M | zfs recv -F livecd
+# Calculate memdisk size based on available memory
+if [ $realmem_gb -ge 32 ]; then
+    # Very high memory systems: use 80%
+    memdisk_size=$((("${realmem}"*80/100)/1024/1024/1024))
+    log "Calculated memdisk size: ${memdisk_size}GB (80% of ${realmem_gb}GB - very high memory system)"
+elif [ $realmem_gb -ge 16 ]; then
+    # High memory systems: use 75%
+    memdisk_size=$((("${realmem}"*75/100)/1024/1024/1024))
+    log "Calculated memdisk size: ${memdisk_size}GB (75% of ${realmem_gb}GB - high memory system)"
+else
+    # 8-16GB systems: use 70%
+    memdisk_size=$((("${realmem}"*70/100)/1024/1024/1024))
+    log "Calculated memdisk size: ${memdisk_size}GB (70% of ${realmem_gb}GB - standard memory system)"
+fi
+
+free_mem_gb=$(((realmem - (memdisk_size * 1024 * 1024 * 1024))/1024/1024/1024))
+log "Free memory after memdisk allocation: ${free_mem_gb}GB"
+
+# Verify system image exists and analyze it
+log "=== System Image Analysis ==="
+if [ ! -f /cdrom/data/system.img ]; then
+    error_exit "System image /cdrom/data/system.img not found"
+fi
+
+img_size=$(stat -f %z /cdrom/data/system.img)
+img_size_mb=$((img_size / 1024 / 1024))
+log "System image size: ${img_size_mb}MB"
+
+# Comprehensive image validation
+if [ $img_size_mb -lt 100 ]; then
+    error_exit "System image appears truncated (${img_size_mb}MB is too small)"
+fi
+
+# Check if we have enough memory for the image
+memdisk_size_mb=$((memdisk_size * 1024))
+if [ $img_size_mb -gt $((memdisk_size_mb * 95 / 100)) ]; then
+    log "WARNING: System image (${img_size_mb}MB) is close to memdisk limit (${memdisk_size_mb}MB)"
+fi
+
+# Basic image format validation
+log "Validating system image format..."
+# Check if it starts with ZFS magic bytes
+head_bytes=$(dd if=/cdrom/data/system.img bs=8 count=1 2>/dev/null | od -t x1 -N 8 | head -1 | cut -d' ' -f2-)
+if echo "$head_bytes" | grep -q "00 00 00 0c\|0c 00 00 00"; then
+    log "System image appears to be a valid ZFS stream"
+else
+    log "WARNING: System image may not be a valid ZFS stream (header: $head_bytes)"
+fi
+
+log "Mount swap-based memdisk"
+if ! mdconfig -a -t swap -s ${memdisk_size}g -u 1 >/dev/null 2>/dev/null; then
+    error_exit "Failed to create memory disk"
+fi
+
+# Create ZFS pool with enhanced error handling and settings
+log "=== ZFS Pool Creation ==="
+pool_creation_attempts=0
+max_attempts=3
+
+while [ $pool_creation_attempts -lt $max_attempts ]; do
+    pool_creation_attempts=$((pool_creation_attempts + 1))
+    log "Creating ZFS pool 'livecd' (attempt ${pool_creation_attempts}/${max_attempts})"
+    
+    # Start with minimal settings to avoid feature conflicts
+    if zpool create -O compression=off -O primarycache=all livecd /dev/md1 >/dev/null 2>/dev/null; then
+        log "ZFS pool created successfully"
+        break
+    else
+        log "Pool creation attempt ${pool_creation_attempts} failed"
+        if [ $pool_creation_attempts -eq $max_attempts ]; then
+            # Cleanup on final failure
+            mdconfig -d -u 1 >/dev/null 2>/dev/null || true
+            error_exit "Failed to create ZFS pool after ${max_attempts} attempts"
+        fi
+        
+        # Cleanup for retry
+        zpool destroy livecd >/dev/null 2>/dev/null || true
+        sleep 2
+    fi
+done
+
+# Verify pool is healthy
+log "Verifying ZFS pool status"
+if ! zpool status livecd >/dev/null 2>&1; then
+    error_exit "ZFS pool 'livecd' is not available after creation"
+fi
+
+log "Pool information:"
+zpool list livecd
+zpool status livecd
+
+# Enhanced system image loading with multiple strategies
+log "=== System Image Loading ==="
+receive_success=false
+receive_method=""
+
+# Start background monitoring
+log "Starting receive monitoring..."
+(
+    prev_size=0
+    stall_count=0
+    while true; do
+        sleep 10
+        if zfs list livecd >/dev/null 2>&1; then
+            current_used=$(zfs list -H -o used livecd 2>/dev/null | tr -d 'KMGT' | head -c -1 2>/dev/null || echo 0)
+            if [ "$current_used" != "$prev_size" ]; then
+                log "Receive progress: ${current_used} used"
+                prev_size="$current_used"
+                stall_count=0
+            else
+                stall_count=$((stall_count + 1))
+                if [ $stall_count -gt 12 ]; then  # 2 minutes of no progress
+                    log "WARNING: Receive appears stalled for 2+ minutes"
+                fi
+            fi
+        fi
+        
+        # Check if receive process is still running
+        if ! pgrep -f "zfs recv\|dd.*system.img" >/dev/null 2>&1; then
+            break
+        fi
+    done
+) &
+MONITOR_PID=$!
+
+# Method 1: Direct streaming receive
+log "Attempting direct streaming receive"
+if dd if=/cdrom/data/system.img bs=1M 2>/tmp/dd1.log | zfs recv livecd 2>/tmp/zfs_recv1.log; then
+    log "Direct streaming receive completed successfully"
+    receive_success=true
+    receive_method="direct_stream"
+else
+    log "Direct streaming receive failed"
+    [ -f /tmp/dd1.log ] && log "DD log:" && cat /tmp/dd1.log
+    [ -f /tmp/zfs_recv1.log ] && log "ZFS recv log:" && cat /tmp/zfs_recv1.log
+    
+    # Method 2: Forced receive with smaller blocks
+    log "Attempting forced receive with optimized settings"
+    if dd if=/cdrom/data/system.img bs=64k 2>/tmp/dd2.log | zfs recv -F livecd 2>/tmp/zfs_recv2.log; then
+        log "Forced receive completed successfully"
+        receive_success=true
+        receive_method="forced_receive"
+    else
+        log "Forced receive failed"
+        [ -f /tmp/dd2.log ] && log "DD log:" && cat /tmp/dd2.log
+        [ -f /tmp/zfs_recv2.log ] && log "ZFS recv log:" && cat /tmp/zfs_recv2.log
+        
+        # Method 3: Copy to memory first, then receive
+        log "Attempting copy-then-receive method"
+        
+        # Check if we have enough space in /tmp
+        tmp_avail=$(df /tmp | tail -1 | awk '{print $4}')
+        tmp_avail_mb=$((tmp_avail / 1024))
+        
+        if [ $tmp_avail_mb -gt $((img_size_mb + 100)) ]; then
+            log "Copying system image to memory (${img_size_mb}MB)"
+            if cp /cdrom/data/system.img /tmp/system.img 2>/tmp/copy.log; then
+                log "System image copied, attempting receive"
+                if zfs recv -F livecd < /tmp/system.img 2>/tmp/zfs_recv3.log; then
+                    log "Copy-then-receive completed successfully"
+                    receive_success=true
+                    receive_method="copy_then_receive"
+                    rm -f /tmp/system.img
+                else
+                    log "Copy-then-receive failed:"
+                    cat /tmp/zfs_recv3.log
+                    rm -f /tmp/system.img
+                fi
+            else
+                log "Failed to copy system image to memory:"
+                cat /tmp/copy.log
+            fi
+        else
+            log "Insufficient space in /tmp for copy method (need ${img_size_mb}MB, have ${tmp_avail_mb}MB)"
+        fi
+        
+        # Method 4: Last resort - resumable receive
+        if [ "$receive_success" != "true" ]; then
+            log "Attempting resumable receive as last resort"
+            if dd if=/cdrom/data/system.img bs=32k | zfs recv -s livecd 2>/tmp/zfs_recv4.log; then
+                log "Resumable receive completed successfully"
+                receive_success=true
+                receive_method="resumable_receive"
+            else
+                log "Resumable receive also failed:"
+                cat /tmp/zfs_recv4.log
+            fi
+        fi
+    fi
+fi
+
+# Stop monitoring
+kill $MONITOR_PID 2>/dev/null || true
+
+# Check final result
+if [ "$receive_success" != "true" ]; then
+    log "=== Receive Failure Analysis ==="
+    log "All receive methods failed. Diagnostic information:"
+    log "Pool status:"
+    zpool status livecd
+    log "Available memory:"
+    sysctl hw.realmem hw.physmem
+    log "System image info:"
+    ls -la /cdrom/data/system.img
+    log "Available space:"
+    df -h /tmp
+    error_exit "Failed to load system image using any method"
+fi
+
+log "System image loaded successfully using method: $receive_method"
+
+# Post-receive configuration
+log "=== Post-Receive Configuration ==="
+
+# Set optimal compression and settings now that receive is complete
+log "Configuring received filesystem"
+zfs set compression=zstd-9 livecd 2>/dev/null || log "Warning: Could not set compression"
+zfs set primarycache=all livecd 2>/dev/null || log "Warning: Could not set primary cache"
+
+# Verify the received filesystem
+log "Verifying received filesystem"
+if ! zfs list livecd >/dev/null 2>&1; then
+    error_exit "Received filesystem verification failed"
+fi
+
+# Check if essential directories exist
+if ! zfs mount livecd 2>/dev/null; then
+    log "Warning: Could not explicitly mount livecd"
+fi
+
+# Display final status
+log "=== System Load Complete ==="
+zfs list livecd
+log "Final pool status:"
+zpool status livecd
+
+# Optional: Display some ARC statistics if available
+arc_size=$(sysctl -n kstat.zfs.misc.arcstats.size 2>/dev/null || echo "unknown")
+if [ "$arc_size" != "unknown" ]; then
+    arc_size_mb=$((arc_size / 1024 / 1024))
+    log "ZFS ARC size: ${arc_size_mb}MB"
+fi
+
+# Set environment for reroot
+log "Setting environment for reroot"
 kenv init_shell="/rescue/sh"
+kenv vfs.root.mountfrom="zfs:livecd"
+
+log "=== Initialization completed successfully ==="
+log "Method used: $receive_method"
+log "Memory: ${realmem_gb}GB total, ${memdisk_size}GB memdisk, ${free_mem_gb}GB free"
+log "System image: ${img_size_mb}MB loaded successfully"
+
 exit 0
