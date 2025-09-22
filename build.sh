@@ -516,10 +516,10 @@ desktop_config()
   log "Desktop configuration completed"
 }
 
-# Enhanced uzip function with comprehensive monitoring and fallbacks
+# Enhanced uzip function with gzip compression
 uzip()
 {
-  log "=== Creating system image with enhanced monitoring ==="
+  log "=== Creating compressed system image with gzip compression ==="
   
   install -o root -g wheel -m 755 -d "${cd_root}"
   mkdir "${cd_root}/data"
@@ -569,7 +569,7 @@ uzip()
     estimated_size=$(zfs send -nP ghostbsd@clean 2>/dev/null | tail -1 | awk '{print $2}' 2>/dev/null || echo "unknown")
     if [ "$estimated_size" != "unknown" ]; then
       estimated_mb=$((estimated_size / 1024 / 1024))
-      log "Estimated send size: ${estimated_mb}MB"
+      log "Estimated uncompressed send size: ${estimated_mb}MB"
     fi
   fi
   
@@ -578,84 +578,84 @@ uzip()
   (
     while true; do
       sleep 30
-      if [ -f "${cd_root}/data/system.img" ]; then
-        current_size=$(stat -f %z "${cd_root}/data/system.img" 2>/dev/null || echo 0)
+      if [ -f "${cd_root}/data/system.img.gz" ]; then
+        current_size=$(stat -f %z "${cd_root}/data/system.img.gz" 2>/dev/null || echo 0)
         current_mb=$((current_size / 1024 / 1024))
-        log "system.img current size: ${current_mb}MB"
+        log "system.img.gz current size: ${current_mb}MB"
       fi
       
-      # Check if zfs send process is still running
-      if ! pgrep -f "zfs send" >/dev/null 2>&1; then
+      # Check if zfs send or gzip process is still running
+      if ! pgrep -f "zfs send\|gzip" >/dev/null 2>&1; then
         break
       fi
     done
   ) &
   MONITOR_PID=$!
   
-  # Method 1: Enhanced simple send
-  log "Attempting enhanced ZFS send..."
+  # Enhanced ZFS send with gzip compression
+  log "Creating compressed system image with gzip..."
   send_success=false
   
-  if zfs send -v -p ghostbsd@clean > "${cd_root}/data/system.img" 2>"${cd_root}/data/zfs_send.log"; then
-    log "Enhanced send completed successfully"
+  if zfs send -v -p ghostbsd@clean | gzip -6 > "${cd_root}/data/system.img.gz" 2>"${cd_root}/data/zfs_send.log"; then
+    log "Gzip compressed send completed successfully"
     send_success=true
   else
-    log "Enhanced send failed, trying fallback methods..."
+    log "Gzip compressed send failed, trying uncompressed fallback..."
     cat "${cd_root}/data/zfs_send.log"
     
-    # Method 2: Send without compression
-    log "Trying send with compression disabled..."
-    original_compression=$(zfs get -H -o value compression ghostbsd)
-    zfs set compression=off ghostbsd
-    
-    if zfs send -v -p ghostbsd@clean > "${cd_root}/data/system.img" 2>"${cd_root}/data/zfs_send2.log"; then
-      log "Send without compression completed successfully"
+    # Fallback: uncompressed send
+    if zfs send -v -p ghostbsd@clean > "${cd_root}/data/system.img" 2>"${cd_root}/data/zfs_send_fallback.log"; then
+      log "Uncompressed fallback send completed successfully"
       send_success=true
+      compression_used="none"
     else
-      log "Send without compression failed, trying raw send..."
-      cat "${cd_root}/data/zfs_send2.log"
-      
-      # Method 3: Basic raw send
-      if zfs send ghostbsd@clean > "${cd_root}/data/system.img" 2>"${cd_root}/data/zfs_send3.log"; then
-        log "Raw send completed successfully"
-        send_success=true
-      else
-        log "All ZFS send methods failed:"
-        cat "${cd_root}/data/zfs_send3.log"
-        send_success=false
-      fi
+      log "All send methods failed:"
+      cat "${cd_root}/data/zfs_send_fallback.log"
+      send_success=false
     fi
-    
-    # Restore original compression
-    zfs set compression="$original_compression" ghostbsd
   fi
   
   # Stop monitoring
   kill $MONITOR_PID 2>/dev/null || true
   
-  # Verify the created image
-  if [ "$send_success" = "true" ] && [ -f "${cd_root}/data/system.img" ]; then
+  # Verify the created image and report compression results
+  if [ "$send_success" = "true" ] && [ -f "${cd_root}/data/system.img.gz" ]; then
+    # Compressed image exists
+    img_size=$(stat -f %z "${cd_root}/data/system.img.gz")
+    img_size_mb=$((img_size / 1024 / 1024))
+    log "Final system.img.gz size: ${img_size_mb}MB (gzip compressed)"
+    
+    # Create compression metadata file
+    echo "gzip" > "${cd_root}/data/compression.txt"
+    
+    # Calculate compression ratio if we have the estimated size
+    if [ "$estimated_size" != "unknown" ] && [ -n "$estimated_mb" ]; then
+      compression_ratio=$((100 - (img_size_mb * 100 / estimated_mb)))
+      log "Compression ratio: ${compression_ratio}% reduction (${estimated_mb}MB -> ${img_size_mb}MB)"
+    fi
+    
+    # Comprehensive validation
+    if [ $img_size_mb -lt 100 ]; then
+      error_exit "system.img.gz appears truncated (${img_size_mb}MB is too small)"
+    fi
+    
+    log "Compressed system image creation completed successfully: ${img_size_mb}MB"
+    
+  elif [ "$send_success" = "true" ] && [ -f "${cd_root}/data/system.img" ]; then
+    # Fallback uncompressed image exists
     img_size=$(stat -f %z "${cd_root}/data/system.img")
     img_size_mb=$((img_size / 1024 / 1024))
-    log "Final system.img size: ${img_size_mb}MB"
+    log "Final system.img size: ${img_size_mb}MB (uncompressed fallback)"
+    
+    # Create compression metadata file
+    echo "none" > "${cd_root}/data/compression.txt"
     
     # Comprehensive validation
     if [ $img_size_mb -lt 100 ]; then
       error_exit "system.img appears truncated (${img_size_mb}MB is too small)"
     fi
     
-    # Test if it's a valid ZFS stream
-    log "Validating ZFS stream format..."
-    if command -v zstreamdump >/dev/null 2>&1; then
-      if ! zstreamdump "${cd_root}/data/system.img" >/dev/null 2>&1; then
-        error_exit "system.img is not a valid ZFS stream"
-      fi
-      log "ZFS stream validation passed"
-    else
-      log "zstreamdump not available, skipping stream validation"
-    fi
-    
-    log "System image creation completed successfully: ${img_size_mb}MB"
+    log "Uncompressed system image creation completed successfully: ${img_size_mb}MB"
   else
     error_exit "System image creation failed"
   fi

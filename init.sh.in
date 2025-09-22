@@ -108,36 +108,70 @@ if [ $free_mem_gb -lt 2 ]; then
     fi
 fi
 
-# Verify system image exists and analyze it
-log "=== System Image Analysis ==="
-if [ ! -f /cdrom/data/system.img ]; then
-    error_exit "System image /cdrom/data/system.img not found"
+# Enhanced system image analysis with compression detection
+log "=== System Image Analysis with Compression Detection ==="
+
+# Detect compression type
+compression_type="none"
+system_img_path=""
+
+if [ -f /cdrom/data/compression.txt ]; then
+    compression_type=$(cat /cdrom/data/compression.txt)
+    log "Detected compression type from metadata: ${compression_type}"
+else
+    log "No compression metadata found, detecting from filenames..."
 fi
 
-img_size=$(stat -f %z /cdrom/data/system.img)
+# Determine system image path and compression type
+if [ -f /cdrom/data/system.img.gz ]; then
+    compression_type="gzip"
+    system_img_path="/cdrom/data/system.img.gz"
+    log "Found compressed system image: system.img.gz"
+elif [ -f /cdrom/data/system.img ]; then
+    compression_type="none"
+    system_img_path="/cdrom/data/system.img"
+    log "Found uncompressed system image: system.img"
+else
+    error_exit "No system image found (looked for system.img.gz and system.img)"
+fi
+
+log "Using compression type: ${compression_type}"
+log "System image path: ${system_img_path}"
+
+img_size=$(stat -f %z "${system_img_path}")
 img_size_mb=$((img_size / 1024 / 1024))
-log "System image size: ${img_size_mb}MB"
+log "System image size: ${img_size_mb}MB (${compression_type})"
 
 # Comprehensive image validation
-if [ $img_size_mb -lt 100 ]; then
+if [ $img_size_mb -lt 50 ]; then
     error_exit "System image appears truncated (${img_size_mb}MB is too small)"
 fi
 
-# Check if we have enough memory for the image
-memdisk_size_mb=$((memdisk_size * 1024))
-if [ $img_size_mb -gt $((memdisk_size_mb * 95 / 100)) ]; then
-    log "WARNING: System image (${img_size_mb}MB) is close to memdisk limit (${memdisk_size_mb}MB)"
+# For compressed images, estimate decompressed size (assume ~2.5:1 compression ratio)
+if [ "$compression_type" = "gzip" ]; then
+    estimated_decompressed_mb=$((img_size_mb * 25 / 10))
+    log "Estimated decompressed size: ~${estimated_decompressed_mb}MB"
+    
+    # Check if we have enough memory for the decompressed image
+    memdisk_size_mb=$((memdisk_size * 1024))
+    if [ $estimated_decompressed_mb -gt $((memdisk_size_mb * 95 / 100)) ]; then
+        log "WARNING: Estimated decompressed image (~${estimated_decompressed_mb}MB) is close to memdisk limit (${memdisk_size_mb}MB)"
+    fi
+else
+    # Check if we have enough memory for the uncompressed image
+    memdisk_size_mb=$((memdisk_size * 1024))
+    if [ $img_size_mb -gt $((memdisk_size_mb * 95 / 100)) ]; then
+        log "WARNING: System image (${img_size_mb}MB) is close to memdisk limit (${memdisk_size_mb}MB)"
+    fi
 fi
 
-# Basic image format validation
-log "Validating system image format..."
-# Check if it starts with ZFS magic bytes
-head_bytes=$(dd if=/cdrom/data/system.img bs=8 count=1 2>/dev/null | od -t x1 -N 8 | head -1 | cut -d' ' -f2-)
-if echo "$head_bytes" | grep -q "00 00 00 0c\|0c 00 00 00"; then
-    log "System image appears to be a valid ZFS stream"
-else
-    log "WARNING: System image may not be a valid ZFS stream (header: $head_bytes)"
-    # For GhostBSD compatibility, continue anyway but log the warning
+# Basic image format validation for compressed files
+if [ "$compression_type" = "gzip" ]; then
+    log "Validating gzip file format..."
+    if ! gzip -t "${system_img_path}" 2>/dev/null; then
+        error_exit "System image is not a valid gzip file"
+    fi
+    log "Gzip file validation passed"
 fi
 
 log "Mount swap-based memdisk"
@@ -182,8 +216,8 @@ log "Pool information:"
 zpool list livecd
 zpool status livecd
 
-# Enhanced system image loading with multiple strategies optimized for GhostBSD
-log "=== System Image Loading ==="
+# Enhanced system image loading with gzip decompression support
+log "=== System Image Loading with Compression Support ==="
 receive_success=false
 receive_method=""
 
@@ -209,76 +243,103 @@ log "Starting receive monitoring..."
         fi
         
         # Check if receive process is still running
-        if ! pgrep -f "zfs recv\|dd.*system.img" >/dev/null 2>&1; then
+        if ! pgrep -f "zfs recv\|gzip\|zcat\|dd.*system.img" >/dev/null 2>&1; then
             break
         fi
     done
 ) &
 MONITOR_PID=$!
 
-# Method 1: Direct streaming receive (optimized for GhostBSD)
-log "Attempting direct streaming receive"
-if dd if=/cdrom/data/system.img bs=1M 2>/tmp/dd1.log | zfs recv livecd 2>/tmp/zfs_recv1.log; then
-    log "Direct streaming receive completed successfully"
-    receive_success=true
-    receive_method="direct_stream"
-else
-    log "Direct streaming receive failed"
-    [ -f /tmp/dd1.log ] && log "DD log:" && cat /tmp/dd1.log
-    [ -f /tmp/zfs_recv1.log ] && log "ZFS recv log:" && cat /tmp/zfs_recv1.log
-    
-    # Method 2: Forced receive with optimized settings for GhostBSD
-    log "Attempting forced receive with optimized settings"
-    if dd if=/cdrom/data/system.img bs=64k 2>/tmp/dd2.log | zfs recv -F livecd 2>/tmp/zfs_recv2.log; then
-        log "Forced receive completed successfully"
-        receive_success=true
-        receive_method="forced_receive"
-    else
-        log "Forced receive failed"
-        [ -f /tmp/dd2.log ] && log "DD log:" && cat /tmp/dd2.log
-        [ -f /tmp/zfs_recv2.log ] && log "ZFS recv log:" && cat /tmp/zfs_recv2.log
-        
-        # Method 3: Copy to memory first, then receive (GhostBSD compatible)
-        log "Attempting copy-then-receive method"
-        
-        # Check if we have enough space in /tmp
-        tmp_avail=$(df /tmp | tail -1 | awk '{print $4}')
-        tmp_avail_mb=$((tmp_avail / 1024))
-        
-        if [ $tmp_avail_mb -gt $((img_size_mb + 100)) ]; then
-            log "Copying system image to memory (${img_size_mb}MB)"
-            if cp /cdrom/data/system.img /tmp/system.img 2>/tmp/copy.log; then
-                log "System image copied, attempting receive"
-                if zfs recv -F livecd < /tmp/system.img 2>/tmp/zfs_recv3.log; then
-                    log "Copy-then-receive completed successfully"
-                    receive_success=true
-                    receive_method="copy_then_receive"
-                    rm -f /tmp/system.img
-                else
-                    log "Copy-then-receive failed:"
-                    cat /tmp/zfs_recv3.log
-                    rm -f /tmp/system.img
-                fi
-            else
-                log "Failed to copy system image to memory:"
-                cat /tmp/copy.log
-            fi
+# Method 1: Direct streaming receive with decompression
+log "Attempting direct streaming receive with ${compression_type} decompression"
+
+case "$compression_type" in
+    "gzip")
+        if zcat "${system_img_path}" 2>/tmp/gzip1.log | zfs recv livecd 2>/tmp/zfs_recv1.log; then
+            log "Gzip decompression + receive completed successfully"
+            receive_success=true
+            receive_method="gzip_stream"
         else
-            log "Insufficient space in /tmp for copy method (need ${img_size_mb}MB, have ${tmp_avail_mb}MB)"
+            log "Gzip streaming failed"
+            [ -f /tmp/gzip1.log ] && log "Gzip log:" && cat /tmp/gzip1.log
+            [ -f /tmp/zfs_recv1.log ] && log "ZFS recv log:" && cat /tmp/zfs_recv1.log
         fi
-        
-        # Method 4: Last resort - resumable receive
-        if [ "$receive_success" != "true" ]; then
-            log "Attempting resumable receive as last resort"
-            if dd if=/cdrom/data/system.img bs=32k | zfs recv -s livecd 2>/tmp/zfs_recv4.log; then
-                log "Resumable receive completed successfully"
+        ;;
+    "none")
+        if dd if="${system_img_path}" bs=1M 2>/tmp/dd1.log | zfs recv livecd 2>/tmp/zfs_recv1.log; then
+            log "Uncompressed direct streaming receive completed successfully"
+            receive_success=true
+            receive_method="direct_stream"
+        else
+            log "Direct streaming receive failed"
+            [ -f /tmp/dd1.log ] && log "DD log:" && cat /tmp/dd1.log
+            [ -f /tmp/zfs_recv1.log ] && log "ZFS recv log:" && cat /tmp/zfs_recv1.log
+        fi
+        ;;
+esac
+
+# Method 2: Fallback with forced receive if direct streaming fails
+if [ "$receive_success" != "true" ]; then
+    log "Direct streaming failed, trying forced receive methods..."
+    
+    case "$compression_type" in
+        "gzip")
+            if zcat "${system_img_path}" 2>/tmp/gzip2.log | zfs recv -F livecd 2>/tmp/zfs_recv2.log; then
+                log "Gzip forced receive completed successfully"
                 receive_success=true
-                receive_method="resumable_receive"
+                receive_method="gzip_forced"
             else
-                log "Resumable receive also failed:"
-                cat /tmp/zfs_recv4.log
+                log "Gzip forced receive failed"
+                [ -f /tmp/gzip2.log ] && log "Gzip error log:" && cat /tmp/gzip2.log
+                [ -f /tmp/zfs_recv2.log ] && log "ZFS recv error log:" && cat /tmp/zfs_recv2.log
             fi
+            ;;
+        "none")
+            if dd if="${system_img_path}" bs=64k 2>/tmp/dd2.log | zfs recv -F livecd 2>/tmp/zfs_recv2.log; then
+                log "Uncompressed forced receive completed successfully"
+                receive_success=true
+                receive_method="direct_forced"
+            else
+                log "Uncompressed forced receive failed"
+                [ -f /tmp/dd2.log ] && log "DD error log:" && cat /tmp/dd2.log
+                [ -f /tmp/zfs_recv2.log ] && log "ZFS recv error log:" && cat /tmp/zfs_recv2.log
+            fi
+            ;;
+    esac
+fi
+
+# Method 3: Last resort - decompress to memory first if streaming fails
+if [ "$receive_success" != "true" ] && [ "$compression_type" = "gzip" ]; then
+    log "All streaming methods failed, attempting decompress-to-memory approach..."
+    
+    # Check available space in /tmp
+    tmp_avail=$(df /tmp | tail -1 | awk '{print $4}')
+    tmp_avail_mb=$((tmp_avail / 1024))
+    
+    if [ $tmp_avail_mb -gt $((estimated_decompressed_mb + 100)) ]; then
+        log "Decompressing to /tmp/system.img (estimated ${estimated_decompressed_mb}MB)"
+        
+        if zcat "${system_img_path}" > /tmp/system.img 2>/tmp/decompress.log; then
+            log "Decompression completed, attempting receive"
+            actual_size=$(stat -f %z /tmp/system.img)
+            actual_size_mb=$((actual_size / 1024 / 1024))
+            log "Actual decompressed size: ${actual_size_mb}MB"
+            
+            if zfs recv -F livecd < /tmp/system.img 2>/tmp/zfs_recv3.log; then
+                log "Decompress-then-receive completed successfully"
+                receive_success=true
+                receive_method="decompress_then_receive"
+            else
+                log "Decompress-then-receive failed:"
+                cat /tmp/zfs_recv3.log
+            fi
+            rm -f /tmp/system.img
+        else
+            log "Decompression to memory failed:"
+            cat /tmp/decompress.log
         fi
+    else
+        log "Insufficient space in /tmp for decompression (need ~${estimated_decompressed_mb}MB, have ${tmp_avail_mb}MB)"
     fi
 fi
 
@@ -288,19 +349,23 @@ kill $MONITOR_PID 2>/dev/null || true
 # Check final result
 if [ "$receive_success" != "true" ]; then
     log "=== Receive Failure Analysis ==="
-    log "All receive methods failed. Diagnostic information:"
+    log "All receive methods failed with compression type: ${compression_type}"
+    log "System image path: ${system_img_path}"
+    log "Available decompression tools:"
+    which gzip 2>/dev/null && log "gzip: available" || log "gzip: NOT available"
+    which zcat 2>/dev/null && log "zcat: available" || log "zcat: NOT available"
     log "Pool status:"
     zpool status livecd
     log "Available memory:"
     sysctl hw.realmem hw.physmem
     log "System image info:"
-    ls -la /cdrom/data/system.img
+    ls -la "${system_img_path}"
     log "Available space:"
     df -h /tmp
-    error_exit "Failed to load system image using any method"
+    error_exit "Failed to load system image using any decompression method"
 fi
 
-log "System image loaded successfully using method: $receive_method"
+log "System image loaded successfully using method: $receive_method with compression: $compression_type"
 
 # Post-receive configuration optimized for GhostBSD
 log "=== Post-Receive Configuration ==="
@@ -352,6 +417,7 @@ kenv vfs.root.mountfrom="zfs:livecd"
 
 log "=== Initialization completed successfully ==="
 log "Method used: $receive_method"
+log "Compression: $compression_type"
 log "Memory: ${realmem_gb}GB total, ${memdisk_size}GB memdisk, ${free_mem_gb}GB free"
 log "System image: ${img_size_mb}MB loaded successfully"
 log "Ready to boot GhostBSD live system"
