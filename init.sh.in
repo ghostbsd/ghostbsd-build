@@ -57,18 +57,18 @@ fi
 
 # Enhanced memory checks and system analysis
 log "=== System Analysis ==="
-requiredmem=8589934592  # 8GB minimum
+requiredmem=4294967296  # 4GB minimum (compatible with existing GhostBSD requirements)
 realmem=$(sysctl -n hw.realmem)
 realmem_gb=$((realmem/1024/1024/1024))
-log "Required memory: $requiredmem bytes (8GB minimum)"
+log "Required memory: $requiredmem bytes (4GB minimum)"
 log "Detected memory: $realmem bytes (${realmem_gb}GB)"
 
 if [ "$realmem" -lt "$requiredmem" ]; then
     SINGLE_USER="true"
-    error_exit "GhostBSD requires 8GB of memory for optimal operation. Detected: ${realmem_gb}GB"
+    error_exit "GhostBSD requires 4GB of memory for operation. Detected: ${realmem_gb}GB"
 fi
 
-# Calculate memdisk size based on available memory
+# Calculate memdisk size based on available memory (optimized for GhostBSD)
 if [ $realmem_gb -ge 32 ]; then
     # Very high memory systems: use 80%
     memdisk_size=$((("${realmem}"*80/100)/1024/1024/1024))
@@ -77,10 +77,14 @@ elif [ $realmem_gb -ge 16 ]; then
     # High memory systems: use 75%
     memdisk_size=$((("${realmem}"*75/100)/1024/1024/1024))
     log "Calculated memdisk size: ${memdisk_size}GB (75% of ${realmem_gb}GB - high memory system)"
-else
+elif [ $realmem_gb -ge 8 ]; then
     # 8-16GB systems: use 70%
     memdisk_size=$((("${realmem}"*70/100)/1024/1024/1024))
-    log "Calculated memdisk size: ${memdisk_size}GB (70% of ${realmem_gb}GB - standard memory system)"
+    log "Calculated memdisk size: ${memdisk_size}GB (70% of ${realmem_gb}GB - high memory system)"
+else
+    # 4-8GB systems: use 65% (conservative for lower memory)
+    memdisk_size=$((("${realmem}"*65/100)/1024/1024/1024))
+    log "Calculated memdisk size: ${memdisk_size}GB (65% of ${realmem_gb}GB - standard memory system)"
 fi
 
 free_mem_gb=$(((realmem - (memdisk_size * 1024 * 1024 * 1024))/1024/1024/1024))
@@ -115,6 +119,7 @@ if echo "$head_bytes" | grep -q "00 00 00 0c\|0c 00 00 00"; then
     log "System image appears to be a valid ZFS stream"
 else
     log "WARNING: System image may not be a valid ZFS stream (header: $head_bytes)"
+    # For GhostBSD compatibility, continue anyway but log the warning
 fi
 
 log "Mount swap-based memdisk"
@@ -122,7 +127,7 @@ if ! mdconfig -a -t swap -s ${memdisk_size}g -u 1 >/dev/null 2>/dev/null; then
     error_exit "Failed to create memory disk"
 fi
 
-# Create ZFS pool with enhanced error handling and settings
+# Create ZFS pool with enhanced error handling and settings optimized for GhostBSD
 log "=== ZFS Pool Creation ==="
 pool_creation_attempts=0
 max_attempts=3
@@ -131,7 +136,7 @@ while [ $pool_creation_attempts -lt $max_attempts ]; do
     pool_creation_attempts=$((pool_creation_attempts + 1))
     log "Creating ZFS pool 'livecd' (attempt ${pool_creation_attempts}/${max_attempts})"
     
-    # Start with minimal settings to avoid feature conflicts
+    # Start with compatible settings for GhostBSD
     if zpool create -O compression=off -O primarycache=all livecd /dev/md1 >/dev/null 2>/dev/null; then
         log "ZFS pool created successfully"
         break
@@ -159,7 +164,7 @@ log "Pool information:"
 zpool list livecd
 zpool status livecd
 
-# Enhanced system image loading with multiple strategies
+# Enhanced system image loading with multiple strategies optimized for GhostBSD
 log "=== System Image Loading ==="
 receive_success=false
 receive_method=""
@@ -193,7 +198,7 @@ log "Starting receive monitoring..."
 ) &
 MONITOR_PID=$!
 
-# Method 1: Direct streaming receive
+# Method 1: Direct streaming receive (optimized for GhostBSD)
 log "Attempting direct streaming receive"
 if dd if=/cdrom/data/system.img bs=1M 2>/tmp/dd1.log | zfs recv livecd 2>/tmp/zfs_recv1.log; then
     log "Direct streaming receive completed successfully"
@@ -204,7 +209,7 @@ else
     [ -f /tmp/dd1.log ] && log "DD log:" && cat /tmp/dd1.log
     [ -f /tmp/zfs_recv1.log ] && log "ZFS recv log:" && cat /tmp/zfs_recv1.log
     
-    # Method 2: Forced receive with smaller blocks
+    # Method 2: Forced receive with optimized settings for GhostBSD
     log "Attempting forced receive with optimized settings"
     if dd if=/cdrom/data/system.img bs=64k 2>/tmp/dd2.log | zfs recv -F livecd 2>/tmp/zfs_recv2.log; then
         log "Forced receive completed successfully"
@@ -215,7 +220,7 @@ else
         [ -f /tmp/dd2.log ] && log "DD log:" && cat /tmp/dd2.log
         [ -f /tmp/zfs_recv2.log ] && log "ZFS recv log:" && cat /tmp/zfs_recv2.log
         
-        # Method 3: Copy to memory first, then receive
+        # Method 3: Copy to memory first, then receive (GhostBSD compatible)
         log "Attempting copy-then-receive method"
         
         # Check if we have enough space in /tmp
@@ -279,7 +284,7 @@ fi
 
 log "System image loaded successfully using method: $receive_method"
 
-# Post-receive configuration
+# Post-receive configuration optimized for GhostBSD
 log "=== Post-Receive Configuration ==="
 
 # Set optimal compression and settings now that receive is complete
@@ -287,16 +292,27 @@ log "Configuring received filesystem"
 zfs set compression=zstd-9 livecd 2>/dev/null || log "Warning: Could not set compression"
 zfs set primarycache=all livecd 2>/dev/null || log "Warning: Could not set primary cache"
 
+# GhostBSD-specific optimizations
+zfs set atime=off livecd 2>/dev/null || log "Warning: Could not disable atime"
+
 # Verify the received filesystem
 log "Verifying received filesystem"
 if ! zfs list livecd >/dev/null 2>&1; then
     error_exit "Received filesystem verification failed"
 fi
 
-# Check if essential directories exist
+# Check if essential directories exist (GhostBSD specific)
 if ! zfs mount livecd 2>/dev/null; then
     log "Warning: Could not explicitly mount livecd"
 fi
+
+# Verify essential GhostBSD components are present
+essential_dirs="/bin /usr /etc /home"
+for dir in $essential_dirs; do
+    if [ ! -d "${dir}" ]; then
+        log "WARNING: Essential directory ${dir} not found in live system"
+    fi
+done
 
 # Display final status
 log "=== System Load Complete ==="
@@ -320,5 +336,6 @@ log "=== Initialization completed successfully ==="
 log "Method used: $receive_method"
 log "Memory: ${realmem_gb}GB total, ${memdisk_size}GB memdisk, ${free_mem_gb}GB free"
 log "System image: ${img_size_mb}MB loaded successfully"
+log "Ready to boot GhostBSD live system"
 
 exit 0

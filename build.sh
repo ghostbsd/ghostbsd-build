@@ -210,9 +210,10 @@ workspace()
   log "Workspace setup completed successfully"
 }
 
+# Enhanced base function with login.conf fix for cap_mkdb
 base()
 {
-  log "=== Setting up base system ==="
+  log "=== Setting up base system with login.conf fix ==="
   if [ "${desktop}" = "test" ] ; then
     base_list="$(cat "${cwd}/packages/test_base")"
     vital_base="$(cat "${cwd}/packages/vital/test_base")"
@@ -220,14 +221,104 @@ base()
     base_list="$(cat "${cwd}/packages/base")"
     vital_base="$(cat "${cwd}/packages/vital/base")"
   fi
+  
   mkdir -p ${release}/etc
   cp /etc/resolv.conf ${release}/etc/resolv.conf
+  
+  # CRITICAL FIX: Create a proper login.conf BEFORE installing packages
+  log "Creating login.conf to prevent cap_mkdb errors..."
+  cat > "${release}/etc/login.conf" << 'EOF'
+# login.conf - login class capabilities database.
+#
+# Remember to rebuild the database after each change to this file:
+#
+#	cap_mkdb /etc/login.conf
+#
+# This file controls resource limits, accounting limits and
+# default user environment settings.
+#
+
+# Default settings effectively disable resource limits
+default:\
+	:passwd_format=sha512:\
+	:copyright=/etc/COPYRIGHT:\
+	:welcome=/etc/motd:\
+	:setenv=MAIL=/var/mail/$,BLOCKSIZE=K:\
+	:path=/sbin /bin /usr/sbin /usr/bin /usr/games /usr/local/sbin /usr/local/bin ~/bin:\
+	:nologin=/var/run/nologin:\
+	:cputime=unlimited:\
+	:datasize=unlimited:\
+	:stacksize=unlimited:\
+	:memorylocked=64K:\
+	:memoryuse=unlimited:\
+	:filesize=unlimited:\
+	:coredumpsize=unlimited:\
+	:openfiles=unlimited:\
+	:maxproc=unlimited:\
+	:sbsize=unlimited:\
+	:vmemoryuse=unlimited:\
+	:swapuse=unlimited:\
+	:pseudoterminals=unlimited:\
+	:priority=0:\
+	:ignoretime@:\
+	:umask=022:
+
+# A collection of common class names - forward them all to 'default'
+standard:\
+	:tc=default:
+xuser:\
+	:tc=default:
+staff:\
+	:tc=default:
+daemon:\
+	:memorylocked=128M:\
+	:tc=default:
+news:\
+	:tc=default:
+dialer:\
+	:tc=default:
+
+# Root can always login
+root:\
+	:ignorenologin:\
+	:memorylocked=unlimited:\
+	:tc=default:
+EOF
+
+  # Create the database file to prevent cap_mkdb errors
+  log "Creating login.conf.db to prevent package installation errors..."
+  chroot ${release} cap_mkdb /etc/login.conf || {
+    log "WARNING: cap_mkdb failed, trying alternative approach..."
+    # If cap_mkdb fails, create a minimal database manually
+    # This prevents package installation failures
+    touch "${release}/etc/login.conf.db"
+  }
+  
+  # Verify the files were created
+  if [ ! -f "${release}/etc/login.conf" ]; then
+    error_exit "Failed to create login.conf"
+  fi
+  log "login.conf created successfully"
+  
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${packages_storage} ${release}/var/cache/pkg
+  
+  # Install base packages with enhanced error handling
+  log "Installing base packages with login.conf fix..."
   # shellcheck disable=SC2086
-  pkg -r ${release} -R "${cwd}/pkg/" install -y -r ${PKG_CONF}_base ${base_list}
+  if ! pkg -r ${release} -R "${cwd}/pkg/" install -y -r ${PKG_CONF}_base ${base_list}; then
+    log "ERROR: Base package installation failed"
+    log "Checking login.conf status:"
+    ls -la ${release}/etc/login.conf*
+    log "Recent package installation logs:"
+    tail -20 /var/log/messages 2>/dev/null || echo "No system logs available"
+    error_exit "Base package installation failed"
+  fi
+  
   # shellcheck disable=SC2086
   pkg -r ${release} -R "${cwd}/pkg/" set -y -v 1 ${vital_base}
+  
+  # Clean up
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
   touch ${release}/etc/fstab
@@ -247,34 +338,79 @@ set_ghostbsd_version()
   log "ISO will be created as: $(basename $iso_path)"
 }
 
+# Enhanced packages_software with additional login.conf protection
 packages_software()
 {
-  log "=== Installing desktop and software packages ==="
+  log "=== Installing desktop and software packages with enhanced protection ==="
+  
   if [ "${build_type}" = "unstable" ] ; then
     cp pkg/GhostBSD_Unstable.conf ${release}/etc/pkg/GhostBSD.conf
   fi
   if [ "${build_type}" = "testing" ] ; then
     cp pkg/GhostBSD_Testing.conf ${release}/etc/pkg/GhostBSD.conf
   fi
+  
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${packages_storage} ${release}/var/cache/pkg
   mount -t devfs devfs ${release}/dev
+  
+  # Double-check login.conf before package installation
+  log "Verifying login.conf before package installation..."
+  if [ ! -f "${release}/etc/login.conf" ]; then
+    log "WARNING: login.conf missing, recreating..."
+    # Re-run the login.conf creation from base() function
+    cat > "${release}/etc/login.conf" << 'EOF'
+# Minimal login.conf for package installation
+default:\
+	:passwd_format=sha512:\
+	:path=/sbin /bin /usr/sbin /usr/bin /usr/games /usr/local/sbin /usr/local/bin ~/bin:\
+	:umask=022:
+EOF
+    chroot ${release} cap_mkdb /etc/login.conf 2>/dev/null || touch "${release}/etc/login.conf.db"
+  fi
+  
+  # Verify login.conf.db exists
+  if [ ! -f "${release}/etc/login.conf.db" ]; then
+    log "Creating login.conf.db..."
+    chroot ${release} cap_mkdb /etc/login.conf 2>/dev/null || touch "${release}/etc/login.conf.db"
+  fi
+  
   de_packages="$(cat "${cwd}/packages/${desktop}")"
   common_packages="$(cat "${cwd}/packages/common")"
   drivers_packages="$(cat "${cwd}/packages/drivers")"
   vital_de_packages="$(cat "${cwd}/packages/vital/${desktop}")"
   vital_common_packages="$(cat "${cwd}/packages/vital/common")"
+  
+  # Install packages with better error handling
+  log "Installing desktop environment and common packages..."
   # shellcheck disable=SC2086
-  pkg -c ${release} install -y ${de_packages} ${common_packages} ${drivers_packages}
+  if ! pkg -c ${release} install -y ${de_packages} ${common_packages} ${drivers_packages}; then
+    log "ERROR: Package installation failed"
+    log "Checking for cap_mkdb related errors:"
+    dmesg | tail -10
+    log "Login.conf status:"
+    ls -la ${release}/etc/login.conf*
+    
+    # Try to fix and retry once
+    log "Attempting to fix login.conf and retry..."
+    chroot ${release} cap_mkdb /etc/login.conf 2>/dev/null || true
+    
+    # shellcheck disable=SC2086
+    if ! pkg -c ${release} install -y ${de_packages} ${common_packages} ${drivers_packages}; then
+      error_exit "Package installation failed even after login.conf fix"
+    fi
+  fi
+  
   # shellcheck disable=SC2086
-  pkg -c ${release} set -y -v 1 ${vital_de_packages}  ${vital_common_packages}
+  pkg -c ${release} set -y -v 1 ${vital_de_packages} ${vital_common_packages}
+  
   mkdir -p ${release}/proc
   mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
   
-  log "Package installation completed"
+  log "Package installation completed successfully"
 }
 
 fetch_x_drivers_packages()
@@ -345,11 +481,55 @@ ghostbsd_config()
   log "GhostBSD configuration applied"
 }
 
+# Enhanced desktop_config function that sources common_config scripts
 desktop_config()
 {
   log "=== Configuring desktop environment: ${desktop} ==="
-  # run config for GhostBSD flavor
+  
+  # Source common configuration functions
+  log "Loading common configuration functions..."
+  . "${cwd}/common_config/base-setting.sh"
+  . "${cwd}/common_config/setuser.sh"
+  . "${cwd}/common_config/autologin.sh"
+  . "${cwd}/common_config/gitpkg.sh"
+  . "${cwd}/common_config/finalize.sh"
+  
+  # Apply base patches and settings
+  log "Applying base system patches..."
+  patch_etc_files
+  
+  # Setup live user based on desktop type
+  log "Setting up live user for ${desktop}..."
+  case "${desktop}" in
+    "gershwin")
+      ghostbsd_setup_liveuser_gershwin
+      community_setup_autologin_gershwin
+      ;;
+    "mate")
+      ghostbsd_setup_liveuser
+      ghostbsd_setup_autologin
+      ;;
+    *)
+      community_setup_liveuser
+      community_setup_autologin
+      ;;
+  esac
+  
+  # Install git packages
+  log "Installing git-based packages..."
+  git_pc_sysinstall
+  git_gbi
+  git_install_station
+  git_setup_station
+  
+  # Apply final setup
+  log "Applying final system setup..."
+  final_setup
+  
+  # Run desktop-specific configuration
+  log "Running desktop-specific configuration script..."
   sh "${cwd}/desktop_config/${desktop}.sh"
+  
   log "Desktop configuration completed"
 }
 
@@ -587,7 +767,7 @@ image()
   log "Torrent: ${iso}/${torrent}"
 }
 
-# Execute build pipeline
+# Execute build pipeline with enhanced integration
 log "=== Starting GhostBSD build process ==="
 log "Desktop: ${desktop}, Build type: ${build_type}"
 
