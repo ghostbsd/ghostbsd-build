@@ -57,7 +57,7 @@ fi
 
 # Enhanced memory checks and system analysis
 log "=== System Analysis ==="
-requiredmem=4294967296  # 4GB minimum (compatible with existing GhostBSD requirements)
+requiredmem=8589934592  # 8GB minimum (compatible with existing GhostBSD requirements)
 realmem=$(sysctl -n hw.realmem)
 realmem_gb=$((realmem/1024/1024/1024))
 log "Required memory: $requiredmem bytes (4GB minimum)"
