@@ -104,7 +104,7 @@ time_stamp=""
 release_stamp=""
 label="GhostBSD"
 
-# Enhanced workspace function with integrated diagnostics
+# Enhanced workspace function with 8GB minimum requirement
 workspace()
 {
   log "=== Enhanced Workspace Setup with Diagnostics ==="
@@ -112,24 +112,26 @@ workspace()
   # Pre-build environment analysis
   log "Analyzing build environment..."
   
-  # 1. Memory Analysis
+  # 1. Memory Analysis - Updated for 8GB minimum
   realmem=$(sysctl -n hw.realmem)
   realmem_gb=$((realmem / 1024 / 1024 / 1024))
   log "Available memory: ${realmem_gb}GB"
   
   if [ $realmem_gb -lt 8 ]; then
-    log "WARNING: Less than 8GB RAM detected. Build may fail due to memory pressure."
-    log "Consider using a system with more RAM or enabling swap."
+    error_exit "GhostBSD build requires at least 8GB RAM. Detected: ${realmem_gb}GB. Please use a system with more memory."
+  elif [ $realmem_gb -lt 12 ]; then
+    log "WARNING: 8-12GB RAM detected. Build will work but may experience memory pressure."
+    log "Consider using a system with 16GB+ RAM for optimal build performance."
   fi
   
-  # 2. Disk Space Analysis
+  # 2. Disk Space Analysis - Updated for larger requirements
   log "Analyzing disk space..."
   workdir_avail=$(df /usr/local | tail -1 | awk '{print $4}')
   workdir_avail_gb=$((workdir_avail / 1024 / 1024))
   log "Available space in /usr/local: ${workdir_avail_gb}GB"
   
-  if [ $workdir_avail_gb -lt 15 ]; then
-    error_exit "Insufficient disk space. Need at least 15GB free in /usr/local, have ${workdir_avail_gb}GB"
+  if [ $workdir_avail_gb -lt 20 ]; then
+    error_exit "Insufficient disk space. Need at least 20GB free in /usr/local for 8GB minimum builds, have ${workdir_avail_gb}GB"
   fi
   
   # 3. Check for previous failed builds
@@ -145,13 +147,13 @@ workspace()
     fi
   fi
   
-  # 4. ZFS Memory Tuning
+  # 4. ZFS Memory Tuning - Updated for 8GB minimum
   if kldstat | grep -q zfs; then
-    log "ZFS detected, applying memory tuning..."
-    # Limit ARC to 25% of system memory during build to prevent pressure
-    arc_max=$((realmem / 4))
+    log "ZFS detected, applying memory tuning for 8GB+ systems..."
+    # With 8GB minimum, we can afford to limit ARC to 30% during build
+    arc_max=$((realmem * 30 / 100))
     sysctl vfs.zfs.arc_max=$arc_max >/dev/null 2>&1 || true
-    log "Set ZFS ARC max to $((arc_max / 1024 / 1024))MB"
+    log "Set ZFS ARC max to $((arc_max / 1024 / 1024))MB (30% of total memory)"
   fi
   
   # Unmount any existing mounts and clean up
@@ -178,16 +180,16 @@ workspace()
   # Create necessary directories for the build
   mkdir -p ${livecd} ${base} ${iso} ${packages_storage}  ${release}
 
-  # Create a new pool image file of 6GB
-  POOL_SIZE='6g'
-  log "Creating ${POOL_SIZE} pool image..."
+  # Create a new pool image file - Updated for 8GB minimum
+  POOL_SIZE='6656M'  # 6.5GB in MB (6.5 * 1024 = 6656) - increased from 6g to accommodate larger 8GB systems
+  log "Creating ${POOL_SIZE} pool image for 8GB minimum system..."
   truncate -s ${POOL_SIZE} ${livecd}/pool.img
   
   # Attach the pool image as a memory disk
   mdconfig -f ${livecd}/pool.img -u 0
 
   # Attempt to create the ZFS pool with error handling
-  log "Creating ZFS pool 'ghostbsd'..."
+  log "Creating ZFS pool 'ghostbsd' with 8GB optimizations..."
   if ! zpool create -O mountpoint="${release}" -O compression=zstd-9 ghostbsd /dev/md0; then
     # Provide detailed error message in case of failure
     log "Error: Failed to create ZFS pool 'ghostbsd' with the following command:"
@@ -207,7 +209,7 @@ workspace()
   zpool status ghostbsd
   zpool list ghostbsd
   
-  log "Workspace setup completed successfully"
+  log "Workspace setup completed successfully for 8GB minimum system"
 }
 
 # Enhanced base function with login.conf fix for cap_mkdb

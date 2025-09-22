@@ -55,40 +55,58 @@ if [ "$SINGLE_USER" = "true" ]; then
     exit 0
 fi
 
-# Enhanced memory checks and system analysis
+# Enhanced memory checks and system analysis for 8GB minimum
 log "=== System Analysis ==="
-requiredmem=8589934592  # 8GB minimum (compatible with existing GhostBSD requirements)
+requiredmem=8589934592  # 8GB minimum (updated requirement for GhostBSD)
 realmem=$(sysctl -n hw.realmem)
 realmem_gb=$((realmem/1024/1024/1024))
-log "Required memory: $requiredmem bytes (4GB minimum)"
+log "Required memory: $requiredmem bytes (8GB minimum)"
 log "Detected memory: $realmem bytes (${realmem_gb}GB)"
 
 if [ "$realmem" -lt "$requiredmem" ]; then
     SINGLE_USER="true"
-    error_exit "GhostBSD requires 4GB of memory for operation. Detected: ${realmem_gb}GB"
+    error_exit "GhostBSD requires 8GB of memory for operation. Detected: ${realmem_gb}GB. Please use a system with at least 8GB RAM."
 fi
 
-# Calculate memdisk size based on available memory (optimized for GhostBSD)
+# Calculate memdisk size based on available memory (optimized for 8GB minimum)
 if [ $realmem_gb -ge 32 ]; then
     # Very high memory systems: use 80%
     memdisk_size=$((("${realmem}"*80/100)/1024/1024/1024))
     log "Calculated memdisk size: ${memdisk_size}GB (80% of ${realmem_gb}GB - very high memory system)"
+elif [ $realmem_gb -ge 24 ]; then
+    # High memory systems: use 78%
+    memdisk_size=$((("${realmem}"*78/100)/1024/1024/1024))
+    log "Calculated memdisk size: ${memdisk_size}GB (78% of ${realmem_gb}GB - high memory system)"
 elif [ $realmem_gb -ge 16 ]; then
-    # High memory systems: use 75%
+    # 16-24GB systems: use 75%
     memdisk_size=$((("${realmem}"*75/100)/1024/1024/1024))
     log "Calculated memdisk size: ${memdisk_size}GB (75% of ${realmem_gb}GB - high memory system)"
-elif [ $realmem_gb -ge 8 ]; then
-    # 8-16GB systems: use 70%
-    memdisk_size=$((("${realmem}"*70/100)/1024/1024/1024))
-    log "Calculated memdisk size: ${memdisk_size}GB (70% of ${realmem_gb}GB - high memory system)"
+elif [ $realmem_gb -ge 12 ]; then
+    # 12-16GB systems: use 72% 
+    memdisk_size=$((("${realmem}"*72/100)/1024/1024/1024))
+    log "Calculated memdisk size: ${memdisk_size}GB (72% of ${realmem_gb}GB - medium-high memory system)"
 else
-    # 4-8GB systems: use 65% (conservative for lower memory)
-    memdisk_size=$((("${realmem}"*65/100)/1024/1024/1024))
-    log "Calculated memdisk size: ${memdisk_size}GB (65% of ${realmem_gb}GB - standard memory system)"
+    # 8-12GB systems: use 70% (conservative for 8GB minimum)
+    memdisk_size=$((("${realmem}"*70/100)/1024/1024/1024))
+    log "Calculated memdisk size: ${memdisk_size}GB (70% of ${realmem_gb}GB - 8GB minimum system)"
 fi
 
 free_mem_gb=$(((realmem - (memdisk_size * 1024 * 1024 * 1024))/1024/1024/1024))
 log "Free memory after memdisk allocation: ${free_mem_gb}GB"
+
+# Additional safety check for 8GB systems
+if [ $free_mem_gb -lt 2 ]; then
+    log "WARNING: Less than 2GB free memory remaining after memdisk allocation"
+    log "System may experience performance issues"
+    # For 8GB systems, we might need to be more conservative
+    if [ $realmem_gb -le 10 ]; then
+        log "Adjusting memdisk size for better performance on 8GB system..."
+        memdisk_size=$((("${realmem}"*65/100)/1024/1024/1024))
+        free_mem_gb=$(((realmem - (memdisk_size * 1024 * 1024 * 1024))/1024/1024/1024))
+        log "Adjusted memdisk size: ${memdisk_size}GB (65% of ${realmem_gb}GB)"
+        log "Adjusted free memory: ${free_mem_gb}GB"
+    fi
+fi
 
 # Verify system image exists and analyze it
 log "=== System Image Analysis ==="
