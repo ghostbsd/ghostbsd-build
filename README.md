@@ -23,7 +23,7 @@ The purpose of this tool is to quickly generate live images for GhostBSD.
 * 20GB of free disk space
 * **8GB of free memory minimum** (16GB+ recommended for optimal performance)
 
-Note: GhostBSD 22.01.12 and later should be used to build ISO.
+Note: GhostBSD-25.02-R14.3p2 and later should be used to build ISO.
 
 ## Initial setup
 Install the required packages:
