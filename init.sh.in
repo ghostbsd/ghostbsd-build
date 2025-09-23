@@ -55,33 +55,11 @@ normalize_used_token() {
     esac
 }
 
-# Lightweight monitor loop without pgrep/tail/tr/head.
-# Parent creates /tmp/recv.running before receive and deletes it after.
-# This loop exits when the marker disappears or after parent kills it.
+# Simplified monitor - avoid background processes in rescue environment
 start_monitor() {
-    (
-        prev_size=""
-        stall_count=0
-        while [ -f /tmp/recv.running ]; do
-            sleep 10
-            if zfs list livecd >/dev/null 2>&1; then
-                raw_used=$(zfs list -H -o used livecd 2>/dev/null || echo 0)
-                current_used=$(normalize_used_token "$raw_used")
-                if [ "$current_used" != "$prev_size" ]; then
-                    log "Receive progress: ${current_used} used"
-                    prev_size="$current_used"
-                    stall_count=0
-                else
-                    stall_count=$((stall_count + 1))
-                    if [ $stall_count -gt 12 ]; then
-                        log "WARNING: Receive appears stalled for 2+ minutes"
-                    fi
-                fi
-            fi
-        done
-        log "DEBUG: Monitor process exiting"
-    ) &
-    echo $!
+    log "DEBUG: Monitor function called (simplified version)"
+    # Return a dummy PID to avoid hanging
+    echo "999"
 }
 
 # -------- Logging / errors --------
@@ -291,14 +269,10 @@ log "=== System Image Loading with Compression Support ==="
 receive_success=false
 receive_method=""
 
-log "DEBUG: About to create recv.running marker"
-# Start background monitoring (marker file method)
-: > /tmp/recv.running
-log "DEBUG: Created recv.running marker"
-
-log "DEBUG: About to start monitor process"
-MONITOR_PID=$(start_monitor)
-log "DEBUG: Monitor PID: $MONITOR_PID"
+log "DEBUG: Skipping complex monitoring in rescue environment"
+# Simplified monitoring - no background processes
+MONITOR_PID="999"
+log "DEBUG: Using simplified monitor (PID: $MONITOR_PID)"
 
 log "DEBUG: Compression type: ${compression_type}"
 log "DEBUG: System image path: ${system_img_path}"
@@ -406,12 +380,8 @@ fi
 
 log "DEBUG: After all attempts, receive_success=$receive_success"
 
-# Stop monitoring
-log "DEBUG: Stopping monitor process $MONITOR_PID"
-rm -f /tmp/recv.running
-kill "$MONITOR_PID" 2>/dev/null || true
-wait "$MONITOR_PID" 2>/dev/null || true
-log "DEBUG: Monitor process stopped"
+# Simplified cleanup - no background processes to manage
+log "DEBUG: Simplified monitor cleanup (no background processes used)"
 
 # -------- Final result check --------
 
