@@ -170,7 +170,7 @@ fi
 
 # -------- System image analysis --------
 
-log "=== System Image Analysis with Compression Detection ==="
+log "=== System Image Analysis with Multi-Format Compression Detection ==="
 compression_type="none"
 system_img_path=""
 
@@ -181,16 +181,20 @@ else
     log "No compression metadata found, detecting from filenames..."
 fi
 
-if [ -f /cdrom/data/system.img.gz ]; then
+if [ -f /cdrom/data/system.img.zst ]; then
+    compression_type="zstd"
+    system_img_path="/cdrom/data/system.img.zst"
+    log "Found zstd compressed system image: system.img.zst"
+elif [ -f /cdrom/data/system.img.gz ]; then
     compression_type="gzip"
     system_img_path="/cdrom/data/system.img.gz"
-    log "Found compressed system image: system.img.gz"
+    log "Found gzip compressed system image: system.img.gz"
 elif [ -f /cdrom/data/system.img ]; then
     compression_type="none"
     system_img_path="/cdrom/data/system.img"
     log "Found uncompressed system image: system.img"
 else
-    error_exit "No system image found (looked for system.img.gz and system.img)"
+    error_exit "No system image found (looked for system.img.zst, system.img.gz, and system.img)"
 fi
 
 log "Using compression type: ${compression_type}"
@@ -204,9 +208,17 @@ if [ $img_size_mb -lt 50 ]; then
     error_exit "System image appears truncated (${img_size_mb}MB is too small)"
 fi
 
-if [ "$compression_type" = "gzip" ]; then
+if [ "$compression_type" = "zstd" ]; then
+    # Zstd typically achieves better compression than gzip
+    estimated_decompressed_mb=$((img_size_mb * 30 / 10))
+    log "Estimated decompressed size: ~${estimated_decompressed_mb}MB (zstd)"
+    memdisk_size_mb=$((memdisk_size * 1024))
+    if [ $estimated_decompressed_mb -gt $((memdisk_size_mb * 95 / 100)) ]; then
+        log "WARNING: Estimated decompressed image (~${estimated_decompressed_mb}MB) is close to memdisk limit (${memdisk_size_mb}MB)"
+    fi
+elif [ "$compression_type" = "gzip" ]; then
     estimated_decompressed_mb=$((img_size_mb * 25 / 10))
-    log "Estimated decompressed size: ~${estimated_decompressed_mb}MB"
+    log "Estimated decompressed size: ~${estimated_decompressed_mb}MB (gzip)"
     memdisk_size_mb=$((memdisk_size * 1024))
     if [ $estimated_decompressed_mb -gt $((memdisk_size_mb * 95 / 100)) ]; then
         log "WARNING: Estimated decompressed image (~${estimated_decompressed_mb}MB) is close to memdisk limit (${memdisk_size_mb}MB)"
@@ -218,7 +230,20 @@ else
     fi
 fi
 
-if [ "$compression_type" = "gzip" ]; then
+# Validate compression format and tool availability
+if [ "$compression_type" = "zstd" ]; then
+    log "Validating zstd file format and tool availability..."
+    if ! command -v zstd >/dev/null 2>&1; then
+        log "ERROR: zstd command not available in rescue environment"
+        log "Available decompression tools:"
+        ls /rescue/ | grep -E "(zstd|gzip|gunzip|zcat)" || echo "No compression tools found in rescue"
+        error_exit "Cannot decompress zstd file: zstd not available in rescue environment"
+    fi
+    if ! zstd -t "${system_img_path}" 2>/dev/null; then
+        error_exit "System image is not a valid zstd file"
+    fi
+    log "Zstd file validation passed"
+elif [ "$compression_type" = "gzip" ]; then
     log "Validating gzip file format..."
     if ! gzip -t "${system_img_path}" 2>/dev/null; then
         error_exit "System image is not a valid gzip file"
@@ -265,7 +290,7 @@ zpool status livecd
 
 # -------- Receive with compression support --------
 
-log "=== System Image Loading with Compression Support ==="
+log "=== System Image Loading with Multi-Format Compression Support ==="
 receive_success=false
 receive_method=""
 
@@ -281,6 +306,19 @@ log "DEBUG: About to attempt streaming receive"
 log "Attempting direct streaming receive with ${compression_type} decompression"
 
 case "$compression_type" in
+    "zstd")
+        log "DEBUG: Starting zstd decompression + ZFS receive (with force flag)"
+        if zstd -dc "${system_img_path}" 2>/tmp/zstd1.log | zfs recv -F livecd 2>/tmp/zfs_recv1.log; then
+            log "Zstd decompression + receive completed successfully"
+            receive_success=true
+            receive_method="zstd_stream"
+        else
+            log "Zstd streaming failed"
+            log "DEBUG: zstd/zfs recv pipeline exit code: $?"
+            [ -f /tmp/zstd1.log ] && log "Zstd log:" && cat /tmp/zstd1.log
+            [ -f /tmp/zfs_recv1.log ] && log "ZFS recv log:" && cat /tmp/zfs_recv1.log
+        fi
+        ;;
     "gzip")
         log "DEBUG: Starting gzip decompression + ZFS receive (with force flag)"
         if zcat "${system_img_path}" 2>/tmp/gzip1.log | zfs recv -F livecd 2>/tmp/zfs_recv1.log; then
@@ -315,6 +353,19 @@ log "DEBUG: After first attempt, receive_success=$receive_success"
 if [ "$receive_success" != "true" ]; then
     log "Direct streaming failed, trying forced receive methods..."
     case "$compression_type" in
+        "zstd")
+            log "DEBUG: Attempting zstd forced receive"
+            if zstd -dc "${system_img_path}" 2>/tmp/zstd2.log | zfs recv -F livecd 2>/tmp/zfs_recv2.log; then
+                log "Zstd forced receive completed successfully"
+                receive_success=true
+                receive_method="zstd_forced"
+            else
+                log "Zstd forced receive failed"
+                log "DEBUG: Forced receive exit code: $?"
+                [ -f /tmp/zstd2.log ] && log "Zstd error log:" && cat /tmp/zstd2.log
+                [ -f /tmp/zfs_recv2.log ] && log "ZFS recv error log:" && cat /tmp/zfs_recv2.log
+            fi
+            ;;
         "gzip")
             log "DEBUG: Attempting gzip forced receive"
             if zcat "${system_img_path}" 2>/tmp/gzip2.log | zfs recv -F livecd 2>/tmp/zfs_recv2.log; then
@@ -347,34 +398,63 @@ fi
 log "DEBUG: After forced attempt, receive_success=$receive_success"
 
 # Last resort: decompress to memory first (space-checked without awk/tail)
-if [ "$receive_success" != "true" ] && [ "$compression_type" = "gzip" ]; then
-    log "All streaming methods failed, attempting decompress-to-memory approach..."
+if [ "$receive_success" != "true" ] && [ "$compression_type" = "zstd" ]; then
+    log "All streaming methods failed, attempting zstd decompress-to-memory approach..."
     tmp_avail_kb=$(df_avail_kb /tmp)
     tmp_avail_mb=$((tmp_avail_kb / 1024))
     log "DEBUG: Available temp space: ${tmp_avail_mb}MB, need: ~${estimated_decompressed_mb}MB"
     
     if [ $tmp_avail_mb -gt $((estimated_decompressed_mb + 100)) ]; then
-        log "Decompressing to /tmp/system.img (estimated ${estimated_decompressed_mb}MB)"
-        if zcat "${system_img_path}" > /tmp/system.img 2>/tmp/decompress.log; then
-            log "Decompression completed, attempting receive"
+        log "Decompressing zstd to /tmp/system.img (estimated ${estimated_decompressed_mb}MB)"
+        if zstd -dc "${system_img_path}" > /tmp/system.img 2>/tmp/zstd_decompress.log; then
+            log "Zstd decompression completed, attempting receive"
             actual_size=$(file_size_bytes /tmp/system.img)
             actual_size_mb=$((actual_size / 1024 / 1024))
             log "Actual decompressed size: ${actual_size_mb}MB"
             if zfs recv -F livecd < /tmp/system.img 2>/tmp/zfs_recv3.log; then
-                log "Decompress-then-receive completed successfully"
+                log "Zstd decompress-then-receive completed successfully"
                 receive_success=true
-                receive_method="decompress_then_receive"
+                receive_method="zstd_decompress_then_receive"
             else
-                log "Decompress-then-receive failed:"
+                log "Zstd decompress-then-receive failed:"
                 cat /tmp/zfs_recv3.log
             fi
             rm -f /tmp/system.img
         else
-            log "Decompression to memory failed:"
+            log "Zstd decompression to memory failed:"
+            cat /tmp/zstd_decompress.log
+        fi
+    else
+        log "Insufficient space in /tmp for zstd decompression (need ~${estimated_decompressed_mb}MB, have ${tmp_avail_mb}MB)"
+    fi
+elif [ "$receive_success" != "true" ] && [ "$compression_type" = "gzip" ]; then
+    log "All streaming methods failed, attempting gzip decompress-to-memory approach..."
+    tmp_avail_kb=$(df_avail_kb /tmp)
+    tmp_avail_mb=$((tmp_avail_kb / 1024))
+    log "DEBUG: Available temp space: ${tmp_avail_mb}MB, need: ~${estimated_decompressed_mb}MB"
+    
+    if [ $tmp_avail_mb -gt $((estimated_decompressed_mb + 100)) ]; then
+        log "Decompressing gzip to /tmp/system.img (estimated ${estimated_decompressed_mb}MB)"
+        if zcat "${system_img_path}" > /tmp/system.img 2>/tmp/decompress.log; then
+            log "Gzip decompression completed, attempting receive"
+            actual_size=$(file_size_bytes /tmp/system.img)
+            actual_size_mb=$((actual_size / 1024 / 1024))
+            log "Actual decompressed size: ${actual_size_mb}MB"
+            if zfs recv -F livecd < /tmp/system.img 2>/tmp/zfs_recv3.log; then
+                log "Gzip decompress-then-receive completed successfully"
+                receive_success=true
+                receive_method="gzip_decompress_then_receive"
+            else
+                log "Gzip decompress-then-receive failed:"
+                cat /tmp/zfs_recv3.log
+            fi
+            rm -f /tmp/system.img
+        else
+            log "Gzip decompression to memory failed:"
             cat /tmp/decompress.log
         fi
     else
-        log "Insufficient space in /tmp for decompression (need ~${estimated_decompressed_mb}MB, have ${tmp_avail_mb}MB)"
+        log "Insufficient space in /tmp for gzip decompression (need ~${estimated_decompressed_mb}MB, have ${tmp_avail_mb}MB)"
     fi
 fi
 
@@ -389,6 +469,7 @@ if [ "$receive_success" != "true" ]; then
     log "=== Receive Failure Analysis ==="
     log "All receive methods failed with compression type: ${compression_type}"
     log "System image path: ${system_img_path}"
+    if command -v zstd >/dev/null 2>&1; then log "zstd: available"; else log "zstd: NOT available"; fi
     if command -v gzip >/dev/null 2>&1; then log "gzip: available"; else log "gzip: NOT available"; fi
     if command -v zcat >/dev/null 2>&1; then log "zcat: available"; else log "zcat: NOT available"; fi
     log "Pool status:"

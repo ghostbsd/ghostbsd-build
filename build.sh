@@ -7,6 +7,7 @@ export cwd
 
 # ZFS Control Configuration
 export zfs_control="${zfs_control:-auto}"  # off, auto, conservative, aggressive, restore
+export ARC_WAS_TUNED=false  # Initialize to prevent cleanup errors
 
 # Enhanced logging function
 log() {
@@ -429,12 +430,9 @@ EOF
 
   # Create the database file to prevent cap_mkdb errors
   log "Creating login.conf.db to prevent package installation errors..."
-  chroot ${release} cap_mkdb /etc/login.conf || {
-    log "WARNING: cap_mkdb failed, trying alternative approach..."
-    # If cap_mkdb fails, create a minimal database manually
-    # This prevents package installation failures
-    touch "${release}/etc/login.conf.db"
-  }
+  # Don't try to run cap_mkdb in chroot before base packages are installed
+  # Just create a minimal database file to prevent package installation failures
+  touch "${release}/etc/login.conf.db"
   
   # Verify the files were created
   if [ ! -f "${release}/etc/login.conf" ]; then
@@ -656,10 +654,10 @@ desktop_config()
   log "Desktop configuration completed"
 }
 
-# Enhanced uzip function with gzip compression
+# Enhanced uzip function with zstd compression
 uzip()
 {
-  log "=== Creating compressed system image with gzip compression ==="
+  log "=== Creating compressed system image with zstd compression ==="
   
   install -o root -g wheel -m 755 -d "${cd_root}"
   mkdir "${cd_root}/data"
@@ -713,37 +711,79 @@ uzip()
     fi
   fi
   
-  # Start background monitoring
+  # Start background monitoring - updated for multiple compression formats
   log "Starting background monitoring..."
   (
     while true; do
       sleep 30
-      if [ -f "${cd_root}/data/system.img.gz" ]; then
+      # Check for any of the possible output files
+      current_size=0
+      current_file=""
+      if [ -f "${cd_root}/data/system.img.zst" ]; then
+        current_size=$(stat -f %z "${cd_root}/data/system.img.zst" 2>/dev/null || echo 0)
+        current_file="system.img.zst"
+      elif [ -f "${cd_root}/data/system.img.gz" ]; then
         current_size=$(stat -f %z "${cd_root}/data/system.img.gz" 2>/dev/null || echo 0)
-        current_mb=$((current_size / 1024 / 1024))
-        log "system.img.gz current size: ${current_mb}MB"
+        current_file="system.img.gz"
+      elif [ -f "${cd_root}/data/system.img" ]; then
+        current_size=$(stat -f %z "${cd_root}/data/system.img" 2>/dev/null || echo 0)
+        current_file="system.img"
       fi
       
-      # Check if zfs send or gzip process is still running
-      if ! pgrep -f "zfs send\|gzip" >/dev/null 2>&1; then
+      if [ $current_size -gt 0 ]; then
+        current_mb=$((current_size / 1024 / 1024))
+        log "${current_file} current size: ${current_mb}MB"
+      fi
+      
+      # Check if zfs send, zstd, or gzip process is still running
+      if ! pgrep -f "zfs send\|zstd\|gzip" >/dev/null 2>&1; then
         break
       fi
     done
   ) &
   MONITOR_PID=$!
   
-  # Enhanced ZFS send with gzip compression
-  log "Creating compressed system image with gzip..."
+  # Enhanced ZFS send with zstd compression
+  log "Creating compressed system image with zstd..."
   send_success=false
+  compression_used="none"
   
-  if zfs send -v -p ghostbsd@clean | gzip -6 > "${cd_root}/data/system.img.gz" 2>"${cd_root}/data/zfs_send.log"; then
-    log "Gzip compressed send completed successfully"
-    send_success=true
+  # Try zstd first (faster and better compression than gzip)
+  if command -v zstd >/dev/null 2>&1; then
+    log "Using zstd -9 compression..."
+    if zfs send -v -p ghostbsd@clean | zstd -9 -T0 > "${cd_root}/data/system.img.zst" 2>"${cd_root}/data/zfs_send.log"; then
+      log "Zstd compressed send completed successfully"
+      send_success=true
+      compression_used="zstd"
+    else
+      log "Zstd compressed send failed, trying gzip fallback..."
+      cat "${cd_root}/data/zfs_send.log"
+      
+      # Fallback to gzip
+      if zfs send -v -p ghostbsd@clean | gzip -6 > "${cd_root}/data/system.img.gz" 2>"${cd_root}/data/zfs_send_gzip.log"; then
+        log "Gzip fallback completed successfully"
+        send_success=true
+        compression_used="gzip"
+      else
+        log "Gzip fallback also failed:"
+        cat "${cd_root}/data/zfs_send_gzip.log"
+      fi
+    fi
   else
-    log "Gzip compressed send failed, trying uncompressed fallback..."
-    cat "${cd_root}/data/zfs_send.log"
-    
-    # Fallback: uncompressed send
+    log "Zstd not available, using gzip compression..."
+    if zfs send -v -p ghostbsd@clean | gzip -6 > "${cd_root}/data/system.img.gz" 2>"${cd_root}/data/zfs_send.log"; then
+      log "Gzip compressed send completed successfully"
+      send_success=true
+      compression_used="gzip"
+    else
+      log "Gzip compressed send failed:"
+      cat "${cd_root}/data/zfs_send.log"
+    fi
+  fi
+  
+  # Final fallback: uncompressed
+  if [ "$send_success" != "true" ]; then
+    log "All compressed methods failed, trying uncompressed fallback..."
     if zfs send -v -p ghostbsd@clean > "${cd_root}/data/system.img" 2>"${cd_root}/data/zfs_send_fallback.log"; then
       log "Uncompressed fallback send completed successfully"
       send_success=true
@@ -759,8 +799,30 @@ uzip()
   kill $MONITOR_PID 2>/dev/null || true
   
   # Verify the created image and report compression results
-  if [ "$send_success" = "true" ] && [ -f "${cd_root}/data/system.img.gz" ]; then
-    # Compressed image exists
+  if [ "$send_success" = "true" ] && [ "$compression_used" = "zstd" ] && [ -f "${cd_root}/data/system.img.zst" ]; then
+    # Zstd compressed image exists
+    img_size=$(stat -f %z "${cd_root}/data/system.img.zst")
+    img_size_mb=$((img_size / 1024 / 1024))
+    log "Final system.img.zst size: ${img_size_mb}MB (zstd compressed)"
+    
+    # Create compression metadata file
+    echo "zstd" > "${cd_root}/data/compression.txt"
+    
+    # Calculate compression ratio if we have the estimated size
+    if [ "$estimated_size" != "unknown" ] && [ -n "$estimated_mb" ]; then
+      compression_ratio=$((100 - (img_size_mb * 100 / estimated_mb)))
+      log "Compression ratio: ${compression_ratio}% reduction (${estimated_mb}MB -> ${img_size_mb}MB)"
+    fi
+    
+    # Comprehensive validation
+    if [ $img_size_mb -lt 100 ]; then
+      error_exit "system.img.zst appears truncated (${img_size_mb}MB is too small)"
+    fi
+    
+    log "Zstd compressed system image creation completed successfully: ${img_size_mb}MB"
+    
+  elif [ "$send_success" = "true" ] && [ "$compression_used" = "gzip" ] && [ -f "${cd_root}/data/system.img.gz" ]; then
+    # Gzip compressed image exists
     img_size=$(stat -f %z "${cd_root}/data/system.img.gz")
     img_size_mb=$((img_size / 1024 / 1024))
     log "Final system.img.gz size: ${img_size_mb}MB (gzip compressed)"
@@ -779,13 +841,13 @@ uzip()
       error_exit "system.img.gz appears truncated (${img_size_mb}MB is too small)"
     fi
     
-    log "Compressed system image creation completed successfully: ${img_size_mb}MB"
+    log "Gzip compressed system image creation completed successfully: ${img_size_mb}MB"
     
-  elif [ "$send_success" = "true" ] && [ -f "${cd_root}/data/system.img" ]; then
-    # Fallback uncompressed image exists
+  elif [ "$send_success" = "true" ] && [ "$compression_used" = "none" ] && [ -f "${cd_root}/data/system.img" ]; then
+    # Uncompressed image exists
     img_size=$(stat -f %z "${cd_root}/data/system.img")
     img_size_mb=$((img_size / 1024 / 1024))
-    log "Final system.img size: ${img_size_mb}MB (uncompressed fallback)"
+    log "Final system.img size: ${img_size_mb}MB (uncompressed)"
     
     # Create compression metadata file
     echo "none" > "${cd_root}/data/compression.txt"
