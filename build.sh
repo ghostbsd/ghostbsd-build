@@ -147,13 +147,9 @@ workspace()
     fi
   fi
   
-  # 4. ZFS Memory Tuning - Updated for 8GB minimum
+  # 4. ZFS Memory Tuning - Removed host ARC modification
   if kldstat | grep -q zfs; then
-    log "ZFS detected, applying memory tuning for 8GB+ systems..."
-    # With 8GB minimum, we can afford to limit ARC to 30% during build
-    arc_max=$((realmem * 30 / 100))
-    sysctl vfs.zfs.arc_max=$arc_max >/dev/null 2>&1 || true
-    log "Set ZFS ARC max to $((arc_max / 1024 / 1024))MB (30% of total memory)"
+    log "ZFS detected on host system (leaving host ARC settings unchanged)"
   fi
   
   # Unmount any existing mounts and clean up
