@@ -5,6 +5,9 @@ set -e -u
 cwd="$(realpath)"
 export cwd
 
+# ZFS Control Configuration
+export zfs_control="${zfs_control:-auto}"  # off, auto, conservative, aggressive, restore
+
 # Enhanced logging function
 log() {
     echo "$(date '+%H:%M:%S') [BUILD] $*"
@@ -29,11 +32,19 @@ desktop_config_list=$(find desktop_config -type f)
 
 help_function()
 {
-  printf "Usage: %s -d desktop -b build_type\n" "$0"
+  printf "Usage: %s -d desktop -b build_type [-z zfs_control]\n" "$0"
   printf "\t-h for help\n"
   printf "\t-d Desktop: %s\n" "${desktop_list}"
   printf "\t-b Build type: unstable, testing, or release\n"
+  printf "\t-z ZFS control: off, auto, conservative, aggressive, restore\n"
   printf "\t-t Test: FreeBSD os packages\n"
+  printf "\nZFS Control Options:\n"
+  printf "\t off          - Never modify host ZFS ARC settings (safest)\n"
+  printf "\t auto         - Only tune if current ARC significantly exceeds build needs (default)\n"
+  printf "\t conservative - Only tune if ARC is using >60%% of system RAM\n"
+  printf "\t aggressive   - Always apply build-optimized settings\n"
+  printf "\t restore      - Same as aggressive but explicitly shows restore intent\n"
+  printf "\nAll modes except 'off' will restore original settings after build completion.\n"
    exit 1 # Exit script after printing help
 }
 
@@ -41,17 +52,28 @@ help_function()
 export desktop="mate"
 export build_type="release"
 
-while getopts "d:b:th" opt
+while getopts "d:b:z:th" opt
 do
    case "$opt" in
       'd') export desktop="$OPTARG" ;;
       'b') export build_type="$OPTARG" ;;
+      'z') export zfs_control="$OPTARG" ;;
       't') export desktop="test" ; build_type="test";;
       'h') help_function ;;
       '?') help_function ;;
       *) help_function ;;
    esac
 done
+
+# Validate zfs_control option
+case "$zfs_control" in
+    "off"|"auto"|"conservative"|"aggressive"|"restore") ;;
+    *) 
+        printf "Invalid ZFS control option: %s\n" "$zfs_control"
+        printf "Valid options: off, auto, conservative, aggressive, restore\n"
+        exit 1
+        ;;
+esac
 
 if [ "${build_type}" = "testing" ] ; then
   PKG_CONF="GhostBSD_Testing"
@@ -104,10 +126,134 @@ time_stamp=""
 release_stamp=""
 label="GhostBSD"
 
-# Enhanced workspace function with 8GB minimum requirement
+# ZFS ARC Management Functions
+zfs_arc_save() {
+    if ! kldstat | grep -q zfs; then
+        log "ZFS not loaded, skipping ARC management"
+        return 0
+    fi
+    
+    # Save current ARC settings
+    original_arc_max=$(sysctl -n vfs.zfs.arc_max 2>/dev/null || echo "0")
+    original_arc_min=$(sysctl -n vfs.zfs.arc_min 2>/dev/null || echo "0")
+    
+    log "Current ARC settings: max=${original_arc_max}, min=${original_arc_min}"
+    
+    # Save to temp files for restoration
+    echo "$original_arc_max" > /tmp/ghostbsd_build_arc_max
+    echo "$original_arc_min" > /tmp/ghostbsd_build_arc_min
+    
+    export SAVED_ARC_SETTINGS=true
+}
+
+zfs_arc_analyze_and_tune() {
+    if [ "$zfs_control" = "off" ]; then
+        log "ZFS control disabled, leaving host ARC unchanged"
+        return 0
+    fi
+    
+    if ! kldstat | grep -q zfs; then
+        log "ZFS not detected"
+        return 0
+    fi
+    
+    # Calculate optimal build settings
+    realmem=$(sysctl -n hw.realmem)
+    realmem_gb=$((realmem / 1024 / 1024 / 1024))
+    current_arc_max=$(sysctl -n vfs.zfs.arc_max 2>/dev/null || echo "0")
+    current_arc_max_gb=$((current_arc_max / 1024 / 1024 / 1024))
+    
+    # Calculate build-optimized ARC (30% of RAM, leaves more for build processes)
+    build_arc_max=$((realmem * 30 / 100))
+    build_arc_max_gb=$((build_arc_max / 1024 / 1024 / 1024))
+    
+    log "Memory analysis: ${realmem_gb}GB total, current ARC: ${current_arc_max_gb}GB, optimal build ARC: ${build_arc_max_gb}GB"
+    
+    # Decision logic based on zfs_control setting
+    should_tune=false
+    case "$zfs_control" in
+        "auto")
+            # Auto: tune if current ARC is significantly higher than build optimal
+            if [ $current_arc_max_gb -gt $((build_arc_max_gb + 2)) ]; then
+                should_tune=true
+                log "Auto mode: Current ARC (${current_arc_max_gb}GB) significantly exceeds build optimal (${build_arc_max_gb}GB)"
+            else
+                log "Auto mode: Current ARC settings appear suitable for build"
+            fi
+            ;;
+        "conservative")
+            # Conservative: only tune if ARC is using >60% of RAM
+            arc_percentage=$((current_arc_max_gb * 100 / realmem_gb))
+            if [ $arc_percentage -gt 60 ]; then
+                should_tune=true
+                log "Conservative mode: Current ARC using ${arc_percentage}% of RAM, tuning recommended"
+            else
+                log "Conservative mode: Current ARC usage (${arc_percentage}%) is acceptable"
+            fi
+            ;;
+        "aggressive"|"restore")
+            # Always tune for optimal build performance
+            should_tune=true
+            log "${zfs_control} mode: Applying build-optimized ARC settings"
+            ;;
+    esac
+    
+    if [ "$should_tune" = "true" ]; then
+        log "Applying build-optimized ZFS ARC settings..."
+        sysctl vfs.zfs.arc_max=$build_arc_max >/dev/null 2>&1 || true
+        log "Set ARC max to ${build_arc_max_gb}GB for build optimization"
+        export ARC_WAS_TUNED=true
+    else
+        log "Keeping existing ZFS ARC settings"
+        export ARC_WAS_TUNED=false
+    fi
+}
+
+zfs_arc_restore() {
+    if [ "$zfs_control" = "off" ] || [ "$ARC_WAS_TUNED" != "true" ]; then
+        return 0
+    fi
+    
+    if [ ! -f /tmp/ghostbsd_build_arc_max ]; then
+        log "Warning: No saved ARC settings found for restoration"
+        return 0
+    fi
+    
+    original_arc_max=$(cat /tmp/ghostbsd_build_arc_max)
+    original_arc_min=$(cat /tmp/ghostbsd_build_arc_min)
+    
+    if [ "$original_arc_max" != "0" ]; then
+        log "Restoring original ZFS ARC settings..."
+        sysctl vfs.zfs.arc_max=$original_arc_max >/dev/null 2>&1 || true
+        if [ "$original_arc_min" != "0" ]; then
+            sysctl vfs.zfs.arc_min=$original_arc_min >/dev/null 2>&1 || true
+        fi
+        
+        restored_max_gb=$((original_arc_max / 1024 / 1024 / 1024))
+        log "Restored ARC max to ${restored_max_gb}GB"
+    fi
+    
+    # Clean up temp files
+    rm -f /tmp/ghostbsd_build_arc_max /tmp/ghostbsd_build_arc_min
+}
+
+# Cleanup function
+cleanup_and_restore() {
+    log "Performing cleanup and restoration..."
+    zfs_arc_restore
+}
+
+# Trap to ensure restoration on exit/error
+trap cleanup_and_restore EXIT INT TERM
+
+# Enhanced workspace function with ZFS control and 8GB minimum requirement
 workspace()
 {
-  log "=== Enhanced Workspace Setup with Diagnostics ==="
+  log "=== Enhanced Workspace Setup with ZFS Control ==="
+  log "ZFS control mode: ${zfs_control}"
+  
+  # Save current ARC settings first
+  zfs_arc_save
   
   # Pre-build environment analysis
   log "Analyzing build environment..."
@@ -147,10 +293,8 @@ workspace()
     fi
   fi
   
-  # 4. ZFS Memory Tuning - Removed host ARC modification
-  if kldstat | grep -q zfs; then
-    log "ZFS detected on host system (leaving host ARC settings unchanged)"
-  fi
+  # 4. ZFS ARC tuning with user control
+  zfs_arc_analyze_and_tune
   
   # Unmount any existing mounts and clean up
   log "Cleaning up previous build artifacts..."
@@ -748,7 +892,7 @@ image()
 
 # Execute build pipeline with enhanced integration
 log "=== Starting GhostBSD build process ==="
-log "Desktop: ${desktop}, Build type: ${build_type}"
+log "Desktop: ${desktop}, Build type: ${build_type}, ZFS control: ${zfs_control}"
 
 workspace
 base
