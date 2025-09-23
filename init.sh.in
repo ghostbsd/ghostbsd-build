@@ -282,8 +282,8 @@ log "Attempting direct streaming receive with ${compression_type} decompression"
 
 case "$compression_type" in
     "gzip")
-        log "DEBUG: Starting gzip decompression + ZFS receive"
-        if zcat "${system_img_path}" 2>/tmp/gzip1.log | zfs recv livecd 2>/tmp/zfs_recv1.log; then
+        log "DEBUG: Starting gzip decompression + ZFS receive (with force flag)"
+        if zcat "${system_img_path}" 2>/tmp/gzip1.log | zfs recv -F livecd 2>/tmp/zfs_recv1.log; then
             log "Gzip decompression + receive completed successfully"
             receive_success=true
             receive_method="gzip_stream"
@@ -295,8 +295,8 @@ case "$compression_type" in
         fi
         ;;
     "none")
-        log "DEBUG: Starting direct DD + ZFS receive"
-        if dd if="${system_img_path}" bs=1m 2>/tmp/dd1.log | zfs recv livecd 2>/tmp/zfs_recv1.log; then
+        log "DEBUG: Starting direct DD + ZFS receive (with force flag)"
+        if dd if="${system_img_path}" bs=1m 2>/tmp/dd1.log | zfs recv -F livecd 2>/tmp/zfs_recv1.log; then
             log "Uncompressed direct streaming receive completed successfully"
             receive_success=true
             receive_method="direct_stream"
