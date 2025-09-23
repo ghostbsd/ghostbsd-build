@@ -79,6 +79,7 @@ start_monitor() {
                 fi
             fi
         done
+        log "DEBUG: Monitor process exiting"
     ) &
     echo $!
 }
@@ -290,59 +291,78 @@ log "=== System Image Loading with Compression Support ==="
 receive_success=false
 receive_method=""
 
+log "DEBUG: About to create recv.running marker"
 # Start background monitoring (marker file method)
 : > /tmp/recv.running
+log "DEBUG: Created recv.running marker"
+
+log "DEBUG: About to start monitor process"
 MONITOR_PID=$(start_monitor)
+log "DEBUG: Monitor PID: $MONITOR_PID"
+
+log "DEBUG: Compression type: ${compression_type}"
+log "DEBUG: System image path: ${system_img_path}"
+log "DEBUG: About to attempt streaming receive"
 
 log "Attempting direct streaming receive with ${compression_type} decompression"
 
 case "$compression_type" in
     "gzip")
-        if zcat "${system_img_path}" 2>/tmp/gzip1.log | zfs recv livecd 2>/tmp/zfs_recv1.log; then
+        log "DEBUG: Starting gzip decompression + ZFS receive"
+        if timeout 600 zcat "${system_img_path}" 2>/tmp/gzip1.log | timeout 600 zfs recv livecd 2>/tmp/zfs_recv1.log; then
             log "Gzip decompression + receive completed successfully"
             receive_success=true
             receive_method="gzip_stream"
         else
             log "Gzip streaming failed"
+            log "DEBUG: zcat/zfs recv pipeline exit code: $?"
             [ -f /tmp/gzip1.log ] && log "Gzip log:" && cat /tmp/gzip1.log
             [ -f /tmp/zfs_recv1.log ] && log "ZFS recv log:" && cat /tmp/zfs_recv1.log
         fi
         ;;
     "none")
-        if dd if="${system_img_path}" bs=1m 2>/tmp/dd1.log | zfs recv livecd 2>/tmp/zfs_recv1.log; then
+        log "DEBUG: Starting direct DD + ZFS receive"
+        if timeout 600 dd if="${system_img_path}" bs=1m 2>/tmp/dd1.log | timeout 600 zfs recv livecd 2>/tmp/zfs_recv1.log; then
             log "Uncompressed direct streaming receive completed successfully"
             receive_success=true
             receive_method="direct_stream"
         else
             log "Direct streaming receive failed"
+            log "DEBUG: dd/zfs recv pipeline exit code: $?"
             [ -f /tmp/dd1.log ] && log "DD log:" && cat /tmp/dd1.log
             [ -f /tmp/zfs_recv1.log ] && log "ZFS recv log:" && cat /tmp/zfs_recv1.log
         fi
         ;;
 esac
 
+log "DEBUG: After first attempt, receive_success=$receive_success"
+
 # Fallback forced receive
 if [ "$receive_success" != "true" ]; then
     log "Direct streaming failed, trying forced receive methods..."
     case "$compression_type" in
         "gzip")
-            if zcat "${system_img_path}" 2>/tmp/gzip2.log | zfs recv -F livecd 2>/tmp/zfs_recv2.log; then
+            log "DEBUG: Attempting gzip forced receive"
+            if timeout 600 zcat "${system_img_path}" 2>/tmp/gzip2.log | timeout 600 zfs recv -F livecd 2>/tmp/zfs_recv2.log; then
                 log "Gzip forced receive completed successfully"
                 receive_success=true
                 receive_method="gzip_forced"
             else
                 log "Gzip forced receive failed"
+                log "DEBUG: Forced receive exit code: $?"
                 [ -f /tmp/gzip2.log ] && log "Gzip error log:" && cat /tmp/gzip2.log
                 [ -f /tmp/zfs_recv2.log ] && log "ZFS recv error log:" && cat /tmp/zfs_recv2.log
             fi
             ;;
         "none")
-            if dd if="${system_img_path}" bs=64k 2>/tmp/dd2.log | zfs recv -F livecd 2>/tmp/zfs_recv2.log; then
+            log "DEBUG: Attempting direct forced receive"
+            if timeout 600 dd if="${system_img_path}" bs=64k 2>/tmp/dd2.log | timeout 600 zfs recv -F livecd 2>/tmp/zfs_recv2.log; then
                 log "Uncompressed forced receive completed successfully"
                 receive_success=true
                 receive_method="direct_forced"
             else
                 log "Uncompressed forced receive failed"
+                log "DEBUG: Forced receive exit code: $?"
                 [ -f /tmp/dd2.log ] && log "DD error log:" && cat /tmp/dd2.log
                 [ -f /tmp/zfs_recv2.log ] && log "ZFS recv error log:" && cat /tmp/zfs_recv2.log
             fi
@@ -350,19 +370,23 @@ if [ "$receive_success" != "true" ]; then
     esac
 fi
 
+log "DEBUG: After forced attempt, receive_success=$receive_success"
+
 # Last resort: decompress to memory first (space-checked without awk/tail)
 if [ "$receive_success" != "true" ] && [ "$compression_type" = "gzip" ]; then
     log "All streaming methods failed, attempting decompress-to-memory approach..."
     tmp_avail_kb=$(df_avail_kb /tmp)
     tmp_avail_mb=$((tmp_avail_kb / 1024))
+    log "DEBUG: Available temp space: ${tmp_avail_mb}MB, need: ~${estimated_decompressed_mb}MB"
+    
     if [ $tmp_avail_mb -gt $((estimated_decompressed_mb + 100)) ]; then
         log "Decompressing to /tmp/system.img (estimated ${estimated_decompressed_mb}MB)"
-        if zcat "${system_img_path}" > /tmp/system.img 2>/tmp/decompress.log; then
+        if timeout 600 zcat "${system_img_path}" > /tmp/system.img 2>/tmp/decompress.log; then
             log "Decompression completed, attempting receive"
             actual_size=$(file_size_bytes /tmp/system.img)
             actual_size_mb=$((actual_size / 1024 / 1024))
             log "Actual decompressed size: ${actual_size_mb}MB"
-            if zfs recv -F livecd < /tmp/system.img 2>/tmp/zfs_recv3.log; then
+            if timeout 600 zfs recv -F livecd < /tmp/system.img 2>/tmp/zfs_recv3.log; then
                 log "Decompress-then-receive completed successfully"
                 receive_success=true
                 receive_method="decompress_then_receive"
@@ -380,9 +404,14 @@ if [ "$receive_success" != "true" ] && [ "$compression_type" = "gzip" ]; then
     fi
 fi
 
+log "DEBUG: After all attempts, receive_success=$receive_success"
+
 # Stop monitoring
+log "DEBUG: Stopping monitor process $MONITOR_PID"
 rm -f /tmp/recv.running
 kill "$MONITOR_PID" 2>/dev/null || true
+wait "$MONITOR_PID" 2>/dev/null || true
+log "DEBUG: Monitor process stopped"
 
 # -------- Final result check --------
 
