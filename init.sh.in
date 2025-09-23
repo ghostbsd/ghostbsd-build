@@ -4,7 +4,87 @@ set -e
 
 PATH="/rescue"
 
-# Enhanced logging function
+# -------- Helpers (rescue-safe) --------
+
+# Get file size in bytes without assuming /usr/bin/stat.
+# Prefers stat if available; otherwise parses `/rescue/ls -ln` output.
+file_size_bytes() {
+    _p="$1"
+    if command -v stat >/dev/null 2>&1; then
+        stat -f %z "$_p" && return 0
+    fi
+    if [ -x /rescue/ls ]; then
+        _line=$(/rescue/ls -ln "$_p" 2>/dev/null) || return 1
+        # Fields: perms links owner group SIZE month day time/name path
+        # Use shell word-splitting to extract column 5.
+        set -- $_line
+        echo "$5"
+        return 0
+    fi
+    echo "0"
+    return 1
+}
+
+# Get available kilobytes on a mountpoint using only /rescue tools.
+# Avoids tail/awk: reads the second line from `df -k` manually.
+df_avail_kb() {
+    _mp="$1"
+    _out=$(df -k "$_mp" 2>/dev/null) || { echo 0; return 1; }
+    # Read first (header) and second (data) lines.
+    _second=$(
+        IFS= read -r _h || true
+        IFS= read -r _l || true
+        echo "$_l"
+    ) <<EOF
+$_out
+EOF
+    [ -n "$_second" ] || { echo 0; return 1; }
+    # Split into fields; "Avail" is the 4th column in `df -k` on FreeBSD.
+    set -- $_second
+    echo "$4"
+    return 0
+}
+
+# Normalize "used" values like "123M", "1.5G", or raw bytes into a log-friendly token.
+# Drops a single trailing unit (K/M/G/T) if present. Keeps decimals if any.
+normalize_used_token() {
+    _v="$1"
+    case "$_v" in
+        *K|*M|*G|*T) echo "${_v%?}";;
+        *) echo "$_v";;
+    esac
+}
+
+# Lightweight monitor loop without pgrep/tail/tr/head.
+# Parent creates /tmp/recv.running before receive and deletes it after.
+# This loop exits when the marker disappears or after parent kills it.
+start_monitor() {
+    (
+        prev_size=""
+        stall_count=0
+        while [ -f /tmp/recv.running ]; do
+            sleep 10
+            if zfs list livecd >/dev/null 2>&1; then
+                raw_used=$(zfs list -H -o used livecd 2>/dev/null || echo 0)
+                current_used=$(normalize_used_token "$raw_used")
+                if [ "$current_used" != "$prev_size" ]; then
+                    log "Receive progress: ${current_used} used"
+                    prev_size="$current_used"
+                    stall_count=0
+                else
+                    stall_count=$((stall_count + 1))
+                    if [ $stall_count -gt 12 ]; then
+                        log "WARNING: Receive appears stalled for 2+ minutes"
+                    fi
+                fi
+            fi
+        done
+    ) &
+    echo $!
+}
+
+# -------- Logging / errors --------
+
 log() {
     echo "$(date '+%H:%M:%S') [INIT] $*"
 }
@@ -14,15 +94,23 @@ error_exit() {
     exit 1
 }
 
-if [ "$(ps -o command 1 | tail -n 1 | ( read -r c o; echo "${o}" ))" = "-s" ]; then
-    log "Running in single-user mode"
-    SINGLE_USER="true"
+# Detect single-user mode without tail/awk.
+# Use 'ps -o command= -p 1' to avoid headers, then look for " -s".
+if cmd1=$(ps -o command= -p 1 2>/dev/null); then
+    case "$cmd1" in
+        *" -s"*) log "Running in single-user mode"; SINGLE_USER="true" ;;
+    esac
 fi
 
 log "=== GhostBSD Live System Initialization ==="
 
 log "Remount rootfs as read-write"
 mount -u -w /
+
+# NOW create /tmp after filesystem is read-write
+log "Creating /tmp directory"
+mkdir -p /tmp
+chmod 1777 /tmp
 
 makedir=${makedir:-"/cdrom"}
 
@@ -55,9 +143,10 @@ if [ "$SINGLE_USER" = "true" ]; then
     exit 0
 fi
 
-# Enhanced memory checks and system analysis for 8GB minimum
+# -------- System analysis --------
+
 log "=== System Analysis ==="
-requiredmem=8589934592  # 8GB minimum (updated requirement for GhostBSD)
+requiredmem=8589934592  # 8GB minimum
 realmem=$(sysctl -n hw.realmem)
 realmem_gb=$((realmem/1024/1024/1024))
 log "Required memory: $requiredmem bytes (8GB minimum)"
@@ -68,25 +157,20 @@ if [ "$realmem" -lt "$requiredmem" ]; then
     error_exit "GhostBSD requires 8GB of memory for operation. Detected: ${realmem_gb}GB. Please use a system with at least 8GB RAM."
 fi
 
-# Calculate memdisk size based on available memory (optimized for 8GB minimum)
+# Calculate memdisk size from total memory (no awk/sed needed)
 if [ $realmem_gb -ge 32 ]; then
-    # Very high memory systems: use 80%
     memdisk_size=$((("${realmem}"*80/100)/1024/1024/1024))
     log "Calculated memdisk size: ${memdisk_size}GB (80% of ${realmem_gb}GB - very high memory system)"
 elif [ $realmem_gb -ge 24 ]; then
-    # High memory systems: use 78%
     memdisk_size=$((("${realmem}"*78/100)/1024/1024/1024))
     log "Calculated memdisk size: ${memdisk_size}GB (78% of ${realmem_gb}GB - high memory system)"
 elif [ $realmem_gb -ge 16 ]; then
-    # 16-24GB systems: use 75%
     memdisk_size=$((("${realmem}"*75/100)/1024/1024/1024))
     log "Calculated memdisk size: ${memdisk_size}GB (75% of ${realmem_gb}GB - high memory system)"
 elif [ $realmem_gb -ge 12 ]; then
-    # 12-16GB systems: use 72% 
     memdisk_size=$((("${realmem}"*72/100)/1024/1024/1024))
     log "Calculated memdisk size: ${memdisk_size}GB (72% of ${realmem_gb}GB - medium-high memory system)"
 else
-    # 8-12GB systems: use 70% (conservative for 8GB minimum)
     memdisk_size=$((("${realmem}"*70/100)/1024/1024/1024))
     log "Calculated memdisk size: ${memdisk_size}GB (70% of ${realmem_gb}GB - 8GB minimum system)"
 fi
@@ -94,11 +178,8 @@ fi
 free_mem_gb=$(((realmem - (memdisk_size * 1024 * 1024 * 1024))/1024/1024/1024))
 log "Free memory after memdisk allocation: ${free_mem_gb}GB"
 
-# Additional safety check for 8GB systems
 if [ $free_mem_gb -lt 2 ]; then
     log "WARNING: Less than 2GB free memory remaining after memdisk allocation"
-    log "System may experience performance issues"
-    # For 8GB systems, we might need to be more conservative
     if [ $realmem_gb -le 10 ]; then
         log "Adjusting memdisk size for better performance on 8GB system..."
         memdisk_size=$((("${realmem}"*65/100)/1024/1024/1024))
@@ -108,10 +189,9 @@ if [ $free_mem_gb -lt 2 ]; then
     fi
 fi
 
-# Enhanced system image analysis with compression detection
-log "=== System Image Analysis with Compression Detection ==="
+# -------- System image analysis --------
 
-# Detect compression type
+log "=== System Image Analysis with Compression Detection ==="
 compression_type="none"
 system_img_path=""
 
@@ -122,7 +202,6 @@ else
     log "No compression metadata found, detecting from filenames..."
 fi
 
-# Determine system image path and compression type
 if [ -f /cdrom/data/system.img.gz ]; then
     compression_type="gzip"
     system_img_path="/cdrom/data/system.img.gz"
@@ -138,34 +217,28 @@ fi
 log "Using compression type: ${compression_type}"
 log "System image path: ${system_img_path}"
 
-img_size=$(stat -f %z "${system_img_path}")
+img_size=$(file_size_bytes "${system_img_path}")
 img_size_mb=$((img_size / 1024 / 1024))
 log "System image size: ${img_size_mb}MB (${compression_type})"
 
-# Comprehensive image validation
 if [ $img_size_mb -lt 50 ]; then
     error_exit "System image appears truncated (${img_size_mb}MB is too small)"
 fi
 
-# For compressed images, estimate decompressed size (assume ~2.5:1 compression ratio)
 if [ "$compression_type" = "gzip" ]; then
     estimated_decompressed_mb=$((img_size_mb * 25 / 10))
     log "Estimated decompressed size: ~${estimated_decompressed_mb}MB"
-    
-    # Check if we have enough memory for the decompressed image
     memdisk_size_mb=$((memdisk_size * 1024))
     if [ $estimated_decompressed_mb -gt $((memdisk_size_mb * 95 / 100)) ]; then
         log "WARNING: Estimated decompressed image (~${estimated_decompressed_mb}MB) is close to memdisk limit (${memdisk_size_mb}MB)"
     fi
 else
-    # Check if we have enough memory for the uncompressed image
     memdisk_size_mb=$((memdisk_size * 1024))
     if [ $img_size_mb -gt $((memdisk_size_mb * 95 / 100)) ]; then
         log "WARNING: System image (${img_size_mb}MB) is close to memdisk limit (${memdisk_size_mb}MB)"
     fi
 fi
 
-# Basic image format validation for compressed files
 if [ "$compression_type" = "gzip" ]; then
     log "Validating gzip file format..."
     if ! gzip -t "${system_img_path}" 2>/dev/null; then
@@ -179,7 +252,8 @@ if ! mdconfig -a -t swap -s ${memdisk_size}g -u 1 >/dev/null 2>/dev/null; then
     error_exit "Failed to create memory disk"
 fi
 
-# Create ZFS pool with enhanced error handling and settings optimized for GhostBSD
+# -------- ZFS pool creation --------
+
 log "=== ZFS Pool Creation ==="
 pool_creation_attempts=0
 max_attempts=3
@@ -187,26 +261,20 @@ max_attempts=3
 while [ $pool_creation_attempts -lt $max_attempts ]; do
     pool_creation_attempts=$((pool_creation_attempts + 1))
     log "Creating ZFS pool 'livecd' (attempt ${pool_creation_attempts}/${max_attempts})"
-    
-    # Start with compatible settings for GhostBSD
     if zpool create -O compression=off -O primarycache=all livecd /dev/md1 >/dev/null 2>/dev/null; then
         log "ZFS pool created successfully"
         break
     else
         log "Pool creation attempt ${pool_creation_attempts} failed"
         if [ $pool_creation_attempts -eq $max_attempts ]; then
-            # Cleanup on final failure
             mdconfig -d -u 1 >/dev/null 2>/dev/null || true
             error_exit "Failed to create ZFS pool after ${max_attempts} attempts"
         fi
-        
-        # Cleanup for retry
         zpool destroy livecd >/dev/null 2>/dev/null || true
         sleep 2
     fi
 done
 
-# Verify pool is healthy
 log "Verifying ZFS pool status"
 if ! zpool status livecd >/dev/null 2>&1; then
     error_exit "ZFS pool 'livecd' is not available after creation"
@@ -216,41 +284,16 @@ log "Pool information:"
 zpool list livecd
 zpool status livecd
 
-# Enhanced system image loading with gzip decompression support
+# -------- Receive with compression support --------
+
 log "=== System Image Loading with Compression Support ==="
 receive_success=false
 receive_method=""
 
-# Start background monitoring
-log "Starting receive monitoring..."
-(
-    prev_size=0
-    stall_count=0
-    while true; do
-        sleep 10
-        if zfs list livecd >/dev/null 2>&1; then
-            current_used=$(zfs list -H -o used livecd 2>/dev/null | tr -d 'KMGT' | head -c -1 2>/dev/null || echo 0)
-            if [ "$current_used" != "$prev_size" ]; then
-                log "Receive progress: ${current_used} used"
-                prev_size="$current_used"
-                stall_count=0
-            else
-                stall_count=$((stall_count + 1))
-                if [ $stall_count -gt 12 ]; then  # 2 minutes of no progress
-                    log "WARNING: Receive appears stalled for 2+ minutes"
-                fi
-            fi
-        fi
-        
-        # Check if receive process is still running
-        if ! pgrep -f "zfs recv\|gzip\|zcat\|dd.*system.img" >/dev/null 2>&1; then
-            break
-        fi
-    done
-) &
-MONITOR_PID=$!
+# Start background monitoring (marker file method)
+: > /tmp/recv.running
+MONITOR_PID=$(start_monitor)
 
-# Method 1: Direct streaming receive with decompression
 log "Attempting direct streaming receive with ${compression_type} decompression"
 
 case "$compression_type" in
@@ -266,7 +309,7 @@ case "$compression_type" in
         fi
         ;;
     "none")
-        if dd if="${system_img_path}" bs=1M 2>/tmp/dd1.log | zfs recv livecd 2>/tmp/zfs_recv1.log; then
+        if dd if="${system_img_path}" bs=1m 2>/tmp/dd1.log | zfs recv livecd 2>/tmp/zfs_recv1.log; then
             log "Uncompressed direct streaming receive completed successfully"
             receive_success=true
             receive_method="direct_stream"
@@ -278,10 +321,9 @@ case "$compression_type" in
         ;;
 esac
 
-# Method 2: Fallback with forced receive if direct streaming fails
+# Fallback forced receive
 if [ "$receive_success" != "true" ]; then
     log "Direct streaming failed, trying forced receive methods..."
-    
     case "$compression_type" in
         "gzip")
             if zcat "${system_img_path}" 2>/tmp/gzip2.log | zfs recv -F livecd 2>/tmp/zfs_recv2.log; then
@@ -308,23 +350,18 @@ if [ "$receive_success" != "true" ]; then
     esac
 fi
 
-# Method 3: Last resort - decompress to memory first if streaming fails
+# Last resort: decompress to memory first (space-checked without awk/tail)
 if [ "$receive_success" != "true" ] && [ "$compression_type" = "gzip" ]; then
     log "All streaming methods failed, attempting decompress-to-memory approach..."
-    
-    # Check available space in /tmp
-    tmp_avail=$(df /tmp | tail -1 | awk '{print $4}')
-    tmp_avail_mb=$((tmp_avail / 1024))
-    
+    tmp_avail_kb=$(df_avail_kb /tmp)
+    tmp_avail_mb=$((tmp_avail_kb / 1024))
     if [ $tmp_avail_mb -gt $((estimated_decompressed_mb + 100)) ]; then
         log "Decompressing to /tmp/system.img (estimated ${estimated_decompressed_mb}MB)"
-        
         if zcat "${system_img_path}" > /tmp/system.img 2>/tmp/decompress.log; then
             log "Decompression completed, attempting receive"
-            actual_size=$(stat -f %z /tmp/system.img)
+            actual_size=$(file_size_bytes /tmp/system.img)
             actual_size_mb=$((actual_size / 1024 / 1024))
             log "Actual decompressed size: ${actual_size_mb}MB"
-            
             if zfs recv -F livecd < /tmp/system.img 2>/tmp/zfs_recv3.log; then
                 log "Decompress-then-receive completed successfully"
                 receive_success=true
@@ -344,16 +381,17 @@ if [ "$receive_success" != "true" ] && [ "$compression_type" = "gzip" ]; then
 fi
 
 # Stop monitoring
-kill $MONITOR_PID 2>/dev/null || true
+rm -f /tmp/recv.running
+kill "$MONITOR_PID" 2>/dev/null || true
 
-# Check final result
+# -------- Final result check --------
+
 if [ "$receive_success" != "true" ]; then
     log "=== Receive Failure Analysis ==="
     log "All receive methods failed with compression type: ${compression_type}"
     log "System image path: ${system_img_path}"
-    log "Available decompression tools:"
-    which gzip 2>/dev/null && log "gzip: available" || log "gzip: NOT available"
-    which zcat 2>/dev/null && log "zcat: available" || log "zcat: NOT available"
+    if command -v gzip >/dev/null 2>&1; then log "gzip: available"; else log "gzip: NOT available"; fi
+    if command -v zcat >/dev/null 2>&1; then log "zcat: available"; else log "zcat: NOT available"; fi
     log "Pool status:"
     zpool status livecd
     log "Available memory:"
@@ -367,29 +405,23 @@ fi
 
 log "System image loaded successfully using method: $receive_method with compression: $compression_type"
 
-# Post-receive configuration optimized for GhostBSD
-log "=== Post-Receive Configuration ==="
+# -------- Post-receive configuration --------
 
-# Set optimal compression and settings now that receive is complete
+log "=== Post-Receive Configuration ==="
 log "Configuring received filesystem"
 zfs set compression=zstd-9 livecd 2>/dev/null || log "Warning: Could not set compression"
 zfs set primarycache=all livecd 2>/dev/null || log "Warning: Could not set primary cache"
-
-# GhostBSD-specific optimizations
 zfs set atime=off livecd 2>/dev/null || log "Warning: Could not disable atime"
 
-# Verify the received filesystem
 log "Verifying received filesystem"
 if ! zfs list livecd >/dev/null 2>&1; then
     error_exit "Received filesystem verification failed"
 fi
 
-# Check if essential directories exist (GhostBSD specific)
 if ! zfs mount livecd 2>/dev/null; then
     log "Warning: Could not explicitly mount livecd"
 fi
 
-# Verify essential GhostBSD components are present
 essential_dirs="/bin /usr /etc /home"
 for dir in $essential_dirs; do
     if [ ! -d "${dir}" ]; then
@@ -397,20 +429,17 @@ for dir in $essential_dirs; do
     fi
 done
 
-# Display final status
 log "=== System Load Complete ==="
 zfs list livecd
 log "Final pool status:"
 zpool status livecd
 
-# Optional: Display some ARC statistics if available
 arc_size=$(sysctl -n kstat.zfs.misc.arcstats.size 2>/dev/null || echo "unknown")
 if [ "$arc_size" != "unknown" ]; then
     arc_size_mb=$((arc_size / 1024 / 1024))
     log "ZFS ARC size: ${arc_size_mb}MB"
 fi
 
-# Set environment for reroot
 log "Setting environment for reroot"
 kenv init_shell="/rescue/sh"
 kenv vfs.root.mountfrom="zfs:livecd"
