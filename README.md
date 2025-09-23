@@ -23,7 +23,7 @@ The purpose of this tool is to quickly generate live images for GhostBSD.
 * 20GB of free disk space
 * **8GB of free memory minimum** (16GB+ recommended for optimal performance)
 
-Note: GhostBSD 22.01.12 and later should be used to build ISO.
+Note: GhostBSD 25.02-R14.3p2 and later should be used to build ISO.
 
 ## Initial setup
 Install the required packages:
@@ -98,14 +98,6 @@ All modes except 'off' automatically restore original ZFS settings after build c
 ```
 ./build.sh -h
 ```
-
-## Build process enhancements
-
-* **Memory requirement increase**: Builds now require 8GB minimum memory for reliable operation
-* **Smart ZFS tuning**: Automatic host ZFS ARC optimization during builds with full restoration
-* **Gzip compression**: System images are compressed for faster boot times and smaller ISOs
-* **Enhanced error handling**: Better debugging output and recovery from common build failures
-* **Login.conf fixes**: Prevents cap_mkdb errors during package installation
 
 ## Burn an image to cd:
 ```
