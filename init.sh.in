@@ -4,51 +4,457 @@ set -e
 
 PATH="/rescue"
 
-if [ "$(ps -o command 1 | tail -n 1 | ( read -r c o; echo "${o}" ))" = "-s" ]; then
-  echo "==> Running in single-user mode"
-  SINGLE_USER="true"
+# -------- Helpers (rescue-safe) --------
+
+# Get file size in bytes without assuming /usr/bin/stat.
+# Prefers stat if available; otherwise parses `/rescue/ls -ln` output.
+file_size_bytes() {
+    _p="$1"
+    if command -v stat >/dev/null 2>&1; then
+        stat -f %z "$_p" && return 0
+    fi
+    if [ -x /rescue/ls ]; then
+        _line=$(/rescue/ls -ln "$_p" 2>/dev/null) || return 1
+        # Fields: perms links owner group SIZE month day time/name path
+        # Use shell word-splitting to extract column 5.
+        set -- $_line
+        echo "$5"
+        return 0
+    fi
+    echo "0"
+    return 1
+}
+
+# Get available kilobytes on a mountpoint using only /rescue tools.
+# Avoids tail/awk: reads the second line from `df -k` manually.
+df_avail_kb() {
+    _mp="$1"
+    _out=$(df -k "$_mp" 2>/dev/null) || { echo 0; return 1; }
+    # Read first (header) and second (data) lines.
+    _second=$(
+        IFS= read -r _h || true
+        IFS= read -r _l || true
+        echo "$_l"
+    ) <<EOF
+$_out
+EOF
+    [ -n "$_second" ] || { echo 0; return 1; }
+    # Split into fields; "Avail" is the 4th column in `df -k` on FreeBSD.
+    set -- $_second
+    echo "$4"
+    return 0
+}
+
+# Normalize "used" values like "123M", "1.5G", or raw bytes into a log-friendly token.
+# Drops a single trailing unit (K/M/G/T) if present. Keeps decimals if any.
+normalize_used_token() {
+    _v="$1"
+    case "$_v" in
+        *K|*M|*G|*T) echo "${_v%?}";;
+        *) echo "$_v";;
+    esac
+}
+
+# Simplified monitor - avoid background processes in rescue environment
+start_monitor() {
+    log "DEBUG: Monitor function called (simplified version)"
+    # Return a dummy PID to avoid hanging
+    echo "999"
+}
+
+# -------- Logging / errors --------
+
+log() {
+    echo "$(date '+%H:%M:%S') [INIT] $*"
+}
+
+error_exit() {
+    log "ERROR: $*"
+    exit 1
+}
+
+# Detect single-user mode without tail/awk.
+# Use 'ps -o command= -p 1' to avoid headers, then look for " -s".
+if cmd1=$(ps -o command= -p 1 2>/dev/null); then
+    case "$cmd1" in
+        *" -s"*) log "Running in single-user mode"; SINGLE_USER="true" ;;
+    esac
 fi
 
-echo "==> Remount rootfs as read-write"
+log "=== GhostBSD Live System Initialization ==="
+
+log "Remount rootfs as read-write"
 mount -u -w /
+
+# NOW create /tmp after filesystem is read-write
+log "Creating /tmp directory"
+mkdir -p /tmp
+chmod 1777 /tmp
 
 makedir=${makedir:-"/cdrom"}
 
-echo "==> Make mountpoints /cdrom"
+log "Make mountpoints /cdrom"
 mkdir -p "${makedir}"
 
-echo "Waiting for GhostBSD media to initialize"
-while : ; do
-    [ -e "/dev/iso9660/GHOSTBSD" ] && echo "found /dev/iso9660/GHOSTBSD" && sleep 2 && break
+log "Waiting for GhostBSD media to initialize"
+timeout=60
+while [ $timeout -gt 0 ]; do
+    if [ -e "/dev/iso9660/GHOSTBSD" ]; then
+        log "Found /dev/iso9660/GHOSTBSD"
+        sleep 2
+        break
+    fi
     sleep 2
+    timeout=$((timeout - 1))
 done
 
-echo "==> Mount cdrom"
-mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom
+if [ $timeout -eq 0 ]; then
+    error_exit "Timeout waiting for GhostBSD media"
+fi
+
+log "Mount cdrom"
+if ! mount_cd9660 /dev/iso9660/@VOLUME@ /cdrom; then
+    error_exit "Failed to mount cdrom"
+fi
 
 if [ "$SINGLE_USER" = "true" ]; then
-        echo "Starting interactive shell in temporary rootfs ..."
-        exit 0
+    log "Starting interactive shell in temporary rootfs ..."
+    exit 0
 fi
 
-# Ensure the system has more than enough memory for memdisk
-requiredmem=4294967296
+# -------- System analysis --------
+
+log "=== System Analysis ==="
+requiredmem=8589934592  # 8GB minimum
 realmem=$(sysctl -n hw.realmem)
-memdisk_size=$((("${realmem}"*75/100)/1024/1024/1024))
-echo "Required memory ${requiredmem} for memdisk"
-echo "Detected memory ${realmem} for memdisk"
-if [ "$realmem" -lt "$requiredmem" ] ; then
-  SINGLE_USER="true"
-  echo "GhostBSD requires 4GB of memory for memdisk, and operation!"
-  echo "Type exit, and press enter after entering the rescue shell to power off."
-  exit 1
+realmem_gb=$((realmem/1024/1024/1024))
+log "Required memory: $requiredmem bytes (8GB minimum)"
+log "Detected memory: $realmem bytes (${realmem_gb}GB)"
+
+if [ "$realmem" -lt "$requiredmem" ]; then
+    SINGLE_USER="true"
+    error_exit "GhostBSD requires 8GB of memory for operation. Detected: ${realmem_gb}GB. Please use a system with at least 8GB RAM."
 fi
 
-echo "==> Mount swap-based memdisk"
-mdconfig -a -t swap -s ${memdisk_size}g -u 1 >/dev/null 2>/dev/null
-zpool create -O primarycache=none livecd /dev/md1 >/dev/null 2>/dev/null
-zfs set compression=zstd-9 livecd
-echo "==> Replicate system image to swap-based memdisk"
-dd if=/cdrom/data/system.img status=progress bs=1M | zfs recv -F livecd
+# Calculate memdisk size from total memory (no awk/sed needed)
+if [ $realmem_gb -ge 32 ]; then
+    memdisk_size=$((("${realmem}"*80/100)/1024/1024/1024))
+    log "Calculated memdisk size: ${memdisk_size}GB (80% of ${realmem_gb}GB - very high memory system)"
+elif [ $realmem_gb -ge 24 ]; then
+    memdisk_size=$((("${realmem}"*78/100)/1024/1024/1024))
+    log "Calculated memdisk size: ${memdisk_size}GB (78% of ${realmem_gb}GB - high memory system)"
+elif [ $realmem_gb -ge 16 ]; then
+    memdisk_size=$((("${realmem}"*75/100)/1024/1024/1024))
+    log "Calculated memdisk size: ${memdisk_size}GB (75% of ${realmem_gb}GB - high memory system)"
+elif [ $realmem_gb -ge 12 ]; then
+    memdisk_size=$((("${realmem}"*72/100)/1024/1024/1024))
+    log "Calculated memdisk size: ${memdisk_size}GB (72% of ${realmem_gb}GB - medium-high memory system)"
+else
+    memdisk_size=$((("${realmem}"*70/100)/1024/1024/1024))
+    log "Calculated memdisk size: ${memdisk_size}GB (70% of ${realmem_gb}GB - 8GB minimum system)"
+fi
+
+free_mem_gb=$(((realmem - (memdisk_size * 1024 * 1024 * 1024))/1024/1024/1024))
+log "Free memory after memdisk allocation: ${free_mem_gb}GB"
+
+if [ $free_mem_gb -lt 2 ]; then
+    log "WARNING: Less than 2GB free memory remaining after memdisk allocation"
+    if [ $realmem_gb -le 10 ]; then
+        log "Adjusting memdisk size for better performance on 8GB system..."
+        memdisk_size=$((("${realmem}"*65/100)/1024/1024/1024))
+        free_mem_gb=$(((realmem - (memdisk_size * 1024 * 1024 * 1024))/1024/1024/1024))
+        log "Adjusted memdisk size: ${memdisk_size}GB (65% of ${realmem_gb}GB)"
+        log "Adjusted free memory: ${free_mem_gb}GB"
+    fi
+fi
+
+# -------- System image analysis --------
+
+log "=== System Image Analysis with Zstd Compression Detection ==="
+compression_type="none"
+system_img_path=""
+
+if [ -f /cdrom/data/compression.txt ]; then
+    compression_type=$(cat /cdrom/data/compression.txt)
+    log "Detected compression type from metadata: ${compression_type}"
+else
+    log "No compression metadata found, detecting from filenames..."
+fi
+
+if [ -f /cdrom/data/system.img.zst ]; then
+    compression_type="zstd"
+    system_img_path="/cdrom/data/system.img.zst"
+    log "Found zstd compressed system image: system.img.zst"
+elif [ -f /cdrom/data/system.img ]; then
+    compression_type="none"
+    system_img_path="/cdrom/data/system.img"
+    log "Found uncompressed system image: system.img"
+else
+    error_exit "No system image found (looked for system.img.zst and system.img)"
+fi
+
+log "Using compression type: ${compression_type}"
+log "System image path: ${system_img_path}"
+
+img_size=$(file_size_bytes "${system_img_path}")
+img_size_mb=$((img_size / 1024 / 1024))
+log "System image size: ${img_size_mb}MB (${compression_type})"
+
+if [ $img_size_mb -lt 50 ]; then
+    error_exit "System image appears truncated (${img_size_mb}MB is too small)"
+fi
+
+if [ "$compression_type" = "zstd" ]; then
+    # Zstd typically achieves better compression than gzip
+    estimated_decompressed_mb=$((img_size_mb * 30 / 10))
+    log "Estimated decompressed size: ~${estimated_decompressed_mb}MB (zstd)"
+    memdisk_size_mb=$((memdisk_size * 1024))
+    if [ $estimated_decompressed_mb -gt $((memdisk_size_mb * 95 / 100)) ]; then
+        log "WARNING: Estimated decompressed image (~${estimated_decompressed_mb}MB) is close to memdisk limit (${memdisk_size_mb}MB)"
+    fi
+else
+    memdisk_size_mb=$((memdisk_size * 1024))
+    if [ $img_size_mb -gt $((memdisk_size_mb * 95 / 100)) ]; then
+        log "WARNING: System image (${img_size_mb}MB) is close to memdisk limit (${memdisk_size_mb}MB)"
+    fi
+fi
+
+# Validate zstd format and tool availability
+if [ "$compression_type" = "zstd" ]; then
+    log "Validating zstd file format and tool availability..."
+    if ! command -v zstd >/dev/null 2>&1; then
+        log "ERROR: zstd command not available in rescue environment"
+        log "Available decompression tools:"
+        ls /rescue/ | grep -E "(zstd|gzip|gunzip|zcat)" || echo "No compression tools found in rescue"
+        error_exit "Cannot decompress zstd file: zstd not available in rescue environment"
+    fi
+    if ! zstd -t "${system_img_path}" 2>/dev/null; then
+        error_exit "System image is not a valid zstd file"
+    fi
+    log "Zstd file validation passed"
+fi
+
+log "Mount swap-based memdisk"
+if ! mdconfig -a -t swap -s ${memdisk_size}g -u 1 >/dev/null 2>/dev/null; then
+    error_exit "Failed to create memory disk"
+fi
+
+# -------- ZFS pool creation --------
+
+log "=== ZFS Pool Creation ==="
+pool_creation_attempts=0
+max_attempts=3
+
+while [ $pool_creation_attempts -lt $max_attempts ]; do
+    pool_creation_attempts=$((pool_creation_attempts + 1))
+    log "Creating ZFS pool 'livecd' (attempt ${pool_creation_attempts}/${max_attempts})"
+    if zpool create -O compression=off -O primarycache=all livecd /dev/md1 >/dev/null 2>/dev/null; then
+        log "ZFS pool created successfully"
+        break
+    else
+        log "Pool creation attempt ${pool_creation_attempts} failed"
+        if [ $pool_creation_attempts -eq $max_attempts ]; then
+            mdconfig -d -u 1 >/dev/null 2>/dev/null || true
+            error_exit "Failed to create ZFS pool after ${max_attempts} attempts"
+        fi
+        zpool destroy livecd >/dev/null 2>/dev/null || true
+        sleep 2
+    fi
+done
+
+log "Verifying ZFS pool status"
+if ! zpool status livecd >/dev/null 2>&1; then
+    error_exit "ZFS pool 'livecd' is not available after creation"
+fi
+
+log "Pool information:"
+zpool list livecd
+zpool status livecd
+
+# -------- Receive with compression support --------
+
+log "=== System Image Loading with Zstd Compression Support ==="
+receive_success=false
+receive_method=""
+
+log "DEBUG: Skipping complex monitoring in rescue environment"
+# Simplified monitoring - no background processes
+MONITOR_PID="999"
+log "DEBUG: Using simplified monitor (PID: $MONITOR_PID)"
+
+log "DEBUG: Compression type: ${compression_type}"
+log "DEBUG: System image path: ${system_img_path}"
+log "DEBUG: About to attempt streaming receive"
+
+log "Attempting direct streaming receive with ${compression_type} decompression"
+
+case "$compression_type" in
+    "zstd")
+        log "DEBUG: Starting zstd decompression + ZFS receive (with force flag)"
+        if zstd -dc "${system_img_path}" 2>/tmp/zstd1.log | zfs recv -F livecd 2>/tmp/zfs_recv1.log; then
+            log "Zstd decompression + receive completed successfully"
+            receive_success=true
+            receive_method="zstd_stream"
+        else
+            log "Zstd streaming failed"
+            log "DEBUG: zstd/zfs recv pipeline exit code: $?"
+            [ -f /tmp/zstd1.log ] && log "Zstd log:" && cat /tmp/zstd1.log
+            [ -f /tmp/zfs_recv1.log ] && log "ZFS recv log:" && cat /tmp/zfs_recv1.log
+        fi
+        ;;
+    "none")
+        log "DEBUG: Starting direct DD + ZFS receive (with force flag)"
+        if dd if="${system_img_path}" bs=1m 2>/tmp/dd1.log | zfs recv -F livecd 2>/tmp/zfs_recv1.log; then
+            log "Uncompressed direct streaming receive completed successfully"
+            receive_success=true
+            receive_method="direct_stream"
+        else
+            log "Direct streaming receive failed"
+            log "DEBUG: dd/zfs recv pipeline exit code: $?"
+            [ -f /tmp/dd1.log ] && log "DD log:" && cat /tmp/dd1.log
+            [ -f /tmp/zfs_recv1.log ] && log "ZFS recv log:" && cat /tmp/zfs_recv1.log
+        fi
+        ;;
+esac
+
+log "DEBUG: After first attempt, receive_success=$receive_success"
+
+# Fallback forced receive
+if [ "$receive_success" != "true" ]; then
+    log "Direct streaming failed, trying forced receive methods..."
+    case "$compression_type" in
+        "zstd")
+            log "DEBUG: Attempting zstd forced receive"
+            if zstd -dc "${system_img_path}" 2>/tmp/zstd2.log | zfs recv -F livecd 2>/tmp/zfs_recv2.log; then
+                log "Zstd forced receive completed successfully"
+                receive_success=true
+                receive_method="zstd_forced"
+            else
+                log "Zstd forced receive failed"
+                log "DEBUG: Forced receive exit code: $?"
+                [ -f /tmp/zstd2.log ] && log "Zstd error log:" && cat /tmp/zstd2.log
+                [ -f /tmp/zfs_recv2.log ] && log "ZFS recv error log:" && cat /tmp/zfs_recv2.log
+            fi
+            ;;
+        "none")
+            log "DEBUG: Attempting direct forced receive"
+            if dd if="${system_img_path}" bs=64k 2>/tmp/dd2.log | zfs recv -F livecd 2>/tmp/zfs_recv2.log; then
+                log "Uncompressed forced receive completed successfully"
+                receive_success=true
+                receive_method="direct_forced"
+            else
+                log "Uncompressed forced receive failed"
+                log "DEBUG: Forced receive exit code: $?"
+                [ -f /tmp/dd2.log ] && log "DD error log:" && cat /tmp/dd2.log
+                [ -f /tmp/zfs_recv2.log ] && log "ZFS recv error log:" && cat /tmp/zfs_recv2.log
+            fi
+            ;;
+    esac
+fi
+
+log "DEBUG: After forced attempt, receive_success=$receive_success"
+
+# Last resort: decompress to memory first (space-checked)
+if [ "$receive_success" != "true" ] && [ "$compression_type" = "zstd" ]; then
+    log "All streaming methods failed, attempting zstd decompress-to-memory approach..."
+    tmp_avail_kb=$(df_avail_kb /tmp)
+    tmp_avail_mb=$((tmp_avail_kb / 1024))
+    log "DEBUG: Available temp space: ${tmp_avail_mb}MB, need: ~${estimated_decompressed_mb}MB"
+    
+    if [ $tmp_avail_mb -gt $((estimated_decompressed_mb + 100)) ]; then
+        log "Decompressing zstd to /tmp/system.img (estimated ${estimated_decompressed_mb}MB)"
+        if zstd -dc "${system_img_path}" > /tmp/system.img 2>/tmp/zstd_decompress.log; then
+            log "Zstd decompression completed, attempting receive"
+            actual_size=$(file_size_bytes /tmp/system.img)
+            actual_size_mb=$((actual_size / 1024 / 1024))
+            log "Actual decompressed size: ${actual_size_mb}MB"
+            if zfs recv -F livecd < /tmp/system.img 2>/tmp/zfs_recv3.log; then
+                log "Zstd decompress-then-receive completed successfully"
+                receive_success=true
+                receive_method="zstd_decompress_then_receive"
+            else
+                log "Zstd decompress-then-receive failed:"
+                cat /tmp/zfs_recv3.log
+            fi
+            rm -f /tmp/system.img
+        else
+            log "Zstd decompression to memory failed:"
+            cat /tmp/zstd_decompress.log
+        fi
+    else
+        log "Insufficient space in /tmp for zstd decompression (need ~${estimated_decompressed_mb}MB, have ${tmp_avail_mb}MB)"
+    fi
+fi
+
+log "DEBUG: After all attempts, receive_success=$receive_success"
+
+# Simplified cleanup - no background processes to manage
+log "DEBUG: Simplified monitor cleanup (no background processes used)"
+
+# -------- Final result check --------
+
+if [ "$receive_success" != "true" ]; then
+    log "=== Receive Failure Analysis ==="
+    log "All receive methods failed with compression type: ${compression_type}"
+    log "System image path: ${system_img_path}"
+    if command -v zstd >/dev/null 2>&1; then log "zstd: available"; else log "zstd: NOT available"; fi
+    log "Pool status:"
+    zpool status livecd
+    log "Available memory:"
+    sysctl hw.realmem hw.physmem
+    log "System image info:"
+    ls -la "${system_img_path}"
+    log "Available space:"
+    df -h /tmp
+    error_exit "Failed to load system image using zstd decompression"
+fi
+
+log "System image loaded successfully using method: $receive_method with compression: $compression_type"
+
+# -------- Post-receive configuration --------
+
+log "=== Post-Receive Configuration ==="
+log "Configuring received filesystem"
+zfs set compression=zstd-9 livecd 2>/dev/null || log "Warning: Could not set compression"
+zfs set primarycache=all livecd 2>/dev/null || log "Warning: Could not set primary cache"
+zfs set atime=off livecd 2>/dev/null || log "Warning: Could not disable atime"
+
+log "Verifying received filesystem"
+if ! zfs list livecd >/dev/null 2>&1; then
+    error_exit "Received filesystem verification failed"
+fi
+
+if ! zfs mount livecd 2>/dev/null; then
+    log "Warning: Could not explicitly mount livecd"
+fi
+
+essential_dirs="/bin /usr /etc /home"
+for dir in $essential_dirs; do
+    if [ ! -d "${dir}" ]; then
+        log "WARNING: Essential directory ${dir} not found in live system"
+    fi
+done
+
+log "=== System Load Complete ==="
+zfs list livecd
+log "Final pool status:"
+zpool status livecd
+
+arc_size=$(sysctl -n kstat.zfs.misc.arcstats.size 2>/dev/null || echo "unknown")
+if [ "$arc_size" != "unknown" ]; then
+    arc_size_mb=$((arc_size / 1024 / 1024))
+    log "ZFS ARC size: ${arc_size_mb}MB"
+fi
+
+log "Setting environment for reroot"
 kenv init_shell="/rescue/sh"
+kenv vfs.root.mountfrom="zfs:livecd"
+
+log "=== Initialization completed successfully ==="
+log "Method used: $receive_method"
+log "Compression: $compression_type"
+log "Memory: ${realmem_gb}GB total, ${memdisk_size}GB memdisk, ${free_mem_gb}GB free"
+log "System image: ${img_size_mb}MB loaded successfully"
+log "Ready to boot GhostBSD live system"
+
 exit 0
