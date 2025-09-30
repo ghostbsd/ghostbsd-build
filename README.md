@@ -15,7 +15,7 @@ The purpose of this tool is to quickly generate live images for GhostBSD.
 * Enhanced error handling and debugging
 
 ## Graphics support
-* Compatible with VirtualBox, VMware, NVIDIA graphics out of box
+* Compatible with VirtualBox, VMware, NVIDIA graphics out of the box
 * SCFB support with automatic best resolution for UEFI enabled systems with Intel/AMD graphics
 
 ## System requirements
