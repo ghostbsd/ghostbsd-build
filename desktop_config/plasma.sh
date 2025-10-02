@@ -6,7 +6,9 @@ set -e -u
 . "${cwd}/common_config/autologin.sh"
 . "${cwd}/common_config/base-setting.sh"
 . "${cwd}/common_config/finalize.sh"
+. "${cwd}/common_config/gitpkg.sh"
 . "${cwd}/common_config/setuser.sh"
+. "${cwd}/common_config/splash-setup.sh"
 
 sddm_setup() {
   # Path to SDDM config
@@ -55,8 +57,8 @@ setup_xinit() {
 
 # Execute setup routines
 patch_etc_files
-community_setup_liveuser
-community_setup_autologin
+community_setup_liveuser_interactive
+community_setup_autologin_interactive
 sddm_setup
 setup_xinit
 final_setup
