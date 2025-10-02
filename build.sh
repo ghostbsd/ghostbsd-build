@@ -225,8 +225,10 @@ zfs_arc_restore() {
     
     if [ "$original_arc_max" != "0" ]; then
         log "Restoring original ZFS ARC settings..."
+        # shellcheck disable=SC2086
         sysctl vfs.zfs.arc_max=$original_arc_max >/dev/null 2>&1 || true
         if [ "$original_arc_min" != "0" ]; then
+            # shellcheck disable=SC2086
             sysctl vfs.zfs.arc_min=$original_arc_min >/dev/null 2>&1 || true
         fi
         
