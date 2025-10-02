@@ -83,7 +83,7 @@ elif [ "${build_type}" = "release" ] ; then
 elif [ "${build_type}" = "unstable" ] ; then
   PKG_CONF="GhostBSD_Unstable"
 else
-  printf "\t-b Build type: unstable, testing, or release"
+  printf "\t-b Build type: unstable, testing, or release\n"
   exit 1
 fi
 
@@ -225,8 +225,10 @@ zfs_arc_restore() {
     
     if [ "$original_arc_max" != "0" ]; then
         log "Restoring original ZFS ARC settings..."
+        # shellcheck disable=SC2086
         sysctl vfs.zfs.arc_max=$original_arc_max >/dev/null 2>&1 || true
         if [ "$original_arc_min" != "0" ]; then
+            # shellcheck disable=SC2086
             sysctl vfs.zfs.arc_min=$original_arc_min >/dev/null 2>&1 || true
         fi
         
@@ -469,13 +471,17 @@ EOF
 
 set_ghostbsd_version()
 {
-  if [ "${desktop}" = "test" ] ; then
-    version="$(date +%Y-%m-%d)"
+  if [ "${build_type}" = "testing" ] || [ "${build_type}" = "unstable" ] ; then
+    # Add date suffix for testing and unstable builds
+    base_version="-$(cat ${release}/etc/version)"
+    date_suffix="-$(date +%m-%d-%H)"
+    version="${base_version}${date_suffix}"
+    log "Adding date suffix for ${build_type} build: ${date_suffix}"
   else
     version="-$(cat ${release}/etc/version)"
   fi
   iso_path="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
-  log "ISO will be created as: $(basename $iso_path)"
+  log "ISO will be created as: $(basename "$iso_path")"
 }
 
 # Enhanced packages_software with additional login.conf protection
@@ -624,9 +630,11 @@ ghostbsd_config()
 # Clean desktop_config function that avoids user creation conflicts
 desktop_config()
 {
+  # shellcheck disable=SC2218
   log "=== Configuring desktop environment: ${desktop} ==="
   
   # Source common configuration functions (but only call the safe ones)
+  # shellcheck disable=SC2218
   log "Loading common configuration functions..."
   . "${cwd}/common_config/base-setting.sh"
   . "${cwd}/common_config/gitpkg.sh" 
@@ -727,7 +735,7 @@ uzip()
         current_file="system.img"
       fi
       
-      if [ $current_size -gt 0 ]; then
+      if [ "$current_size" -gt 0 ]; then
         current_mb=$((current_size / 1024 / 1024))
         log "${current_file} current size: ${current_mb}MB"
       fi
