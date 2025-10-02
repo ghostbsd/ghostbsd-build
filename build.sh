@@ -48,7 +48,7 @@ elif [ "${build_type}" = "release" ] ; then
 elif [ "${build_type}" = "unstable" ] ; then
   PKG_CONF="GhostBSD_Unstable"
 else
-  printf "\t-b Build type: unstable, testing, or release"
+  printf "\t-b Build type: unstable, testing, or release\n"
   exit 1
 fi
 
@@ -165,8 +165,12 @@ base()
 
 set_ghostbsd_version()
 {
-  if [ "${desktop}" = "test" ] ; then
-    version="$(date +%Y-%m-%d)"
+  if [ "${build_type}" = "testing" ] || [ "${build_type}" = "unstable" ] ; then
+    # Add date suffix for testing and unstable builds
+    base_version="-$(cat ${release}/etc/version)"
+    date_suffix="-$(date +%m-%d-%H)"
+    version="${base_version}${date_suffix}"
+    log "Adding date suffix for ${build_type} build: ${date_suffix}"
   else
     version="-$(cat ${release}/etc/version)"
   fi
