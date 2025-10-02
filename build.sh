@@ -630,9 +630,11 @@ ghostbsd_config()
 # Clean desktop_config function that avoids user creation conflicts
 desktop_config()
 {
+  # shellcheck disable=SC2218
   log "=== Configuring desktop environment: ${desktop} ==="
   
   # Source common configuration functions (but only call the safe ones)
+  # shellcheck disable=SC2218
   log "Loading common configuration functions..."
   . "${cwd}/common_config/base-setting.sh"
   . "${cwd}/common_config/gitpkg.sh" 
