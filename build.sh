@@ -479,7 +479,7 @@ set_ghostbsd_version()
     version="-$(cat ${release}/etc/version)"
   fi
   iso_path="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
-  log "ISO will be created as: $(basename $iso_path)"
+  log "ISO will be created as: $(basename "$iso_path")"
 }
 
 # Enhanced packages_software with additional login.conf protection
@@ -731,7 +731,7 @@ uzip()
         current_file="system.img"
       fi
       
-      if [ $current_size -gt 0 ]; then
+      if [ "$current_size" -gt 0 ]; then
         current_mb=$((current_size / 1024 / 1024))
         log "${current_file} current size: ${current_mb}MB"
       fi
