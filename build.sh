@@ -496,13 +496,17 @@ EOF
 
 set_ghostbsd_version()
 {
-  if [ "${desktop}" = "test" ] ; then
-    version="$(date +%Y-%m-%d)"
+  if [ "${build_type}" = "testing" ] || [ "${build_type}" = "unstable" ] ; then
+    # Add date suffix for testing and unstable builds
+    base_version="-$(cat ${release}/etc/version)"
+    date_suffix="-$(date +%m-%d-%H)"
+    version="${base_version}${date_suffix}"
+    log "Adding date suffix for ${build_type} build: ${date_suffix}"
   else
     version="-$(cat ${release}/etc/version)"
   fi
   iso_path="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
-  log "ISO will be created as: $(basename $iso_path)"
+  log "ISO will be created as: $(basename "$iso_path")"
 }
 
 # Enhanced packages_software with additional login.conf protection
@@ -808,7 +812,7 @@ uzip()
         current_file="system.img"
       fi
 
-      if [ $current_size -gt 0 ]; then
+      if [ "$current_size" -gt 0 ]; then
         current_mb=$((current_size / 1024 / 1024))
         log "${current_file} current size: ${current_mb}MB"
       fi
