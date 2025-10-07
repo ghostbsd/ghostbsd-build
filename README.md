@@ -1,5 +1,5 @@
 
-ghostbsd-build  (Greenfield)
+ghostbsd-build
 ==============
 Live media creator for GhostBSD distribution
 
@@ -8,14 +8,14 @@ The purpose of this tool is to quickly generate live images for GhostBSD.
 
 ## Features
 * Build GhostBSD from packages
-* Multiple desktop environments (Mate, XFCE, Gershwin, Plasma, and more)
+* Multiple desktop environments (Mate, XFCE, Gershwin, and KDE Plasma 6)
 * Hybrid DVD/USB image
 * Configurable ZFS memory management for build optimization
 * Gzip compression support for smaller system images
 * Enhanced error handling and debugging
 
 ## Graphics support
-* Compatible with VirtualBox, VMware, NVIDIA graphics out of the box
+* Compatible with VirtualBox, VMware, NVIDIA graphics out of box
 * SCFB support with automatic best resolution for UEFI enabled systems with Intel/AMD graphics
 
 ## System requirements
@@ -60,15 +60,16 @@ or for unstable builds:
 ```
 ./build.sh -d xfce -b release
 ```   
-#### (Option) To build GhostBSD with __KDE Plasma 6__ as default desktop
-```
-./build.sh -d plasma -b unstable
-```   
 
 #### To build GhostBSD with __Gershwin__ as default desktop
 ```
 ./build.sh -d gershwin -b release
 ```   
+
+#### To build GhostBSD with __Kde Plasma 6__ as default desktop
+```
+.build.sh -d plasma -b unstable
+```
 
 ## Build options
 
@@ -102,6 +103,14 @@ All modes except 'off' automatically restore original ZFS settings after build c
 ```
 ./build.sh -h
 ```
+
+## Build process enhancements
+
+* **Memory requirement increase**: Builds now require 8GB minimum memory for reliable operation
+* **Smart ZFS tuning**: Automatic host ZFS ARC optimization during builds with full restoration
+* **Gzip compression**: System images are compressed for faster boot times and smaller ISOs
+* **Enhanced error handling**: Better debugging output and recovery from common build failures
+* **Login.conf fixes**: Prevents cap_mkdb errors during package installation
 
 ## Burn an image to cd:
 ```

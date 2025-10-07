@@ -5,7 +5,9 @@ set -e -u
 . "${cwd}/common_config/autologin.sh"
 . "${cwd}/common_config/base-setting.sh"
 . "${cwd}/common_config/finalize.sh"
+. "${cwd}/common_config/gitpkg.sh"
 . "${cwd}/common_config/setuser.sh"
+. "${cwd}/common_config/splash-setup.sh"
 
 lightdm_setup()
 {
@@ -20,9 +22,16 @@ setup_xinit()
   echo "exec ck-launch-session startxfce4" > "${release}/usr/share/skel/dot.xinitrc"
 }
 
+# Apply base system patches
 patch_etc_files
-community_setup_liveuser
-community_setup_autologin
+
+# Set up user and autologin with interactive splash support
+community_setup_liveuser_interactive
+community_setup_autologin_interactive
+
+# Configure desktop environment
 lightdm_setup
 setup_xinit
+
+# Apply final setup
 final_setup

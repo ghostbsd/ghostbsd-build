@@ -2,16 +2,41 @@
 
 set -e -u
 
-cwd="$(realpath)"
+cwd="$(realpath .)"
 export cwd
 
 # ZFS Control Configuration
 export zfs_control="${zfs_control:-auto}"  # off, auto, conservative, aggressive, restore
 export ARC_WAS_TUNED=false  # Initialize to prevent cleanup errors
 
-# Enhanced logging function
+# -------- Logging (color-ready, default OFF) --------
+# Toggle: 0 = plain (default), 1 = color on
+# Honors NO_COLOR (https://no-color.org) and FORCE_COLOR.
+: "${LOG_COLOR:=0}"
+[ -n "${NO_COLOR:-}" ] && LOG_COLOR=0
+[ -n "${FORCE_COLOR:-}" ] && LOG_COLOR=1
+
+# ANSI color codes
+RED="\033[31m"; GREEN="\033[32m"; YELLOW="\033[33m"; BLUE="\033[34m"; CYAN="\033[36m"; RESET="\033[0m"
+
 log() {
-    echo "$(date '+%H:%M:%S') [BUILD] $*"
+    # plain if disabled or not a TTY
+    if [ "$LOG_COLOR" -ne 1 ] || [ ! -t 1 ]; then
+        echo "$*"
+        return
+    fi
+
+    # Color by common prefixes/headings
+    _c="$CYAN"
+    case "$1" in
+        ERROR:*|Error:*|error:*)    _c="$RED" ;;
+        WARNING:*|Warning:*|warn:*) _c="$YELLOW" ;;
+        SUCCESS:*|Success:*)        _c="$GREEN" ;;
+        INFO:*|Info:*)              _c="$BLUE" ;;
+        "=== "*)                    _c="$BLUE" ;;   # section headers like "=== Creating ..."
+    esac
+    # shellcheck disable=SC2059
+    printf "%b\n" "${_c}$*${RESET}"
 }
 
 error_exit() {
@@ -69,7 +94,7 @@ done
 # Validate zfs_control option
 case "$zfs_control" in
     "off"|"auto"|"conservative"|"aggressive"|"restore") ;;
-    *) 
+    *)
         printf "Invalid ZFS control option: %s\n" "$zfs_control"
         printf "Valid options: off, auto, conservative, aggressive, restore\n"
         exit 1
@@ -133,17 +158,17 @@ zfs_arc_save() {
         log "ZFS not loaded, skipping ARC management"
         return 0
     fi
-    
+
     # Save current ARC settings
     original_arc_max=$(sysctl -n vfs.zfs.arc_max 2>/dev/null || echo "0")
     original_arc_min=$(sysctl -n vfs.zfs.arc_min 2>/dev/null || echo "0")
-    
+
     log "Current ARC settings: max=${original_arc_max}, min=${original_arc_min}"
-    
+
     # Save to temp files for restoration
     echo "$original_arc_max" > /tmp/ghostbsd_build_arc_max
     echo "$original_arc_min" > /tmp/ghostbsd_build_arc_min
-    
+
     export SAVED_ARC_SETTINGS=true
 }
 
@@ -152,24 +177,24 @@ zfs_arc_analyze_and_tune() {
         log "ZFS control disabled, leaving host ARC unchanged"
         return 0
     fi
-    
+
     if ! kldstat | grep -q zfs; then
         log "ZFS not detected"
         return 0
     fi
-    
+
     # Calculate optimal build settings
     realmem=$(sysctl -n hw.realmem)
     realmem_gb=$((realmem / 1024 / 1024 / 1024))
     current_arc_max=$(sysctl -n vfs.zfs.arc_max 2>/dev/null || echo "0")
     current_arc_max_gb=$((current_arc_max / 1024 / 1024 / 1024))
-    
+
     # Calculate build-optimized ARC (30% of RAM, leaves more for build processes)
     build_arc_max=$((realmem * 30 / 100))
     build_arc_max_gb=$((build_arc_max / 1024 / 1024 / 1024))
-    
+
     log "Memory analysis: ${realmem_gb}GB total, current ARC: ${current_arc_max_gb}GB, optimal build ARC: ${build_arc_max_gb}GB"
-    
+
     # Decision logic based on zfs_control setting
     should_tune=false
     case "$zfs_control" in
@@ -198,7 +223,7 @@ zfs_arc_analyze_and_tune() {
             log "${zfs_control} mode: Applying build-optimized ARC settings"
             ;;
     esac
-    
+
     if [ "$should_tune" = "true" ]; then
         log "Applying build-optimized ZFS ARC settings..."
         sysctl vfs.zfs.arc_max=$build_arc_max >/dev/null 2>&1 || true
@@ -214,15 +239,15 @@ zfs_arc_restore() {
     if [ "$zfs_control" = "off" ] || [ "$ARC_WAS_TUNED" != "true" ]; then
         return 0
     fi
-    
+
     if [ ! -f /tmp/ghostbsd_build_arc_max ]; then
         log "Warning: No saved ARC settings found for restoration"
         return 0
     fi
-    
+
     original_arc_max=$(cat /tmp/ghostbsd_build_arc_max)
     original_arc_min=$(cat /tmp/ghostbsd_build_arc_min)
-    
+
     if [ "$original_arc_max" != "0" ]; then
         log "Restoring original ZFS ARC settings..."
         # shellcheck disable=SC2086
@@ -231,11 +256,11 @@ zfs_arc_restore() {
             # shellcheck disable=SC2086
             sysctl vfs.zfs.arc_min=$original_arc_min >/dev/null 2>&1 || true
         fi
-        
+
         restored_max_gb=$((original_arc_max / 1024 / 1024 / 1024))
         log "Restored ARC max to ${restored_max_gb}GB"
     fi
-    
+
     # Clean up temp files
     rm -f /tmp/ghostbsd_build_arc_max /tmp/ghostbsd_build_arc_min
 }
@@ -254,35 +279,35 @@ workspace()
 {
   log "=== Enhanced Workspace Setup with ZFS Control ==="
   log "ZFS control mode: ${zfs_control}"
-  
+
   # Save current ARC settings first
   zfs_arc_save
-  
+
   # Pre-build environment analysis
   log "Analyzing build environment..."
-  
+
   # 1. Memory Analysis - Updated for 8GB minimum
   realmem=$(sysctl -n hw.realmem)
   realmem_gb=$((realmem / 1024 / 1024 / 1024))
   log "Available memory: ${realmem_gb}GB"
-  
+
   if [ $realmem_gb -lt 8 ]; then
     error_exit "GhostBSD build requires at least 8GB RAM. Detected: ${realmem_gb}GB. Please use a system with more memory."
   elif [ $realmem_gb -lt 12 ]; then
     log "WARNING: 8-12GB RAM detected. Build will work but may experience memory pressure."
     log "Consider using a system with 16GB+ RAM for optimal build performance."
   fi
-  
+
   # 2. Disk Space Analysis - Updated for larger requirements
   log "Analyzing disk space..."
   workdir_avail=$(df /usr/local | tail -1 | awk '{print $4}')
   workdir_avail_gb=$((workdir_avail / 1024 / 1024))
   log "Available space in /usr/local: ${workdir_avail_gb}GB"
-  
+
   if [ $workdir_avail_gb -lt 20 ]; then
     error_exit "Insufficient disk space. Need at least 20GB free in /usr/local for 8GB minimum builds, have ${workdir_avail_gb}GB"
   fi
-  
+
   # 3. Check for previous failed builds
   if [ -d "${livecd}" ]; then
     log "Found previous build directory, analyzing..."
@@ -295,10 +320,10 @@ workspace()
       fi
     fi
   fi
-  
+
   # 4. ZFS ARC tuning with user control
   zfs_arc_analyze_and_tune
-  
+
   # Unmount any existing mounts and clean up
   log "Cleaning up previous build artifacts..."
   umount ${packages_storage} >/dev/null 2>/dev/null || true
@@ -314,7 +339,7 @@ workspace()
 
   # Detach memory device if previously attached
   mdconfig -d -u 0 >/dev/null 2>/dev/null || true
-  
+
   # Remove old pool image if it exists
   if [ -f "${livecd}/pool.img" ] ; then
     rm ${livecd}/pool.img
@@ -327,7 +352,7 @@ workspace()
   POOL_SIZE='6656M'  # 6.5GB in MB (6.5 * 1024 = 6656) - increased from 6g to accommodate larger 8GB systems
   log "Creating ${POOL_SIZE} pool image for 8GB minimum system..."
   truncate -s ${POOL_SIZE} ${livecd}/pool.img
-  
+
   # Attach the pool image as a memory disk
   mdconfig -f ${livecd}/pool.img -u 0
 
@@ -337,21 +362,21 @@ workspace()
     # Provide detailed error message in case of failure
     log "Error: Failed to create ZFS pool 'ghostbsd' with the following command:"
     log "zpool create -O mountpoint='${release}' -O compression=zstd-9 ghostbsd /dev/md0"
-    
+
     # Clean up resources in case of failure
     zpool destroy ghostbsd 2>/dev/null || true
     mdconfig -d -u 0 2>/dev/null || true
     rm -f ${livecd}/pool.img 2>/dev/null || true
-    
+
     # Exit with an error code
     exit 1
   fi
-  
+
   # Verify pool creation
   log "Verifying ZFS pool..."
   zpool status ghostbsd
   zpool list ghostbsd
-  
+
   log "Workspace setup completed successfully for 8GB minimum system"
 }
 
@@ -366,10 +391,10 @@ base()
     base_list="$(cat "${cwd}/packages/base")"
     vital_base="$(cat "${cwd}/packages/vital/base")"
   fi
-  
+
   mkdir -p ${release}/etc
   cp /etc/resolv.conf ${release}/etc/resolv.conf
-  
+
   # CRITICAL FIX: Create a proper login.conf BEFORE installing packages
   log "Creating login.conf to prevent cap_mkdb errors..."
   cat > "${release}/etc/login.conf" << 'EOF'
@@ -435,16 +460,16 @@ EOF
   # Don't try to run cap_mkdb in chroot before base packages are installed
   # Just create a minimal database file to prevent package installation failures
   touch "${release}/etc/login.conf.db"
-  
+
   # Verify the files were created
   if [ ! -f "${release}/etc/login.conf" ]; then
     error_exit "Failed to create login.conf"
   fi
   log "login.conf created successfully"
-  
+
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${packages_storage} ${release}/var/cache/pkg
-  
+
   # Install base packages with enhanced error handling
   log "Installing base packages with login.conf fix..."
   # shellcheck disable=SC2086
@@ -456,16 +481,16 @@ EOF
     tail -20 /var/log/messages 2>/dev/null || echo "No system logs available"
     error_exit "Base package installation failed"
   fi
-  
+
   # shellcheck disable=SC2086
   pkg -r ${release} -R "${cwd}/pkg/" set -y -v 1 ${vital_base}
-  
+
   # Clean up
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
   touch ${release}/etc/fstab
   mkdir ${release}/cdrom ${release}/mnt ${release}/media
-  
+
   log "Base system setup completed"
 }
 
@@ -488,19 +513,19 @@ set_ghostbsd_version()
 packages_software()
 {
   log "=== Installing desktop and software packages with enhanced protection ==="
-  
+
   if [ "${build_type}" = "unstable" ] ; then
     cp pkg/GhostBSD_Unstable.conf ${release}/etc/pkg/GhostBSD.conf
   fi
   if [ "${build_type}" = "testing" ] ; then
     cp pkg/GhostBSD_Testing.conf ${release}/etc/pkg/GhostBSD.conf
   fi
-  
+
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${packages_storage} ${release}/var/cache/pkg
   mount -t devfs devfs ${release}/dev
-  
+
   # Double-check login.conf before package installation
   log "Verifying login.conf before package installation..."
   if [ ! -f "${release}/etc/login.conf" ]; then
@@ -515,19 +540,19 @@ default:\
 EOF
     chroot ${release} cap_mkdb /etc/login.conf 2>/dev/null || touch "${release}/etc/login.conf.db"
   fi
-  
+
   # Verify login.conf.db exists
   if [ ! -f "${release}/etc/login.conf.db" ]; then
     log "Creating login.conf.db..."
     chroot ${release} cap_mkdb /etc/login.conf 2>/dev/null || touch "${release}/etc/login.conf.db"
   fi
-  
+
   de_packages="$(cat "${cwd}/packages/${desktop}")"
   common_packages="$(cat "${cwd}/packages/common")"
   drivers_packages="$(cat "${cwd}/packages/drivers")"
   vital_de_packages="$(cat "${cwd}/packages/vital/${desktop}")"
   vital_common_packages="$(cat "${cwd}/packages/vital/common")"
-  
+
   # Install packages with better error handling
   log "Installing desktop environment and common packages..."
   # shellcheck disable=SC2086
@@ -537,25 +562,25 @@ EOF
     dmesg | tail -10
     log "Login.conf status:"
     ls -la ${release}/etc/login.conf*
-    
+
     # Try to fix and retry once
     log "Attempting to fix login.conf and retry..."
     chroot ${release} cap_mkdb /etc/login.conf 2>/dev/null || true
-    
+
     # shellcheck disable=SC2086
     if ! pkg -c ${release} install -y ${de_packages} ${common_packages} ${drivers_packages}; then
       error_exit "Package installation failed even after login.conf fix"
     fi
   fi
-  
+
   # shellcheck disable=SC2086
   pkg -c ${release} set -y -v 1 ${vital_de_packages} ${vital_common_packages}
-  
+
   mkdir -p ${release}/proc
   mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
-  
+
   log "Package installation completed successfully"
 }
 
@@ -579,7 +604,7 @@ fetch_x_drivers_packages()
     fetch -o ${release}/xdrivers "${pkg_url}/All/$line"
   done
   ls ${release}/xdrivers
-  
+
   log "X driver packages fetched"
 }
 
@@ -605,7 +630,7 @@ rc()
   chroot ${release} sysrc ntpd_enable="YES"
   chroot ${release} sysrc ntpd_sync_on_start="YES"
   chroot ${release} sysrc clear_tmp_enable="YES"
-  
+
   log "System services configured"
 }
 
@@ -615,6 +640,15 @@ ghostbsd_config()
   # echo "gop set 0" >> ${release}/boot/loader.rc.local
   mkdir -p ${release}/usr/local/share/ghostbsd
   echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
+  
+  # Add splash screen image to boot directory
+  if [ -f "${cwd}/assets/ghostbsd-logo.pcx" ]; then
+    cp "${cwd}/assets/ghostbsd-logo.pcx" "${release}/boot/splash.pcx"
+    log "Splash screen image added to boot directory"
+  else
+    log "WARNING: No splash screen image found at ${cwd}/assets/ghostbsd-logo.pcx"
+  fi
+  
   # Mkdir for linux compat to ensure /etc/fstab can mount when booting LiveCD
   chroot ${release} mkdir -p /compat/linux/dev/shm
   chroot ${release} mkdir -p /compat/linux/proc
@@ -623,11 +657,11 @@ ghostbsd_config()
   chroot ${release} touch /boot/entropy
   # default GhostBSD to local time instead of UTC
   chroot ${release} touch /etc/wall_cmos_clock
-  
+
   log "GhostBSD configuration applied"
 }
 
-# Clean desktop_config function that avoids user creation conflicts
+# Enhanced desktop_config function with post-package splash setup
 desktop_config()
 {
   # shellcheck disable=SC2218
@@ -637,78 +671,121 @@ desktop_config()
   # shellcheck disable=SC2218
   log "Loading common configuration functions..."
   . "${cwd}/common_config/base-setting.sh"
-  . "${cwd}/common_config/gitpkg.sh" 
+  . "${cwd}/common_config/gitpkg.sh"
   . "${cwd}/common_config/finalize.sh"
-  
+
   # Apply base patches and settings
   log "Applying base system patches..."
   patch_etc_files
-  
+
   # Install git packages
   log "Installing git-based packages..."
   git_pc_sysinstall
   git_gbi
   git_install_station
   git_setup_station
-  
+
   # Run desktop-specific configuration script (this handles user setup)
   log "Running desktop-specific configuration script..."
   sh "${cwd}/desktop_config/${desktop}.sh"
-  
+
   # Apply final setup
   log "Applying final system setup..."
   final_setup
+
+  # POST-PACKAGE HOOKS: Apply splash screen configuration AFTER everything else
+  log "=== POST-PACKAGE HOOKS: Applying splash screen configuration ==="
   
-  log "Desktop configuration completed"
+  # Source splash screen configuration
+  log "Loading splash screen configuration (post-package)..."
+  . "${cwd}/common_config/splash-setup.sh"
+
+  # Apply splash setup AFTER all packages and configs are done
+  log "Configuring splash screen system (post-package)..."
+  setup_interactive_splash
+  
+  log "Creating splash scripts (post-package)..."
+  create_extended_boot_script
+  create_interactive_boot_script
+  create_console_logo_script
+  create_boot_monitor_service
+
+  # Verify scripts were created and not overwritten
+  log "Verifying splash scripts exist after package installation..."
+  if [ -f "${release}/usr/local/bin/ghostbsd-extended-boot" ]; then
+    log "SUCCESS: ghostbsd-extended-boot script exists"
+  else
+    log "WARNING: ghostbsd-extended-boot script missing"
+  fi
+  
+  if [ -f "${release}/usr/local/bin/ghostbsd-interactive-boot" ]; then
+    log "SUCCESS: ghostbsd-interactive-boot script exists"  
+  else
+    log "WARNING: ghostbsd-interactive-boot script missing"
+  fi
+
+  if [ -f "${release}/usr/local/bin/ghostbsd-ascii-logo" ]; then
+    log "SUCCESS: ghostbsd-ascii-logo script exists"  
+  else
+    log "WARNING: ghostbsd-ascii-logo script missing"
+  fi
+
+  if [ -f "${release}/usr/local/etc/rc.d/ghostbsd_boot_monitor" ]; then
+    log "SUCCESS: ghostbsd_boot_monitor service exists"  
+  else
+    log "WARNING: ghostbsd_boot_monitor service missing"
+  fi
+
+  log "Desktop configuration with post-package splash hooks completed"
 }
 
 # Enhanced uzip function with zstd compression
 uzip()
 {
   log "=== Creating zstd compressed system image ==="
-  
+
   install -o root -g wheel -m 755 -d "${cd_root}"
   mkdir "${cd_root}/data"
-  
+
   # Pre-send analysis
   log "Analyzing system before image creation..."
-  
+
   # Check available space for system.img
   cd_data_avail=$(df "${cd_root}/data" | tail -1 | awk '{print $4}')
   cd_data_avail_gb=$((cd_data_avail / 1024 / 1024))
   log "Available space for system.img: ${cd_data_avail_gb}GB"
-  
+
   if [ $cd_data_avail_gb -lt 8 ]; then
     error_exit "Insufficient space for system.img. Need at least 8GB, have ${cd_data_avail_gb}GB"
   fi
-  
+
   # Analyze ZFS pool status
   log "ZFS pool analysis:"
   zpool list ghostbsd
   zfs list ghostbsd
-  
+
   # Check for any pool issues
   if ! zpool status ghostbsd | grep -q "state: ONLINE"; then
     error_exit "ZFS pool 'ghostbsd' is not in ONLINE state"
   fi
-  
+
   # Force synchronization before snapshot
   log "Synchronizing pool before snapshot..."
   sync
   zpool sync ghostbsd
   sleep 3
-  
+
   # Create snapshot with verification
   log "Creating clean snapshot..."
   if ! zfs snapshot ghostbsd@clean; then
     error_exit "Failed to create snapshot ghostbsd@clean"
   fi
-  
+
   # Verify snapshot exists
   if ! zfs list -t snapshot ghostbsd@clean >/dev/null 2>&1; then
     error_exit "Snapshot ghostbsd@clean was not created properly"
   fi
-  
+
   # Estimate send size if possible
   log "Estimating send size..."
   if command -v zstreamdump >/dev/null 2>&1; then
@@ -718,7 +795,7 @@ uzip()
       log "Estimated uncompressed send size: ${estimated_mb}MB"
     fi
   fi
-  
+
   # Start background monitoring - zstd only
   log "Starting background monitoring..."
   (
@@ -734,12 +811,12 @@ uzip()
         current_size=$(stat -f %z "${cd_root}/data/system.img" 2>/dev/null || echo 0)
         current_file="system.img"
       fi
-      
+
       if [ "$current_size" -gt 0 ]; then
         current_mb=$((current_size / 1024 / 1024))
         log "${current_file} current size: ${current_mb}MB"
       fi
-      
+
       # Check if zfs send or zstd process is still running
       if ! pgrep -f "zfs send\|zstd" >/dev/null 2>&1; then
         break
@@ -747,12 +824,12 @@ uzip()
     done
   ) &
   MONITOR_PID=$!
-  
+
   # Enhanced ZFS send with zstd compression
   log "Creating zstd compressed system image..."
   send_success=false
   compression_used="none"
-  
+
   # Use zstd compression (confirmed working)
   if command -v zstd >/dev/null 2>&1; then
     log "Using zstd -9 compression..."
@@ -767,7 +844,7 @@ uzip()
   else
     log "ERROR: zstd not available for compression"
   fi
-  
+
   # Fallback: uncompressed only
   if [ "$send_success" != "true" ]; then
     log "Zstd failed, trying uncompressed fallback..."
@@ -781,47 +858,47 @@ uzip()
       send_success=false
     fi
   fi
-  
+
   # Stop monitoring
   kill $MONITOR_PID 2>/dev/null || true
-  
+
   # Verify the created image and report compression results
   if [ "$send_success" = "true" ] && [ "$compression_used" = "zstd" ] && [ -f "${cd_root}/data/system.img.zst" ]; then
     # Zstd compressed image exists
     img_size=$(stat -f %z "${cd_root}/data/system.img.zst")
     img_size_mb=$((img_size / 1024 / 1024))
     log "Final system.img.zst size: ${img_size_mb}MB (zstd compressed)"
-    
+
     # Create compression metadata file
     echo "zstd" > "${cd_root}/data/compression.txt"
-    
+
     # Calculate compression ratio if we have the estimated size
     if [ "$estimated_size" != "unknown" ] && [ -n "$estimated_mb" ]; then
       compression_ratio=$((100 - (img_size_mb * 100 / estimated_mb)))
       log "Compression ratio: ${compression_ratio}% reduction (${estimated_mb}MB -> ${img_size_mb}MB)"
     fi
-    
+
     # Comprehensive validation
     if [ $img_size_mb -lt 100 ]; then
       error_exit "system.img.zst appears truncated (${img_size_mb}MB is too small)"
     fi
-    
+
     log "Zstd compressed system image creation completed successfully: ${img_size_mb}MB"
-    
+
   elif [ "$send_success" = "true" ] && [ "$compression_used" = "none" ] && [ -f "${cd_root}/data/system.img" ]; then
     # Uncompressed image exists
     img_size=$(stat -f %z "${cd_root}/data/system.img")
     img_size_mb=$((img_size / 1024 / 1024))
     log "Final system.img size: ${img_size_mb}MB (uncompressed)"
-    
+
     # Create compression metadata file
     echo "none" > "${cd_root}/data/compression.txt"
-    
+
     # Comprehensive validation
     if [ $img_size_mb -lt 100 ]; then
       error_exit "system.img appears truncated (${img_size_mb}MB is too small)"
     fi
-    
+
     log "Uncompressed system image creation completed successfully: ${img_size_mb}MB"
   else
     error_exit "System image creation failed"
@@ -846,7 +923,7 @@ ramdisk()
   makefs -b '10%' "${cd_root}/data/ramdisk.ufs" "${ramdisk_root}"
   gzip "${cd_root}/data/ramdisk.ufs"
   rm -rf "${ramdisk_root}"
-  
+
   log "Ramdisk creation completed"
 }
 
@@ -864,7 +941,7 @@ boot()
   # Try to unmount dev and release if mounted
   umount ${release}/dev >/dev/null 2>/dev/null || true
   umount ${release} >/dev/null 2>/dev/null || true
-  
+
   # Export ZFS pool and ensure it's clean
   log "Exporting ZFS pool..."
   zpool export ghostbsd
@@ -877,7 +954,7 @@ boot()
       break
     fi
   done
-  
+
   log "Boot environment preparation completed"
 }
 
@@ -887,16 +964,16 @@ image()
   cd script
   sh mkisoimages.sh -b $label "$iso_path" ${cd_root}
   cd -
-  
+
   # Verify ISO was created
   if [ ! -f "$iso_path" ]; then
     error_exit "ISO image was not created"
   fi
-  
+
   iso_size=$(stat -f %z "$iso_path")
   iso_size_mb=$((iso_size / 1024 / 1024))
   log "Created ISO: $(basename "$iso_path") (${iso_size_mb}MB)"
-  
+
   ls -lh "$iso_path"
   cd ${iso}
   shafile=$(echo "${iso_path}" | cut -d / -f6).sha256
@@ -910,15 +987,22 @@ image()
   transmission-create -o "${iso}/${torrent}" -t ${tracker1} -t ${tracker2} -t ${tracker3} "${iso_path}"
   chmod 644 "${iso}/${torrent}"
   cd -
-  
+
   log "=== Build completed successfully ==="
   log "ISO: $iso_path (${iso_size_mb}MB)"
   log "SHA256: ${iso}/${shafile}"
   log "Torrent: ${iso}/${torrent}"
+  log ""
+  log "=== Interactive Splash Screen Features ==="
+  log "• Boot loader splash with ESC toggle support"
+  log "• Console splash during system initialization"
+  log "• Animated service loading screen"
+  log "• ESC key reveals bootstrap messages anytime"
+  log "• Clean transition to desktop environment"
 }
 
 # Execute build pipeline with enhanced integration
-log "=== Starting GhostBSD build process ==="
+log "=== Starting GhostBSD build process with Interactive Splash Screen ==="
 log "Desktop: ${desktop}, Build type: ${build_type}, ZFS control: ${zfs_control}"
 
 workspace
@@ -927,7 +1011,7 @@ set_ghostbsd_version
 packages_software
 fetch_x_drivers_packages
 rc
-desktop_config
+desktop_config  # This now includes splash setup
 ghostbsd_config
 uzip
 ramdisk
