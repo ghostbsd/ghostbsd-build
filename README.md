@@ -8,7 +8,7 @@ The purpose of this tool is to quickly generate live images for GhostBSD.
 
 ## Features
 * Build GhostBSD from packages
-* Multiple desktop environments (Mate, XFCE, Gershwin, and Kde Plasma 6)
+* Multiple desktop environments (Mate, XFCE, Gershwin, and KDE Plasma 6)
 * Hybrid DVD/USB image
 * Configurable ZFS memory management for build optimization
 * Gzip compression support for smaller system images
