@@ -7,7 +7,7 @@ The purpose of this tool is to quickly generate live images for GhostBSD.
 
 ## Features
 * Build GhostBSD from packages
-* Mate and XFCE desktop environments
+* Mate, XFCE, Kde Plasma 6 desktop environments
 * Hybrid DVD/USB image
 
 ## Graphics support
@@ -53,6 +53,10 @@ or
 #### (Option) To build GhostBSD with __XFCE__ as default desktop
 ```
 ./build.sh -d xfce -b unstable
+```   
+#### (Option) To build GhostBSD with __KDE Plasma 6__ as default desktop
+```
+./build.sh -d plasma -b unstable
 ```   
 
 #### (Option) To build GhostBSD with __Gershwin__ as default desktop

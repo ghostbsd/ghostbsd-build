@@ -165,7 +165,15 @@ base()
 
 set_ghostbsd_version()
 {
-  version="-$(cat ${release}/etc/version)"
+  if [ "${build_type}" = "testing" ] || [ "${build_type}" = "unstable" ] ; then
+    # Add date suffix for testing and unstable builds
+    base_version="-$(cat ${release}/etc/version)"
+    date_suffix="-$(date +%m-%d-%H)"
+    version="${base_version}${date_suffix}"
+    log "Adding date suffix for ${build_type} build: ${date_suffix}"
+  else
+    version="-$(cat ${release}/etc/version)"
+  fi
   iso_path="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
 }
 
@@ -200,15 +208,15 @@ fetch_x_drivers_packages()
 {
   if [ "${build_type}" = "release" ] ; then
     pkg_url=$(pkg -R pkg/ -vv | grep '/stable.*/latest' | cut -d '"' -f2)
-  elif [ "${build_type}" = "testing" ]; then
-    pkg_url=$(pkg -R pkg/ -vv | grep '/testing.*/latest' | cut -d '"' -f2)
   else
     pkg_url=$(pkg -R pkg/ -vv | grep '/unstable.*/latest' | cut -d '"' -f2)
   fi
   mkdir ${release}/xdrivers
   yes | pkg -R "${cwd}/pkg/" update
-  echo """$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n %n-%v.pkg' 'xlibre-nvidia-driver' | grep -v libva)""" > ${release}/xdrivers/drivers-list
-  pkg_list="""$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n-%v.pkg' 'xlibre-nvidia-driver' | grep -v libva)"""
+  # TODO: Do not forgot to fix that when we move to xlibre.
+  #  We only skipping xlibre for now until we are doe testing.
+  echo """$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n %n-%v.pkg' 'nvidia-driver' | grep -v libva | grep -v xlibre)""" > ${release}/xdrivers/drivers-list
+  pkg_list="""$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n-%v.pkg' 'nvidia-driver' | grep -v libva| grep -v xlibre)"""
   for line in $pkg_list ; do
     fetch -o ${release}/xdrivers "${pkg_url}/All/$line"
   done
