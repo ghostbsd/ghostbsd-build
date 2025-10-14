@@ -5,6 +5,11 @@ set -e -u
 cwd="$(realpath)"
 export cwd
 
+# Enhanced logging function
+log() {
+    echo "$(date '+%H:%M:%S') [BUILD] $*"
+}
+
 # Only run as superuser
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
