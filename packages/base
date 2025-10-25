@@ -26,8 +26,10 @@ GhostBSD-ccdconfig-man
 GhostBSD-certctl
 GhostBSD-certctl-man
 GhostBSD-clang
+GhostBSD-clang-dev
 GhostBSD-clang-man
 GhostBSD-clibs
+GhostBSD-clibs-dev
 GhostBSD-clibs-lib32
 GhostBSD-clibs-man
 GhostBSD-clibs-man-lib32
@@ -113,6 +115,7 @@ GhostBSD-libblocksruntime-lib32
 GhostBSD-libbsdstat
 GhostBSD-libbsdstat-lib32
 GhostBSD-libbsm
+GhostBSD-libbsm-dev
 GhostBSD-libbsm-lib32
 GhostBSD-libbsm-man
 GhostBSD-libbz2
@@ -121,6 +124,7 @@ GhostBSD-libcasper
 GhostBSD-libcasper-lib32
 GhostBSD-libcasper-man
 GhostBSD-libcompat-man
+GhostBSD-libcompiler_rt-dev
 GhostBSD-libcuse
 GhostBSD-libcuse-lib32
 GhostBSD-libcuse-man
@@ -136,6 +140,7 @@ GhostBSD-libipt
 GhostBSD-libldns
 GhostBSD-libldns-lib32
 GhostBSD-liblzma
+GhostBSD-liblzma-dev
 GhostBSD-liblzma-lib32
 GhostBSD-libmagic
 GhostBSD-libmagic-lib32
@@ -157,6 +162,7 @@ GhostBSD-libstdbuf
 GhostBSD-libstdbuf-lib32
 GhostBSD-libstdbuf-man
 GhostBSD-libstdthreads
+GhostBSD-libstdthreads-dev
 GhostBSD-libstdthreads-lib32
 GhostBSD-libstdthreads-man
 GhostBSD-libthread_db
@@ -192,6 +198,7 @@ GhostBSD-nvme-tools
 GhostBSD-nvme-tools-man
 GhostBSD-openssl
 GhostBSD-openssl-lib
+GhostBSD-openssl-lib-dev
 GhostBSD-openssl-lib-lib32
 GhostBSD-openssl-lib-man
 GhostBSD-openssl-man
@@ -215,6 +222,7 @@ GhostBSD-rescue
 GhostBSD-resolvconf
 GhostBSD-resolvconf-man
 GhostBSD-runtime
+GhostBSD-runtime-dev
 GhostBSD-runtime-lib32
 GhostBSD-runtime-man
 GhostBSD-smbutils
@@ -235,6 +243,7 @@ GhostBSD-unbound
 GhostBSD-unbound-lib32
 GhostBSD-unbound-man
 GhostBSD-utilities
+GhostBSD-utilities-dev
 GhostBSD-utilities-lib32
 GhostBSD-utilities-man
 GhostBSD-utilities-man-lib32
