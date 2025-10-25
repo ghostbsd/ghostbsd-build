@@ -46,6 +46,7 @@ community_setup_liveuser()
    sed -i '' -e 's/NoDisplay=true/NoDisplay=false/g' "${release}/home/${live_user}/Desktop/gbi.desktop"
    # Trust desktop file for XFCE 4.18+ using checksum metadata
    if [ "${desktop}" = "xfce" ] ; then
+     # shellcheck disable=SC2016
      chroot "${release}" su - "${live_user}" -c '
        dbus-run-session -- sh -c "
          /usr/local/libexec/gvfsd >/dev/null 2>&1 &
