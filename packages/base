@@ -32,7 +32,6 @@ GhostBSD-clibs
 GhostBSD-clibs-dev
 GhostBSD-clibs-lib32
 GhostBSD-clibs-man
-GhostBSD-clibs-man-lib32
 GhostBSD-console-tools
 GhostBSD-console-tools-man
 GhostBSD-csh
@@ -50,9 +49,6 @@ GhostBSD-dhclient
 GhostBSD-dhclient-man
 GhostBSD-dma
 GhostBSD-dma-man
-GhostBSD-dpv
-GhostBSD-dpv-lib32
-GhostBSD-dpv-man
 GhostBSD-dtrace
 GhostBSD-dtrace-lib32
 GhostBSD-dtrace-man
@@ -61,10 +57,7 @@ GhostBSD-dwatch-man
 GhostBSD-ee
 GhostBSD-ee-man
 GhostBSD-efi-tools
-GhostBSD-efi-tools-lib32
 GhostBSD-efi-tools-man
-GhostBSD-elftoolchain
-GhostBSD-elftoolchain-man
 GhostBSD-fetch
 GhostBSD-fetch-lib32
 GhostBSD-fetch-man
@@ -97,8 +90,6 @@ GhostBSD-jail
 GhostBSD-jail-man
 GhostBSD-kerberos
 GhostBSD-kerberos-lib
-GhostBSD-kerberos-lib-lib32
-GhostBSD-kerberos-lib-man
 GhostBSD-kerberos-lib32
 GhostBSD-kerberos-man
 GhostBSD-kernel-generic
@@ -199,8 +190,6 @@ GhostBSD-nvme-tools-man
 GhostBSD-openssl
 GhostBSD-openssl-lib
 GhostBSD-openssl-lib-dev
-GhostBSD-openssl-lib-lib32
-GhostBSD-openssl-lib-man
 GhostBSD-openssl-man
 GhostBSD-periodic
 GhostBSD-periodic-man
@@ -236,6 +225,7 @@ GhostBSD-syslogd-man
 GhostBSD-tcpd
 GhostBSD-tcpd-lib32
 GhostBSD-tcpd-man
+GhostBSD-toolchain
 GhostBSD-ufs
 GhostBSD-ufs-lib32
 GhostBSD-ufs-man
@@ -246,7 +236,6 @@ GhostBSD-utilities
 GhostBSD-utilities-dev
 GhostBSD-utilities-lib32
 GhostBSD-utilities-man
-GhostBSD-utilities-man-lib32
 GhostBSD-vi
 GhostBSD-vi-man
 GhostBSD-vt-data
