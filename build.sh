@@ -5,11 +5,6 @@ set -e -u
 cwd="$(realpath)"
 export cwd
 
-# Enhanced logging function
-log() {
-    echo "$(date '+%H:%M:%S') [BUILD] $*"
-}
-
 # Only run as superuser
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
@@ -53,7 +48,7 @@ elif [ "${build_type}" = "release" ] ; then
 elif [ "${build_type}" = "unstable" ] ; then
   PKG_CONF="GhostBSD_Unstable"
 else
-  printf "\t-b Build type: unstable, testing, or release\n"
+  printf "\t-b Build type: unstable, testing, or release"
   exit 1
 fi
 
@@ -175,7 +170,6 @@ set_ghostbsd_version()
     base_version="-$(cat ${release}/etc/version)"
     date_suffix="-$(date +%m-%d-%H)"
     version="${base_version}${date_suffix}"
-    log "Adding date suffix for ${build_type} build: ${date_suffix}"
   else
     version="-$(cat ${release}/etc/version)"
   fi
@@ -213,8 +207,6 @@ fetch_x_drivers_packages()
 {
   if [ "${build_type}" = "release" ] ; then
     pkg_url=$(pkg -R pkg/ -vv | grep '/stable.*/latest' | cut -d '"' -f2)
-  elif [ "${build_type}" = "testing" ]; then
-    pkg_url=$(pkg -R pkg/ -vv | grep '/testing.*/latest' | cut -d '"' -f2)
   else
     pkg_url=$(pkg -R pkg/ -vv | grep '/unstable.*/latest' | cut -d '"' -f2)
   fi
