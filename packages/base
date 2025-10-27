@@ -188,8 +188,8 @@ GhostBSD-nuageinit
 GhostBSD-nvme-tools
 GhostBSD-nvme-tools-man
 GhostBSD-openssl
+GhostBSD-openssl-dev
 GhostBSD-openssl-lib
-GhostBSD-openssl-lib-dev
 GhostBSD-openssl-man
 GhostBSD-periodic
 GhostBSD-periodic-man
@@ -227,7 +227,6 @@ GhostBSD-tcpd-lib32
 GhostBSD-tcpd-man
 GhostBSD-toolchain
 GhostBSD-ufs
-GhostBSD-ufs-lib32
 GhostBSD-ufs-man
 GhostBSD-unbound
 GhostBSD-unbound-lib32
