@@ -8,8 +8,6 @@ GhostBSD-at
 GhostBSD-at-man
 GhostBSD-autofs
 GhostBSD-autofs-man
-GhostBSD-bhyve
-GhostBSD-bhyve-man
 GhostBSD-blocklist
 GhostBSD-blocklist-lib32
 GhostBSD-blocklist-man
@@ -84,10 +82,6 @@ GhostBSD-ipf
 GhostBSD-ipf-man
 GhostBSD-ipfw
 GhostBSD-ipfw-man
-GhostBSD-iscsi
-GhostBSD-iscsi-man
-GhostBSD-jail
-GhostBSD-jail-man
 GhostBSD-kerberos
 GhostBSD-kerberos-lib
 GhostBSD-kerberos-lib32
@@ -182,8 +176,6 @@ GhostBSD-netmap-lib32
 GhostBSD-netmap-man
 GhostBSD-newsyslog
 GhostBSD-newsyslog-man
-GhostBSD-nfs
-GhostBSD-nfs-man
 GhostBSD-nuageinit
 GhostBSD-nvme-tools
 GhostBSD-nvme-tools-man
@@ -214,9 +206,6 @@ GhostBSD-runtime
 GhostBSD-runtime-dev
 GhostBSD-runtime-lib32
 GhostBSD-runtime-man
-GhostBSD-smbutils
-GhostBSD-smbutils-lib32
-GhostBSD-smbutils-man
 GhostBSD-ssh
 GhostBSD-ssh-lib32
 GhostBSD-ssh-man
