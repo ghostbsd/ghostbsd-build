@@ -2,9 +2,10 @@ GhostBSD-acct
 GhostBSD-acpi
 GhostBSD-apm
 GhostBSD-at
+GhostBSD-audit
+GhostBSD-audit-dev
 GhostBSD-audit-lib
-GhostBSD-audit-lib-dev
-GhostBSD-audit-lib-lib32
+GhostBSD-audit-lib32
 GhostBSD-autofs
 GhostBSD-blocklist
 GhostBSD-blocklist-lib32
