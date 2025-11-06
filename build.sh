@@ -165,7 +165,7 @@ base()
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
   touch ${release}/etc/fstab
-  mkdir ${release}/cdrom ${release}/mnt ${release}/media
+  mkdir -p ${release}/cdrom ${release}/mnt ${release}/media
 }
 
 set_ghostbsd_version()
