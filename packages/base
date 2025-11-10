@@ -12,6 +12,7 @@ GhostBSD-blocklist-lib32
 GhostBSD-bluetooth
 GhostBSD-bluetooth-lib32
 GhostBSD-bootloader
+GhostBSD-bsdconfig
 GhostBSD-bsnmp
 GhostBSD-bsnmp-lib32
 GhostBSD-bzip2
