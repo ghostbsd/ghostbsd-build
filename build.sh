@@ -99,6 +99,7 @@ label="GhostBSD"
 
 workspace()
 {
+  log "Setting up workspace and cleaning previous builds..."
   # Unmount any existing mounts and clean up
   umount ${packages_storage} >/dev/null 2>/dev/null || true
   umount ${release}/dev >/dev/null 2>/dev/null || true
@@ -147,6 +148,7 @@ workspace()
 
 base()
 {
+  log "Installing base system packages..."
   if [ "${desktop}" = "test" ] ; then
     base_list="$(cat "${cwd}/packages/test_base")"
     vital_base="$(cat "${cwd}/packages/vital/test_base")"
@@ -170,6 +172,7 @@ base()
 
 set_ghostbsd_version()
 {
+  log "Setting GhostBSD version..."
   if [ "${build_type}" = "testing" ] || [ "${build_type}" = "unstable" ] ; then
     # Add date suffix for testing and unstable builds
     base_version="-$(cat ${release}/etc/version)"
@@ -184,6 +187,7 @@ set_ghostbsd_version()
 
 packages_software()
 {
+  log "Installing desktop packages (${desktop})..."
   if [ "${build_type}" = "unstable" ] ; then
     cp pkg/GhostBSD_Unstable.conf ${release}/etc/pkg/GhostBSD.conf
   fi
@@ -211,6 +215,7 @@ packages_software()
 
 fetch_x_drivers_packages()
 {
+  log "Fetching X drivers packages..."
   if [ "${build_type}" = "release" ] ; then
     pkg_url=$(pkg -R pkg/ -vv | grep '/stable.*/latest' | cut -d '"' -f2)
   elif [ "${build_type}" = "testing" ]; then
@@ -232,6 +237,7 @@ fetch_x_drivers_packages()
 
 rc()
 {
+  log "Configuring rc settings..."
   chroot ${release} touch /etc/rc.conf
   chroot ${release} sysrc hostname='livecd'
   chroot ${release} sysrc zfs_enable="YES"
@@ -255,6 +261,7 @@ rc()
 
 ghostbsd_config()
 {
+  log "Applying GhostBSD configuration..."
   # echo "gop set 0" >> ${release}/boot/loader.rc.local
   mkdir -p ${release}/usr/local/share/ghostbsd
   echo "${desktop}" > ${release}/usr/local/share/ghostbsd/desktop
@@ -270,12 +277,14 @@ ghostbsd_config()
 
 desktop_config()
 {
+  log "Applying desktop-specific configuration (${desktop})..."
   # run config for GhostBSD flavor
   sh "${cwd}/desktop_config/${desktop}.sh"
 }
 
 uzip()
 {
+  log "Creating compressed uzip filesystem..."
   install -o root -g wheel -m 755 -d "${cd_root}"
   mkdir "${cd_root}/data"
   zfs snapshot ghostbsd@clean
@@ -284,6 +293,7 @@ uzip()
 
 ramdisk()
 {
+  log "Creating ramdisk..."
   ramdisk_root="${cd_root}/data/ramdisk"
   mkdir -p "${ramdisk_root}"
   cd "${release}"
@@ -303,6 +313,7 @@ ramdisk()
 
 boot()
 {
+  log "Preparing boot files..."
   cd "${release}"
   tar -cf - boot | tar -xf - -C "${cd_root}"
   cp COPYRIGHT ${cd_root}/COPYRIGHT
@@ -330,6 +341,7 @@ boot()
 
 image()
 {
+  log "Creating ISO image..."
   cd script
   sh mkisoimages.sh -b $label "$iso_path" ${cd_root}
   cd -
