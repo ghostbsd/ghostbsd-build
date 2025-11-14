@@ -100,6 +100,8 @@ GhostBSD-libucl-lib32
 GhostBSD-libvgl
 GhostBSD-libvgl-lib32
 GhostBSD-libvmmapi
+GhostBSD-libz
+GhostBSD-libz-dev
 GhostBSD-lld
 GhostBSD-lldb
 GhostBSD-local-unbound
