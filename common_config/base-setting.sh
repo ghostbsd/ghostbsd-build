@@ -10,7 +10,7 @@ patch_etc_files()
 
 patch_loader_conf_d()
 {
-  local patches_dir="${cwd}/common_config/base-setting/patches/boot/loader.conf.d"
+  patches_dir="${cwd}/common_config/base-setting/patches/boot/loader.conf.d"
   
   if [ -d "${patches_dir}" ]; then
     echo "Applying loader.conf.d configurations..."
