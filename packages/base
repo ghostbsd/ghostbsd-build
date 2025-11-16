@@ -151,4 +151,6 @@ GhostBSD-xz-lib32
 GhostBSD-yp
 GhostBSD-zfs
 GhostBSD-zfs-lib32
+GhostBSD-zlib
+GhostBSD-zlib-dev
 GhostBSD-zoneinfo
