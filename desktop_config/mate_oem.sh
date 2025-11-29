@@ -27,6 +27,7 @@ setup_xinit()
 }
 
 patch_etc_files
+patch_loader_conf_d
 
 git_pc_sysinstall
 git_gbi

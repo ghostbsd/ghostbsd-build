@@ -17,8 +17,7 @@ GhostBSD-dhclient
 GhostBSD-dwatch
 GhostBSD-ee
 GhostBSD-efi-tools
-GhostBSD-efi-tools-lib32
-GhostBSD-elftoolchain
+GhostBSD-toolchain
 GhostBSD-fetch
 GhostBSD-fetch-lib32
 GhostBSD-fwget
@@ -32,7 +31,6 @@ GhostBSD-ipf
 GhostBSD-ipfw
 GhostBSD-kerberos
 GhostBSD-kerberos-lib
-GhostBSD-kerberos-lib-lib32
 GhostBSD-kerberos-lib32
 GhostBSD-kernel-generic
 GhostBSD-lib9p
@@ -45,10 +43,10 @@ GhostBSD-libblocksruntime
 GhostBSD-libblocksruntime-lib32
 GhostBSD-libbsdstat
 GhostBSD-libbsdstat-lib32
-GhostBSD-libbsm
-GhostBSD-libbsm-lib32
-GhostBSD-libbz2
-GhostBSD-libbz2-lib32
+GhostBSD-audit-lib
+GhostBSD-audit-lib32
+GhostBSD-bzip2
+GhostBSD-bzip2-lib32
 GhostBSD-libcasper
 GhostBSD-libcasper-lib32
 GhostBSD-libcuse
@@ -62,8 +60,8 @@ GhostBSD-libexecinfo-lib32
 GhostBSD-libipt
 GhostBSD-libldns
 GhostBSD-libldns-lib32
-GhostBSD-liblzma
-GhostBSD-liblzma-lib32
+GhostBSD-xz
+GhostBSD-xz-lib32
 GhostBSD-libmagic
 GhostBSD-libmagic-lib32
 GhostBSD-libpathconv
@@ -72,14 +70,8 @@ GhostBSD-librpcsec_gss
 GhostBSD-librpcsec_gss-lib32
 GhostBSD-librss
 GhostBSD-librss-lib32
-GhostBSD-libsdp
-GhostBSD-libsdp-lib32
 GhostBSD-libsqlite3
 GhostBSD-libsqlite3-lib32
-GhostBSD-libstdbuf
-GhostBSD-libstdbuf-lib32
-GhostBSD-libstdthreads
-GhostBSD-libstdthreads-lib32
 GhostBSD-libthread_db
 GhostBSD-libthread_db-lib32
 GhostBSD-libucl
@@ -96,7 +88,6 @@ GhostBSD-newsyslog
 GhostBSD-nvme-tools
 GhostBSD-openssl
 GhostBSD-openssl-lib
-GhostBSD-openssl-lib-lib32
 GhostBSD-periodic
 GhostBSD-pf
 GhostBSD-pkg-bootstrap
@@ -114,8 +105,8 @@ GhostBSD-ssh-lib32
 GhostBSD-syslogd
 GhostBSD-tcpd
 GhostBSD-tcpd-lib32
-GhostBSD-unbound
-GhostBSD-unbound-lib32
+GhostBSD-local-unbound
+GhostBSD-local-unbound-lib32
 GhostBSD-utilities
 GhostBSD-utilities-lib32
 GhostBSD-vt-data

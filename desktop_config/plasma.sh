@@ -55,6 +55,7 @@ setup_xinit() {
 
 # Execute setup routines
 patch_etc_files
+patch_loader_conf_d
 community_setup_liveuser
 community_setup_autologin
 sddm_setup
