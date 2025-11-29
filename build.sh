@@ -27,19 +27,17 @@ help_function()
   printf "\t-h for help\n"
   printf "\t-d Desktop: %s\n" "${desktop_list}"
   printf "\t-b Build type: unstable, testing, or release\n"
-  printf "\t-t Test: FreeBSD os packages\n"
    exit 1 # Exit script after printing help
 }
 # Set mate and release to be default
 export desktop="mate"
 export build_type="release"
 
-while getopts "d:b:th" opt
+while getopts "d:b:h" opt
 do
    case "$opt" in
       'd') export desktop="$OPTARG" ;;
       'b') export build_type="$OPTARG" ;;
-      't') export desktop="test" ; build_type="test";;
       'h') help_function ;;
       '?') help_function ;;
       *) help_function ;;
@@ -149,13 +147,8 @@ workspace()
 base()
 {
   log "Installing base system packages..."
-  if [ "${desktop}" = "test" ] ; then
-    base_list="$(cat "${cwd}/packages/test_base")"
-    vital_base="$(cat "${cwd}/packages/vital/test_base")"
-  else
-    base_list="$(cat "${cwd}/packages/base")"
-    vital_base="$(cat "${cwd}/packages/vital/base")"
-  fi
+  base_list="$(cat "${cwd}/packages/base")"
+  vital_base="$(cat "${cwd}/packages/vital/base")"
   mkdir -p ${release}/etc
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
