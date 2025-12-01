@@ -18,12 +18,12 @@ setup_xinit()
   echo "exec marco &" > "${release}/home/${live_user}/.xinitrc"
   # Todo update wallpaper for 26.01 also find a way to automate the wall paper
   echo "exec feh --bg-fill /usr/local/share/backgrounds/ghostbsd/blue-layered-stripes.jpg &" >> "${release}/home/${live_user}/.xinitrc"
-  echo "exec sudo install-station-init" >> "${release}/home/${live_user}/.xinitrc"
+  echo "exec sudo install-station" >> "${release}/home/${live_user}/.xinitrc"
   chmod 765 "${release}/home/${live_user}/.xinitrc"
   # root
   echo "exec marco &" > "${release}/root/.xinitrc"
   echo "exec feh --bg-fill /usr/local/share/backgrounds/ghostbsd/blue-layered-stripes.jpg &" >> "${release}/root/.xinitrc"
-  echo "exec setup-station" >> "${release}/root/.xinitrc"
+  echo "exec setup-station-init" >> "${release}/root/.xinitrc"
 }
 
 patch_etc_files
