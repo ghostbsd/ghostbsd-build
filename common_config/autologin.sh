@@ -4,33 +4,27 @@ set -e -u
 
 ghostbsd_setup_autologin()
 {
-  {
-    echo "# ${live_user} user autologin"
-    echo "${live_user}:\\"
-    echo ":al=${live_user}:ht:np:sp#115200:"
-  } >> "${release}/etc/gettytab"
-  sed -i "" "/ttyv0/s/Pc/${live_user}/g" "${release}/etc/ttys"
-  mkdir -p "${release}/home/${live_user}/.config/fish"
-  printf "set tty (tty)
-  if test \$tty = \"/dev/ttyv0\"
-    sudo xconfig auto
-    sleep 1
-    sudo rm -rf /xdrivers
-    sleep 1
-    startx
-    sleep 1
-    startx
-  end
+  if [ "${desktop}" != "oem" ] ; then
+    {
+      echo "# ${live_user} user autologin"
+      echo "${live_user}:\\"
+      echo ":al=${live_user}:ht:np:sp#115200:"
+    } >> "${release}/etc/gettytab"
+    sed -i "" "/ttyv0/s/Pc/${live_user}/g" "${release}/etc/ttys"
+    mkdir -p "${release}/home/${live_user}/.config/fish"
+    printf "set tty (tty)
+    if test \$tty = \"/dev/ttyv0\"
+      sudo xconfig auto
+      sleep 1
+      sudo rm -rf /xdrivers
+      sleep 1
+      startx
+      sleep 1
+      startx
+    end
 " > "${release}/home/${live_user}/.config/fish/config.fish"
-  chmod 765 "${release}/home/${live_user}/.config/fish/config.fish"
-
-  # setup root
-  printf "if [ \"\$(tty)\" = \"/dev/ttyv0\" ]; then
-  startx
-  logout
-fi
-" >> "${release}/root/.shrc"
-  chmod 644 "${release}/root/.shrc"
+    chmod 765 "${release}/home/${live_user}/.config/fish/config.fish"
+  fi
 }
 
 community_setup_autologin()
