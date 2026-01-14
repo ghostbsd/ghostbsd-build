@@ -26,6 +26,12 @@ setup_xinit()
   echo "exec setup-station-init" >> "${release}/root/.xinitrc"
 }
 
+rc_conf_setup()
+{
+  chroot ${release} sysrc xconfig_enable="YES"
+  chroot ${release} sysrc install_station_enable="YES"
+}
+
 patch_etc_files
 patch_loader_conf_d
 

@@ -16,10 +16,6 @@ ghostbsd_setup_autologin()
     if test \$tty = \"/dev/ttyv0\"
       sudo xconfig auto
       sleep 1
-      sudo rm -rf /xdrivers
-      sleep 1
-      startx
-      sleep 1
       startx
     end
 " > "${release}/home/${live_user}/.config/fish/config.fish"
