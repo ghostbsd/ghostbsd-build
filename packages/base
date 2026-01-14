@@ -105,6 +105,7 @@ GhostBSD-lldb
 GhostBSD-local-unbound
 GhostBSD-local-unbound-lib32
 GhostBSD-locales
+GhostBSD-mandoc
 GhostBSD-mlx-tools
 GhostBSD-mtree
 GhostBSD-natd
@@ -130,6 +131,8 @@ GhostBSD-resolvconf
 GhostBSD-runtime
 GhostBSD-runtime-dev
 GhostBSD-runtime-lib32
+GhostBSD-sound
+GhostBSD-sound-lib32
 GhostBSD-ssh
 GhostBSD-ssh-lib32
 GhostBSD-syslogd
