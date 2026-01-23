@@ -8,49 +8,108 @@ set -e -u
 . "${cwd}/common_config/finalize.sh"
 . "${cwd}/common_config/setuser.sh"
 
-sddm_setup() {
-  # Path to SDDM config
-  sddm_conf="${release}/etc/sddm.conf"
+update_rcconf_dm() {
+  rc_conf="${release}/etc/rc.conf"
+  echo 'ntpdate_hosts="asia.pool.ntp.org"' >> "${rc_conf}"
+}
 
-  # Create or update SDDM configuration
-  if [ ! -f "${sddm_conf}" ]; then
-    cat <<EOF > "${sddm_conf}"
-[Autologin]
-User=${live_user}
-Session=plasma
+lightdm_setup() {
+  lightdm_conf="${release}/usr/local/etc/lightdm/lightdm.conf"
+  sed -i '' "s@#greeter-session=.*@greeter-session=slick-greeter@" "${lightdm_conf}"
+  sed -i '' "s@#user-session=default@user-session=plasma@" "${lightdm_conf}"
+}
 
-[Theme]
-Current=breeze
-
-[General]
-Numlock=on
+# ADD: Enable KDE Greeter
+lightdm_kde_greeter_conf() {
+  mkdir -p "${release}/usr/local/etc/lightdm/lightdm.conf.d"
+  cat <<EOF > "${release}/usr/local/etc/lightdm/lightdm.conf.d/50-myconfig.conf"
+[Seat:*]
+greeter-session=lightdm-kde-greeter
 EOF
-  else
-    # Ensure required sections exist and update keys
-    grep -q "^\[Autologin\]" "${sddm_conf}" || echo "[Autologin]" >> "${sddm_conf}"
-    sed -i '' "s@^User=.*@User=${live_user}@" "${sddm_conf}" || echo "User=${live_user}" >> "${sddm_conf}"
-    sed -i '' "s@^Session=.*@Session=plasma@" "${sddm_conf}" || echo "Session=plasma" >> "${sddm_conf}"
+}
 
-    grep -q "^\[Theme\]" "${sddm_conf}" || echo "[Theme]" >> "${sddm_conf}"
-    sed -i '' "s@^Current=.*@Current=breeze@" "${sddm_conf}" || echo "Current=breeze" >> "${sddm_conf}"
+set_localtime_from_bios() {
+  tz_target="${release}/etc/localtime"
 
-    grep -q "^\[General\]" "${sddm_conf}" || echo "[General]" >> "${sddm_conf}"
-    sed -i '' "s@^Numlock=.*@Numlock=on@" "${sddm_conf}" || echo "Numlock=on" >> "${sddm_conf}"
-  fi
+  rm -f "${tz_target}"
+  ln -s /usr/share/zoneinfo/UTC "${tz_target}"
+
+  rc_conf="${release}/etc/rc.conf"
+  sed -i '' '/^ntpd_enable=.*/d' "${rc_conf}" 2>/dev/null || true
+  sed -i '' '/^ntpd_sync_on_start=.*/d' "${rc_conf}" 2>/dev/null || true
+  sed -i '' '/^local_unbound_enable=.*/d' "${rc_conf}" 2>/dev/null || true
+
+  {
+    echo 'ntpd_enable="YES"'
+    echo 'ntpd_sync_on_start="YES"'
+    echo 'ntpdate_enable="YES"'
+  } >> "${rc_conf}"
+}
+
+plasma_settings() {
+  sysctl_conf="${release}/etc/sysctl.conf"
+
+  sed -i '' '/^net.local.stream.recvspace/d' "${sysctl_conf}" 2>/dev/null || true
+  sed -i '' '/^net.local.stream.sendspace/d' "${sysctl_conf}" 2>/dev/null || true
+
+  {
+    echo 'net.local.stream.recvspace=65536'
+    echo 'net.local.stream.sendspace=65536'
+    echo 'vfs.usermount=1'
+  } >> "${sysctl_conf}"
 }
 
 setup_xinit() {
-  # Disable screen locking in KDE Plasma for live_user
   chroot "${release}" su "${live_user}" -c "
     mkdir -p /home/${live_user}/.config
+
+    # Disable lock screen
     kwriteconfig5 --file /home/${live_user}/.config/kscreenlockerrc --group Daemon --key Autolock false
     kwriteconfig5 --file /home/${live_user}/.config/kscreenlockerrc --group Daemon --key LockOnResume false
-    echo 'exec ck-launch-session startplasma-x11' >> /home/${live_user}/.xinitrc
+
+    # Add keyboard config
+    grep -qxF 'setxkbmap us' /home/${live_user}/.xinitrc || echo 'setxkbmap us' >> /home/${live_user}/.xinitrc
+    grep -qxF 'setxkbmap -option ctrl:swapcaps' /home/${live_user}/.xinitrc || echo 'setxkbmap -option ctrl:swapcaps' >> /home/${live_user}/.xinitrc
+
+    # Plasma session
+    grep -qxF 'exec dbus-launch --exit-with-session ck-launch-session startplasma-wayland 2> .error.log' /home/${live_user}/.xinitrc \
+    || echo 'exec dbus-launch --exit-with-session ck-launch-session startplasma-wayland 2> .error.log' >> /home/${live_user}/.xinitrc
   "
 
-  # Set the same .xinitrc for root and skel
-  echo "exec ck-launch-session startplasma-x11" > "${release}/root/.xinitrc"
-  echo "exec ck-launch-session startplasma-x11" > "${release}/usr/share/skel/dot.xinitrc"
+  echo "setxkbmap us" > "${release}/root/.xinitrc"
+  echo "setxkbmap -option ctrl:swapcaps" >> "${release}/root/.xinitrc"
+  echo "exec dbus-launch --exit-with-session ck-launch-session startplasma-wayland 2> .error.log" >> "${release}/root/.xinitrc"
+
+  echo "setxkbmap us" > "${release}/usr/share/skel/.xinitrc"
+  echo "setxkbmap -option ctrl:swapcaps" >> "${release}/usr/share/skel/.xinitrc"
+  echo "exec dbus-launch --exit-with-session ck-launch-session startplasma-wayland 2> .error.log" >> "${release}/usr/share/skel/.xinitrc"
+
+}
+
+configure_devfs() {
+  devfs_rules="${release}/etc/devfs.rules"
+  rc_conf="${release}/etc/rc.conf"
+
+  echo '[localrules=10]' >> "${devfs_rules}"
+  echo "add path 'da*' mode 0666 group operator" >> "${devfs_rules}"
+  echo 'devfs_system_ruleset="localrules"' >> "${rc_conf}"
+}
+
+setup_polkit_rules() {
+  polkit_rules_dir="${release}/usr/local/etc/polkit-1/rules.d"
+  polkit_rules_file="${polkit_rules_dir}/10-mount.rules"
+
+  mkdir -p "${polkit_rules_dir}"
+
+  cat <<EOF > "${polkit_rules_file}"
+polkit.addRule(function(action, subject) {
+    if ((action.id == "org.freedesktop.udisks2.filesystem-mount-system" ||
+         action.id == "org.freedesktop.udisks2.filesystem-mount") &&
+        subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+    }
+});
+EOF
 }
 
 # Execute setup routines
@@ -58,6 +117,12 @@ patch_etc_files
 patch_loader_conf_d
 community_setup_liveuser
 community_setup_autologin
-sddm_setup
+configure_devfs
+update_rcconf_dm
+lightdm_setup
+lightdm_kde_greeter_conf
+set_localtime_from_bios
+plasma_settings
+setup_polkit_rules
 setup_xinit
 final_setup

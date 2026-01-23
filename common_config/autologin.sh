@@ -25,13 +25,12 @@ ghostbsd_setup_autologin()
   chmod 765 "${release}/home/${live_user}/.config/fish/config.fish"
 
   # setup root
-  mkdir -p "${release}/root/.config/fish"
-  printf "set tty (tty)
-  if test \$tty = \"/dev/ttyv0\"
-    exec startx
-  end
-" > "${release}/root/.config/fish/config.fish"
-  chmod 765 "${release}/root/.config/fish/config.fish"
+  printf "if [ \"\$(tty)\" = \"/dev/ttyv0\" ]; then
+  startx
+  logout
+fi
+" >> "${release}/root/.shrc"
+  chmod 644 "${release}/root/.shrc"
 }
 
 community_setup_autologin()
