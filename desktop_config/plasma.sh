@@ -39,9 +39,11 @@ set_localtime_from_bios() {
   sed -i '' '/^ntpd_sync_on_start=.*/d' "${rc_conf}" 2>/dev/null || true
   sed -i '' '/^local_unbound_enable=.*/d' "${rc_conf}" 2>/dev/null || true
 
-  echo 'ntpd_enable="YES"' >> "${rc_conf}"
-  echo 'ntpd_sync_on_start="YES"' >> "${rc_conf}"
-  echo 'ntpdate_enable="YES"' >> "${rc_conf}"
+  {
+    echo 'ntpd_enable="YES"'
+    echo 'ntpd_sync_on_start="YES"'
+    echo 'ntpdate_enable="YES"'
+  } >> "${rc_conf}"
 }
 
 plasma_settings() {
@@ -50,9 +52,11 @@ plasma_settings() {
   sed -i '' '/^net.local.stream.recvspace/d' "${sysctl_conf}" 2>/dev/null || true
   sed -i '' '/^net.local.stream.sendspace/d' "${sysctl_conf}" 2>/dev/null || true
 
-  echo 'net.local.stream.recvspace=65536' >> "${sysctl_conf}"
-  echo 'net.local.stream.sendspace=65536' >> "${sysctl_conf}"
-  echo 'vfs.usermount=1' >> "${sysctl_conf}"
+  {
+    echo 'net.local.stream.recvspace=65536'
+    echo 'net.local.stream.sendspace=65536'
+    echo 'vfs.usermount=1'
+  } >> "${sysctl_conf}"
 }
 
 setup_xinit() {
