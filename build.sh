@@ -218,10 +218,8 @@ fetch_x_drivers_packages()
   fi
   mkdir ${release}/xdrivers
   yes | pkg -R "${cwd}/pkg/" update -r ${PKG_CONF}
-  # TODO: Do not forgot to fix that when we move to xlibre.
-  #  We only skipping xlibre for now until we are doe testing.
-  echo """$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n %n-%v.pkg' 'nvidia-driver' | grep -v libva | grep -v xlibre)""" > ${release}/xdrivers/drivers-list
-  pkg_list="""$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n-%v.pkg' 'nvidia-driver' | grep -v libva| grep -v xlibre)"""
+  echo """$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n %n-%v.pkg' 'xlibre-nvidia-driver' | grep -v libva)""" > ${release}/xdrivers/drivers-list
+  pkg_list="""$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n-%v.pkg' 'xlibre-nvidia-driver' | grep -v libva)"""
   for line in $pkg_list ; do
     fetch -o ${release}/xdrivers "${pkg_url}/All/$line"
   done
