@@ -41,6 +41,7 @@ GhostBSD-ee
 GhostBSD-efi-tools
 GhostBSD-fetch
 GhostBSD-fetch-lib32
+GhostBSD-firmware-iwm
 GhostBSD-ftp
 GhostBSD-fwget
 GhostBSD-geom
