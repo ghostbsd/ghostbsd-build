@@ -239,6 +239,10 @@ rc()
   chroot ${release} sysrc moused_enable="YES"
   chroot ${release} sysrc dbus_enable="YES"
   chroot ${release} sysrc lightdm_enable="NO"
+  if [ "${desktop}" = "gershwin" ] ; then
+    chroot ${release} sysrc dshelper_enable="YES"
+    chroot ${release} sysrc loginwindow_enable="NO"
+  fi
   chroot ${release} sysrc webcamd_enable="YES"
   chroot ${release} sysrc firewall_enable="YES"
   chroot ${release} sysrc firewall_type="workstation"
