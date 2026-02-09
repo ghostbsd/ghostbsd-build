@@ -72,7 +72,7 @@ community_setup_autologin_gershwin()
   sed -i "" "/ttyv0/s/Pc/${live_user}/g" "${release}/etc/ttys"
 
   if [ -f "${release}/usr/local/bin/xconfig" ] ; then
-    cat > "${release}/Users/${live_user}/.zshrc" <<'EOF'
+    cat > "${release}/Local/Users/${live_user}/.zshrc" <<'EOF'
 if [ ! -f /tmp/.xstarted ]; then
   touch /tmp/.xstarted
   sudo xconfig auto
@@ -85,7 +85,7 @@ if [ ! -f /tmp/.xstarted ]; then
 fi
 EOF
 
-    chmod 765 "${release}/Users/${live_user}/.zshrc"
-    chown 1100:wheel "${release}/Users/${live_user}/.zshrc"
+    chmod 765 "${release}/Local/Users/${live_user}/.zshrc"
+    chown 1100:wheel "${release}/Local/Users/${live_user}/.zshrc"
   fi
 }
