@@ -25,6 +25,5 @@ patch_loader_conf_d
 community_setup_liveuser_gershwin
 community_setup_autologin_gershwin
 lightdm_setup
-loginwindow_setup
 setup_xinit
 final_setup
