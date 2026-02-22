@@ -7,9 +7,10 @@ set -e -u
 . "${cwd}/common_config/finalize.sh"
 . "${cwd}/common_config/setuser.sh"
 
-loginwindow_setup()
+lightdm_setup()
 {
-  return 0
+  sed -i '' "s@#greeter-session=example-gtk-gnome@greeter-session=slick-greeter@" "${release}/usr/local/etc/lightdm/lightdm.conf"
+  sed -i '' "s@#user-session=default@user-session=gershwin@" "${release}/usr/local/etc/lightdm/lightdm.conf"
 }
 
 setup_xinit()
@@ -23,6 +24,7 @@ patch_etc_files
 patch_loader_conf_d
 community_setup_liveuser_gershwin
 community_setup_autologin_gershwin
+lightdm_setup
 loginwindow_setup
 setup_xinit
 final_setup
