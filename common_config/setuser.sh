@@ -64,4 +64,7 @@ community_setup_liveuser()
 community_setup_liveuser_gershwin()
 {
   set_user_gershwin
+  chroot "${release}" su "${live_user}" -c "mkdir -p /Local/Users/${live_user}/Desktop/Installer.app"
+  chroot "${release}" su "${live_user}" -c  "cp /usr/local/bin/gbi /Local/Users/${live_user}/Desktop/Installer.app/Installer"
+  chroot "${release}" su "${live_user}" -c  "cp /usr/local/lib/gbi/image/install-gbsd.png /Local/Users/${live_user}/Desktop/Installer.app/Installer.png"
 }
