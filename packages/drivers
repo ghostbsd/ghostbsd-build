@@ -5,6 +5,7 @@ egl-wayland
 gstreamer1-plugins-neon
 realtek-re-kmod
 utouch-kmod
+xlibre-virtualbox-ose-additions-72
 wifi-firmware-kmod
 xlibre-xf86-input-evdev
 xlibre-xf86-input-joystick
