@@ -6,7 +6,7 @@ set_user()
 {
   chroot "${release}" pw useradd "${live_user}" -u 1100 \
   -c "GhostBSD Live User" -d "/home/${live_user}" \
-  -g wheel -G operator -m -s /usr/local/bin/fish -k /usr/share/skel -w none
+  -g wheel -G operator -m -s /usr/local/bin/zsh -k /usr/share/skel -w none
 }
 
 set_user_gershwin()
