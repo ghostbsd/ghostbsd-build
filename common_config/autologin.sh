@@ -10,19 +10,16 @@ ghostbsd_setup_autologin()
     echo ":al=${live_user}:ht:np:sp#115200:"
   } >> "${release}/etc/gettytab"
   sed -i "" "/ttyv0/s/Pc/${live_user}/g" "${release}/etc/ttys"
-  mkdir -p "${release}/home/${live_user}/.config/fish"
-  printf "set tty (tty)
-  if test \$tty = \"/dev/ttyv0\"
-    sudo xconfig auto
-    sleep 1
-    sudo rm -rf /xdrivers
-    sleep 1
-    startx
-    sleep 1
-    startx
-  end
-" > "${release}/home/${live_user}/.config/fish/config.fish"
-  chmod 765 "${release}/home/${live_user}/.config/fish/config.fish"
+  cat > "${release}/home/${live_user}/.zshrc" <<'EOF'
+if [ "$(tty)" = "/dev/ttyv0" ]; then
+  sudo xconfig auto
+  sleep 1
+  startx
+  sleep 1
+  startx
+fi
+EOF
+  chmod 765 "${release}/home/${live_user}/.zshrc"
 
   # setup root
   printf "if [ \"\$(tty)\" = \"/dev/ttyv0\" ]; then
@@ -41,23 +38,18 @@ community_setup_autologin()
     echo ":al=${live_user}:ht:np:sp#115200:"
   } >> "${release}/etc/gettytab"
   sed -i "" "/ttyv0/s/Pc/${live_user}/g" "${release}/etc/ttys"
-  mkdir -p "${release}/home/${live_user}/.config/fish"
   if [ -f "${release}/usr/local/bin/xconfig" ] ; then
-    printf "if not test -f /tmp/.xstarted
+    cat > "${release}/home/${live_user}/.zshrc" <<'EOF'
+if [ ! -f /tmp/.xstarted ]; then
   touch /tmp/.xstarted
-  set tty (tty)
-  if test \$tty = \"/dev/ttyv0\"
+  if [ "$(tty)" = "/dev/ttyv0" ]; then
     sudo xconfig auto
     sleep 1
-    echo \"X configuation completed\"
-    sleep 1
-    sudo rm -rf /xdrivers
-    sleep 1
     startx
-  end
-end
-" > "${release}/home/${live_user}/.config/fish/config.fish"
-  chmod 765 "${release}/home/${live_user}/.config/fish/config.fish"
+  fi
+fi
+EOF
+    chmod 765 "${release}/home/${live_user}/.zshrc"
   fi
 }
 
@@ -76,10 +68,6 @@ community_setup_autologin_gershwin()
 if [ ! -f /tmp/.xstarted ]; then
   touch /tmp/.xstarted
   sudo xconfig auto
-  sleep 1
-  echo "X configuration completed"
-  sleep 1
-  sudo rm -rf /xdrivers
   sleep 1
   startx
 fi
