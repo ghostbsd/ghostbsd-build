@@ -1,5 +1,4 @@
 plasma6-plasma
-plasma6-discover
 dolphin
 kate
 ark
@@ -16,5 +15,17 @@ kate
 libX11
 rar
 unrar
+yakuake
+elisa
+ktorrent
 7-zip
-lightdm-kde-greeter
+slick-greeter
+plasma6-spectacle
+plasma6-print-manager
+plasma6-plasma-disks
+kio-extras
+kio-fuse
+kio-gdrive
+freedesktop-sound-theme
+vlc
+station-tweak
