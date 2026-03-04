@@ -19,15 +19,6 @@ lightdm_setup() {
   sed -i '' "s@#user-session=default@user-session=plasma@" "${lightdm_conf}"
 }
 
-# ADD: Enable KDE Greeter
-lightdm_kde_greeter_conf() {
-  mkdir -p "${release}/usr/local/etc/lightdm/lightdm.conf.d"
-  cat <<EOF > "${release}/usr/local/etc/lightdm/lightdm.conf.d/50-myconfig.conf"
-[Seat:*]
-greeter-session=lightdm-kde-greeter
-EOF
-}
-
 set_localtime_from_bios() {
   tz_target="${release}/etc/localtime"
 
@@ -43,6 +34,7 @@ set_localtime_from_bios() {
     echo 'ntpd_enable="YES"'
     echo 'ntpd_sync_on_start="YES"'
     echo 'ntpdate_enable="YES"'
+    echo 'lightdm_enable="YES"'
   } >> "${rc_conf}"
 }
 
@@ -52,11 +44,10 @@ plasma_settings() {
   sed -i '' '/^net.local.stream.recvspace/d' "${sysctl_conf}" 2>/dev/null || true
   sed -i '' '/^net.local.stream.sendspace/d' "${sysctl_conf}" 2>/dev/null || true
 
-  {
+{
     echo 'net.local.stream.recvspace=65536'
     echo 'net.local.stream.sendspace=65536'
-    echo 'vfs.usermount=1'
-  } >> "${sysctl_conf}"
+ } >> "${sysctl_conf}"
 }
 
 setup_xinit() {
@@ -85,7 +76,6 @@ setup_xinit() {
   echo "exec dbus-launch --exit-with-session ck-launch-session startplasma-wayland 2> .error.log" >> "${release}/usr/share/skel/.xinitrc"
 
 }
-
 configure_devfs() {
   devfs_rules="${release}/etc/devfs.rules"
   rc_conf="${release}/etc/rc.conf"
@@ -94,7 +84,6 @@ configure_devfs() {
   echo "add path 'da*' mode 0666 group operator" >> "${devfs_rules}"
   echo 'devfs_system_ruleset="localrules"' >> "${rc_conf}"
 }
-
 setup_polkit_rules() {
   polkit_rules_dir="${release}/usr/local/etc/polkit-1/rules.d"
   polkit_rules_file="${polkit_rules_dir}/10-mount.rules"
@@ -120,7 +109,6 @@ community_setup_autologin
 configure_devfs
 update_rcconf_dm
 lightdm_setup
-lightdm_kde_greeter_conf
 set_localtime_from_bios
 plasma_settings
 setup_polkit_rules
