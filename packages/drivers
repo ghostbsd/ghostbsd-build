@@ -1,6 +1,6 @@
 bwi-firmware-kmod
 bwn-firmware-kmod
-drm-latest-kmod
+drm-kmod
 egl-wayland
 gstreamer1-plugins-neon
 open-vm-tools
