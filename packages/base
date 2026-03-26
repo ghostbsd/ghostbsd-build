@@ -16,6 +16,7 @@ GhostBSD-bsdconfig
 GhostBSD-bsnmp
 GhostBSD-bsnmp-lib32
 GhostBSD-bzip2
+GhostBSD-bzip2-dev
 GhostBSD-bzip2-lib32
 GhostBSD-caroot
 GhostBSD-ccdconfig
