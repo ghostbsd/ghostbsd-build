@@ -218,8 +218,8 @@ fetch_x_drivers_packages()
   fi
   mkdir ${release}/xdrivers
   yes | pkg -R "${cwd}/pkg/" update -r ${PKG_CONF}
-  echo """$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n %n-%v.pkg' 'xlibre-nvidia-driver|nvidia-kmod|egl-x11' | grep -v libva)""" > ${release}/xdrivers/drivers-list
-  pkg_list="""$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n-%v.pkg' 'xlibre-nvidia-driver|nvidia-kmod|egl-x11' | grep -v libva)"""
+  echo """$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n %n-%v.pkg' 'xlibre-nvidia-driver|nvidia-kmod|egl-x11' | grep -v -E 'libva|304|devel')""" > ${release}/xdrivers/drivers-list
+  pkg_list="""$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n-%v.pkg' 'xlibre-nvidia-driver|nvidia-kmod|egl-x11' | grep -v -E 'libva|304|devel')"""
   for line in $pkg_list ; do
     fetch -o ${release}/xdrivers "${pkg_url}/All/$line"
   done
