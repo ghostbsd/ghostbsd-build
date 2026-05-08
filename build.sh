@@ -169,7 +169,7 @@ set_ghostbsd_version()
   if [ "${build_type}" = "testing" ] || [ "${build_type}" = "unstable" ] ; then
     # Add date suffix for testing and unstable builds
     base_version="-$(cat ${release}/etc/version)"
-    date_suffix="-$(date +%m-%d-%H)"
+    date_suffix="-$(date +%m-%d-%H-%M)"
     version="${base_version}${date_suffix}"
     log "Adding date suffix for ${build_type} build: ${date_suffix}"
   else
