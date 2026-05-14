@@ -15,9 +15,9 @@ lightdm_setup()
 
 setup_xinit()
 {
-  chroot "${release}" su "${live_user}" -c "echo 'exec /usr/local/bin/gershwin-x11' > /Users/${live_user}/.xinitrc"
-  echo "exec /usr/local/bin/gershwin-x11" > "${release}/root/.xinitrc"
-  echo "exec /usr/local/bin/gershwin-x11" > "${release}/usr/share/skel/dot.xinitrc"
+  chroot "${release}" su "${live_user}" -c "echo 'exec /System/Library/Scripts/Gershwin.sh' > /Local/Users/${live_user}/.xinitrc"
+  echo "exec /System/Library/Scripts/Gershwin.sh" > "${release}/root/.xinitrc"
+  echo "exec /System/Library/Scripts/Gershwin.sh" > "${release}/usr/share/skel/dot.xinitrc"
 }
 
 patch_etc_files

@@ -169,7 +169,7 @@ set_ghostbsd_version()
   if [ "${build_type}" = "testing" ] || [ "${build_type}" = "unstable" ] ; then
     # Add date suffix for testing and unstable builds
     base_version="-$(cat ${release}/etc/version)"
-    date_suffix="-$(date +%m-%d-%H)"
+    date_suffix="-$(date +%m-%d-%H-%M)"
     version="${base_version}${date_suffix}"
     log "Adding date suffix for ${build_type} build: ${date_suffix}"
   else
@@ -218,10 +218,8 @@ fetch_x_drivers_packages()
   fi
   mkdir ${release}/xdrivers
   yes | pkg -R "${cwd}/pkg/" update -r ${PKG_CONF}
-  # TODO: Do not forgot to fix that when we move to xlibre.
-  #  We only skipping xlibre for now until we are doe testing.
-  echo """$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n %n-%v.pkg' 'nvidia-driver' | grep -v libva | grep -v xlibre)""" > ${release}/xdrivers/drivers-list
-  pkg_list="""$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n-%v.pkg' 'nvidia-driver' | grep -v libva| grep -v xlibre)"""
+  echo """$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n %n-%v.pkg' 'xlibre-nvidia-driver|nvidia-kmod|egl-x11' | grep -v -E 'libva|304|devel')""" > ${release}/xdrivers/drivers-list
+  pkg_list="""$(pkg -R "${cwd}/pkg/" rquery -x -r ${PKG_CONF} '%n-%v.pkg' 'xlibre-nvidia-driver|nvidia-kmod|egl-x11' | grep -v -E 'libva|304|devel')"""
   for line in $pkg_list ; do
     fetch -o ${release}/xdrivers "${pkg_url}/All/$line"
   done

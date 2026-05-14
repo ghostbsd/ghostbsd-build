@@ -1,7 +1,4 @@
 gbi
-gershwin-desktop
-gershwin-gbi-wrapper
-gershwin-ghostbsd-wrappers
-gershwin-firefox-wrapper
+gershwin
 slick-greeter
-vlc
+ghostbsd-gershwin-settings
