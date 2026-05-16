@@ -76,6 +76,7 @@ GhostBSD-local-unbound-lib32
 GhostBSD-locales
 GhostBSD-mandoc
 GhostBSD-mtree
+GhostBSD-ncurses-dev
 GhostBSD-newsyslog
 GhostBSD-ntp
 GhostBSD-nvme-tools
