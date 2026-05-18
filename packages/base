@@ -56,6 +56,7 @@ GhostBSD-libdwarf-lib32
 GhostBSD-libevent1
 GhostBSD-libevent1-lib32
 GhostBSD-libexecinfo
+GhostBSD-libexecinfo-dev
 GhostBSD-libexecinfo-lib32
 GhostBSD-libipt
 GhostBSD-libldns
