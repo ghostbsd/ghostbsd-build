@@ -262,8 +262,6 @@ ghostbsd_config()
   chroot ${release} mkdir -p /compat/linux/sys
   # Add /boot/entropy file
   chroot ${release} touch /boot/entropy
-  # default GhostBSD to local time instead of UTC
-  chroot ${release} touch /etc/wall_cmos_clock
 }
 
 desktop_config()
