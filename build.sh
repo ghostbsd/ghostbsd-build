@@ -224,6 +224,10 @@ fetch_x_drivers_packages()
     fetch -o ${release}/xdrivers "${pkg_url}/All/$line"
   done
   ls ${release}/xdrivers
+  log "Creating the XDrivers package repository..."
+  chroot ${release} sh -c 'cd /xdrivers && pkg repo .'
+  mkdir -p ${release}/usr/local/etc/pkg/repos
+  cp pkg/XDrivers.conf ${release}/usr/local/etc/pkg/repos/XDrivers.conf
 }
 
 rc()
