@@ -14,7 +14,7 @@ git_pc_sysinstall()
   cat > "${release}/config.sh" << 'EOF'
 #!/bin/sh
 set -e -u
-echo "installing pc-syinstall"
+echo "installing pc-sysinstall"
 cd /pc-sysinstall
 sh install.sh >/dev/null 2>&1
 EOF
