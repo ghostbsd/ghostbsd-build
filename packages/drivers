@@ -1,7 +1,6 @@
 bwi-firmware-kmod
 bwn-firmware-kmod
 drm-kmod
-egl-wayland
 gstreamer1-plugins-neon
 open-vm-tools
 realtek-re-kmod
